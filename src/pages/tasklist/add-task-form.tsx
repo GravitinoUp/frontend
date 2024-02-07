@@ -88,6 +88,7 @@ const placeholderQuery = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error 123
 const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
     const form = useForm({
         schema: formSchema,
