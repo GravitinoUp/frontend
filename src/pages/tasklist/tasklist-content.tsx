@@ -1,7 +1,11 @@
+import { Fragment, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { tasksColumns } from './tasks-columns'
+import { initialColumnVisibility } from './constants'
+import TaskFiltersForm from './task-filters-form'
+import { TasksFilterColumns, tasksColumns } from './tasks-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
+import FormDialog from '@/components/form-dialog/form-dialog'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
 import { OrderMyPayloadInterface } from '@/types/interface/orders'
@@ -9,24 +13,32 @@ import { OrderMyPayloadInterface } from '@/types/interface/orders'
 function TaskListContent() {
     const navigate = useNavigate()
 
-    const personalOrdersQuery: OrderMyPayloadInterface = {
-        offset: {
-            count: 50,
-            page: 1,
-        },
-        filter: {},
-        sorts: {},
-        period: {
-            date_start: '2024-01-01',
-            date_end: '2024-01-26',
-        },
-    }
+    const [personalOrdersQuery, setPersonalOrdersQuery] =
+        useState<OrderMyPayloadInterface>({
+            offset: {
+                count: 50,
+                page: 1,
+            },
+            filter: {},
+            sorts: {},
+            period: {
+                date_start: '2024-01-01',
+                date_end: '2024-01-26',
+            },
+        })
+
+    const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
+        initialColumnVisibility
+    )
 
     const {
         data = [],
-        isError,
         isLoading,
+        isError,
+        refetch,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
+
+    const [formOpen, setFormOpen] = useState(false)
 
     const formattedTasks = data.map((row) => ({
         key: row.order_id,
@@ -50,17 +62,100 @@ function TaskListContent() {
     }
 
     return (
-        <DataTable
-            data={formattedTasks}
-            columns={tasksColumns}
-            onRowClick={(rowData) =>
-                navigate(`task`, {
-                    state: {
-                        order: data.find((e) => e.order_id === rowData.id),
-                    },
-                })
-            }
-        />
+        <Fragment>
+            <FormDialog
+                open={formOpen}
+                setOpen={setFormOpen}
+                actionButton={<Fragment />}
+                size="md"
+                headerContent={
+                    <h2 className="text-3xl font-semibold text-black">
+                        Подобрать фильтры
+                    </h2>
+                }
+                addItemForm={
+                    <TaskFiltersForm
+                        handleSubmit={(data) => {
+                            setPersonalOrdersQuery({
+                                ...personalOrdersQuery,
+                                filter: {
+                                    facility: {
+                                        checkpoint: {
+                                            checkpoint_id:
+                                                data.checkpoint_id !== 0
+                                                    ? data.checkpoint_id
+                                                    : undefined,
+                                            branch: {
+                                                branch_id:
+                                                    data.branch_id !== 0
+                                                        ? data.branch_id
+                                                        : undefined,
+                                            },
+                                        },
+                                    },
+                                    executor: {
+                                        organization_id:
+                                            data.organization_id !== 0
+                                                ? data.organization_id
+                                                : undefined,
+                                    },
+                                    priority: {
+                                        priority_id:
+                                            data.priority_id !== 0
+                                                ? data.priority_id
+                                                : undefined,
+                                    },
+                                    order_status: data.order_status.map(
+                                        (value) => ({
+                                            order_status_name: value,
+                                        })
+                                    ),
+                                },
+                            })
+
+                            setFilterColumns(data.columns)
+
+                            refetch()
+                            setFormOpen(false)
+                        }}
+                        data={{
+                            branch_id:
+                                personalOrdersQuery.filter.facility?.checkpoint
+                                    ?.branch?.branch_id,
+                            checkpoint_id:
+                                personalOrdersQuery.filter.facility?.checkpoint
+                                    ?.checkpoint_id,
+                            organization_id:
+                                personalOrdersQuery.filter.executor
+                                    ?.organization_id,
+                            priority_id:
+                                personalOrdersQuery.filter.priority
+                                    ?.priority_id,
+                            order_status: personalOrdersQuery.filter
+                                .order_status
+                                ? personalOrdersQuery.filter.order_status!.map(
+                                      (value) => `${value?.order_status_name}`
+                                  )
+                                : [],
+                            columns: filterColumns,
+                        }}
+                    />
+                }
+            />
+            <DataTable
+                data={formattedTasks}
+                columns={tasksColumns}
+                columnVisibility={filterColumns}
+                onRowClick={(rowData) =>
+                    navigate(`task`, {
+                        state: {
+                            order: data.find((e) => e.order_id === rowData.id),
+                        },
+                    })
+                }
+                searchSuffixIconClick={() => setFormOpen(true)}
+            />
+        </Fragment>
     )
 }
 
