@@ -19,10 +19,10 @@ jobs:
           node-version: 20
       
       - name: Install dependencies
-        run: npm install --prefix frontend
+        run: npm install
       
       - name: Build frontend
-        run: npm run build:dev --prefix frontend
+        run: npm run build:dev
       
       - name: FTP Upload
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
