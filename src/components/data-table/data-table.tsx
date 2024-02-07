@@ -3,6 +3,7 @@ import {
     ColumnDef,
     ColumnFiltersState,
     SortingState,
+    VisibilityState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
@@ -31,6 +32,8 @@ interface DataTableProps<TData, TValue> {
     data: TData[]
     hasBackground?: boolean
     onRowClick?: (rowData: TData) => void
+    searchSuffixIconClick?: () => void
+    columnVisibility?: VisibilityState
 }
 
 function DataTable<TData, TValue>({
@@ -38,6 +41,8 @@ function DataTable<TData, TValue>({
     data,
     hasBackground,
     onRowClick,
+    searchSuffixIconClick,
+    columnVisibility = {},
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState({})
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -49,6 +54,7 @@ function DataTable<TData, TValue>({
         columns,
         state: {
             columnFilters,
+            columnVisibility,
             globalFilter,
             rowSelection,
             sorting,
@@ -74,6 +80,7 @@ function DataTable<TData, TValue>({
             <DebouncedInput
                 value={globalFilter ?? ''}
                 onChange={(value) => setGlobalFilter(String(value))}
+                suffixIconClick={searchSuffixIconClick}
             />
             <ScrollArea className="w-full">
                 <Table>
@@ -127,7 +134,7 @@ function DataTable<TData, TValue>({
                                     data-state={
                                         row.getIsSelected() && 'selected'
                                     }
-                                    onClick={
+                                    onDoubleClick={
                                         onRowClick !== undefined
                                             ? () => onRowClick!(row.original)
                                             : undefined

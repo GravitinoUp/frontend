@@ -1,4 +1,5 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { VariantProps, cva } from 'class-variance-authority'
 import PlusButton from '../plus-button/plus-button'
 import {
     Dialog,
@@ -6,8 +7,21 @@ import {
     DialogHeader,
     DialogTrigger,
 } from '../ui/dialog'
+import { cn } from '@/lib/utils'
 
-interface FormDialogProps {
+const dialogVariants = cva('', {
+    variants: {
+        size: {
+            default: 'sm:max-w-[600px]',
+            md: 'sm:max-w-[1100px]',
+        },
+    },
+    defaultVariants: {
+        size: 'default',
+    },
+})
+
+interface FormDialogProps extends VariantProps<typeof dialogVariants> {
     headerContent?: ReactNode
     actionButton?: ReactNode
     addItemForm: ReactNode
@@ -21,11 +35,12 @@ const FormDialog = ({
     addItemForm,
     open,
     setOpen,
+    size,
 }: FormDialogProps) => (
     <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>{actionButton}</DialogTrigger>
         <DialogContent
-            className="sm:max-w-[600px]"
+            className={cn(dialogVariants({ size }))}
             onOpenAutoFocus={(e) => e.preventDefault}
         >
             <DialogHeader>{headerContent}</DialogHeader>
@@ -33,5 +48,7 @@ const FormDialog = ({
         </DialogContent>
     </Dialog>
 )
+
+FormDialog.displayName = 'FormDialog'
 
 export default FormDialog

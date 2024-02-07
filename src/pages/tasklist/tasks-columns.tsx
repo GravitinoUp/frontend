@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { MoreVertical } from 'lucide-react'
+import { z } from 'zod'
 import CancelStatusTooltip from './cancel-status-tooltip'
 import { getStatusCellClass } from '@/components/data-table/get-cell-class'
 import { Button } from '@/components/ui/button'
@@ -12,6 +13,22 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { TASK_STATUSES } from '@/constants/constants'
 import { FormattedTaskInterface } from '@/types/interface/orders'
+
+export const tasksColumnsSchema = z.object({
+    key: z.boolean().default(true).optional(),
+    id: z.boolean().default(true).optional(),
+    checkpoint: z.boolean().default(true).optional(),
+    taskDescription: z.boolean().default(true).optional(),
+    status: z.boolean().default(true).optional(),
+    taskName: z.boolean().default(true).optional(),
+    priorityStatus: z.boolean().default(true).optional(),
+    executor: z.boolean().default(true).optional(),
+    facility: z.boolean().default(true).optional(),
+    branch: z.boolean().default(true).optional(),
+    deliveryDate: z.boolean().default(true).optional(),
+})
+
+export type TasksFilterColumns = z.infer<typeof tasksColumnsSchema>
 
 export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
     {
