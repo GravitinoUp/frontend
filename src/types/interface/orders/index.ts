@@ -7,6 +7,7 @@ import {
 } from '../organizations'
 import { RoleInterface, RoleSortInterface } from '../roles'
 import { UserInterface } from '../user'
+import { RecursivePartial } from '@/utils/recursive-partial'
 
 export interface FormattedTaskInterface {
     key: number
@@ -34,7 +35,7 @@ export interface ExecutorInterface {
 
 export interface OrderMyPayloadInterface extends IQuery {
     sorts: OrderSortInterface
-    filter: Partial<OrderInterface>
+    filter: RecursivePartial<OrderFilterInterface>
     period: {
         date_start: string
         date_end: string
@@ -102,6 +103,10 @@ export interface OrderUserSortInterface {
     first_name?: SortOptionsType
     patronymic?: SortOptionsType
     phone?: SortOptionsType
+}
+
+export type OrderFilterInterface = Omit<OrderInterface, 'order_status'> & {
+    order_status: OrderStatusInterface[]
 }
 
 // FACILITY
@@ -193,4 +198,3 @@ export interface PriorityPayloadInterface {}
 export type PrioritySortInterface = Partial<
     Record<keyof PriorityInterface, SortOptionsType>
 >
-
