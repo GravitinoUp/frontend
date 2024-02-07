@@ -102,7 +102,7 @@ const links: (SingleLink | MultiLink)[] = [
     },
     {
         type: 'single',
-        path: '/parameters',
+        path: '/manage-properties',
         title: 'Управление характеристиками',
         count: null,
         children: <ParametersIcon />,
