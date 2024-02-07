@@ -45,7 +45,7 @@ export const rolesApi = api.injectEndpoints({
                 url: `roles/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: (result, error, id) => [{ type: 'Roles', id }],
+            // invalidatesTags: (result, error, id) => [{ type: 'Roles', id }],
         }),
     }),
 })
