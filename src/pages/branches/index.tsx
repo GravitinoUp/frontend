@@ -50,8 +50,8 @@ const BranchesPage = () => {
                 <div>
                     <div className="h-16 mb-7" />
                     <div className="flex gap-3 mb-10">
-                        <ExcelButton type="export" onClick={() => {}} />
-                        <ExcelButton type="import" onClick={() => {}} />
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
                 </div>
             }

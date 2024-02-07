@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import AddTaskForm from './add-task-form'
+import ImportForm from './import-form'
 import TaskListContent from './tasklist-content'
+import CloseRounded from '@/assets/icons/close_rounded.svg'
 import CalendarForm from '@/components/calendar-form/calendar-form'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import ExcelButton from '@/components/excel-button/excel-button'
@@ -60,6 +62,7 @@ export default function TaskListPage() {
 
     const { refetch } = useGetPersonalOrdersQuery(personalOrdersQuery)
     const [formOpen, setFormOpen] = useState(false)
+    const [importFormOpen, setImportFormOpen] = useState(false)
 
     return (
         <PageLayout
@@ -81,8 +84,14 @@ export default function TaskListPage() {
                 <div>
                     <CalendarForm open={false} />
                     <div className="flex gap-3">
-                        <ExcelButton type="export" onClick={() => {}} />
-                        <ExcelButton type="import" onClick={() => {}} />
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <FormDialog
+                            open={importFormOpen}
+                            setOpen={setImportFormOpen}
+                            actionButton={<ExcelButton buttonType="import" />}
+                            addItemForm={<ImportForm />}
+                            closeIcon={<CloseRounded />}
+                        />
                     </div>
                 </div>
             }
