@@ -33,7 +33,7 @@ export default function CheckpointsPage() {
         isLoading,
         refetch,
     } = useGetCheckpointsQuery(personalCheckpointsQuery)
-
+// @ts-ignore
     const formattedCheckpoints: FormattedCheckpointsInterface[] =
         checkpoints.map((row) => ({
             checkpoint: row,
