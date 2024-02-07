@@ -1,4 +1,4 @@
-import { CheckpointInterface, CheckpointSortInterface } from '../checkpoint'
+import { FacilityInterface, FacilitySortInterface } from '../facility'
 import { IQuery, SortOptionsType } from '../fetch'
 import { GroupInterface, GroupSortInterface } from '../group'
 import {
@@ -12,15 +12,17 @@ import { RecursivePartial } from '@/utils/recursive-partial'
 export interface FormattedTaskInterface {
     key: number
     id: number
+    facility?: string
     checkpoint?: string
     taskDescription?: string | null
     status: string
     taskName: string
     priorityStatus?: string
     executor?: string
-    facility?: string
     branch?: string
     deliveryDate?: string
+    taskCreator?: string
+    taskType?: number | null
 }
 
 export interface ExecutorInterface {
@@ -109,26 +111,7 @@ export type OrderFilterInterface = Omit<OrderInterface, 'order_status'> & {
     order_status: OrderStatusInterface[]
 }
 
-// FACILITY
-
-export interface FacilityInterface {
-    facility_id: number
-    facility_name: string
-    organization: OrganizationInterface
-    checkpoint: CheckpointInterface
-    createdAt: Date
-    updatedAt: Date
-}
-
-export interface FacilitySortInterface {
-    facility_id?: SortOptionsType
-    facility_name?: SortOptionsType
-    organization?: OrganizationSortInterface
-    checkpoint?: CheckpointSortInterface
-}
-
 // TASK
-
 export interface TaskInterface {
     task_id: number
     task_name: string

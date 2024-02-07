@@ -1,4 +1,5 @@
 import { api } from './'
+import { FetchResultInterface } from '@/types/interface/fetch'
 import {
     OrderInterface,
     OrderMyPayloadInterface,
@@ -18,9 +19,33 @@ const ordersApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            providesTags: ['Orders'],
+        }),
+        addOrder: builder.mutation<
+            FetchResultInterface<OrderInterface>,
+            unknown
+        >({
+            query: (body) => ({
+                url: 'order',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Orders'],
+        }),
+        deleteOrder: builder.mutation<FetchResultInterface, number>({
+            query: (id) => ({
+                url: `order/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Orders'],
         }),
     }),
     overrideExisting: true,
 })
 
-export const { useGetOrdersQuery, useGetPersonalOrdersQuery } = ordersApi
+export const {
+    useGetOrdersQuery,
+    useGetPersonalOrdersQuery,
+    useAddOrderMutation,
+    useDeleteOrderMutation,
+} = ordersApi

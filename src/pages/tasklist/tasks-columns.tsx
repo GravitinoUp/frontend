@@ -1,16 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { MoreVertical } from 'lucide-react'
 import { z } from 'zod'
+import { ActionButtons } from './action-button'
 import CancelStatusTooltip from './cancel-status-tooltip'
 import { getStatusCellClass } from '@/components/data-table/get-cell-class'
-import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { TASK_STATUSES } from '@/constants/constants'
 import { FormattedTaskInterface } from '@/types/interface/orders'
 
@@ -92,6 +85,10 @@ export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
     {
         header: 'Тип',
         accessorKey: 'taskType',
+        cell: ({ row }) => {
+            const { taskType } = row.original
+            return taskType === null ? 'Внеплановая' : 'Плановая'
+        },
     },
     {
         header: 'Дата сдачи',
@@ -124,30 +121,6 @@ export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
     },
     {
         id: 'actions',
-        cell: ({ row }) => {
-            const id = row.original.id
-
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            className="h-8 w-8 p-0 text-[#8A9099]"
-                        >
-                            <span className="sr-only">Открыть меню</span>
-                            <MoreVertical className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => console.log({ id })}>
-                            Редактировать
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-[#FF6B6B]">
-                            Удалить
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
-        },
+        cell: ({ row }) => <ActionButtons task={row.original} />,
     },
 ]

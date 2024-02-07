@@ -6,7 +6,6 @@ export const roleFormTab = (role?: RoleInterface) => [
         value: 'role-creation',
         head: 'Создание роли',
         isDialog: true,
-        height: 755,
         content: <AddRoleForm role={role} />,
     },
 ]
