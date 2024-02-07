@@ -127,8 +127,6 @@ export interface FacilitySortInterface {
     checkpoint?: CheckpointSortInterface
 }
 
-// CHECKPOINTS PAYLOAD
-
 // TASK
 
 export interface TaskInterface {

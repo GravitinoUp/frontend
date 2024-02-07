@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { z } from 'zod'
+import { initialColumnVisibility } from './constants'
 import { tasksColumnsSchema } from './tasks-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -106,17 +107,17 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             {branchesSuccess && branches?.length > 0 && (
                                 <FormControl>
                                     <Select
+                                        value={
+                                            field.value && field.value !== 0
+                                                ? String(field.value)
+                                                : 'all'
+                                        }
                                         onValueChange={(value) =>
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
                                                     : undefined
                                             )
-                                        }
-                                        defaultValue={
-                                            field.value
-                                                ? String(field.value)
-                                                : 'all'
                                         }
                                     >
                                         <FormControl>
@@ -159,17 +160,17 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             {checkpointsSuccess && checkpoints?.length > 0 && (
                                 <FormControl>
                                     <Select
+                                        value={
+                                            field.value && field.value !== 0
+                                                ? String(field.value)
+                                                : 'all'
+                                        }
                                         onValueChange={(value) =>
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
                                                     : undefined
                                             )
-                                        }
-                                        defaultValue={
-                                            field.value
-                                                ? String(field.value)
-                                                : 'all'
                                         }
                                     >
                                         <FormControl>
@@ -215,17 +216,17 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                 organizations?.length > 0 && (
                                     <FormControl>
                                         <Select
+                                            value={
+                                                field.value && field.value !== 0
+                                                    ? String(field.value)
+                                                    : 'all'
+                                            }
                                             onValueChange={(value) =>
                                                 field.onChange(
                                                     value !== 'all'
                                                         ? Number(value)
                                                         : undefined
                                                 )
-                                            }
-                                            defaultValue={
-                                                field.value
-                                                    ? String(field.value)
-                                                    : 'all'
                                             }
                                         >
                                             <FormControl>
@@ -274,17 +275,17 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             {prioritiesSuccess && priorities?.length > 0 && (
                                 <FormControl>
                                     <Select
+                                        value={
+                                            field.value && field.value !== 0
+                                                ? String(field.value)
+                                                : 'all'
+                                        }
                                         onValueChange={(value) =>
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
                                                     : undefined
                                             )
-                                        }
-                                        defaultValue={
-                                            field.value
-                                                ? String(field.value)
-                                                : 'all'
                                         }
                                     >
                                         <FormControl>
@@ -511,7 +512,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
             </Button>
             <Button
                 className="w-[200px] mt-10"
-                type="submit"
+                type="button"
                 variant="outline"
                 onClick={() => {
                     form.reset({
@@ -520,19 +521,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                         organization_id: 0,
                         priority_id: 0,
                         order_status: [],
-                        columns: {
-                            key: true,
-                            id: true,
-                            checkpoint: true,
-                            taskDescription: true,
-                            status: true,
-                            taskName: true,
-                            priorityStatus: true,
-                            executor: true,
-                            facility: true,
-                            branch: true,
-                            deliveryDate: true,
-                        },
+                        columns: initialColumnVisibility,
                     })
                 }}
             >

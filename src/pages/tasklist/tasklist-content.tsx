@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { initialColumnVisibility } from './constants'
 import TaskFiltersForm from './task-filters-form'
 import { TasksFilterColumns, tasksColumns } from './tasks-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
@@ -26,19 +27,9 @@ function TaskListContent() {
             },
         })
 
-    const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>({
-        key: true,
-        id: true,
-        checkpoint: true,
-        taskDescription: true,
-        status: true,
-        taskName: true,
-        priorityStatus: true,
-        executor: true,
-        facility: true,
-        branch: true,
-        deliveryDate: true,
-    })
+    const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
+        initialColumnVisibility
+    )
 
     const {
         data = [],
