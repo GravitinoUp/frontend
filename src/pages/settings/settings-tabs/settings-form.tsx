@@ -45,14 +45,13 @@ export function SettingsForm() {
         },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async function onSubmit(data: z.infer<typeof formSchema>) {}
+    // async function onSubmit(data: z.infer<typeof formSchema>) {}
 
     return (
         <>
             <Form {...form}>
                 <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    // onSubmit={form.handleSubmit(onSubmit)}
                     className="grid grid-rows-7 grid-col-2 gap-5 "
                 >
                     <div className="col-1 row-1 ">
