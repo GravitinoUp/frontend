@@ -107,17 +107,17 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             {branchesSuccess && branches?.length > 0 && (
                                 <FormControl>
                                     <Select
+                                        value={
+                                            field.value && field.value !== 0
+                                                ? String(field.value)
+                                                : 'all'
+                                        }
                                         onValueChange={(value) =>
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
                                                     : undefined
                                             )
-                                        }
-                                        defaultValue={
-                                            field.value
-                                                ? String(field.value)
-                                                : 'all'
                                         }
                                     >
                                         <FormControl>
@@ -160,17 +160,17 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             {checkpointsSuccess && checkpoints?.length > 0 && (
                                 <FormControl>
                                     <Select
+                                        value={
+                                            field.value && field.value !== 0
+                                                ? String(field.value)
+                                                : 'all'
+                                        }
                                         onValueChange={(value) =>
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
                                                     : undefined
                                             )
-                                        }
-                                        defaultValue={
-                                            field.value
-                                                ? String(field.value)
-                                                : 'all'
                                         }
                                     >
                                         <FormControl>
@@ -216,17 +216,17 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                 organizations?.length > 0 && (
                                     <FormControl>
                                         <Select
+                                            value={
+                                                field.value && field.value !== 0
+                                                    ? String(field.value)
+                                                    : 'all'
+                                            }
                                             onValueChange={(value) =>
                                                 field.onChange(
                                                     value !== 'all'
                                                         ? Number(value)
                                                         : undefined
                                                 )
-                                            }
-                                            defaultValue={
-                                                field.value
-                                                    ? String(field.value)
-                                                    : 'all'
                                             }
                                         >
                                             <FormControl>
@@ -275,17 +275,17 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             {prioritiesSuccess && priorities?.length > 0 && (
                                 <FormControl>
                                     <Select
+                                        value={
+                                            field.value && field.value !== 0
+                                                ? String(field.value)
+                                                : 'all'
+                                        }
                                         onValueChange={(value) =>
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
                                                     : undefined
                                             )
-                                        }
-                                        defaultValue={
-                                            field.value
-                                                ? String(field.value)
-                                                : 'all'
                                         }
                                     >
                                         <FormControl>
@@ -512,7 +512,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
             </Button>
             <Button
                 className="w-[200px] mt-10"
-                type="reset"
+                type="button"
                 variant="outline"
                 onClick={() => {
                     form.reset({
@@ -523,8 +523,6 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                         order_status: [],
                         columns: initialColumnVisibility,
                     })
-
-                    handleSubmit(form.getValues())
                 }}
             >
                 Сбросить
