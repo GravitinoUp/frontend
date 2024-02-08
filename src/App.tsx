@@ -34,7 +34,7 @@ function App() {
             navigate('/dashboard')
         }
 
-        if (!isLogin && status !== 'loading') {
+        if (!isLogin && !(status === 'loading' || status === null)) {
             navigate('/signin')
         }
     }, [isLogin])
@@ -53,6 +53,7 @@ function App() {
             navigate('/signin')
         }
     }, [])
+
     if (status === 'loading') return <></>
 
     return (

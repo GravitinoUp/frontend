@@ -88,10 +88,10 @@ export function SignInPage() {
                         <div className="mt-6">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center gap-2">
-                                    <Checkbox className="bg-[#0784D1]" />
-                                    <p className="text-[#595F69] font-pop font-[400] select-none text- text-[15px] flex items-start  justify-start">
-                                        Запомнить меня
-                                    </p>
+                                    <Checkbox
+                                        label="Запомнить меня"
+                                        id="remember"
+                                    />
                                 </div>
                                 <Link to="/123">
                                     <p className="text-[#0784D1] font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">

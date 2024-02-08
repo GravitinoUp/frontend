@@ -1,25 +1,25 @@
-import { User } from "lucide-react";
+import { User } from 'lucide-react'
 
-import { useNavigate } from "react-router-dom";
-import { Button } from "../ui/button";
-import ChevronDown from "@/assets/icons/ChevronDown.svg";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from 'react-router-dom'
+import { Button } from '../ui/button'
+import ChevronDown from '@/assets/icons/ChevronDown.svg'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { fetchLogout } from "@/redux/reducers/userSlice";
+} from '@/components/ui/dropdown-menu'
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
+import { fetchLogout } from '@/redux/reducers/userSlice'
 
 export default function AccountMenu() {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
-    const { user } = useAppSelector((state) => state.auth);
+    const { user } = useAppSelector((state) => state.auth)
 
-    const icon = null;
+    const icon = null
     return (
         <div className="flex items-center justify-center mr-5 gap-3">
             <DropdownMenu>
@@ -47,7 +47,7 @@ export default function AccountMenu() {
                 >
                     <DropdownMenuItem>
                         <Button
-                            onClick={() => navigate("/settings")}
+                            onClick={() => navigate('/settings')}
                             variant="ghost"
                             className=" h-5 w-20 justify-start p-0"
                             size="sm"
@@ -58,7 +58,8 @@ export default function AccountMenu() {
                     <DropdownMenuItem>
                         <Button
                             onClick={() => {
-                                dispatch(fetchLogout());
+                                dispatch(fetchLogout())
+                                navigate('/signin')
                             }}
                             variant="ghost"
                             className="text-destructive h-5 w-20 justify-start p-0 hover:text-destructive"
@@ -70,5 +71,5 @@ export default function AccountMenu() {
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
-    );
+    )
 }
