@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { MoreVertical } from 'lucide-react'
 import AddTaskForm from './add-task-form'
+import { personalOrdersQuery } from './constants'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,23 +16,7 @@ import {
     useDeleteOrderMutation,
     useGetPersonalOrdersQuery,
 } from '@/redux/api/orders'
-import {
-    FormattedTaskInterface,
-    OrderMyPayloadInterface,
-} from '@/types/interface/orders'
-
-const personalOrdersQuery: OrderMyPayloadInterface = {
-    offset: {
-        count: 50,
-        page: 1,
-    },
-    filter: {},
-    sorts: {},
-    period: {
-        date_start: '2024-01-01',
-        date_end: '2024-12-26',
-    },
-}
+import { FormattedTaskInterface } from '@/types/interface/orders'
 
 export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
     const [formOpen, setFormOpen] = useState(false)

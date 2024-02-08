@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import { z } from 'zod'
-import { placeholderQuery } from './constants'
+import { NewOrderBodyInterface, placeholderQuery } from './constants'
 import CalendarIcon from '@/assets/icons/Calendar.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -178,7 +178,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
     ] = useAddOrderMutation()
 
     function handleSubmit(data: z.infer<typeof formSchema>) {
-        const formattedData = {
+        const formattedData: NewOrderBodyInterface = {
             order_name: data.taskName,
             order_description: data.taskDescription,
             branch_ids: data.branchesList,

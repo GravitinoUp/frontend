@@ -15,17 +15,6 @@ export const initialColumnVisibility: TasksFilterColumns = {
     deliveryDate: true,
 }
 
-
-export const initialCheckpointQuery = {
-    offset: {
-        count: 50,
-        page: 1,
-    },
-    filter: {},
-    sorts: {},
-    period: {},
-}
-
 export const personalOrdersQuery: OrderMyPayloadInterface = {
     offset: {
         count: 50,
@@ -50,4 +39,17 @@ export const placeholderQuery = {
         date_start: '2024-01-01',
         date_end: '2024-12-26',
     },
+}
+
+export interface NewOrderBodyInterface {
+    order_name: string
+    order_description: string
+    branch_ids: number[]
+    checkpoint_ids: number[]
+    facility_ids: number[]
+    executor_ids: number[]
+    planned_datetime: string
+    task_end_datetime: string
+    priority_id: number
+    property_values: string[]
 }

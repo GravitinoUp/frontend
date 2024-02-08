@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { z } from 'zod'
-import { ActionButtons } from './action-button'
+import { ActionButtons } from './action-buttons'
 import CancelStatusTooltip from './cancel-status-tooltip'
 import { getStatusCellClass } from '@/components/data-table/get-cell-class'
 import { Checkbox } from '@/components/ui/checkbox'

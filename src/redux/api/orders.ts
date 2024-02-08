@@ -1,4 +1,5 @@
 import { api } from './'
+import { NewOrderBodyInterface } from '@/pages/tasklist/constants'
 import { FetchResultInterface } from '@/types/interface/fetch'
 import {
     OrderInterface,
@@ -23,7 +24,7 @@ const ordersApi = api.injectEndpoints({
         }),
         addOrder: builder.mutation<
             FetchResultInterface<OrderInterface>,
-            unknown
+            NewOrderBodyInterface
         >({
             query: (body) => ({
                 url: 'order',
