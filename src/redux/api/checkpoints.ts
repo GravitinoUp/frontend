@@ -1,15 +1,27 @@
 import { api } from './'
-import { CheckpointInterface, CheckpointsPayloadInterface } from '@/types/interface/checkpoint'
-import { FetchResultInterface } from '@/types/interface/fetch'
+import {
+    CheckpointInterface,
+    CheckpointsPayloadInterface,
+} from '@/types/interface/checkpoint'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 
 const checkpointsApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getCheckpoints: builder.query<CheckpointInterface[], CheckpointsPayloadInterface>({
+        getCheckpoints: builder.query<
+            CheckpointInterface[],
+            CheckpointsPayloadInterface
+        >({
             query: (body) => ({
                 url: 'checkpoint/all',
                 method: 'POST',
-                body
+                body,
             }),
+            transformResponse: (
+                response: FetchDataInterface<CheckpointInterface[]>
+            ) => response.data,
             providesTags: ['Checkpoints'],
         }),
         deleteCheckpoint: builder.mutation<FetchResultInterface, number>({
@@ -23,4 +35,5 @@ const checkpointsApi = api.injectEndpoints({
     overrideExisting: true,
 })
 
-export const { useGetCheckpointsQuery,useDeleteCheckpointMutation } = checkpointsApi
+export const { useGetCheckpointsQuery, useDeleteCheckpointMutation } =
+    checkpointsApi
