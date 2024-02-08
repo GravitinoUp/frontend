@@ -8,11 +8,13 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetPropertiesQuery } from '@/redux/api/properties'
+import { EntityType } from '@/types/interface/fetch'
 
 export default function ManagePropertiesPage() {
-    const { refetch } = useGetPropertiesQuery()
-
     const [formOpen, setFormOpen] = useState(false)
+    const [currentPage, setCurrentPage] = useState<EntityType>('Users')
+
+    const { refetch } = useGetPropertiesQuery({ entity_name: currentPage })
 
     return (
         <PageLayout
@@ -24,7 +26,7 @@ export default function ManagePropertiesPage() {
                     setOpen={setFormOpen}
                     addItemForm={
                         <CustomTabs
-                            tabs={managePropertiesFormTab('Users')}
+                            tabs={managePropertiesFormTab(currentPage)}
                             setDialogOpen={setFormOpen}
                         />
                     }
@@ -40,7 +42,10 @@ export default function ManagePropertiesPage() {
                 </div>
             }
         >
-            <CustomTabs tabs={managePropertiesPageTab} />
+            <CustomTabs
+                tabs={managePropertiesPageTab}
+                getCurrentPage={(value) => setCurrentPage(value as EntityType)}
+            />
         </PageLayout>
     )
 }
