@@ -111,24 +111,6 @@ export type OrderFilterInterface = Omit<OrderInterface, 'order_status'> & {
     order_status: OrderStatusInterface[]
 }
 
-// FACILITY
-
-export interface FacilityInterface {
-    facility_id: number
-    facility_name: string
-    organization: OrganizationInterface
-    checkpoint: CheckpointInterface
-    createdAt: Date
-    updatedAt: Date
-}
-
-export interface FacilitySortInterface {
-    facility_id?: SortOptionsType
-    facility_name?: SortOptionsType
-    organization?: OrganizationSortInterface
-    checkpoint?: CheckpointSortInterface
-}
-
 // CHECKPOINTS PAYLOAD
 
 // TASK
