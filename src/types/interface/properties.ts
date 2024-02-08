@@ -1,3 +1,5 @@
+import { EntityType } from './fetch'
+
 export interface PropertyPayloadInterface {
     property_name_id: number
     property_name: string
@@ -5,15 +7,16 @@ export interface PropertyPayloadInterface {
     entity_name: string
 }
 
-export interface PropertyNameInterface {
+export interface PropertyInterface {
     property_name_id: number
     property_name: string
-    entity_name: string
+    property_values: PropertyValueInterface[]
+    entity_name: EntityType
 }
 
 export interface PropertyValueInterface {
     property_value_id: number
-    property_name: PropertyNameInterface
+    property_name_id: number
     property_value: string
 }
 

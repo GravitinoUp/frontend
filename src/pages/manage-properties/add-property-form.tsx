@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 import { z } from 'zod'
+import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
@@ -12,12 +13,13 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { MultiSelect } from '@/components/ui/multi-select'
+import { useToast } from '@/components/ui/use-toast'
 import {
-    useCreatePropertyNameMutation,
-    useUpdatePropertyNameMutation,
+    useCreatePropertyMutation,
+    useUpdatePropertyMutation,
 } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
-import { PropertyNameInterface } from '@/types/interface/properties'
+import { PropertyInterface } from '@/types/interface/properties'
 
 const propertySchema = z.object({
     property_name: z
@@ -32,29 +34,39 @@ const propertySchema = z.object({
 })
 
 interface AddPropertyFormProps {
-    propertyName?: PropertyNameInterface
+    property?: PropertyInterface
     entity: EntityType
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
 }
 
 const AddPropertyForm = ({
-    propertyName,
+    property,
     entity,
     setDialogOpen,
 }: AddPropertyFormProps) => {
+    const { toast } = useToast()
+
     const form = useForm({
         schema: propertySchema,
-        defaultValues: {
-            property_name: '',
-            property_values: [],
-            entity_name: entity,
-        },
+        defaultValues: !property
+            ? {
+                  property_name: '',
+                  property_values: [],
+                  entity_name: entity,
+              }
+            : {
+                  property_name: property.property_name,
+                  property_values: property.property_values.map(
+                      (value) => value.property_value
+                  ),
+                  entity_name: property.entity_name,
+              },
     })
 
     const [
         createProperty,
         { isLoading: isAdding, isError: createError, isSuccess: createSuccess },
-    ] = useCreatePropertyNameMutation()
+    ] = useCreatePropertyMutation()
 
     const [
         updateProperty,
@@ -63,10 +75,34 @@ const AddPropertyForm = ({
             isError: updateError,
             isSuccess: updateSuccess,
         },
-    ] = useUpdatePropertyNameMutation()
+    ] = useUpdatePropertyMutation()
+
+    useEffect(() => {
+        if (createSuccess) {
+            toast({
+                description: `Характеристика успешно добавлена`,
+                duration: 1500,
+            })
+            setDialogOpen?.(false)
+        }
+    }, [createSuccess])
+
+    useEffect(() => {
+        if (updateSuccess) {
+            toast({
+                description: `Характеристика успешно изменена`,
+                duration: 1500,
+            })
+            setDialogOpen?.(false)
+        }
+    }, [updateSuccess])
 
     const handleSubmit = (values: z.infer<typeof propertySchema>) => {
-        createProperty(values)
+        if (property) {
+            updateProperty(values)
+        } else {
+            createProperty(values)
+        }
     }
 
     return (
@@ -92,10 +128,7 @@ const AddPropertyForm = ({
                                     )
                                 }}
                                 placeholder="Добавьте значения"
-                                options={field.value.map((v) => ({
-                                    value: v,
-                                    label: v,
-                                }))}
+                                options={[]}
                                 showItems={false}
                             />
                         </FormControl>
@@ -103,6 +136,7 @@ const AddPropertyForm = ({
                     </FormItem>
                 )}
             />
+            {(createError || updateError) && <CustomAlert className="mt-3" />}
             <Button
                 className="w-[100px] mt-10 mr-4"
                 type="submit"
@@ -110,7 +144,7 @@ const AddPropertyForm = ({
             >
                 {isAdding || isUpdating ? (
                     <LoadingSpinner />
-                ) : propertyName ? (
+                ) : property ? (
                     'Сохранить'
                 ) : (
                     'Создать'

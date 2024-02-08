@@ -13,12 +13,12 @@ import {
 import { ToastAction } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/use-toast'
 import { useDeletePropertyNameMutation } from '@/redux/api/properties'
-import { PropertyNameInterface } from '@/types/interface/properties'
+import { PropertyInterface } from '@/types/interface/properties'
 
 export const ActionButtons = ({
-    propertyName,
+    property,
 }: {
-    propertyName: PropertyNameInterface
+    property: PropertyInterface
 }) => {
     const [deletePropertyName, { isError, isSuccess, isLoading }] =
         useDeletePropertyNameMutation()
@@ -36,7 +36,7 @@ export const ActionButtons = ({
                     <ToastAction
                         altText="Попробуйте еще раз"
                         onClick={() =>
-                            deletePropertyName(propertyName.property_name_id)
+                            deletePropertyName(property.property_name_id)
                         }
                     >
                         Попробуйте еще раз
@@ -47,7 +47,7 @@ export const ActionButtons = ({
 
         if (isSuccess) {
             toast({
-                description: `Характеристика "" удалена`,
+                description: `Характеристика "${property.property_name}" удалена`,
                 duration: 1500,
             })
         }
@@ -63,7 +63,10 @@ export const ActionButtons = ({
                 actionButton={<Fragment />}
                 addItemForm={
                     <CustomTabs
-                        tabs={managePropertiesFormTab}
+                        tabs={managePropertiesFormTab(
+                            property.entity_name,
+                            property
+                        )}
                         setDialogOpen={setFormOpen}
                     />
                 }
@@ -89,7 +92,7 @@ export const ActionButtons = ({
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
                         onClick={() =>
-                            deletePropertyName(propertyName.property_name_id)
+                            deletePropertyName(property.property_name_id)
                         }
                         disabled={isLoading}
                     >

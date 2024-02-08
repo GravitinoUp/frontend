@@ -7,10 +7,10 @@ import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
-import { useGetPropertyNamesQuery } from '@/redux/api/properties'
+import { useGetPropertiesQuery } from '@/redux/api/properties'
 
 export default function ManagePropertiesPage() {
-    const { refetch } = useGetPropertyNamesQuery()
+    const { refetch } = useGetPropertiesQuery()
 
     const [formOpen, setFormOpen] = useState(false)
 

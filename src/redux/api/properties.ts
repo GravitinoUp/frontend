@@ -1,7 +1,11 @@
 import { api } from '.'
-import { EntityType, FetchResultInterface } from '@/types/interface/fetch'
 import {
-    PropertyNameInterface,
+    EntityType,
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
+import {
+    PropertyInterface,
     PropertyPayloadInterface,
     PropertyValueInterface,
     PropertyValuePayloadInterface,
@@ -9,12 +13,12 @@ import {
 
 const propertiesApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getPropertyNames: builder.query<
-            PropertyNameInterface[],
+        getProperties: builder.query<
+            FetchDataInterface<PropertyInterface[]>,
             { entity_name: EntityType }
         >({
             query: (body) => ({
-                url: 'property-names/all',
+                url: 'property/all',
                 method: 'GET',
                 //body,
             }),
@@ -27,12 +31,12 @@ const propertiesApi = api.injectEndpoints({
             }),
             providesTags: ['Properties'],
         }),
-        createPropertyName: builder.mutation<
-            FetchResultInterface<PropertyNameInterface>,
+        createProperty: builder.mutation<
+            FetchResultInterface<PropertyInterface>,
             Partial<Omit<PropertyPayloadInterface, 'property_name_id'>>
         >({
             query: (body) => ({
-                url: `property-names`,
+                url: `property`,
                 method: 'POST',
                 body,
             }),
@@ -49,12 +53,12 @@ const propertiesApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Properties'],
         }),
-        updatePropertyName: builder.mutation<
-            PropertyNameInterface,
-            Partial<PropertyNameInterface>
+        updateProperty: builder.mutation<
+            PropertyInterface,
+            Partial<PropertyPayloadInterface>
         >({
             query: (body) => ({
-                url: `property-names`,
+                url: `property`,
                 method: 'PATCH',
                 body,
             }),
@@ -73,7 +77,7 @@ const propertiesApi = api.injectEndpoints({
         }),
         deletePropertyName: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
-                url: `property-names/${id}`,
+                url: `property/${id}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['Properties'],
@@ -90,10 +94,10 @@ const propertiesApi = api.injectEndpoints({
 })
 
 export const {
-    useGetPropertyNamesQuery,
-    useCreatePropertyNameMutation,
+    useGetPropertiesQuery,
+    useCreatePropertyMutation,
     useCreatePropertyValueMutation,
-    useUpdatePropertyNameMutation,
+    useUpdatePropertyMutation,
     useUpdatePropertyValueMutation,
     useDeletePropertyNameMutation,
     useDeletePropertyValueMutation,

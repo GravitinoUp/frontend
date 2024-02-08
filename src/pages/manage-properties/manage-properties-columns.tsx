@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ActionButtons } from './action-buttons'
 import { Checkbox } from '@/components/ui/checkbox'
-import { PropertyNameInterface } from '@/types/interface/properties'
+import { PropertyInterface } from '@/types/interface/properties'
 
-export const managePropertiesColumns: ColumnDef<PropertyNameInterface>[] = [
+export const managePropertiesColumns: ColumnDef<PropertyInterface>[] = [
     {
         id: 'select',
         header: ({ table }) => (
@@ -36,6 +36,6 @@ export const managePropertiesColumns: ColumnDef<PropertyNameInterface>[] = [
     },
     {
         id: 'actions',
-        cell: ({ row }) => <ActionButtons propertyName={row.original} />,
+        cell: ({ row }) => <ActionButtons property={row.original} />,
     },
 ]
