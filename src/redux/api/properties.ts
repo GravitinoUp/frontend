@@ -1,5 +1,5 @@
 import { api } from '.'
-import { FetchResultInterface } from '@/types/interface/fetch'
+import { EntityType, FetchResultInterface } from '@/types/interface/fetch'
 import {
     PropertyNameInterface,
     PropertyValueInterface,
@@ -8,10 +8,14 @@ import {
 
 const propertiesApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getPropertyNames: builder.query<PropertyNameInterface[], void>({
-            query: () => ({
+        getPropertyNames: builder.query<
+            PropertyNameInterface[],
+            { entity_name: EntityType }
+        >({
+            query: (body) => ({
                 url: 'property-names/all',
                 method: 'GET',
+                //body,
             }),
             providesTags: ['Properties'],
         }),
