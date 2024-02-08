@@ -122,6 +122,10 @@ const AddPropertyForm = ({
                         <FormLabel>Значения</FormLabel>
                         <FormControl>
                             <MultiSelect
+                                defaultOptions={field.value.map((value) => ({
+                                    label: value,
+                                    value: value,
+                                }))}
                                 onChange={(values) => {
                                     field.onChange(
                                         values.map(({ value }) => value)
