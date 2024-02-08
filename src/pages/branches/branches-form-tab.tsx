@@ -6,7 +6,6 @@ export const branchesFormTab = (branch?: BranchInterface) => [
         value: 'branchCreation',
         head: 'ФИЛИАЛЫ',
         isDialog: true,
-        height: 755,
         content: <AddBranchForm branch={branch} />,
     },
 ]

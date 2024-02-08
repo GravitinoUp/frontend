@@ -1,4 +1,9 @@
 import { api } from './'
+import { NewOrderBodyInterface } from '@/pages/tasklist/constants'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 import {
     OrderInterface,
     OrderMyPayloadInterface,
@@ -8,6 +13,10 @@ const ordersApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getOrders: builder.query<OrderInterface[], void>({
             query: () => 'order/all',
+            transformResponse: (
+                response: FetchDataInterface<OrderInterface[]>
+            ) => response.data,
+            providesTags: ['Orders'],
         }),
         getPersonalOrders: builder.query<
             OrderInterface[],
@@ -18,9 +27,36 @@ const ordersApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformResponse: (
+                response: FetchDataInterface<OrderInterface[]>
+            ) => response.data,
+            providesTags: ['Orders'],
+        }),
+        addOrder: builder.mutation<
+            FetchResultInterface<OrderInterface>,
+            NewOrderBodyInterface
+        >({
+            query: (body) => ({
+                url: 'order',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Orders'],
+        }),
+        deleteOrder: builder.mutation<FetchResultInterface, number>({
+            query: (id) => ({
+                url: `order/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Orders'],
         }),
     }),
     overrideExisting: true,
 })
 
-export const { useGetOrdersQuery, useGetPersonalOrdersQuery } = ordersApi
+export const {
+    useGetOrdersQuery,
+    useGetPersonalOrdersQuery,
+    useAddOrderMutation,
+    useDeleteOrderMutation,
+} = ordersApi

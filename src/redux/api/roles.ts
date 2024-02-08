@@ -1,5 +1,8 @@
 import { api } from './'
-import { FetchResultInterface } from '@/types/interface/fetch'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 import { RoleInterface, RolesPayloadInterface } from '@/types/interface/roles'
 
 export const rolesApi = api.injectEndpoints({
@@ -10,16 +13,10 @@ export const rolesApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            providesTags: (result) =>
-                result
-                    ? [
-                          ...result.map(({ role_id }) => ({
-                              type: 'Roles' as const,
-                              id: role_id,
-                          })),
-                          { type: 'Roles', id: 'LIST' },
-                      ]
-                    : [{ type: 'Roles', id: 'LIST' }],
+            transformResponse: (
+                response: FetchDataInterface<RoleInterface[]>
+            ) => response.data,
+            providesTags: ['Roles'],
         }),
         addRole: builder.mutation<
             FetchResultInterface<RoleInterface>,
@@ -30,7 +27,7 @@ export const rolesApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: [{ type: 'Roles', id: 'LIST' }],
+            invalidatesTags: ['Roles'],
         }),
         updateRole: builder.mutation<RoleInterface, Partial<RoleInterface>>({
             query: (body) => ({
@@ -38,14 +35,14 @@ export const rolesApi = api.injectEndpoints({
                 method: 'PATCH',
                 body,
             }),
-            invalidatesTags: [{ type: 'Roles', id: 'LIST' }],
+            invalidatesTags: ['Roles'],
         }),
         deleteRole: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
                 url: `roles/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: (result, error, id) => [{ type: 'Roles', id }],
+            invalidatesTags: ['Roles'],
         }),
     }),
 })

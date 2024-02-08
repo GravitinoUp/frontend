@@ -13,9 +13,9 @@ export interface FormattedCheckpointsInterface {
     checkpoint_name: string
     address: string
     branch_name: string
-    working_hours?: string | null
-    neighboring_state: string
-    region: string
+    working_hours?: string
+    neighboring_state?: string
+    region?: string | null
     checkpoint_type_name: string
 }
 
