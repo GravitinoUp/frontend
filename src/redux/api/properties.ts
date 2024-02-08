@@ -2,6 +2,7 @@ import { api } from '.'
 import { EntityType, FetchResultInterface } from '@/types/interface/fetch'
 import {
     PropertyNameInterface,
+    PropertyPayloadInterface,
     PropertyValueInterface,
     PropertyValuePayloadInterface,
 } from '@/types/interface/properties'
@@ -28,7 +29,7 @@ const propertiesApi = api.injectEndpoints({
         }),
         createPropertyName: builder.mutation<
             FetchResultInterface<PropertyNameInterface>,
-            Partial<Omit<PropertyNameInterface, 'property_name_id'>>
+            Partial<Omit<PropertyPayloadInterface, 'property_name_id'>>
         >({
             query: (body) => ({
                 url: `property-names`,

@@ -13,12 +13,14 @@ interface MultiSelectProps {
     options: Option[]
     placeholder?: string
     onChange?: (values: Option[]) => void
+    showItems?: boolean
 }
 
 export function MultiSelect({
     options,
     placeholder,
     onChange,
+    showItems = true,
 }: MultiSelectProps) {
     const inputRef = React.useRef<HTMLInputElement>(null)
     const [open, setOpen] = React.useState(false)
@@ -45,6 +47,29 @@ export function MultiSelect({
             e.stopPropagation()
             const input = inputRef.current
             if (input) {
+                if (!showItems && e.key === 'Enter') {
+                    if (input.value.trim() !== '') {
+                        setSelected((prev) => {
+                            const newSelected = [...prev]
+
+                            if (
+                                !prev.some(
+                                    (v) => v.value === input.value.trim()
+                                )
+                            ) {
+                                newSelected.push({
+                                    value: input.value,
+                                    label: input.value,
+                                })
+                            }
+
+                            return newSelected
+                        })
+
+                        setInputValue('')
+                    }
+                }
+
                 if (e.key === 'Delete' || e.key === 'Backspace') {
                     if (input.value === '') {
                         setSelected((prev) => {
@@ -113,8 +138,8 @@ export function MultiSelect({
                         ref={inputRef}
                         value={inputValue}
                         onValueChange={setInputValue}
-                        onBlur={() => setOpen(false)}
-                        onFocus={() => setOpen(true)}
+                        onBlur={() => showItems && setOpen(false)}
+                        onFocus={() => showItems && setOpen(true)}
                         placeholder={selected.length > 0 ? void 0 : placeholder}
                         className="ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1"
                     />

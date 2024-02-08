@@ -1,3 +1,10 @@
+export interface PropertyPayloadInterface {
+    property_name_id: number
+    property_name: string
+    property_values: string[]
+    entity_name: string
+}
+
 export interface PropertyNameInterface {
     property_name_id: number
     property_name: string

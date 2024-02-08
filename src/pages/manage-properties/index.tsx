@@ -24,7 +24,7 @@ export default function ManagePropertiesPage() {
                     setOpen={setFormOpen}
                     addItemForm={
                         <CustomTabs
-                            tabs={managePropertiesFormTab}
+                            tabs={managePropertiesFormTab('Users')}
                             setDialogOpen={setFormOpen}
                         />
                     }
