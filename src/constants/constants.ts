@@ -3,7 +3,7 @@ export const TASK_STATUSES = {
     CLOSED: 'закрыта',
     CANCELED: 'отменена',
     APPOINTED: 'назначена',
-    DEADLINE_CLOSED: 'закрыта с наршуением дедлайна',
+    DEADLINE_CLOSED: 'закрыта с нарушением дедлайна',
     NEED_WORK: 'необходима доработка',
     ON_VERIFICATION: 'на проверке',
 }
