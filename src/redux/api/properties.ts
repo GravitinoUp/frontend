@@ -24,13 +24,6 @@ const propertiesApi = api.injectEndpoints({
             }),
             providesTags: ['Properties'],
         }),
-        getPropertyValues: builder.query<PropertyValueInterface[], void>({
-            query: () => ({
-                url: 'property-values/all',
-                method: 'GET',
-            }),
-            providesTags: ['Properties'],
-        }),
         createProperty: builder.mutation<
             FetchResultInterface<PropertyInterface>,
             Partial<Omit<PropertyPayloadInterface, 'property_name_id'>>
@@ -49,28 +42,6 @@ const propertiesApi = api.injectEndpoints({
             query: (body) => ({
                 url: `property-values`,
                 method: 'POST',
-                body,
-            }),
-            invalidatesTags: ['Properties'],
-        }),
-        updateProperty: builder.mutation<
-            PropertyInterface,
-            Partial<PropertyPayloadInterface>
-        >({
-            query: (body) => ({
-                url: `property`,
-                method: 'PATCH',
-                body,
-            }),
-            invalidatesTags: ['Properties'],
-        }),
-        updatePropertyValue: builder.mutation<
-            PropertyValueInterface,
-            Partial<PropertyValueInterface>
-        >({
-            query: (body) => ({
-                url: `property-values`,
-                method: 'PATCH',
                 body,
             }),
             invalidatesTags: ['Properties'],
@@ -97,8 +68,6 @@ export const {
     useGetPropertiesQuery,
     useCreatePropertyMutation,
     useCreatePropertyValueMutation,
-    useUpdatePropertyMutation,
-    useUpdatePropertyValueMutation,
     useDeletePropertyNameMutation,
     useDeletePropertyValueMutation,
 } = propertiesApi

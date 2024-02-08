@@ -1,8 +1,5 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect } from 'react'
 import { MoreVertical } from 'lucide-react'
-import { managePropertiesFormTab } from './manage-properties-tab'
-import CustomTabs from '@/components/custom-tabs/custom-tabs'
-import FormDialog from '@/components/form-dialog/form-dialog'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -53,24 +50,8 @@ export const ActionButtons = ({
         }
     }, [isError, isSuccess, toast])
 
-    const [formOpen, setFormOpen] = useState(false)
-
     return (
         <Fragment>
-            <FormDialog
-                open={formOpen}
-                setOpen={setFormOpen}
-                actionButton={<Fragment />}
-                addItemForm={
-                    <CustomTabs
-                        tabs={managePropertiesFormTab(
-                            property.entity_name,
-                            property
-                        )}
-                        setDialogOpen={setFormOpen}
-                    />
-                }
-            />
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                     <Button
@@ -82,13 +63,6 @@ export const ActionButtons = ({
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                        onClick={() => {
-                            setFormOpen(true)
-                        }}
-                    >
-                        Редактировать
-                    </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
                         onClick={() =>

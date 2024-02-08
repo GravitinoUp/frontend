@@ -1,18 +1,14 @@
 import AddPropertyForm from './add-property-form'
 import ManagePropertiesContent from './manage-properties-content'
 import { EntityType } from '@/types/interface/fetch'
-import { PropertyInterface } from '@/types/interface/properties'
 
-export const managePropertiesFormTab = (
-    entity: EntityType,
-    property?: PropertyInterface
-) => [
+export const managePropertiesFormTab = (entity: EntityType) => [
     {
         value: 'propertyCreate',
         head: 'СОЗДАНИЕ ХАРАКТЕРИСТИКИ',
         isDialog: true,
         height: 755,
-        content: <AddPropertyForm entity={entity} property={property} />,
+        content: <AddPropertyForm entity={entity} />,
     },
 ]
 

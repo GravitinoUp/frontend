@@ -14,12 +14,8 @@ import {
 } from '@/components/ui/form'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { useToast } from '@/components/ui/use-toast'
-import {
-    useCreatePropertyMutation,
-    useUpdatePropertyMutation,
-} from '@/redux/api/properties'
+import { useCreatePropertyMutation } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
-import { PropertyInterface } from '@/types/interface/properties'
 
 const propertySchema = z.object({
     property_name: z
@@ -34,48 +30,26 @@ const propertySchema = z.object({
 })
 
 interface AddPropertyFormProps {
-    property?: PropertyInterface
     entity: EntityType
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-const AddPropertyForm = ({
-    property,
-    entity,
-    setDialogOpen,
-}: AddPropertyFormProps) => {
+const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
     const { toast } = useToast()
 
     const form = useForm({
         schema: propertySchema,
-        defaultValues: !property
-            ? {
-                  property_name: '',
-                  property_values: [],
-                  entity_name: entity,
-              }
-            : {
-                  property_name: property.property_name,
-                  property_values: property.property_values.map(
-                      (value) => value.property_value
-                  ),
-                  entity_name: property.entity_name,
-              },
+        defaultValues: {
+            property_name: '',
+            property_values: [],
+            entity_name: entity,
+        },
     })
 
     const [
         createProperty,
         { isLoading: isAdding, isError: createError, isSuccess: createSuccess },
     ] = useCreatePropertyMutation()
-
-    const [
-        updateProperty,
-        {
-            isLoading: isUpdating,
-            isError: updateError,
-            isSuccess: updateSuccess,
-        },
-    ] = useUpdatePropertyMutation()
 
     useEffect(() => {
         if (createSuccess) {
@@ -87,22 +61,8 @@ const AddPropertyForm = ({
         }
     }, [createSuccess])
 
-    useEffect(() => {
-        if (updateSuccess) {
-            toast({
-                description: `Характеристика успешно изменена`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [updateSuccess])
-
     const handleSubmit = (values: z.infer<typeof propertySchema>) => {
-        if (property) {
-            updateProperty(values)
-        } else {
-            createProperty(values)
-        }
+        createProperty(values)
     }
 
     return (
@@ -140,19 +100,13 @@ const AddPropertyForm = ({
                     </FormItem>
                 )}
             />
-            {(createError || updateError) && <CustomAlert className="mt-3" />}
+            {createError && <CustomAlert className="mt-3" />}
             <Button
                 className="w-[100px] mt-10 mr-4"
                 type="submit"
-                disabled={isAdding || isUpdating}
+                disabled={isAdding}
             >
-                {isAdding || isUpdating ? (
-                    <LoadingSpinner />
-                ) : property ? (
-                    'Сохранить'
-                ) : (
-                    'Создать'
-                )}
+                {isAdding ? <LoadingSpinner /> : 'Создать'}
             </Button>
             <Button
                 className="w-[100px] mt-10"
