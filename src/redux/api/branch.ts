@@ -3,7 +3,10 @@ import {
     BranchInterface,
     BranchesPayloadInterface,
 } from '@/types/interface/branch'
-import { FetchResultInterface } from '@/types/interface/fetch'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 
 const branchApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -14,6 +17,9 @@ const branchApi = api.injectEndpoints({
                     method: 'POST',
                     body,
                 }),
+                transformResponse: (
+                    response: FetchDataInterface<BranchInterface[]>
+                ) => response.data,
                 providesTags: ['Branches'],
             }
         ),

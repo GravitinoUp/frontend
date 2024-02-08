@@ -1,4 +1,5 @@
 import { api } from './'
+import { FetchDataInterface } from '@/types/interface/fetch'
 import {
     OrderInterface,
     OrderMyPayloadInterface,
@@ -8,6 +9,9 @@ const ordersApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getOrders: builder.query<OrderInterface[], void>({
             query: () => 'order/all',
+            transformResponse: (
+                response: FetchDataInterface<OrderInterface[]>
+            ) => response.data,
         }),
         getPersonalOrders: builder.query<
             OrderInterface[],
@@ -18,6 +22,9 @@ const ordersApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformResponse: (
+                response: FetchDataInterface<OrderInterface[]>
+            ) => response.data,
         }),
     }),
     overrideExisting: true,
