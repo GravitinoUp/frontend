@@ -1,4 +1,5 @@
 import { api } from './'
+import { FetchDataInterface } from '@/types/interface/fetch'
 import { PriorityInterface } from '@/types/interface/orders'
 
 const priorityApi = api.injectEndpoints({
@@ -9,6 +10,9 @@ const priorityApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformResponse: (
+                response: FetchDataInterface<PriorityInterface[]>
+            ) => response.data,
         }),
     }),
     overrideExisting: true,

@@ -9,6 +9,7 @@ import FormDialog from '@/components/form-dialog/form-dialog'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
 import { OrderMyPayloadInterface } from '@/types/interface/orders'
+import { formatDate } from '@/utils/helpers'
 
 function TaskListContent() {
     const navigate = useNavigate()
@@ -16,14 +17,14 @@ function TaskListContent() {
     const [personalOrdersQuery, setPersonalOrdersQuery] =
         useState<OrderMyPayloadInterface>({
             offset: {
-                count: 10,
+                count: 50,
                 page: 1,
             },
             filter: {},
             sorts: {},
             period: {
                 date_start: '2024-01-01',
-                date_end: '2025-01-01',
+                date_end: '2024-01-26',
             },
         })
 
@@ -33,8 +34,8 @@ function TaskListContent() {
 
     const {
         data = [],
-        isLoading,
         isError,
+        isLoading,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
     const [formOpen, setFormOpen] = useState(false)
@@ -42,14 +43,20 @@ function TaskListContent() {
     const formattedTasks = data.map((row) => ({
         key: row.order_id,
         id: row.order_id,
+        facility: row.facility.facility_name,
         checkpoint: row.facility?.checkpoint?.checkpoint_name,
-        taskDescription: row.task.task_description,
+        taskDescription: row.order_description || '',
         status: row.order_status?.order_status_name,
-        taskName: row.task.task_name,
+        taskName: row.order_name || '',
         priorityStatus: row.priority.priority_name,
-        executor: row.executor?.short_name,
-        facility: row.facility?.facility_name,
+        executor: row.executor.short_name,
         branch: row.facility.checkpoint.branch.branch_name,
+        taskCreator: `${row.creator?.person.last_name} ${row.creator?.person.first_name} ${row.creator?.person.patronymic}`,
+        taskType: row.task.task_id,
+        closeDate: formatDate(row.ended_at_datetime) || '',
+        deliveryDate: `${formatDate(row.planned_datetime) || 'Н/Д'}-${
+            formatDate(row.task_end_datetime) || 'Н/Д'
+        }`,
     }))
 
     if (isLoading) {
