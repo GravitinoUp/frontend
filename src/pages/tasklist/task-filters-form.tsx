@@ -89,7 +89,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
         isLoading: prioritiesLoading,
         isError: prioritiesError,
         isSuccess: prioritiesSuccess,
-    } = useGetAllPriorityQuery(placeholderQuery)
+    } = useGetAllPriorityQuery()
 
     return (
         <CustomForm className="mt-3" form={form} onSubmit={handleSubmit}>

@@ -33,7 +33,7 @@ export default function CheckpointsPage() {
         isLoading,
         refetch,
     } = useGetCheckpointsQuery(personalCheckpointsQuery)
-// @ts-ignore
+
     const formattedCheckpoints: FormattedCheckpointsInterface[] =
         checkpoints.map((row) => ({
             checkpoint: row,
@@ -42,8 +42,8 @@ export default function CheckpointsPage() {
             checkpoint_name: row.checkpoint_name,
             address: row.address,
             branch_name: row.branch.branch_name,
-            working_hours: row.working_hours,
-            neighboring_state: row.neighboring_state,
+            working_hours: row.working_hours?.working_hours_name,
+            neighboring_state: row.neighboring_state?.neighboring_state_name,
             region: row.region,
             checkpoint_type_name: row.checkpoint_type.checkpoint_type_name,
         }))

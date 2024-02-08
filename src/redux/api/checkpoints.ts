@@ -24,6 +24,21 @@ const checkpointsApi = api.injectEndpoints({
             ) => response.data,
             providesTags: ['Checkpoints'],
         }),
+        getCheckpointsByBranch: builder.query<
+            CheckpointInterface[],
+            { body: CheckpointsPayloadInterface; branchIDS: number[] }
+        >({
+            query: ({ body, branchIDS }) => {
+                const queryParams = branchIDS
+                    .map((id) => `branch_ids=${id}`)
+                    .join('&')
+                return {
+                    url: `checkpoint/all-by-branch?${queryParams}`,
+                    method: 'POST',
+                    body,
+                }
+            },
+        }),
         deleteCheckpoint: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
                 url: `checkpoint/${id}`,
@@ -35,5 +50,8 @@ const checkpointsApi = api.injectEndpoints({
     overrideExisting: true,
 })
 
-export const { useGetCheckpointsQuery, useDeleteCheckpointMutation } =
-    checkpointsApi
+export const {
+    useGetCheckpointsQuery,
+    useGetCheckpointsByBranchQuery,
+    useDeleteCheckpointMutation,
+} = checkpointsApi
