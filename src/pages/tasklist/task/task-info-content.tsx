@@ -45,13 +45,10 @@ const TaskInfoContent = ({ order }: TaskInfoContentProps) => (
         <OrderStatus status={order.order_status.order_status_name} />
         <div className="flex">
             <div className="w-full mr-[100px]">
-                <TaskInfoField
-                    title="Название"
-                    content={order.task.task_name}
-                />
+                <TaskInfoField title="Название" content={order.order_name} />
                 <TaskInfoField
                     title="Описание"
-                    content={order.task.task_description}
+                    content={order.order_description}
                     multiline
                 />
                 <TaskInfoField
