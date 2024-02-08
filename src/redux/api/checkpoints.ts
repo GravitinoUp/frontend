@@ -3,7 +3,10 @@ import {
     CheckpointInterface,
     CheckpointsPayloadInterface,
 } from '@/types/interface/checkpoint'
-import { FetchResultInterface } from '@/types/interface/fetch'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 
 const checkpointsApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -16,6 +19,9 @@ const checkpointsApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformResponse: (
+                response: FetchDataInterface<CheckpointInterface[]>
+            ) => response.data,
             providesTags: ['Checkpoints'],
         }),
         getCheckpointsByBranch: builder.query<

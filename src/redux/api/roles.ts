@@ -1,5 +1,8 @@
 import { api } from './'
-import { FetchResultInterface } from '@/types/interface/fetch'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 import { RoleInterface, RolesPayloadInterface } from '@/types/interface/roles'
 
 export const rolesApi = api.injectEndpoints({
@@ -10,6 +13,9 @@ export const rolesApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformResponse: (
+                response: FetchDataInterface<RoleInterface[]>
+            ) => response.data,
             providesTags: ['Roles'],
         }),
         addRole: builder.mutation<
