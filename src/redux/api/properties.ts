@@ -15,12 +15,11 @@ const propertiesApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getProperties: builder.query<
             FetchDataInterface<PropertyInterface[]>,
-            { entity_name: EntityType }
+            EntityType
         >({
-            query: (body) => ({
-                url: 'property/all',
+            query: (entity_name) => ({
+                url: `property/all/${entity_name}`,
                 method: 'POST',
-                body,
             }),
             providesTags: ['Properties'],
         }),

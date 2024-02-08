@@ -14,7 +14,7 @@ function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
         data = { count: 0, data: [] },
         isError,
         isLoading,
-    } = useGetPropertiesQuery({ entity_name: entity })
+    } = useGetPropertiesQuery(entity)
 
     if (isLoading) {
         return <LoadingSpinner />

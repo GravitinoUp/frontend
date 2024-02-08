@@ -14,7 +14,7 @@ export default function ManagePropertiesPage() {
     const [formOpen, setFormOpen] = useState(false)
     const [currentPage, setCurrentPage] = useState<EntityType>('Users')
 
-    const { refetch } = useGetPropertiesQuery({ entity_name: currentPage })
+    const { refetch } = useGetPropertiesQuery(currentPage)
 
     return (
         <PageLayout
