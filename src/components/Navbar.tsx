@@ -13,6 +13,7 @@ import ParametersIcon from '@/assets/icons/Parameters.svg'
 import RoadFinishIcon from '@/assets/icons/Road_finish.svg'
 import TaskListIcon from '@/assets/icons/Status_list.svg'
 import VectorIcon from '@/assets/icons/Vector.svg'
+import { cn } from '@/lib/utils'
 
 export interface SingleLink {
     type: string
@@ -123,14 +124,15 @@ export interface NavbarProps {
 
 export function Navbar({ open, setOpen }: NavbarProps) {
     return (
-        <div className="bg-white grid grid-rows-[64px_auto] border-solid h-screen">
-            {open ? (
-                <div className="text-[#0784D1] items-center font-pop font-bold text-[18px] flex justify-center">
-                    ГРАВИТИНО АСУ УПР
-                </div>
-            ) : (
-                <div className="text-[#0784D1]  items-center flex justify-center " />
-            )}
+        <div className="bg-white flex flex-col border-solid h-screen">
+            <div
+                className={cn(
+                    'h-[64px] text-[#0784D1] text-nowrap items-center font-pop font-bold text-[18px] flex justify-center',
+                    !open && 'invisible'
+                )}
+            >
+                ГРАВИТИНО АСУ УПР
+            </div>
 
             <ul>
                 {links.map((item, key) => {

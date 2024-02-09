@@ -1,13 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Routes, Route } from 'react-router-dom'
 import { Layuot } from './components/Layout'
-import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
+import { useAppDispatch } from './hooks/reduxHooks'
 import BranchesPage from './pages/branches'
 import CheckpointsPage from './pages/checkpoints'
 import { DashboardPage } from './pages/dashboard/page'
 import MediaReportspage from './pages/mediareports/page'
-import NotFoundpage from './pages/notfound/page'
+import NotFoundPage from './pages/notfound'
 import OrganizationsPage from './pages/organizations'
 import { RegisterPage } from './pages/register/page'
 import ReportsPage from './pages/reports/page'
@@ -17,49 +17,60 @@ import { SignInPage } from './pages/signin/page'
 import TaskListPage from './pages/tasklist'
 import TaskPage from './pages/tasklist/task'
 import UsersPage from './pages/users'
-
-import { fetchRefreshAuth } from './redux/reducers/userSlice'
+import { useRefreshTokenMutation } from './redux/api/auth'
+import { setAccessToken } from './redux/reducers/authSlice'
+import { getCookieValue } from './utils/helpers'
 
 function App() {
+    const [loading, setLoading] = useState<boolean | null>(null)
     const dispatch = useAppDispatch()
-    const { isLogin, status, user } = useAppSelector((state) => state.auth)
-    const path = useLocation()
+
     const navigate = useNavigate()
+    const path = useLocation()
+
+    const [
+        fetchRefreshToken,
+        { data: newAccessToken, isError: isError, isSuccess: isSuccess },
+    ] = useRefreshTokenMutation()
 
     useEffect(() => {
-        if (
-            (isLogin && path.pathname === '/') ||
-            (isLogin && path.pathname === '/signin')
-        ) {
-            navigate('/dashboard')
-        }
+        if (loading === null) {
+            const refreshToken = getCookieValue('refreshToken')
 
-        if (!isLogin && !(status === 'loading' || status === null)) {
-            navigate('/signin')
-        }
-    }, [isLogin])
-
-    window.onstorage = (event) => {
-        if (event.key !== 'r  efreshToken') return
-
-        navigate('/signin')
-    }
-
-    useEffect(() => {
-        const refreshToken = localStorage.getItem('refreshToken')
-        if (refreshToken !== null) {
-            dispatch(fetchRefreshAuth(refreshToken))
-        } else {
-            navigate('/signin')
+            if (refreshToken !== null) {
+                fetchRefreshToken({ refresh_token: `${refreshToken}` })
+                setLoading(true)
+            } else {
+                navigate('/signin')
+                setLoading(false)
+            }
         }
     }, [])
 
-    if (status === 'loading') return <></>
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(setAccessToken(newAccessToken))
+
+            if (path.pathname === '/' || path.pathname === '/signin') {
+                navigate('/dashboard')
+            }
+            setLoading(false)
+        }
+    }, [isSuccess])
+
+    useEffect(() => {
+        if (isError) {
+            navigate('/signin')
+            setLoading(false)
+        }
+    }, [isError])
+
+    if (loading) return <></>
 
     return (
         <div>
             <Routes>
-                {user && (
+                {!loading && (
                     <Route path="/" element={<Layuot />}>
                         <Route
                             index
@@ -91,12 +102,12 @@ function App() {
                             element={<CheckpointsPage />}
                         />
                         <Route path="branches" element={<BranchesPage />} />
-                        <Route path="*" element={<NotFoundpage />} />
+                        <Route path="*" element={<NotFoundPage />} />
                     </Route>
                 )}
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="*" element={<NotFoundpage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>
     )

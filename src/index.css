@@ -69,6 +69,7 @@
 @layer base {
     * {
         @apply border-border;
+        @apply focus:outline-primary;
     }
     body {
         @apply bg-background text-foreground;

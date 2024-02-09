@@ -12,8 +12,8 @@ export function Layuot() {
         <main
             className={
                 open
-                    ? 'min-h-screen grid grid-cols-[280px_auto] bg-[#F8F8F8] duration-300'
-                    : 'min-h-screen grid grid-cols-[70px_auto] bg-[#F8F8F8] duration-300'
+                    ? 'min-h-screen grid grid-cols-[300px_auto] bg-[#F8F8F8] duration-300'
+                    : 'min-h-screen grid grid-cols-[75px_auto] bg-[#F8F8F8] duration-300'
             }
         >
             <div className="col-1">

@@ -1,8 +1,8 @@
 import { format } from 'date-fns'
 
 export const getJWTtokens = () => {
-    const accessToken = localStorage.getItem('accessToken')
-    const refreshToken = localStorage.getItem('refreshToken')
+    const accessToken = getCookieValue('accessToken')
+    const refreshToken = getCookieValue('refreshToken')
 
     return {
         accessToken,
@@ -32,4 +32,13 @@ export const formatInitials = (
         .split(/\s+/)
         .map((w, i) => (i ? w.substring(0, 1).toUpperCase() + '.' : w))
         .join(' ')
+}
+
+export const getCookieValue = (key: string) => {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith(`${key}=`))
+        ?.split('=')[1]
+
+    return cookieValue
 }
