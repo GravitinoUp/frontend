@@ -9,13 +9,10 @@ export interface InputProps
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, type, suffixIcon, ...props }, ref) => (
-        <div className="flex border border-input rounded-xl">
+        <div className={cn('flex border border-input rounded-xl', className)}>
             <input
                 type={type}
-                className={cn(
-                    'w-full h-10 rounded-xl bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
-                    className
-                )}
+                className="w-full h-10 rounded-xl bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 ref={ref}
                 {...props}
             />

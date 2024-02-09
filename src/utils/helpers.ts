@@ -42,3 +42,7 @@ export const getCookieValue = (key: string) => {
 
     return cookieValue
 }
+
+export const removeCookieValue = (key: string) => {
+    document.cookie = `${key}=; Max-Age=-1`
+}

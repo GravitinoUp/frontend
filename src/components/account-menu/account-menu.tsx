@@ -14,7 +14,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useLogoutMutation } from '@/redux/api/auth'
-import { getJWTtokens } from '@/utils/helpers'
+import { getJWTtokens, removeCookieValue } from '@/utils/helpers'
 
 export default function AccountMenu() {
     const { toast } = useToast()
@@ -42,6 +42,8 @@ export default function AccountMenu() {
         }
 
         if (isSuccess) {
+            removeCookieValue('accessToken')
+            removeCookieValue('refreshToken')
             navigate('/signin')
         }
     }, [isError, isSuccess, toast])
