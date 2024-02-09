@@ -1,7 +1,6 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { MoreVertical } from 'lucide-react'
-import { usersFormTab } from './user-form-tab'
-import CustomTabs from '@/components/custom-tabs/custom-tabs'
+import AddUserForm from './add-user-form'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,10 +10,43 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
+import { ToastAction } from '@/components/ui/toast'
+import { useToast } from '@/components/ui/use-toast'
+import { useDeleteUserMutation } from '@/redux/api/users'
 import { UserInterface } from '@/types/interface/user'
 
 export const ActionButtons = ({ user }: { user: UserInterface }) => {
     const [formOpen, setFormOpen] = useState(false)
+    const [deleteUser, { isError, isSuccess, isLoading }] =
+        useDeleteUserMutation()
+
+    const { toast } = useToast()
+
+    useEffect(() => {
+        if (isError) {
+            toast({
+                variant: 'destructive',
+                title: 'Упс! Что-то пошло не так.',
+                description: 'Возникла проблема с запросом',
+                duration: 3000,
+                action: (
+                    <ToastAction
+                        altText="Попробуйте еще раз"
+                        onClick={() => deleteUser(user.user_id)}
+                    >
+                        Попробуйте еще раз
+                    </ToastAction>
+                ),
+            })
+        }
+
+        if (isSuccess) {
+            toast({
+                description: `Пользователь удален`,
+                duration: 1500,
+            })
+        }
+    }, [isError, isSuccess, toast])
 
     return (
         <Fragment>
@@ -22,12 +54,7 @@ export const ActionButtons = ({ user }: { user: UserInterface }) => {
                 open={formOpen}
                 setOpen={setFormOpen}
                 actionButton={<Fragment />}
-                addItemForm={
-                    <CustomTabs
-                        tabs={usersFormTab(user)}
-                        setDialogOpen={setFormOpen}
-                    />
-                }
+                addItemForm={<AddUserForm user={user} />}
             />
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
@@ -49,9 +76,13 @@ export const ActionButtons = ({ user }: { user: UserInterface }) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
-                        onClick={() => {}}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            deleteUser(user.user_id)
+                        }}
+                        disabled={isLoading}
                     >
-                        Удалить
+                        {isLoading ? 'Удаляем...' : 'Удалить'}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

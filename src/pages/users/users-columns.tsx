@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ActionButtons } from './action-buttons'
+import UserSwitch from './user-switch'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Switch } from '@/components/ui/switch'
 import { FormattedUsersInterface } from '@/types/interface/user'
 
 export const usersColumns: ColumnDef<FormattedUsersInterface>[] = [
@@ -62,15 +62,7 @@ export const usersColumns: ColumnDef<FormattedUsersInterface>[] = [
     {
         header: 'Статус',
         accessorKey: 'is_active',
-        cell: ({ row }) => {
-            const { is_active } = row.original
-
-            return (
-                <div className="flex items-center ">
-                    <Switch checked={is_active} onCheckedChange={() => {}} />
-                </div>
-            )
-        },
+        cell: ({ row }) => <UserSwitch user={row.original.user} />,
     },
     {
         id: 'actions',

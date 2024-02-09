@@ -1,3 +1,4 @@
+import AddUserForm from './add-user-form'
 import { UserInterface } from '@/types/interface/user'
 
 export const usersFormTab = (user?: UserInterface) => [
@@ -5,7 +6,7 @@ export const usersFormTab = (user?: UserInterface) => [
         value: 'userInfo',
         head: 'ОБЩЕЕ',
         isDialog: true,
-        content: <p>{user?.user_id}</p>,
+        content: <AddUserForm user={user} />,
     },
     {
         value: 'roles',

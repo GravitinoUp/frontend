@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
-import { usersFormTab } from './user-form-tab'
+import AddUserForm from './add-user-form'
 import { usersColumns } from './users-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
@@ -35,20 +34,20 @@ export default function UsersPage() {
     } = useGetUsersQuery(personalUsersQuery)
 
     const formattedUsers: FormattedUsersInterface[] = users.map((row) => {
-        const IsOrganization = row.organization !== null
+        const isPerson = row.person.first_name !== null
 
         return {
             user: row,
             key: row.user_id,
             id: row.user_id,
-            FIO: IsOrganization
+            FIO: isPerson
                 ? formatInitials(
                       row.person.first_name,
                       row.person.last_name,
                       row.person.patronymic
                   )
                 : '',
-            phone: row.person.phone,
+            phone: isPerson ? row.person.phone : row.organization.phone,
             email: row.email,
             company: row.organization.short_name,
             type: row.organization.organization_type.organization_type_name,
@@ -66,12 +65,7 @@ export default function UsersPage() {
                 <FormDialog
                     open={formOpen}
                     setOpen={setFormOpen}
-                    addItemForm={
-                        <CustomTabs
-                            tabs={usersFormTab()}
-                            setDialogOpen={setFormOpen}
-                        />
-                    }
+                    addItemForm={<AddUserForm setDialogOpen={setFormOpen} />}
                 />
             }
             rightBlock={
