@@ -24,7 +24,7 @@ function TaskListContent() {
             sorts: {},
             period: {
                 date_start: '2024-01-01',
-                date_end: '2024-01-26',
+                date_end: '2025-01-26',
             },
         })
 
@@ -33,14 +33,14 @@ function TaskListContent() {
     )
 
     const {
-        data = [],
+        data = { count: 0, data: [] },
         isError,
         isLoading,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
     const [formOpen, setFormOpen] = useState(false)
 
-    const formattedTasks = data.map((row) => ({
+    const formattedTasks = data.data.map((row) => ({
         key: row.order_id,
         id: row.order_id,
         facility: row.facility.facility_name,
@@ -160,11 +160,17 @@ function TaskListContent() {
                 onRowClick={(rowData) =>
                     navigate(`task`, {
                         state: {
-                            order: data.find((e) => e.order_id === rowData.id),
+                            order: data.data.find(
+                                (e) => e.order_id === rowData.id
+                            ),
                         },
                     })
                 }
                 searchSuffixIconClick={() => setFormOpen(true)}
+                paginationInfo={{
+                    itemCount: data.count,
+                    pageSize: personalOrdersQuery.offset.count,
+                }}
             />
         </Fragment>
     )

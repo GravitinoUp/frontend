@@ -111,8 +111,6 @@ export type OrderFilterInterface = Omit<OrderInterface, 'order_status'> & {
     order_status: OrderStatusInterface[]
 }
 
-// CHECKPOINTS PAYLOAD
-
 // TASK
 export interface TaskInterface {
     task_id: number

@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { checkpointsColumns } from './checkpoint-columns'
 import { checkpointsFormTab } from './checkpoint-form-tab'
+import { placeholderQuery } from '../tasklist/constants'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
@@ -18,24 +19,18 @@ import {
 export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)
 
-    const personalCheckpointsQuery: CheckpointsPayloadInterface = {
-        offset: {
-            count: 50,
-            page: 1,
-        },
-        filter: {},
-        sorts: {},
-    }
+    const [checkpointsQuery, setCheckpointsQuery] =
+        useState<CheckpointsPayloadInterface>(placeholderQuery)
 
     const {
-        data: checkpoints = [],
+        data: checkpoints = { count: 0, data: [] },
         isError,
         isLoading,
         refetch,
-    } = useGetCheckpointsQuery(personalCheckpointsQuery)
+    } = useGetCheckpointsQuery(checkpointsQuery)
 
     const formattedCheckpoints: FormattedCheckpointsInterface[] =
-        checkpoints.map((row) => ({
+        checkpoints.data.map((row) => ({
             checkpoint: row,
             id: row.checkpoint_id,
             key: row.checkpoint_id,
@@ -68,8 +63,8 @@ export default function CheckpointsPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton type="export" onClick={() => {}} />
-                        <ExcelButton type="import" onClick={() => {}} />
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
                 </div>
             }
@@ -80,6 +75,16 @@ export default function CheckpointsPage() {
                 data={formattedCheckpoints}
                 columns={checkpointsColumns}
                 hasBackground
+                getPaginationInfo={(pageSize, pageIndex) => {
+                    setCheckpointsQuery({
+                        ...checkpointsQuery,
+                        offset: { count: pageSize, page: pageIndex + 1 },
+                    })
+                }}
+                paginationInfo={{
+                    itemCount: checkpoints.count,
+                    pageSize: checkpointsQuery.offset.count,
+                }}
             />
         </PageLayout>
     )

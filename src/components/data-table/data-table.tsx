@@ -7,7 +7,6 @@ import {
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table'
@@ -35,6 +34,7 @@ interface DataTableProps<TData, TValue> {
     searchSuffixIconClick?: () => void
     columnVisibility?: VisibilityState
     getPaginationInfo?: (pageSize: number, pageIndex: number) => void
+    paginationInfo: { itemCount: number; pageSize: number }
 }
 
 function DataTable<TData, TValue>({
@@ -45,6 +45,7 @@ function DataTable<TData, TValue>({
     searchSuffixIconClick,
     columnVisibility = {},
     getPaginationInfo = () => {},
+    paginationInfo,
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState({})
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -61,6 +62,10 @@ function DataTable<TData, TValue>({
             rowSelection,
             sorting,
         },
+        manualPagination: true,
+        pageCount: Math.ceil(
+            paginationInfo.itemCount / paginationInfo.pageSize
+        ),
         onColumnFiltersChange: setColumnFilters,
         onGlobalFilterChange: setGlobalFilter,
         onRowSelectionChange: setRowSelection,
@@ -68,7 +73,6 @@ function DataTable<TData, TValue>({
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
     })
 
     useEffect(() => {

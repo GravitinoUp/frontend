@@ -17,7 +17,7 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
     const [dragActive, setDragActive] = useState<boolean>(false)
 
     const handleAddClick = () => {
-        if (inputRef !== null) {
+        if (!selectedFile && inputRef !== null) {
             inputRef.current!.click()
         }
     }
@@ -56,58 +56,68 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                     'flex flex-col items-center mt-8 justify-center bg-muted border-[#C6C9CC] border-[1.5px] border-dashed rounded-xl select-none h-[120px]',
                     !selectedFile ? 'cursor-pointer p-7' : 'p-5'
                 )}
-                onClick={!selectedFile ? handleAddClick : undefined}
+                onClick={handleAddClick}
                 onDragOver={handleDrag}
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}
             >
                 <input
-                    style={{ display: 'none' }}
+                    className="hidden"
                     ref={inputRef}
                     type="file"
                     accept="text/csv"
                     onChange={handleFileChange}
                 />
-                {selectedFile ? (
-                    <div className="w-full flex justify-between border rounded-xl p-4">
-                        <div className="flex items-center">
-                            <ExcelFile />
-                            <div className="ml-4">
-                                <p className="text-xs">{selectedFile.name}</p>
-                                <p className="text-xs text-body-light mt-1">
-                                    {formatFileSize(selectedFile.size)}
-                                </p>
+                {
+                    selectedFile ? (
+                        <div className="w-full flex justify-between border rounded-xl p-4">
+                            <div className="flex items-center">
+                                <ExcelFile />
+                                <div className="ml-4">
+                                    <p className="text-xs">
+                                        {selectedFile.name}
+                                    </p>
+                                    <p className="text-xs text-body-light mt-1">
+                                        {formatFileSize(selectedFile.size)}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center">
+                                <Button
+                                    className="px-6 py-2 mr-4"
+                                    onClick={() => onSubmit(selectedFile)}
+                                >
+                                    Импорт
+                                </Button>
+                                <div
+                                    className="cursor-pointer"
+                                    onClick={handleRemoveClick}
+                                >
+                                    <DeleteIcon />
+                                </div>
                             </div>
                         </div>
-                        <div className="flex items-center">
-                            <Button
-                                className="px-6 py-2 mr-4"
-                                onClick={() => onSubmit(selectedFile)}
-                            >
-                                Импорт
-                            </Button>
-                            <div
-                                className="cursor-pointer"
-                                onClick={handleRemoveClick}
-                            >
-                                <DeleteIcon />
-                            </div>
+                    ) : (
+                        <div
+                            className={cn(
+                                'flex flex-col items-center pointer-events-none',
+                                dragActive && 'invisible'
+                            )}
+                        >
+                            <ArchiveImportLight />
+                            <p>
+                                Перетащите файл или{' '}
+                                <span className="text-primary underline font-semibold">
+                                    Нажмите
+                                </span>{' '}
+                                чтобы Импортировать
+                            </p>
                         </div>
-                    </div>
-                ) : !dragActive ? (
-                    <div className="flex flex-col items-center pointer-events-none">
-                        <ArchiveImportLight />
-                        <p>
-                            Перетащите файл или{' '}
-                            <span className="text-primary underline font-semibold">
-                                Нажмите
-                            </span>{' '}
-                            чтобы Импортировать
-                        </p>
-                    </div>
-                ) : (
-                    <div className="h-[60px]"></div>
-                )}
+                    )
+                    // : (
+                    //     <div className="h-[60px]"></div>
+                    // )
+                }
             </div>
         </Fragment>
     )

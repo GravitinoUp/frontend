@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { organizationFormTab } from './organization-form-tab'
 import { organizationsColumns } from './organizations-columns'
+import { placeholderQuery } from '../tasklist/constants'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
@@ -11,21 +12,15 @@ import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
 import { OrganizationsPayloadInterface } from '@/types/interface/organizations'
 
 const OrganizationsPage = () => {
-    const organizationsQuery: OrganizationsPayloadInterface = {
-        offset: {
-            count: 50,
-            page: 1,
-        },
-        filter: {},
-        sorts: {},
-    }
+    const [organizationsQuery, setOrganizationsQuery] =
+        useState<OrganizationsPayloadInterface>(placeholderQuery)
 
     const {
-        data: organizations = [],
+        data: organizations = { count: 0, data: [] },
         isError,
         isLoading,
         refetch,
-    } = useGetAllOrganizationsQuery(organizationsQuery)
+    } = useGetAllOrganizationsQuery(placeholderQuery)
     const [formOpen, setFormOpen] = useState(false)
 
     return (
@@ -48,9 +43,19 @@ const OrganizationsPage = () => {
             {isLoading && <LoadingSpinner />}
             {isError && <CustomAlert />}
             <DataTable
-                data={organizations}
+                data={organizations.data}
                 columns={organizationsColumns}
                 hasBackground
+                getPaginationInfo={(pageSize, pageIndex) => {
+                    setOrganizationsQuery({
+                        ...organizationsQuery,
+                        offset: { count: pageSize, page: pageIndex + 1 },
+                    })
+                }}
+                paginationInfo={{
+                    itemCount: organizations.count,
+                    pageSize: organizationsQuery.offset.count,
+                }}
             />
         </PageLayout>
     )

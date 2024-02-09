@@ -118,7 +118,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isLoading: branchesLoading,
         isError: branchesError,
         isSuccess: branchesSuccess,
-    } = useGetBranchesQuery(placeholderQuery)
+    } = useGetBranchesQuery(placeholderQuery, {
+        selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+    })
     const mappedBranches: Option[] = branches?.map((branch) => ({
         label: branch.branch_name,
         value: branch.branch_id,
@@ -157,7 +159,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isLoading: organizationsLoading,
         isError: organizationsError,
         isSuccess: organizationsSuccess,
-    } = useGetAllOrganizationsQuery(placeholderQuery)
+    } = useGetAllOrganizationsQuery(placeholderQuery, {
+        selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+    })
     const mappedOrganizations: Option[] = organizations?.map(
         (organization) => ({
             label: organization.short_name,

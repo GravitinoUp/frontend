@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { branchesColumns } from './branches-columns'
 import { branchesFormTab } from './branches-form-tab'
+import { placeholderQuery } from '../tasklist/constants'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
@@ -11,18 +12,12 @@ import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { BranchesPayloadInterface } from '@/types/interface/branch'
 
-const branchesQuery: BranchesPayloadInterface = {
-    offset: {
-        count: 50,
-        page: 1,
-    },
-    filter: {},
-    sorts: {},
-}
-
 const BranchesPage = () => {
+    const [branchesQuery, setBranchesQuery] =
+        useState<BranchesPayloadInterface>(placeholderQuery)
+
     const {
-        data: branches = [],
+        data: branches = { count: 0, data: [] },
         isError,
         isLoading,
         refetch,
@@ -59,9 +54,19 @@ const BranchesPage = () => {
             {isLoading && <LoadingSpinner />}
             {isError && <CustomAlert />}
             <DataTable
-                data={branches}
+                data={branches.data}
                 columns={branchesColumns}
                 hasBackground
+                getPaginationInfo={(pageSize, pageIndex) => {
+                    setBranchesQuery({
+                        ...branchesQuery,
+                        offset: { count: pageSize, page: pageIndex + 1 },
+                    })
+                }}
+                paginationInfo={{
+                    itemCount: branches.count,
+                    pageSize: branchesQuery.offset.count,
+                }}
             />
         </PageLayout>
     )
