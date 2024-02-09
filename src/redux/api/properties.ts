@@ -19,7 +19,7 @@ const propertiesApi = api.injectEndpoints({
         >({
             query: (entity_name) => ({
                 url: `property/all/${entity_name}`,
-                method: 'POST',
+                method: 'GET',
             }),
             providesTags: ['Properties'],
         }),

@@ -1,12 +1,6 @@
-import { Fragment, useEffect } from 'react'
-import { MoreVertical } from 'lucide-react'
+import { useEffect } from 'react'
+import DeleteIcon from '@/assets/icons/delete_icon.svg'
 import { Button } from '@/components/ui/button'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { ToastAction } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/use-toast'
 import { useDeletePropertyNameMutation } from '@/redux/api/properties'
@@ -17,7 +11,7 @@ export const ActionButtons = ({
 }: {
     property: PropertyInterface
 }) => {
-    const [deletePropertyName, { isError, isSuccess, isLoading }] =
+    const [deletePropertyName, { isError, isSuccess }] =
         useDeletePropertyNameMutation()
 
     const { toast } = useToast()
@@ -51,29 +45,11 @@ export const ActionButtons = ({
     }, [isError, isSuccess, toast])
 
     return (
-        <Fragment>
-            <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        className="h-8 w-8 p-0 text-[#8A9099]"
-                    >
-                        <span className="sr-only">Открыть меню</span>
-                        <MoreVertical className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                        className="text-[#FF6B6B]"
-                        onClick={() =>
-                            deletePropertyName(property.property_name_id)
-                        }
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Удаляем...' : 'Удалить'}
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </Fragment>
+        <Button
+            variant="ghost"
+            onClick={() => deletePropertyName(property.property_name_id)}
+        >
+            <DeleteIcon />
+        </Button>
     )
 }
