@@ -8,7 +8,7 @@ const ImportForm = () => (
         <Button
             variant="link"
             className="text-sm font-normal"
-            onClick={() => console.log('Download template')}
+            onClick={() => {}}
         >
             Скачать пример таблицы
         </Button>

@@ -71,7 +71,9 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                 {selectedFile ? (
                     <div className="w-full flex justify-between border rounded-xl p-4">
                         <div className="flex items-center">
-                            <ExcelFile />
+                            <div className="w-[31px] h-[40px]">
+                                <ExcelFile />
+                            </div>
                             <div className="ml-4">
                                 <p className="text-xs">{selectedFile.name}</p>
                                 <p className="text-xs text-body-light mt-1">
