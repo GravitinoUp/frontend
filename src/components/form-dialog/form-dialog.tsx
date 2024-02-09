@@ -7,6 +7,7 @@ import {
     DialogHeader,
     DialogTrigger,
 } from '../ui/dialog'
+import CloseRounded from '@/assets/icons/close_rounded.svg'
 import { cn } from '@/lib/utils'
 
 const dialogVariants = cva('', {
@@ -25,7 +26,6 @@ interface FormDialogProps extends VariantProps<typeof dialogVariants> {
     headerContent?: ReactNode
     actionButton?: ReactNode
     addItemForm: ReactNode
-    closeIcon?: ReactNode
     open?: boolean
     setOpen?: Dispatch<SetStateAction<boolean>>
 }
@@ -34,7 +34,6 @@ const FormDialog = ({
     headerContent,
     actionButton = <PlusButton onClick={() => {}} />,
     addItemForm,
-    closeIcon,
     open,
     setOpen,
     size,
@@ -44,7 +43,7 @@ const FormDialog = ({
         <DialogContent
             className={cn(dialogVariants({ size }))}
             onOpenAutoFocus={(e) => e.preventDefault}
-            closeIcon={closeIcon}
+            closeIcon={<CloseRounded />}
         >
             <DialogHeader>{headerContent}</DialogHeader>
             {addItemForm}

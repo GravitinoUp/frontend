@@ -3,7 +3,6 @@ import AddTaskForm from './add-task-form'
 import { personalOrdersQuery } from './constants'
 import ImportForm from './import-form'
 import TaskListContent from './tasklist-content'
-import CloseRounded from '@/assets/icons/close_rounded.svg'
 import CalendarForm from '@/components/calendar-form/calendar-form'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import ExcelButton from '@/components/excel-button/excel-button'
@@ -55,7 +54,6 @@ export default function TaskListPage() {
                             setOpen={setImportFormOpen}
                             actionButton={<ExcelButton buttonType="import" />}
                             addItemForm={<ImportForm />}
-                            closeIcon={<CloseRounded />}
                         />
                     </div>
                 </div>
