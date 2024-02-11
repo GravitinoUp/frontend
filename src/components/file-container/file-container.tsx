@@ -17,7 +17,7 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
     const [dragActive, setDragActive] = useState<boolean>(false)
 
     const handleAddClick = () => {
-        if (inputRef !== null) {
+        if (inputRef !== null && !selectedFile) {
             inputRef.current!.click()
         }
     }
@@ -56,7 +56,7 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                     'flex flex-col items-center mt-8 justify-center bg-muted border-[#C6C9CC] border-[1.5px] border-dashed rounded-xl select-none h-[120px]',
                     !selectedFile ? 'cursor-pointer p-7' : 'p-5'
                 )}
-                onClick={!selectedFile ? handleAddClick : undefined}
+                onClick={handleAddClick}
                 onDragOver={handleDrag}
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}

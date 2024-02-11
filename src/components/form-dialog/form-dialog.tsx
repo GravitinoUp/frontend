@@ -26,7 +26,6 @@ interface FormDialogProps extends VariantProps<typeof dialogVariants> {
     headerContent?: ReactNode
     actionButton?: ReactNode
     addItemForm: ReactNode
-    closeIcon?: ReactNode
     open?: boolean
     setOpen?: Dispatch<SetStateAction<boolean>>
 }
@@ -35,7 +34,6 @@ const FormDialog = ({
     headerContent,
     actionButton = <PlusButton onClick={() => {}} />,
     addItemForm,
-    closeIcon,
     open,
     setOpen,
     size,
