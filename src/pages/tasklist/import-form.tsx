@@ -6,9 +6,9 @@ const ImportForm = () => (
     <Fragment>
         <FileContainer onSubmit={(file) => console.log(file)} />
         <Button
-            variant={'link'}
+            variant="link"
             className="text-sm font-normal"
-            onClick={() => console.log('Download template')}
+            onClick={() => {}}
         >
             Скачать пример таблицы
         </Button>
