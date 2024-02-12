@@ -96,8 +96,13 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                             </div>
                         </div>
                     </div>
-                ) : !dragActive ? (
-                    <div className="flex flex-col items-center pointer-events-none">
+                ) : (
+                    <div
+                        className={cn(
+                            'flex flex-col items-center pointer-events-none',
+                            dragActive && 'invisible'
+                        )}
+                    >
                         <ArchiveImportLight />
                         <p>
                             Перетащите файл или{' '}
@@ -107,8 +112,6 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                             чтобы Импортировать
                         </p>
                     </div>
-                ) : (
-                    <div className="h-[60px]"></div>
                 )}
             </div>
         </Fragment>
