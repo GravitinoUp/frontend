@@ -12,9 +12,3 @@ export interface PropertyValueInterface {
     property_name_id: number
     property_value: string
 }
-
-export interface PropertyValuePayloadInterface {
-    property_value_id: number
-    property_name_id: number
-    property_value: string
-}

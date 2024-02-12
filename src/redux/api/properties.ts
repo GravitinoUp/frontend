@@ -7,7 +7,6 @@ import {
 import {
     PropertyInterface,
     PropertyValueInterface,
-    PropertyValuePayloadInterface,
 } from '@/types/interface/properties'
 
 const propertiesApi = api.injectEndpoints({
@@ -35,7 +34,7 @@ const propertiesApi = api.injectEndpoints({
         }),
         createPropertyValue: builder.mutation<
             FetchResultInterface<PropertyValueInterface>,
-            Partial<Omit<PropertyValuePayloadInterface, 'property_value_id'>>
+            Partial<Omit<PropertyValueInterface, 'property_value_id'>>
         >({
             query: (body) => ({
                 url: `property-values`,
