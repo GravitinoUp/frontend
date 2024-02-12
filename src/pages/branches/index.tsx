@@ -14,7 +14,10 @@ import { BranchesPayloadInterface } from '@/types/interface/branch'
 
 const BranchesPage = () => {
     const [branchesQuery, setBranchesQuery] =
-        useState<BranchesPayloadInterface>(placeholderQuery)
+        useState<BranchesPayloadInterface>({
+            ...placeholderQuery,
+            sorts: { branch_id: 'ASC' },
+        })
 
     const {
         data: branches = { count: 0, data: [] },

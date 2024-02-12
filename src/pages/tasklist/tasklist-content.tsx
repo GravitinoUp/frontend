@@ -21,7 +21,9 @@ function TaskListContent() {
                 page: 1,
             },
             filter: {},
-            sorts: {},
+            sorts: {
+                order_id: 'ASC',
+            },
             period: {
                 date_start: '2024-01-01',
                 date_end: '2025-01-26',

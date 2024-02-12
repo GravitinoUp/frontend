@@ -20,7 +20,10 @@ export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)
 
     const [checkpointsQuery, setCheckpointsQuery] =
-        useState<CheckpointsPayloadInterface>(placeholderQuery)
+        useState<CheckpointsPayloadInterface>({
+            ...placeholderQuery,
+            sorts: { checkpoint_id: 'ASC' },
+        })
 
     const {
         data: checkpoints = { count: 0, data: [] },

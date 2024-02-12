@@ -13,14 +13,17 @@ import { OrganizationsPayloadInterface } from '@/types/interface/organizations'
 
 const OrganizationsPage = () => {
     const [organizationsQuery, setOrganizationsQuery] =
-        useState<OrganizationsPayloadInterface>(placeholderQuery)
+        useState<OrganizationsPayloadInterface>({
+            ...placeholderQuery,
+            sorts: { organization_id: 'ASC' },
+        })
 
     const {
         data: organizations = { count: 0, data: [] },
         isError,
         isLoading,
         refetch,
-    } = useGetAllOrganizationsQuery(placeholderQuery)
+    } = useGetAllOrganizationsQuery(organizationsQuery)
     const [formOpen, setFormOpen] = useState(false)
 
     return (

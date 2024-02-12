@@ -8,14 +8,16 @@ import { useGetRolesQuery } from '@/redux/api/roles'
 import { RolesPayloadInterface } from '@/types/interface/roles'
 
 const RolesTab = () => {
-    const [rolesQuery, setRolesQuery] =
-        useState<RolesPayloadInterface>(placeholderQuery)
+    const [rolesQuery, setRolesQuery] = useState<RolesPayloadInterface>({
+        ...placeholderQuery,
+        sorts: { role_id: 'ASC' },
+    })
 
     const {
         data: roles = { count: 0, data: [] },
         isError,
         isLoading,
-    } = useGetRolesQuery(placeholderQuery)
+    } = useGetRolesQuery(rolesQuery)
 
     if (isLoading) {
         return <LoadingSpinner />
