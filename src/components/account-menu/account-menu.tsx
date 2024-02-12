@@ -51,7 +51,11 @@ export default function AccountMenu() {
     const handleLogout = () => {
         const refreshToken = getJWTtokens().refreshToken
 
-        logout({ refresh_token: refreshToken! })
+        if (refreshToken) {
+            logout({ refresh_token: refreshToken! })
+        } else {
+            navigate('/signin')
+        }
     }
 
     const icon = null

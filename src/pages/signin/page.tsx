@@ -14,6 +14,7 @@ import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
 const formSchema = z.object({
     email: z.string(),
     password: z.string(),
+    remember_me: z.boolean(),
 })
 
 export function SignInPage() {
@@ -22,6 +23,7 @@ export function SignInPage() {
         defaultValues: {
             email: '',
             password: '',
+            remember_me: false,
         },
     })
 
@@ -37,8 +39,10 @@ export function SignInPage() {
 
     useEffect(() => {
         if (isSuccess) {
-            dispatch(setRefreshToken(authData?.refreshToken))
-            dispatch(setAccessToken(authData?.accessToken))
+            if (form.getValues().remember_me) {
+                dispatch(setRefreshToken(authData?.refreshToken))
+                dispatch(setAccessToken(authData?.accessToken))
+            }
 
             navigate('/dashboard')
         }
@@ -86,6 +90,7 @@ export function SignInPage() {
                                     className="mt-3"
                                     suffixIcon={
                                         <Button
+                                            type="button"
                                             variant={'ghost'}
                                             className="px-4 rounded-l-none rounded-r-xl"
                                             onClick={() => setShown(!shown)}
@@ -113,9 +118,17 @@ export function SignInPage() {
                     <div className="mt-6">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                                <Checkbox
-                                    label="Запомнить меня"
-                                    id="remember"
+                                <FormField
+                                    control={form.control}
+                                    name="remember_me"
+                                    render={({ field }) => (
+                                        <Checkbox
+                                            label="Запомнить меня"
+                                            id="remember"
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    )}
                                 />
                             </div>
                             <Link to="/123">
