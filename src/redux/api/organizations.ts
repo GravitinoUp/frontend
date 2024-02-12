@@ -11,7 +11,7 @@ import {
 const organizationsApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getAllOrganizations: builder.query<
-            OrganizationInterface[],
+            FetchDataInterface<OrganizationInterface[]>,
             OrganizationsPayloadInterface
         >({
             query: (body) => ({
@@ -19,9 +19,6 @@ const organizationsApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            transformResponse: (
-                response: FetchDataInterface<OrganizationInterface[]>
-            ) => response.data,
             providesTags: ['Organizations'],
         }),
         createOrganization: builder.mutation<

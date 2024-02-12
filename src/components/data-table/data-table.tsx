@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -7,7 +7,6 @@ import {
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table'
@@ -34,6 +33,8 @@ interface DataTableProps<TData, TValue> {
     onRowClick?: (rowData: TData) => void
     searchSuffixIconClick?: () => void
     columnVisibility?: VisibilityState
+    getPaginationInfo?: (pageSize: number, pageIndex: number) => void
+    paginationInfo: { itemCount: number; pageSize: number }
 }
 
 function DataTable<TData, TValue>({
@@ -43,6 +44,8 @@ function DataTable<TData, TValue>({
     onRowClick,
     searchSuffixIconClick,
     columnVisibility = {},
+    getPaginationInfo = () => {},
+    paginationInfo,
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = useState({})
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -59,6 +62,10 @@ function DataTable<TData, TValue>({
             rowSelection,
             sorting,
         },
+        manualPagination: true,
+        pageCount: Math.ceil(
+            paginationInfo.itemCount / paginationInfo.pageSize
+        ),
         onColumnFiltersChange: setColumnFilters,
         onGlobalFilterChange: setGlobalFilter,
         onRowSelectionChange: setRowSelection,
@@ -66,8 +73,17 @@ function DataTable<TData, TValue>({
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
     })
+
+    useEffect(() => {
+        getPaginationInfo(
+            table.getState().pagination.pageSize,
+            table.getState().pagination.pageIndex
+        )
+    }, [
+        table.getState().pagination.pageSize,
+        table.getState().pagination.pageIndex,
+    ])
 
     return (
         <div

@@ -4,11 +4,11 @@ import { UserInterface, UsersPayloadInterface } from '@/types/interface/user'
 
 const usersApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getUsers: builder.query<UserInterface[], UsersPayloadInterface>({
+        getUsers: builder.query<
+            FetchDataInterface<UserInterface[]>,
+            UsersPayloadInterface
+        >({
             query: (body) => ({ url: 'users/all', method: 'POST', body }),
-            transformResponse: (
-                response: FetchDataInterface<UserInterface[]>
-            ) => response.data,
         }),
     }),
     overrideExisting: true,

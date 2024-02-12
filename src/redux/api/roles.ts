@@ -7,15 +7,15 @@ import { RoleInterface, RolesPayloadInterface } from '@/types/interface/roles'
 
 export const rolesApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getRoles: builder.query<RoleInterface[], RolesPayloadInterface>({
+        getRoles: builder.query<
+            FetchDataInterface<RoleInterface[]>,
+            RolesPayloadInterface
+        >({
             query: (body) => ({
                 url: 'roles/all',
                 method: 'POST',
                 body,
             }),
-            transformResponse: (
-                response: FetchDataInterface<RoleInterface[]>
-            ) => response.data,
             providesTags: ['Roles'],
         }),
         addRole: builder.mutation<
