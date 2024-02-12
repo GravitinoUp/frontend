@@ -38,6 +38,9 @@ const checkpointsApi = api.injectEndpoints({
                     body,
                 }
             },
+            transformResponse: (
+                response: FetchDataInterface<CheckpointInterface[]>
+            ) => response.data,
         }),
         deleteCheckpoint: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
