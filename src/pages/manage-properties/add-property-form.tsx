@@ -62,7 +62,10 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
     }, [createSuccess])
 
     const handleSubmit = (values: z.infer<typeof propertySchema>) => {
-        createProperty(values)
+        createProperty({
+            ...values,
+            entity_name: values.entity_name as EntityType,
+        })
     }
 
     return (

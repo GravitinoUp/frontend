@@ -12,9 +12,9 @@ import { EntityType } from '@/types/interface/fetch'
 
 export default function ManagePropertiesPage() {
     const [formOpen, setFormOpen] = useState(false)
-    const [currentPage, setCurrentPage] = useState<EntityType>('Users')
+    const [currentTab, setCurrentTab] = useState<EntityType>('Users')
 
-    const { refetch } = useGetPropertiesQuery(currentPage)
+    const { refetch } = useGetPropertiesQuery(currentTab)
 
     return (
         <PageLayout
@@ -26,7 +26,7 @@ export default function ManagePropertiesPage() {
                     setOpen={setFormOpen}
                     addItemForm={
                         <CustomTabs
-                            tabs={managePropertiesFormTab(currentPage)}
+                            tabs={managePropertiesFormTab(currentTab)}
                             setDialogOpen={setFormOpen}
                         />
                     }
@@ -44,7 +44,7 @@ export default function ManagePropertiesPage() {
         >
             <CustomTabs
                 tabs={managePropertiesPageTab}
-                getCurrentPage={(value) => setCurrentPage(value as EntityType)}
+                getCurrentPage={(value) => setCurrentTab(value as EntityType)}
             />
         </PageLayout>
     )
