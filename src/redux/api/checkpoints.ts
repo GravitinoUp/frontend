@@ -11,7 +11,7 @@ import {
 const checkpointsApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getCheckpoints: builder.query<
-            CheckpointInterface[],
+            FetchDataInterface<CheckpointInterface[]>,
             CheckpointsPayloadInterface
         >({
             query: (body) => ({
@@ -19,9 +19,6 @@ const checkpointsApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            transformResponse: (
-                response: FetchDataInterface<CheckpointInterface[]>
-            ) => response.data,
             providesTags: ['Checkpoints'],
         }),
         getCheckpointsByBranch: builder.query<
@@ -38,6 +35,9 @@ const checkpointsApi = api.injectEndpoints({
                     body,
                 }
             },
+            transformResponse: (
+                response: FetchDataInterface<CheckpointInterface[]>
+            ) => response.data,
         }),
         deleteCheckpoint: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
