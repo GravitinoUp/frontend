@@ -19,7 +19,7 @@ const ordersApi = api.injectEndpoints({
             providesTags: ['Orders'],
         }),
         getPersonalOrders: builder.query<
-            OrderInterface[],
+            FetchDataInterface<OrderInterface[]>,
             OrderMyPayloadInterface
         >({
             query: (body) => ({
@@ -27,9 +27,6 @@ const ordersApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            transformResponse: (
-                response: FetchDataInterface<OrderInterface[]>
-            ) => response.data,
             providesTags: ['Orders'],
         }),
         addOrder: builder.mutation<

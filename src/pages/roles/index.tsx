@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { roleFormTab } from './tabs-content/roles/role-form-tab'
 import RolesTab from './tabs-content/roles/roles-tab'
+import { placeholderQuery } from '../tasklist/constants'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 
 import { useGetRolesQuery } from '@/redux/api/roles'
-import { RolesPayloadInterface } from '@/types/interface/roles'
 
 const rolesPageTabs = [
     {
@@ -27,16 +27,7 @@ const rolesPageTabs = [
 ]
 
 const RolesPage = () => {
-    const rolesQuery: RolesPayloadInterface = {
-        offset: {
-            count: 50,
-            page: 1,
-        },
-        filter: {},
-        sorts: {},
-    }
-
-    const { refetch } = useGetRolesQuery(rolesQuery)
+    const { refetch } = useGetRolesQuery(placeholderQuery)
     const [formOpen, setFormOpen] = useState(false)
 
     return (

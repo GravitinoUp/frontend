@@ -4,7 +4,6 @@ import { personalOrdersQuery } from './constants'
 import ExportForm from './export-form'
 import ImportForm from './import-form'
 import TaskListContent from './tasklist-content'
-import CloseRounded from '@/assets/icons/close_rounded.svg'
 import CalendarForm from '@/components/calendar-form/calendar-form'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import ExcelButton from '@/components/excel-button/excel-button'
@@ -56,14 +55,12 @@ export default function TaskListPage() {
                             setOpen={setExportFormOpen}
                             actionButton={<ExcelButton buttonType="export" />}
                             addItemForm={<ExportForm />}
-                            closeIcon={<CloseRounded />}
                         />
                         <FormDialog
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             actionButton={<ExcelButton buttonType="import" />}
                             addItemForm={<ImportForm />}
-                            closeIcon={<CloseRounded />}
                         />
                     </div>
                 </div>
