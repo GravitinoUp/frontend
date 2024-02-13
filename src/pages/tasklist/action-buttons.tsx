@@ -42,7 +42,7 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
     }, [task.id, deleteOrder])
 
     useErrorToast(isError, handleOrderDelete)
-    useSuccessToast(deleteSuccessMsg, isSuccess, setFormOpen)
+    useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
         <Fragment>
@@ -72,10 +72,7 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            deleteOrder(task.id)
-                        }}
+                        onClick={handleOrderDelete}
                         disabled={isLoading}
                     >
                         {t('action.dropdown.delete')}

@@ -36,7 +36,7 @@ export const ActionButtons = ({
     }, [checkpoint.checkpoint_id, deleteCheckpoint])
 
     useErrorToast(isError, handleCheckpointDelete)
-    useSuccessToast(deleteSuccessMsg, isSuccess, setFormOpen)
+    useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
         <Fragment>
@@ -71,9 +71,7 @@ export const ActionButtons = ({
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
-                        onClick={() =>
-                            deleteCheckpoint(checkpoint.checkpoint_id)
-                        }
+                        onClick={handleCheckpointDelete}
                         disabled={isLoading}
                     >
                         {t('action.dropdown.delete')}

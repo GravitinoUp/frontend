@@ -32,7 +32,7 @@ export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
     }, [branch.branch_id, deleteBranch])
 
     useErrorToast(isError, handleBranchDelete)
-    useSuccessToast(deleteSuccessMsg, isSuccess, setFormOpen)
+    useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
         <Fragment>
@@ -67,7 +67,7 @@ export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
-                        onClick={() => deleteBranch(branch.branch_id)}
+                        onClick={handleBranchDelete}
                         disabled={isLoading}
                     >
                         {t('action.dropdown.delete')}

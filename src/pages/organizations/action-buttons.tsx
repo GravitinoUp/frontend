@@ -36,7 +36,7 @@ export const ActionButtons = ({
     }, [organization.organization_id, deleteOrganization])
 
     useErrorToast(isError, handleOrganizationDelete)
-    useSuccessToast(deleteSuccessMsg, isSuccess, setFormOpen)
+    useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
         <Fragment>
@@ -71,9 +71,7 @@ export const ActionButtons = ({
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
-                        onClick={() =>
-                            deleteOrganization(organization.organization_id)
-                        }
+                        onClick={handleOrganizationDelete}
                         disabled={isLoading}
                     >
                         {t('action.dropdown.delete')}

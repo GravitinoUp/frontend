@@ -32,7 +32,7 @@ export const ActionsDropdown = ({ role }: { role: RoleInterface }) => {
     }, [role.role_id, deleteRole])
 
     useErrorToast(isError, handleRoleDelete)
-    useSuccessToast(deleteSuccessMsg, isSuccess, setFormOpen)
+    useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
         <Fragment>
@@ -67,7 +67,7 @@ export const ActionsDropdown = ({ role }: { role: RoleInterface }) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
-                        onClick={() => deleteRole(role.role_id)}
+                        onClick={handleRoleDelete}
                         disabled={isLoading}
                     >
                         {t('action.dropdown.delete')}
