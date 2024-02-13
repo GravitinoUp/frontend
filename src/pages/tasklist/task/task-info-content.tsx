@@ -1,5 +1,14 @@
 import { Fragment } from 'react'
+import DownloadIcon from '@/assets/icons/download.svg'
+import DownloadAllIcon from '@/assets/icons/download_all.svg'
+import ViewIcon from '@/assets/icons/view.svg'
 import OrderStatus from '@/components/order-status/order-status'
+import { Button } from '@/components/ui/button'
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+} from '@/components/ui/carousel'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { OrderInterface } from '@/types/interface/orders'
@@ -91,6 +100,33 @@ const TaskInfoContent = ({ order }: TaskInfoContentProps) => (
                 />
             </div>
         </div>
+        <Carousel className="w-fit border rounded-xl mt-10 p-3 select-none">
+            <CarouselContent>
+                {order.files?.map((value) => (
+                    <CarouselItem key={value} className="basis-auto">
+                        <div className="relative rounded-xl overflow-hidden group">
+                            <div className="absolute w-full h-full flex justify-center items-center bg-black bg-opacity-50 invisible group-hover:visible">
+                                <ViewIcon />
+                                <DownloadIcon />
+                            </div>
+                            <img
+                                src={value}
+                                className="w-[90px] h-[90px] object-cover"
+                            />
+                        </div>
+                    </CarouselItem>
+                ))}
+                <CarouselItem className="basis-auto overflow-hidden">
+                    <Button
+                        variant="ghost"
+                        className="w-[90px] h-[90px] flex flex-col justify-center items-center rounded-xl"
+                    >
+                        <DownloadAllIcon />
+                        <p className="text-xs">Скачать все</p>
+                    </Button>
+                </CarouselItem>
+            </CarouselContent>
+        </Carousel>
     </Fragment>
 )
 
