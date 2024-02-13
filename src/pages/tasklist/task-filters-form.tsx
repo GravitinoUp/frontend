@@ -68,21 +68,27 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
         isLoading: branchesLoading,
         isError: branchesError,
         isSuccess: branchesSuccess,
-    } = useGetBranchesQuery(placeholderQuery)
+    } = useGetBranchesQuery(placeholderQuery, {
+        selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+    })
 
     const {
         data: checkpoints = [],
         isLoading: checkpointsLoading,
         isError: checkpointsError,
         isSuccess: checkpointsSuccess,
-    } = useGetCheckpointsQuery(placeholderQuery)
+    } = useGetCheckpointsQuery(placeholderQuery, {
+        selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+    })
 
     const {
         data: organizations = [],
         isLoading: organizationsLoading,
         isError: organizationsError,
         isSuccess: organizationsSuccess,
-    } = useGetAllOrganizationsQuery(placeholderQuery)
+    } = useGetAllOrganizationsQuery(placeholderQuery, {
+        selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+    })
 
     const {
         data: priorities = [],

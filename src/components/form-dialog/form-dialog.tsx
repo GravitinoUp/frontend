@@ -7,6 +7,7 @@ import {
     DialogHeader,
     DialogTrigger,
 } from '../ui/dialog'
+import CloseRounded from '@/assets/icons/close_rounded.svg'
 import { cn } from '@/lib/utils'
 
 const dialogVariants = cva('', {
@@ -42,6 +43,7 @@ const FormDialog = ({
         <DialogContent
             className={cn(dialogVariants({ size }))}
             onOpenAutoFocus={(e) => e.preventDefault}
+            closeIcon={<CloseRounded />}
         >
             <DialogHeader>{headerContent}</DialogHeader>
             {addItemForm}

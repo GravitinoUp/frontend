@@ -34,6 +34,20 @@ export const formatInitials = (
         .join(' ')
 }
 
+export const formatFileSize = (sizeInBytes: number) => {
+    let i = 0
+    let formattedSize = sizeInBytes
+
+    const byteUnits = ['б', 'Кб', 'Мб', 'Гб']
+
+    while (formattedSize > 1024 && i < 3) {
+        formattedSize /= 1024
+        i++
+    }
+
+    return `${formattedSize.toFixed(i !== 0 ? 2 : 0)} ${byteUnits[i]}`
+}
+
 export const getCookieValue = (key: string) => {
     const cookieValue = document.cookie
         .split('; ')
