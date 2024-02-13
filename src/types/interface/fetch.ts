@@ -23,3 +23,12 @@ export interface FetchDataInterface<T> {
 }
 
 export type SortOptionsType = 'ASC' | 'DESC' | null | undefined
+
+export type EntityType =
+    | 'Users'
+    | 'Tasks'
+    | 'Reports'
+    | 'Organizations'
+    | 'Checkpoints'
+    | 'Branches'
+    | 'Roles'
