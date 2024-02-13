@@ -12,7 +12,7 @@ export function Layuot() {
         <main
             className={
                 open
-                    ? 'min-h-screen grid grid-cols-[300px_auto] bg-[#F8F8F8] duration-300'
+                    ? 'min-h-screen grid grid-cols-[270px_auto] bg-[#F8F8F8] duration-300'
                     : 'min-h-screen grid grid-cols-[75px_auto] bg-[#F8F8F8] duration-300'
             }
         >

@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Button } from '../ui/button'
+import { cn } from '@/lib/utils'
 
 function SidebarLink({
     open,
@@ -31,7 +32,10 @@ function SidebarLink({
             }
         >
             <Button
-                className="w-[100%] relative justify-start bg-transparent hover:rounded-none"
+                className={cn(
+                    'w-[100%] h-[56px] relative justify-start bg-transparent rounded-none',
+                    isOnCurrentPath && 'bg-muted'
+                )}
                 variant="ghost"
             >
                 <div className="flex items-center">
@@ -39,7 +43,7 @@ function SidebarLink({
                     <div>
                         {open && (
                             <div
-                                className={`ml-3 font-pop text-[15px] text-[#3F434A] ${
+                                className={`ml-3 font-pop text-[15px] text-[#3F434A] whitespace-pre-line text-start ${
                                     isOnCurrentPath
                                         ? 'font-[600]'
                                         : 'font-[400]'
