@@ -39,9 +39,9 @@ export function SignInPage() {
 
     useEffect(() => {
         if (isSuccess) {
+            dispatch(setAccessToken(authData?.accessToken))
             if (form.getValues().remember_me) {
                 dispatch(setRefreshToken(authData?.refreshToken))
-                dispatch(setAccessToken(authData?.accessToken))
             }
 
             navigate('/dashboard')
