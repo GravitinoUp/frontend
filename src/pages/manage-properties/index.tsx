@@ -36,8 +36,8 @@ export default function ManagePropertiesPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton type="export" onClick={() => {}} />
-                        <ExcelButton type="import" onClick={() => {}} />
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
                 </div>
             }
