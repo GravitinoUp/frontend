@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
 import BranchesPage from './pages/branches'
 import CheckpointsPage from './pages/checkpoints'
 import { DashboardPage } from './pages/dashboard/page'
+import ManagePropertiesPage from './pages/manage-properties'
 import MediaReportspage from './pages/mediareports/page'
 import NotFoundpage from './pages/notfound/page'
 import OrganizationsPage from './pages/organizations'
@@ -90,6 +91,10 @@ function App() {
                             element={<CheckpointsPage />}
                         />
                         <Route path="branches" element={<BranchesPage />} />
+                        <Route
+                            path="manage-properties"
+                            element={<ManagePropertiesPage />}
+                        />
                         <Route path="*" element={<NotFoundpage />} />
                     </Route>
                 )}
