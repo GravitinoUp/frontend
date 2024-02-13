@@ -96,7 +96,7 @@ const links: (SingleLink | MultiLink)[] = [
     },
     {
         type: 'single',
-        path: '/parameters',
+        path: '/manage-properties',
         title: i18next.t('manage.properties'),
         count: null,
         children: <ParametersIcon />,

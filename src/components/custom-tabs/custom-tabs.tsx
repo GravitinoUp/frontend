@@ -13,14 +13,20 @@ export interface TabPage {
 
 export interface TabsProps {
     tabs: TabPage[]
+    getCurrentPage?: (value: string) => void
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-export default function CustomTabs({ tabs, setDialogOpen }: TabsProps) {
+export default function CustomTabs({
+    tabs,
+    getCurrentPage,
+    setDialogOpen,
+}: TabsProps) {
     return (
         <Tabs
             defaultValue={tabs[0].value}
             className="overflow-auto w-full h-full"
+            onValueChange={getCurrentPage}
         >
             <TabsList className="gap-2">
                 {tabs.map((tab, key) => (
