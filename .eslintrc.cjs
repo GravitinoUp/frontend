@@ -10,7 +10,7 @@ module.exports = {
     ],
     ignorePatterns: ['dist', '.eslintrc.cjs'],
     parser: '@typescript-eslint/parser',
-    plugins: ['react-refresh', 'import'],
+    plugins: ['react-refresh', 'import', 'i18n'],
     rules: {
         'import/no-unresolved': 'off',
         'consistent-return': 'error',
@@ -34,6 +34,7 @@ module.exports = {
                 alphabetize: { order: 'asc', caseInsensitive: true },
             },
         ],
+        'i18n/no-russian-character': 1,
     },
     settings: {
         'import/parsers': {

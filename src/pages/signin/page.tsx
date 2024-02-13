@@ -1,5 +1,6 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -10,7 +11,7 @@ export function SignInPage() {
     const [shown, setShown] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    document.title = 'Авторизация'
+    const { t } = useTranslation()
 
     const dispatch = useAppDispatch()
 
@@ -18,6 +19,10 @@ export function SignInPage() {
         e.preventDefault()
         dispatch(fetchAuth({ email: email, password: password }))
     }
+
+    useEffect(() => {
+        document.title = t('authorization')
+    }, [])
 
     return (
         <div className="bg-[#F8F8F8] h-screen w-screen select-none  flex items-center justify-center">
@@ -28,10 +33,10 @@ export function SignInPage() {
                 <div>
                     <div className="flex flex-col gap-16 mt-28">
                         <p className="text-[#0784D1] uppercase items-center font-pop font-bold text-[28px] flex justify-center">
-                            Гравитино АСУ УПР
+                            {t('gravitino.full.name')}
                         </p>
                         <p className="text-[#3F434A] font-pop text-[28px] flex items-center  justify-center  ">
-                            Войдите в свой аккаунт
+                            {t('authorization.title')}
                         </p>
                     </div>
                     <div className="mt-12">
@@ -51,7 +56,7 @@ export function SignInPage() {
                         <div className="relative items-center flex justify-end mt-7">
                             <div className="relative">
                                 <p className="text-[#8A9099] font-pop font-[400] text-[15px] flex items-start justify-start mb-2">
-                                    Пароль
+                                    {t('authorization.password')}
                                 </p>
                                 <input
                                     className="border-[#8A9099] border-[1px] rounded-xl h-[40px] w-[400px] focus: border-solid p-3"
@@ -90,12 +95,12 @@ export function SignInPage() {
                                 <div className="flex items-center gap-2">
                                     <Checkbox className="bg-[#0784D1]" />
                                     <p className="text-[#595F69] font-pop font-[400] select-none text- text-[15px] flex items-start  justify-start">
-                                        Запомнить меня
+                                        {t('authorization.remember')}
                                     </p>
                                 </div>
                                 <Link to="/123">
                                     <p className="text-[#0784D1] font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
-                                        Забыли пароль?
+                                        {t('authorization.password.forgot')}
                                     </p>
                                 </Link>
                             </div>
@@ -104,20 +109,10 @@ export function SignInPage() {
                                 className="rounded-xl h-[40px] w-[400px] bg-[#0784D1] mt-6"
                                 variant="default"
                             >
-                                Войти
+                                {t('button.action.enter')}
                             </Button>
                         </div>
                     </div>
-                </div>
-                <div className="absolute bottom-0 mb-3 flex items-center justify-center gap-1">
-                    <p className="text-[#8A9099] font-pop font-[400] text-[15px] flex items-end  justify-end ">
-                        У вас нет учетной записи?
-                    </p>
-                    <Link to="/register">
-                        <p className="text-[#0784D1] font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
-                            Зарегистрироваться
-                        </p>
-                    </Link>
                 </div>
             </form>
         </div>

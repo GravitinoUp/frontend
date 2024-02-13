@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { MoreVertical } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import AddTaskForm from './add-task-form'
 import { personalOrdersQuery } from './constants'
 import FormDialog from '@/components/form-dialog/form-dialog'
@@ -10,19 +11,16 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ToastAction } from '@/components/ui/toast'
-import { useToast } from '@/components/ui/use-toast'
-import {
-    useDeleteOrderMutation,
-    useGetPersonalOrdersQuery,
-} from '@/redux/api/orders'
+import { useErrorToast } from '@/hooks/use-error-toast.tsx'
+import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
+import { useDeleteOrderMutation, useGetPersonalOrdersQuery } from '@/redux/api/orders'
 import { FormattedTaskInterface } from '@/types/interface/orders'
 
 export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
     const [formOpen, setFormOpen] = useState(false)
     const [deleteOrder, { isError, isSuccess, isLoading }] =
         useDeleteOrderMutation()
-
+    const { t } = useTranslation()
     const { data: tasks = [] } = useGetPersonalOrdersQuery(
         personalOrdersQuery,
         {
@@ -30,37 +28,21 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
                 ...result,
                 data: result.data?.data,
             }),
-        }
+        },
     )
     const taskInfo = tasks.find((item) => item.order_id === task?.id)
 
-    const { toast } = useToast()
+    const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.f', {
+        entityType: t('order'),
+        entityName: task.taskName,
+    }), [])
 
-    useEffect(() => {
-        if (isError) {
-            toast({
-                variant: 'destructive',
-                title: 'Упс! Что-то пошло не так.',
-                description: 'Возникла проблема с запросом',
-                duration: 3000,
-                action: (
-                    <ToastAction
-                        altText="Попробуйте еще раз"
-                        onClick={() => deleteOrder(task.id)}
-                    >
-                        Попробуйте еще раз
-                    </ToastAction>
-                ),
-            })
-        }
+    const handleOrderDelete = useCallback(() => {
+        deleteOrder(task.id)
+    }, [task.id, deleteOrder])
 
-        if (isSuccess) {
-            toast({
-                description: `Задача "${task.taskName}" удалена`,
-                duration: 1500,
-            })
-        }
-    }, [isError, isSuccess, toast])
+    useErrorToast(isError, handleOrderDelete)
+    useSuccessToast(deleteSuccessMsg, isSuccess, setFormOpen)
 
     return (
         <Fragment>
@@ -76,7 +58,7 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
                         variant="ghost"
                         className="h-8 w-8 p-0 text-[#8A9099]"
                     >
-                        <span className="sr-only">Открыть меню</span>
+                        <span className="sr-only">{t('action.dropdown.menu.open')}</span>
                         <MoreVertical className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
@@ -86,7 +68,7 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
                             setFormOpen(true)
                         }}
                     >
-                        Редактировать
+                        {t('action.dropdown.edit')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
@@ -96,7 +78,7 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
                         }}
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Удаляем...' : 'Удалить'}
+                        {t('action.dropdown.delete')}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

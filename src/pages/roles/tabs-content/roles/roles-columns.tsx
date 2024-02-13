@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ActionsDropdown } from './roles-actions'
+import i18next from '../../../../i18n.ts'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RoleInterface } from '@/types/interface/roles'
 
@@ -32,7 +33,7 @@ export const rolesTableColumns: ColumnDef<RoleInterface>[] = [
     },
     {
         accessorKey: 'role_name',
-        header: 'Название',
+        header: i18next.t('title'),
     },
     {
         id: 'actions',

@@ -1,13 +1,12 @@
 import { useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Routes, Route } from 'react-router-dom'
-import { Layuot } from './components/Layout'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Layout } from './components/Layout'
 import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
 import BranchesPage from './pages/branches'
 import CheckpointsPage from './pages/checkpoints'
 import { DashboardPage } from './pages/dashboard/page'
-import MediaReportspage from './pages/mediareports/page'
-import NotFoundpage from './pages/notfound/page'
+import MediaReportsPage from './pages/mediareports/page'
+import NotFoundPage from './pages/notfound/page'
 import OrganizationsPage from './pages/organizations'
 import { RegisterPage } from './pages/register/page'
 import ReportsPage from './pages/reports/page'
@@ -59,7 +58,7 @@ function App() {
         <div>
             <Routes>
                 {user && (
-                    <Route path="/" element={<Layuot />}>
+                    <Route path="/" element={<Layout />}>
                         <Route
                             index
                             path="dashboard"
@@ -67,7 +66,7 @@ function App() {
                         />
                         <Route
                             path="mediareports"
-                            element={<MediaReportspage />}
+                            element={<MediaReportsPage />}
                         />
                         <Route path="reports" element={<ReportsPage />} />
                         <Route path="settings" element={<SettingsPage />} />
@@ -90,12 +89,12 @@ function App() {
                             element={<CheckpointsPage />}
                         />
                         <Route path="branches" element={<BranchesPage />} />
-                        <Route path="*" element={<NotFoundpage />} />
+                        <Route path="*" element={<NotFoundPage />} />
                     </Route>
                 )}
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="*" element={<NotFoundpage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>
     )

@@ -29,7 +29,7 @@ export default function CustomTabs({ tabs, setDialogOpen }: TabsProps) {
                         value={tab.value}
                         className={
                             tabs[0].isDialog
-                                ? 'data-[state=active]:text-primary'
+                                ? 'data-[state=active]:text-primary uppercase'
                                 : ''
                         }
                     >

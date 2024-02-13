@@ -1,12 +1,13 @@
-import { Dispatch, SetStateAction } from 'react'
-import MultiLink from './links/MultiLink'
-import SidebarLink from './links/NavLink'
+import React, { Dispatch, SetStateAction } from 'react'
+import { useTranslation } from 'react-i18next'
+import MultiLink from './links/multi-link.tsx'
+import SidebarLink from './links/nav-link.tsx'
+import i18next from '../i18n.ts'
 import ChartIcon from '@/assets/icons/Chart_alt.svg'
 import CompassIcon from '@/assets/icons/Compass.svg'
 import DashboardIcon from '@/assets/icons/darhboard_alt.svg'
 import FilterIcon from '@/assets/icons/Filter.svg'
 import FoldersGroupIcon from '@/assets/icons/Folders_group.svg'
-import FormIcon from '@/assets/icons/Form.svg'
 import GroupIcon from '@/assets/icons/Group_add.svg'
 import HomeIcon from '@/assets/icons/Home.svg'
 import ParametersIcon from '@/assets/icons/Parameters.svg'
@@ -33,84 +34,77 @@ const links: (SingleLink | MultiLink)[] = [
     {
         type: 'single',
         path: '/dashboard',
-        title: 'Дашбоард',
+        title: i18next.t('dashboard'),
         count: null,
         children: <DashboardIcon />,
     },
     {
         type: 'single',
         path: '/tasklist',
-        title: 'Задачи',
+        title: i18next.t('tasks'),
         count: null,
         children: <TaskListIcon />,
     },
     {
         type: 'single',
         path: '/reports',
-        title: 'Отчеты',
+        title: i18next.t('reports'),
         count: 9,
         children: <ChartIcon />,
     },
     {
         type: 'single',
-        path: '/scheduler',
-        title: 'Планировщик',
-        count: null,
-        children: <FormIcon />,
-    },
-    {
-        type: 'single',
         path: '/map',
-        title: 'Карты',
+        title: i18next.t('maps'),
         count: null,
         children: <CompassIcon />,
     },
     {
         type: 'single',
         path: '/users',
-        title: 'Пользователи',
+        title: i18next.t('users'),
         count: null,
         children: <GroupIcon />,
     },
     {
         type: 'single',
         path: '/organizations',
-        title: 'Организации',
+        title: i18next.t('organizations'),
         count: null,
         children: <HomeIcon />,
     },
     {
         type: 'single',
         path: '/checkpoints',
-        title: 'Пункты пропуска',
+        title: i18next.t('checkpoints'),
         count: null,
         children: <RoadFinishIcon />,
     },
     {
         type: 'single',
         path: '/branches',
-        title: 'Филиалы',
+        title: i18next.t('branches'),
         count: null,
         children: <FoldersGroupIcon />,
     },
     {
         type: 'single',
         path: '/roles',
-        title: 'Роли',
+        title: i18next.t('roles'),
         count: null,
         children: <VectorIcon />,
     },
     {
         type: 'single',
         path: '/parameters',
-        title: 'Управление характеристиками',
+        title: i18next.t('manage.properties'),
         count: null,
         children: <ParametersIcon />,
     },
     {
         type: 'single',
         path: '/administration',
-        title: 'Администрирование',
+        title: i18next.t('administration'),
         count: null,
         children: <FilterIcon />,
     },
@@ -122,11 +116,13 @@ export interface NavbarProps {
 }
 
 export function Navbar({ open, setOpen }: NavbarProps) {
+    const { t } = useTranslation()
+
     return (
         <div className="bg-white grid grid-rows-[64px_auto] border-solid h-screen">
             {open ? (
                 <div className="text-[#0784D1] items-center font-pop font-bold text-[18px] flex justify-center">
-                    ГРАВИТИНО АСУ УПР
+                    {t('gravitino.full.name')}
                 </div>
             ) : (
                 <div className="text-[#0784D1]  items-center flex justify-center " />

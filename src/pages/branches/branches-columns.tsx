@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ActionButtons } from './action-buttons'
+import i18next from '../../i18n.ts'
 import { Checkbox } from '@/components/ui/checkbox'
 import { BranchInterface } from '@/types/interface/branch'
 
@@ -32,11 +33,11 @@ export const branchesColumns: ColumnDef<BranchInterface>[] = [
     },
     {
         accessorKey: 'branch_name',
-        header: 'Название',
+        header: i18next.t('title'),
     },
     {
         accessorKey: 'branch_address',
-        header: 'Адрес',
+        header: i18next.t('address'),
     },
     {
         id: 'actions',

@@ -2,6 +2,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { z } from 'zod'
 import { ActionButtons } from './action-buttons'
 import CancelStatusTooltip from './cancel-status-tooltip'
+import i18next from '../../i18n.ts'
 import { getStatusCellClass } from '@/components/data-table/get-cell-class'
 import { Checkbox } from '@/components/ui/checkbox'
 import { TASK_STATUSES } from '@/constants/constants'
@@ -51,59 +52,59 @@ export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
         enableHiding: false,
     },
     {
-        header: 'номер №.',
+        header: i18next.t('number'),
         accessorKey: 'id',
     },
     {
-        header: 'Название',
+        header: i18next.t('title'),
         accessorKey: 'taskName',
     },
     {
-        header: 'Объект обслуживания',
+        header: i18next.t('facility'),
         accessorKey: 'facility',
     },
     {
-        header: 'Пункт пропуска',
+        header: i18next.t('checkpoint'),
         accessorKey: 'checkpoint',
     },
     {
-        header: 'Филиал',
+        header: i18next.t('branch'),
         accessorKey: 'branch',
     },
     {
-        header: 'Исполнитель',
+        header: i18next.t('executor'),
         accessorKey: 'executor',
     },
     {
-        header: 'Создатель задачи',
+        header: i18next.t('task.creator'),
         accessorKey: 'taskCreator',
     },
     {
-        header: 'Приоритет',
+        header: i18next.t('priority'),
         accessorKey: 'priorityStatus',
     },
     {
-        header: 'Тип',
+        header: i18next.t('type'),
         accessorKey: 'taskType',
         cell: ({ row }) => {
             const { taskType } = row.original
-            return taskType === null ? 'Внеплановая' : 'Плановая'
+            return i18next.t(`task.${taskType === null ? 'unplanned' : 'planned'}`)
         },
     },
     {
-        header: 'Дата сдачи',
+        header: i18next.t('delivery.date'),
         accessorKey: 'deliveryDate',
     },
     {
-        header: 'Дата закрытия',
+        header: i18next.t('close.date'),
         accessorKey: 'closeDate',
     },
     {
-        header: 'Описание задачи',
+        header: i18next.t('task.description'),
         accessorKey: 'taskDescription',
     },
     {
-        header: 'Статус',
+        header: i18next.t('status'),
         accessorKey: 'status',
         cell: ({ row }) => {
             const { status } = row.original

@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ActionButtons } from './action-buttons'
+import i18next from '../../i18n.ts'
 import { Checkbox } from '@/components/ui/checkbox'
 import { OrganizationInterface } from '@/types/interface/organizations'
 
@@ -32,19 +33,19 @@ export const organizationsColumns: ColumnDef<OrganizationInterface>[] = [
     },
     {
         accessorKey: 'short_name',
-        header: 'Название',
+        header: i18next.t('title'),
     },
     {
         accessorKey: 'full_name',
-        header: 'Полное наименование',
+        header: i18next.t('title.full'),
     },
     {
         accessorKey: 'register_number',
-        header: 'Номер регистрации',
+        header: i18next.t('registration.number'),
     },
     {
         accessorKey: 'phone',
-        header: 'Телефон',
+        header: i18next.t('phone'),
     },
     {
         accessorKey: 'email',
@@ -52,7 +53,7 @@ export const organizationsColumns: ColumnDef<OrganizationInterface>[] = [
     },
     {
         accessorKey: 'organization_type.organization_type_name',
-        header: 'Тип',
+        header: i18next.t('type'),
     },
     {
         id: 'actions',

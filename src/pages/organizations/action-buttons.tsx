@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { MoreVertical } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { organizationFormTab } from './organization-form-tab'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import FormDialog from '@/components/form-dialog/form-dialog'
@@ -10,8 +11,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ToastAction } from '@/components/ui/toast'
-import { useToast } from '@/components/ui/use-toast'
+import { useErrorToast } from '@/hooks/use-error-toast.tsx'
+import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useDeleteOrganizationMutation } from '@/redux/api/organizations'
 import { OrganizationInterface } from '@/types/interface/organizations'
 
@@ -22,37 +23,20 @@ export const ActionButtons = ({
 }) => {
     const [deleteOrganization, { isError, isSuccess, isLoading }] =
         useDeleteOrganizationMutation()
-
-    const { toast } = useToast()
-
-    useEffect(() => {
-        if (isError) {
-            toast({
-                variant: 'destructive',
-                title: 'Упс! Что-то пошло не так.',
-                description: 'Возникла проблема с запросом',
-                duration: 3000,
-                action: (
-                    <ToastAction
-                        altText="Попробуйте еще раз"
-                        onClick={() =>
-                            deleteOrganization(organization.organization_id)
-                        }
-                    >
-                        Попробуйте еще раз
-                    </ToastAction>
-                ),
-            })
-        }
-
-        if (isSuccess) {
-            toast({
-                description: `Организация "${organization.short_name}" удалена`,
-                duration: 1500,
-            })
-        }
-    }, [isError, isSuccess, toast])
     const [formOpen, setFormOpen] = useState(false)
+    const { t } = useTranslation()
+
+    const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.f', {
+        entityType: t('organization'),
+        entityName: organization.short_name,
+    }), [])
+
+    const handleOrganizationDelete = useCallback(() => {
+        deleteOrganization(organization.organization_id)
+    }, [organization.organization_id, deleteOrganization])
+
+    useErrorToast(isError, handleOrganizationDelete)
+    useSuccessToast(deleteSuccessMsg, isSuccess, setFormOpen)
 
     return (
         <Fragment>
@@ -73,7 +57,7 @@ export const ActionButtons = ({
                         variant="ghost"
                         className="h-8 w-8 p-0 text-[#8A9099]"
                     >
-                        <span className="sr-only">Открыть меню</span>
+                        <span className="sr-only">{t('action.dropdown.menu.open')}</span>
                         <MoreVertical className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
@@ -83,7 +67,7 @@ export const ActionButtons = ({
                             setFormOpen(true)
                         }}
                     >
-                        Редактировать
+                        {t('action.dropdown.edit')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
@@ -92,7 +76,7 @@ export const ActionButtons = ({
                         }
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Удаляем...' : 'Удалить'}
+                        {t('action.dropdown.delete')}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
