@@ -83,6 +83,7 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                         </div>
                         <div className="flex items-center">
                             <Button
+                                type="button"
                                 className="px-6 py-2 mr-4"
                                 onClick={() => onSubmit(selectedFile)}
                             >

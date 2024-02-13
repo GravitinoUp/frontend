@@ -41,9 +41,23 @@ const usersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Users'],
         }),
-        updateUser: builder.mutation<UserInterface, Partial<UserInterface>>({
+        updateUser: builder.mutation<
+            UserInterface,
+            Partial<UserPayloadInterface>
+        >({
             query: (body) => ({
                 url: `users`,
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['Users'],
+        }),
+        updateOrganizationUser: builder.mutation<
+            FetchResultInterface<UserInterface>,
+            OrganizationUserPayloadInterface
+        >({
+            query: (body) => ({
+                url: 'users/organization',
                 method: 'PATCH',
                 body,
             }),
@@ -56,7 +70,7 @@ const usersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Users'],
         }),
-        changeStatusUser: builder.mutation<
+        changeUserStatus: builder.mutation<
             FetchResultInterface,
             Partial<UserInterface>
         >({
@@ -75,6 +89,8 @@ export const {
     useGetUsersQuery,
     useCreateUserMutation,
     useCreateOrganizationUserMutation,
-    useChangeStatusUserMutation,
+    useUpdateUserMutation,
+    useUpdateOrganizationUserMutation,
+    useChangeUserStatusMutation,
     useDeleteUserMutation,
 } = usersApi

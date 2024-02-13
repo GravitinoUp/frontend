@@ -54,7 +54,9 @@ export const ActionButtons = ({ user }: { user: UserInterface }) => {
                 open={formOpen}
                 setOpen={setFormOpen}
                 actionButton={<Fragment />}
-                addItemForm={<AddUserForm user={user} />}
+                addItemForm={
+                    <AddUserForm user={user} setDialogOpen={setFormOpen} />
+                }
             />
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>

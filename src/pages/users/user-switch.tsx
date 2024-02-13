@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { useToast } from '@/components/ui/use-toast'
-import { useChangeStatusUserMutation } from '@/redux/api/users'
+import { useChangeUserStatusMutation } from '@/redux/api/users'
 import { UserInterface } from '@/types/interface/user'
 export default function UserSwitch({ user }: { user: UserInterface }) {
     const { toast } = useToast()
     const [
-        changeStatusUser,
+        changeUserStatus,
         { isLoading: isUpdating, isSuccess: updateSuccess },
-    ] = useChangeStatusUserMutation()
+    ] = useChangeUserStatusMutation()
 
     useEffect(() => {
         if (updateSuccess) {
@@ -20,7 +20,7 @@ export default function UserSwitch({ user }: { user: UserInterface }) {
     }, [updateSuccess])
 
     const updateStatus = () =>
-        changeStatusUser({
+        changeUserStatus({
             user_id: user.user_id,
             is_active: !user.is_active,
         })

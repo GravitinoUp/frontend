@@ -1,7 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react'
 import { z } from 'zod'
 import { placeholderQuery } from '../tasklist/constants'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import FileContainer from '@/components/file-container/file-container'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
@@ -30,6 +31,8 @@ import { useGetRolesQuery } from '@/redux/api/roles'
 import {
     useCreateOrganizationUserMutation,
     useCreateUserMutation,
+    useUpdateOrganizationUserMutation,
+    useUpdateUserMutation,
 } from '@/redux/api/users'
 import {
     OrganizationUserPayloadInterface,
@@ -77,39 +80,64 @@ interface AddUserFormProps {
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
+const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
     const { toast } = useToast()
 
     const userForm = useForm({
         schema: userFormSchema,
-        defaultValues: {
-            last_name: '',
-            first_name: '',
-            patronymic: '',
-            email: '',
-            phone: '',
-            password: '',
-            repeat_password: '',
-        },
+        defaultValues: user
+            ? {
+                  last_name: user.person.last_name,
+                  first_name: user.person.first_name,
+                  patronymic: user.person.patronymic,
+                  phone: user.person.phone,
+                  ...user,
+              }
+            : {
+                  last_name: '',
+                  first_name: '',
+                  patronymic: '',
+                  email: '',
+                  phone: '',
+                  password: '',
+                  repeat_password: '',
+              },
     })
 
     const organizationForm = useForm({
         schema: organizationFormSchema,
-        defaultValues: {
-            full_name: '',
-            short_name: '',
-            email: '',
-            phone: '',
-            password: '',
-            repeat_password: '',
-        },
+        defaultValues: user
+            ? {
+                  full_name: user.organization?.full_name,
+                  short_name: user.organization?.short_name,
+                  phone: user.organization?.phone,
+                  organization_type_id: String(
+                      user.organization?.organization_type.organization_type_id
+                  ),
+                  ...user,
+              }
+            : {
+                  full_name: '',
+                  short_name: '',
+                  email: '',
+                  phone: '',
+                  password: '',
+                  repeat_password: '',
+              },
     })
 
     const roleForm = useForm({
         schema: roleFormSchema,
-        defaultValues: {
-            role_id: '',
-        },
+        defaultValues: user
+            ? {
+                  role_id: String(user.role.role_id),
+                  group_id: user.group
+                      ? String(user.group?.group_id)
+                      : undefined,
+              }
+            : {
+                  role_id: '',
+              },
     })
 
     const imageForm = useForm({
@@ -157,6 +185,15 @@ const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
     ] = useCreateUserMutation()
 
     const [
+        updateUser,
+        {
+            isLoading: isUserUpdating,
+            isError: userUpdateError,
+            isSuccess: userUpdateSuccess,
+        },
+    ] = useUpdateUserMutation()
+
+    const [
         createOrganization,
         {
             isLoading: isOrganizationAdding,
@@ -165,27 +202,42 @@ const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
         },
     ] = useCreateOrganizationUserMutation()
 
+    const [
+        updateOrganization,
+        {
+            isLoading: isOrganizationUpdating,
+            isError: organizationUpdateError,
+            isSuccess: organizationUpdateSuccess,
+        },
+    ] = useUpdateOrganizationUserMutation()
+
     const [tabValue, setTabValue] = useState('user')
-    const [tabUserTypeValue, setTabUserTypeValue] = useState('user')
+    const [tabUserTypeValue, setTabUserTypeValue] = useState(
+        !user
+            ? 'user'
+            : user.organization?.organization_id === null
+            ? 'user'
+            : 'organization'
+    )
+
+    useEffect(() => {
+        console.log(user)
+    }, [])
 
     function handleUserSubmit() {
         setTabValue('role')
     }
-
-    function handleOrganizationSubmit() {
-        setTabValue('role')
-    }
-
     function handleRoleSubmit() {
         setTabValue('image')
     }
 
-    function handleImageSubmit() {
+    function handleSubmit() {
         if (tabUserTypeValue === 'user') {
             const userFormValues = userForm.getValues()
             const roleFormValues = roleForm.getValues()
 
             const userPayload: UserPayloadInterface = {
+                user_id: user?.user_id,
                 last_name: userFormValues.last_name,
                 first_name: userFormValues.first_name,
                 patronymic: userFormValues.patronymic,
@@ -196,12 +248,17 @@ const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
                 password: userFormValues.password,
             }
 
-            createUser(userPayload)
+            if (!user) {
+                createUser(userPayload)
+            } else {
+                updateUser(userPayload)
+            }
         } else {
             const organizationFormValue = organizationForm.getValues()
             const roleFormValues = roleForm.getValues()
 
             const userPayload: OrganizationUserPayloadInterface = {
+                user_id: user?.user_id,
                 organization_type_id:
                     organizationFormValue.organization_type_id,
                 full_name: organizationFormValue.full_name,
@@ -213,7 +270,11 @@ const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
                 password: organizationFormValue.password,
             }
 
-            createOrganization(userPayload)
+            if (!user) {
+                createOrganization(userPayload)
+            } else {
+                updateOrganization(userPayload)
+            }
         }
     }
 
@@ -225,7 +286,20 @@ const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
             })
             setDialogOpen?.(false)
         }
-    }, [userCreateSuccess, organizationCreateSuccess])
+
+        if (userUpdateSuccess || organizationUpdateSuccess) {
+            toast({
+                description: `Пользователь успешно обновлен`,
+                duration: 1500,
+            })
+            setDialogOpen?.(false)
+        }
+    }, [
+        userCreateSuccess,
+        organizationCreateSuccess,
+        userUpdateSuccess,
+        organizationUpdateSuccess,
+    ])
 
     return (
         <Tabs
@@ -268,23 +342,27 @@ const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
                             organizationForm.reset()
                         }}
                     >
-                        <p className="mt-3 mb-4 text-[#8A9099] text-sm font-medium">
-                            Тип пользователя
-                        </p>
-                        <TabsList className="gap-2">
-                            <TabsTrigger
-                                className="bg-white border-accent text-black font-normal data-[state=active]:bg-[#3F434A] data-[state=active]:border-accent data-[state=active]:text-white py-1.5 px-4 rounded-3xl border-2"
-                                value="user"
-                            >
-                                Работник
-                            </TabsTrigger>
-                            <TabsTrigger
-                                className="bg-white border-accent text-black font-normal data-[state=active]:bg-[#3F434A] data-[state=active]:border-accent data-[state=active]:text-white   py-1.5 px-4 rounded-3xl border-2"
-                                value="organization"
-                            >
-                                Подрядчик
-                            </TabsTrigger>
-                        </TabsList>
+                        {!user && (
+                            <Fragment>
+                                <p className="mt-3 mb-4 text-[#8A9099] text-sm font-medium">
+                                    Тип пользователя
+                                </p>
+                                <TabsList className="gap-2">
+                                    <TabsTrigger
+                                        className="bg-white border-accent text-black font-normal data-[state=active]:bg-[#3F434A] data-[state=active]:border-accent data-[state=active]:text-white py-1.5 px-4 rounded-3xl border-2"
+                                        value="user"
+                                    >
+                                        Работник
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        className="bg-white border-accent text-black font-normal data-[state=active]:bg-[#3F434A] data-[state=active]:border-accent data-[state=active]:text-white   py-1.5 px-4 rounded-3xl border-2"
+                                        value="organization"
+                                    >
+                                        Подрядчик
+                                    </TabsTrigger>
+                                </TabsList>
+                            </Fragment>
+                        )}
 
                         <TabsContent value="user">
                             <CustomForm
@@ -392,7 +470,7 @@ const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
                         <TabsContent value="organization">
                             <CustomForm
                                 form={organizationForm}
-                                onSubmit={handleOrganizationSubmit}
+                                onSubmit={handleUserSubmit}
                             >
                                 <FormField
                                     control={organizationForm.control}
@@ -629,15 +707,24 @@ const AddUserForm = ({ setDialogOpen }: AddUserFormProps) => {
                 </CustomForm>
             </TabsContent>
             <TabsContent value="image" className="w-full">
-                <CustomForm form={imageForm} onSubmit={handleImageSubmit}>
-                    {(userCreateError || organizationCreateError) && (
+                <CustomForm form={imageForm} onSubmit={handleSubmit}>
+                    <FileContainer onSubmit={(file) => console.log(file)} />
+                    {(userCreateError ||
+                        organizationCreateError ||
+                        userUpdateError ||
+                        organizationUpdateError) && (
                         <CustomAlert className="mt-3" />
                     )}
                     <Button className="w-[100px] mt-10 mr-4" type="submit">
-                        {isUserAdding || isOrganizationAdding ? (
+                        {isUserAdding ||
+                        isOrganizationAdding ||
+                        isUserUpdating ||
+                        isOrganizationUpdating ? (
                             <LoadingSpinner />
-                        ) : (
+                        ) : !user ? (
                             'Создать'
+                        ) : (
+                            'Сохранить'
                         )}
                     </Button>
                     <Button

@@ -16,14 +16,15 @@ export interface FormattedUsersInterface {
     key: number
     id: number
     FIO: string
-    phone: string
-    company: string
-    type: string
+    phone?: string
+    company?: string
+    type?: string
     role: string
     is_active: boolean
 }
 
 export interface UserPayloadInterface {
+    user_id?: number
     last_name: string
     first_name: string
     patronymic: string
@@ -35,6 +36,7 @@ export interface UserPayloadInterface {
 }
 
 export interface OrganizationUserPayloadInterface {
+    user_id?: number
     organization_type_id: string
     full_name: string
     short_name: string

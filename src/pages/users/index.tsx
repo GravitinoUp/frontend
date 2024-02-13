@@ -38,10 +38,10 @@ export default function UsersPage() {
                       row.person.patronymic
                   )
                 : '',
-            phone: isPerson ? row.person.phone : row.organization.phone,
+            phone: isPerson ? row.person.phone : row.organization?.phone,
             email: row.email,
-            company: row.organization.short_name,
-            type: row.organization.organization_type.organization_type_name,
+            company: row.organization?.short_name,
+            type: row.organization?.organization_type.organization_type_name,
             role: row.role.role_name,
             is_active: row.is_active,
         }
