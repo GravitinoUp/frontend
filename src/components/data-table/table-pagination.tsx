@@ -76,9 +76,37 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                     </Button>
                     {totalPagesCount &&
                         totalPagesCount.map((page) => {
-                            const isCurrentPage =
-                                table.getState().pagination.pageIndex === page
-                            return (
+                            const currentPage =
+                                table.getState().pagination.pageIndex
+                            const isCurrentPage = currentPage === page
+
+                            const isVisible =
+                                page === 0 || // First
+                                page === totalPagesCount.length - 1 || // Last
+                                (currentPage !== 0 &&
+                                    page === currentPage - 1) || // Previous
+                                page === currentPage || // Current
+                                (currentPage !== totalPagesCount.length - 1 &&
+                                    page === currentPage + 1) || // Next
+                                (currentPage < 3 && page === currentPage + 2) ||
+                                (currentPage < 2 && page === currentPage + 3) ||
+                                (currentPage === 0 &&
+                                    page === currentPage + 4) ||
+                                (currentPage > totalPagesCount.length - 4 &&
+                                    page === currentPage - 2) ||
+                                (currentPage > totalPagesCount.length - 3 &&
+                                    page === currentPage - 3) ||
+                                (currentPage === totalPagesCount.length - 1 &&
+                                    page === currentPage - 4)
+
+                            const isDotVisible =
+                                (currentPage < 3 && page === currentPage + 5) ||
+                                page === currentPage - 2 ||
+                                page === currentPage + 2 ||
+                                (currentPage > totalPagesCount.length - 4 &&
+                                    page === currentPage - 5)
+
+                            return isVisible || totalPagesCount.length < 9 ? (
                                 <Button
                                     key={page}
                                     variant="ghost"
@@ -91,6 +119,16 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                                 >
                                     {page + 1}
                                 </Button>
+                            ) : (
+                                isDotVisible && (
+                                    <Button
+                                        key={page}
+                                        variant="ghost"
+                                        className="h-8 w-8 p-0 font-normal"
+                                    >
+                                        ...
+                                    </Button>
+                                )
                             )
                         })}
                     <Button

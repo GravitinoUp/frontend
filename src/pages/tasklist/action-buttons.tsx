@@ -23,7 +23,15 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
     const [deleteOrder, { isError, isSuccess, isLoading }] =
         useDeleteOrderMutation()
 
-    const { data: tasks = [] } = useGetPersonalOrdersQuery(personalOrdersQuery)
+    const { data: tasks = [] } = useGetPersonalOrdersQuery(
+        personalOrdersQuery,
+        {
+            selectFromResult: (result) => ({
+                ...result,
+                data: result.data?.data,
+            }),
+        }
+    )
     const taskInfo = tasks.find((item) => item.order_id === task?.id)
 
     const { toast } = useToast()

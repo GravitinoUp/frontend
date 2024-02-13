@@ -3,6 +3,7 @@ import {
     FacilityInterface,
     FacilityPayloadInterface,
 } from '@/types/interface/facility'
+import { FetchDataInterface } from '@/types/interface/fetch'
 
 const facilityApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -12,6 +13,9 @@ const facilityApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformResponse: (
+                response: FetchDataInterface<FacilityInterface[]>
+            ) => response.data,
         }),
         getFacilitiesByCheckpoint: builder.query<
             FacilityInterface[],
@@ -27,6 +31,9 @@ const facilityApi = api.injectEndpoints({
                     body,
                 }
             },
+            transformResponse: (
+                response: FetchDataInterface<FacilityInterface[]>
+            ) => response.data,
         }),
     }),
     overrideExisting: true,

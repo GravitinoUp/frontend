@@ -1,16 +1,21 @@
 import { api } from './'
-import { FetchDataInterface, FetchResultInterface } from '@/types/interface/fetch'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 import { UserInterface, UsersPayloadInterface } from '@/types/interface/user'
 
 const usersApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getUsers: builder.query<UserInterface[], UsersPayloadInterface>({
+        getUsers: builder.query<
+            FetchDataInterface<UserInterface[]>,
+            UsersPayloadInterface
+        >({
             query: (body) => ({ url: 'users/all', method: 'POST', body }),
             providesTags: ['Users'],
             transformResponse: (
                 response: FetchDataInterface<UserInterface[]>
             ) => response.data,
-            
         }),
         createUser: builder.mutation<
             FetchResultInterface<UserInterface>,
@@ -23,10 +28,7 @@ const usersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Users'],
         }),
-        updateUser: builder.mutation<
-            UserInterface,
-            Partial<UserInterface>
-        >({
+        updateUser: builder.mutation<UserInterface, Partial<UserInterface>>({
             query: (body) => ({
                 url: `users`,
                 method: 'PATCH',
@@ -41,11 +43,14 @@ const usersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Users'],
         }),
-        changeStatusUser: builder.mutation<FetchResultInterface,Partial<UserInterface>>({
+        changeStatusUser: builder.mutation<
+            FetchResultInterface,
+            Partial<UserInterface>
+        >({
             query: (body) => ({
                 url: 'users/change_status',
                 method: 'PATCH',
-                body
+                body,
             }),
             invalidatesTags: ['Users'],
         }),
@@ -53,4 +58,8 @@ const usersApi = api.injectEndpoints({
     overrideExisting: true,
 })
 
-export const { useGetUsersQuery,useChangeStatusUserMutation, useDeleteUserMutation } = usersApi
+export const {
+    useGetUsersQuery,
+    useChangeStatusUserMutation,
+    useDeleteUserMutation,
+} = usersApi
