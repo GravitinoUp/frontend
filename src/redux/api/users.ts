@@ -3,7 +3,12 @@ import {
     FetchDataInterface,
     FetchResultInterface,
 } from '@/types/interface/fetch'
-import { UserInterface, UsersPayloadInterface } from '@/types/interface/user'
+import {
+    OrganizationUserPayloadInterface,
+    UserInterface,
+    UserPayloadInterface,
+    UsersPayloadInterface,
+} from '@/types/interface/user'
 
 const usersApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -13,16 +18,24 @@ const usersApi = api.injectEndpoints({
         >({
             query: (body) => ({ url: 'users/all', method: 'POST', body }),
             providesTags: ['Users'],
-            transformResponse: (
-                response: FetchDataInterface<UserInterface[]>
-            ) => response.data,
         }),
         createUser: builder.mutation<
             FetchResultInterface<UserInterface>,
-            Partial<UserInterface>
+            UserPayloadInterface
         >({
             query: (body) => ({
-                url: `users`,
+                url: 'users',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Users'],
+        }),
+        createOrganizationUser: builder.mutation<
+            FetchResultInterface<UserInterface>,
+            OrganizationUserPayloadInterface
+        >({
+            query: (body) => ({
+                url: 'users/organization',
                 method: 'POST',
                 body,
             }),
@@ -60,6 +73,8 @@ const usersApi = api.injectEndpoints({
 
 export const {
     useGetUsersQuery,
+    useCreateUserMutation,
+    useCreateOrganizationUserMutation,
     useChangeStatusUserMutation,
     useDeleteUserMutation,
 } = usersApi

@@ -1,5 +1,5 @@
 import { IQuery, SortOptionsType } from './fetch'
-import { GroupSortInterface } from './group'
+import { GroupInterface, GroupSortInterface } from './group'
 import {
     OrganizationInterface,
     OrganizationSortInterface,
@@ -12,28 +12,49 @@ export interface UsersPayloadInterface extends IQuery {
 }
 
 export interface FormattedUsersInterface {
-    user:UserInterface
+    user: UserInterface
     key: number
     id: number
-    FIO:string
+    FIO: string
     phone: string
-    company:string
-    type:string
-    role:string
-    is_active:boolean      
+    company: string
+    type: string
+    role: string
+    is_active: boolean
 }
+
+export interface UserPayloadInterface {
+    last_name: string
+    first_name: string
+    patronymic: string
+    phone: string
+    role_id: string
+    group_id?: string
+    email: string
+    password: string
+}
+
+export interface OrganizationUserPayloadInterface {
+    organization_type_id: string
+    full_name: string
+    short_name: string
+    phone: string
+    role_id: string
+    group_id?: string
+    email: string
+    password: string
+}
+
 // USER
 
 export interface UserInterface {
     user_id: number
+    is_active: boolean
     email: string
-    createdAt: string
-    updatedAt: string
     role: RoleInterface
-    organization: OrganizationInterface
+    organization?: OrganizationInterface | null
     person: PersonInterface
-    group: unknown
-    is_active:boolean
+    group: GroupInterface | null
 }
 
 export interface UserSortInterface {
@@ -65,22 +86,3 @@ export interface PersonSortInterface {
     patronymic?: SortOptionsType
     phone?: SortOptionsType
 }
-
-
-
-
-
-
-  
-  
-  
-  
-  
-  
-  
-
-
-
-
-
-  
