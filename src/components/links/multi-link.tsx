@@ -1,7 +1,7 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
-import SidebarLink from './NavLink'
+import SidebarLink from './nav-link.tsx'
 import { SingleLink } from '../Navbar'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
@@ -29,9 +29,7 @@ function MultiLink({
     }, [open, pathname])
 
     function isPathLinks(): boolean {
-        const isPath = links.some((link) => link.path === pathname)
-
-        return isPath
+        return links.some((link) => link.path === pathname)
     }
 
     return (
@@ -74,7 +72,7 @@ function MultiLink({
                                         isPathLinks()
                                             ? 'font-[600]'
                                             : 'font-[400]' +
-                                              'font-pop text-[15px] font-normal text-[#3F434A]'
+                                            'font-pop text-[15px] font-normal text-[#3F434A]'
                                     }
                                 >
                                     {title}

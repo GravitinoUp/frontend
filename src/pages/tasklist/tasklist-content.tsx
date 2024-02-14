@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { initialColumnVisibility } from './constants'
 import TaskFiltersForm from './task-filters-form'
@@ -12,6 +13,7 @@ import { formatDate } from '@/utils/helpers'
 
 function TaskListContent() {
     const navigate = useNavigate()
+    const { t } = useTranslation()
 
     const [personalOrdersQuery, setPersonalOrdersQuery] =
         useState<OrderMyPayloadInterface>({
@@ -55,8 +57,8 @@ function TaskListContent() {
         taskCreator: `${row.creator?.person.last_name} ${row.creator?.person.first_name} ${row.creator?.person.patronymic}`,
         taskType: row.task.task_id,
         closeDate: formatDate(row.ended_at_datetime) || '',
-        deliveryDate: `${formatDate(row.planned_datetime) || 'Н/Д'}-${
-            formatDate(row.task_end_datetime) || 'Н/Д'
+        deliveryDate: `${formatDate(row.planned_datetime)}-${
+            formatDate(row.task_end_datetime)
         }`,
     }))
 
@@ -73,7 +75,7 @@ function TaskListContent() {
                 size="md"
                 headerContent={
                     <h2 className="text-3xl font-semibold text-black">
-                        Подобрать фильтры
+                        {t('choose.filters')}
                     </h2>
                 }
                 addItemForm={
@@ -122,19 +124,14 @@ function TaskListContent() {
                         }}
                         data={{
                             branch_id:
-                            personalOrdersQuery.filter.facility?.checkpoint
-                                ?.branch?.branch_id,
+                            personalOrdersQuery.filter.facility?.checkpoint?.branch?.branch_id,
                             checkpoint_id:
-                            personalOrdersQuery.filter.facility?.checkpoint
-                                ?.checkpoint_id,
+                            personalOrdersQuery.filter.facility?.checkpoint?.checkpoint_id,
                             organization_id:
-                            personalOrdersQuery.filter.executor
-                                ?.organization_id,
+                            personalOrdersQuery.filter.executor?.organization_id,
                             priority_id:
-                            personalOrdersQuery.filter.priority
-                                ?.priority_id,
-                            order_status: personalOrdersQuery.filter
-                                .order_status
+                            personalOrdersQuery.filter.priority?.priority_id,
+                            order_status: personalOrdersQuery.filter.order_status
                                 ? personalOrdersQuery.filter.order_status!.map(
                                     (value) => `${value?.order_status_name}`,
                                 )

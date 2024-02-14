@@ -1,21 +1,20 @@
-import { Dispatch, Fragment, SetStateAction, useEffect } from 'react'
+import { Dispatch, Fragment, SetStateAction, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
+import i18next from '../../i18n.ts'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
 import { FormField } from '@/components/ui/form'
-import { useToast } from '@/components/ui/use-toast'
-import {
-    useCreateBranchMutation,
-    useUpdateBranchMutation,
-} from '@/redux/api/branch'
+import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
+import { useCreateBranchMutation, useUpdateBranchMutation } from '@/redux/api/branch'
 import { BranchInterface } from '@/types/interface/branch'
 
 const branchSchema = z.object({
-    branch_name: z.string().min(1, { message: 'Необходимо добавить название' }),
-    branch_address: z.string().min(1, { message: 'Необходимо добавить адрес' }),
+    branch_name: z.string().min(1, { message: i18next.t('validation.require.title') }),
+    branch_address: z.string().min(1, { message: i18next.t('validation.require.address') }),
 })
 
 interface AddBranchFormProps {
@@ -24,19 +23,19 @@ interface AddBranchFormProps {
 }
 
 const AddBranchForm = ({ branch, setDialogOpen }: AddBranchFormProps) => {
-    const { toast } = useToast()
+    const { t } = useTranslation()
 
     const form = useForm({
         schema: branchSchema,
         defaultValues: !branch
             ? {
-                  branch_name: '',
-                  branch_address: '',
-              }
+                branch_name: '',
+                branch_address: '',
+            }
             : {
-                  branch_name: branch.branch_name,
-                  branch_address: branch.branch_address,
-              },
+                branch_name: branch.branch_name,
+                branch_address: branch.branch_address,
+            },
     })
 
     const [
@@ -53,25 +52,16 @@ const AddBranchForm = ({ branch, setDialogOpen }: AddBranchFormProps) => {
         },
     ] = useUpdateBranchMutation()
 
-    useEffect(() => {
-        if (createSuccess) {
-            toast({
-                description: `Филиал успешно добавлен`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [createSuccess])
+    const createSuccessMsg = useMemo(() => t('toast.success.description.create.m', {
+        entityType: t('branch'),
+    }), [])
 
-    useEffect(() => {
-        if (updateSuccess) {
-            toast({
-                description: `Филиал успешно изменен`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [updateSuccess])
+    const updateSuccessMsg = useMemo(() => t('toast.success.description.update.m', {
+        entityType: t('branch'),
+    }), [])
+
+    useSuccessToast(createSuccessMsg, createSuccess, setDialogOpen)
+    useSuccessToast(updateSuccessMsg, updateSuccess, setDialogOpen)
 
     function handleSubmit(data: Partial<Omit<BranchInterface, 'branch_id'>>) {
         if (!branch) {
@@ -87,14 +77,14 @@ const AddBranchForm = ({ branch, setDialogOpen }: AddBranchFormProps) => {
                 control={form.control}
                 name="branch_name"
                 render={({ field }) => (
-                    <InputField label="Название" {...field} />
+                    <InputField label={t('title')} {...field} />
                 )}
             />
             <FormField
                 control={form.control}
                 name="branch_address"
                 render={({ field }) => (
-                    <InputField className="mt-3" label="Адрес" {...field} />
+                    <InputField className="mt-3" label={t('address')} {...field} />
                 )}
             />
             {(createError || updateError) && <CustomAlert className="mt-3" />}
@@ -108,18 +98,18 @@ const AddBranchForm = ({ branch, setDialogOpen }: AddBranchFormProps) => {
                     {isAdding || isUpdating ? (
                         <LoadingSpinner />
                     ) : branch ? (
-                        'Сохранить'
+                        t('button.action.save')
                     ) : (
-                        'Создать'
+                        t('button.action.create')
                     )}
                 </Button>
                 <Button
                     className="w-[100px] mt-10"
                     type="button"
-                    variant={'outline'}
+                    variant="outline"
                     onClick={() => setDialogOpen!(false)}
                 >
-                    Отменить
+                    {t('button.action.cancel')}
                 </Button>
             </Fragment>
         </CustomForm>

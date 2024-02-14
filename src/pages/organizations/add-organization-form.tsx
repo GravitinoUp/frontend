@@ -1,29 +1,17 @@
-import { Dispatch, Fragment, SetStateAction, useEffect } from 'react'
+import { Dispatch, Fragment, SetStateAction, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
+import i18next from '../../i18n.ts'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-} from '@/components/ui/form'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
-import { useToast } from '@/components/ui/use-toast'
+import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useGetAllOrganizationTypesQuery } from '@/redux/api/organization-types'
-import {
-    useCreateOrganizationMutation,
-    useUpdateOrganizationMutation,
-} from '@/redux/api/organizations'
+import { useCreateOrganizationMutation, useUpdateOrganizationMutation } from '@/redux/api/organizations'
 import {
     CreateOrganizationPayloadInterface,
     OrganizationInterface,
@@ -31,19 +19,17 @@ import {
 } from '@/types/interface/organizations'
 
 const formSchema = z.object({
-    full_name: z.string().min(1, { message: 'Необходимо добавить название' }),
-    short_name: z
-        .string()
-        .min(1, { message: 'Необходимо добавить короткое название' }),
+    full_name: z.string().min(1, { message: i18next.t('validation.require.title') }),
+    short_name: z.string().min(1, { message: i18next.t('validation.require.short.name') }),
     register_number: z.string().refine((value) => /^\d+$/.test(value), {
-        message: 'Регистрационный номер может содержать только цифры',
+        message: i18next.t('validation.require.reg.number'),
     }),
     phone: z.string().refine((value) => /^\d{11}$/.test(value), {
-        message: 'Номер должен быть в формате: 7XXXXXXXXXX',
+        message: i18next.t('validation.require.phone'),
     }),
     email: z.string().nullable(),
     organization_type_id: z.string({
-        required_error: 'Тип организации должен быть выбран',
+        required_error: i18next.t('validation.require.organization.type'),
     }),
 })
 
@@ -56,8 +42,6 @@ const AddOrganizationForm = ({
     setDialogOpen,
     organization,
 }: AddOrganizationFormProps) => {
-    const { toast } = useToast()
-
     const organizationTypesQuery: OrganizationTypePayloadInterface = {
         offset: {
             count: 50,
@@ -78,20 +62,20 @@ const AddOrganizationForm = ({
         schema: formSchema,
         defaultValues: !organization
             ? {
-                  full_name: '',
-                  short_name: '',
-                  register_number: '',
-                  phone: '',
-                  email: '',
-              }
+                full_name: '',
+                short_name: '',
+                register_number: '',
+                phone: '',
+                email: '',
+            }
             : {
-                  full_name: organization.full_name,
-                  short_name: organization.short_name,
-                  register_number: organization.register_number,
-                  phone: organization.phone,
-                  email: organization.email,
-                  organization_type_id: `${organization.organization_type.organization_type_id}`,
-              },
+                full_name: organization.full_name,
+                short_name: organization.short_name,
+                register_number: organization.register_number,
+                phone: organization.phone,
+                email: organization.email,
+                organization_type_id: `${organization.organization_type.organization_type_id}`,
+            },
     })
 
     const [
@@ -109,7 +93,7 @@ const AddOrganizationForm = ({
     ] = useUpdateOrganizationMutation()
 
     const handleSubmit = (
-        data: Partial<CreateOrganizationPayloadInterface>
+        data: Partial<CreateOrganizationPayloadInterface>,
     ) => {
         if (organization) {
             updateOrganization({
@@ -121,25 +105,18 @@ const AddOrganizationForm = ({
         }
     }
 
-    useEffect(() => {
-        if (createSuccess) {
-            toast({
-                description: `Организация успешно добавлена`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [createSuccess])
+    const { t } = useTranslation()
 
-    useEffect(() => {
-        if (updateSuccess) {
-            toast({
-                description: `Организация успешно изменена`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [updateSuccess])
+    const createSuccessMsg = useMemo(() => t('toast.success.description.create.f', {
+        entityType: t('organization'),
+    }), [])
+
+    const updateSuccessMsg = useMemo(() => t('toast.success.description.update.f', {
+        entityType: t('organization'),
+    }), [])
+
+    useSuccessToast(createSuccessMsg, createSuccess, setDialogOpen)
+    useSuccessToast(updateSuccessMsg, updateSuccess, setDialogOpen)
 
     return (
         <CustomForm form={form} onSubmit={handleSubmit}>
@@ -147,7 +124,7 @@ const AddOrganizationForm = ({
                 control={form.control}
                 name="full_name"
                 render={({ field }) => (
-                    <InputField label="Полное название" {...field} />
+                    <InputField label={t('full.title')} {...field} />
                 )}
             />
             <FormField
@@ -156,7 +133,7 @@ const AddOrganizationForm = ({
                 render={({ field }) => (
                     <InputField
                         className="mt-3"
-                        label="Короткое название"
+                        label={t('short.title')}
                         {...field}
                     />
                 )}
@@ -168,7 +145,7 @@ const AddOrganizationForm = ({
                     render={({ field }) => (
                         <InputField
                             className="w-full mr-5 mt-3"
-                            label="Регистрационный номер"
+                            label={t('registration.number')}
                             {...field}
                         />
                     )}
@@ -178,10 +155,10 @@ const AddOrganizationForm = ({
                     name="organization_type_id"
                     render={({ field }) => (
                         <FormItem className="w-full mt-3">
-                            <FormLabel>Тип организации</FormLabel>
+                            <FormLabel>{t('organization.type')}</FormLabel>
                             {organizationTypesLoading && <LoadingSpinner />}
                             {organizationTypesError && (
-                                <CustomAlert message="Типы организаций не загрузились. Попробуйте позднее." />
+                                <CustomAlert message={t('multiselect.error.organization.types')} />
                             )}
                             {organizationTypesSuccess &&
                                 organizationTypes?.length > 0 && (
@@ -191,7 +168,8 @@ const AddOrganizationForm = ({
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Выберите тип организации" />
+                                                <SelectValue placeholder={t(
+                                                    'multiselect.placeholder.organization.type')} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -202,14 +180,14 @@ const AddOrganizationForm = ({
                                                             organizationType.organization_type_id
                                                         }
                                                         value={String(
-                                                            organizationType.organization_type_id
+                                                            organizationType.organization_type_id,
                                                         )}
                                                     >
                                                         {
                                                             organizationType.organization_type_name
                                                         }
                                                     </SelectItem>
-                                                )
+                                                ),
                                             )}
                                         </SelectContent>
                                     </Select>
@@ -225,7 +203,7 @@ const AddOrganizationForm = ({
                     render={({ field }) => (
                         <InputField
                             className="w-full mr-5 mt-3"
-                            label="Телефон"
+                            label={t('phone')}
                             {...field}
                         />
                     )}
@@ -254,9 +232,9 @@ const AddOrganizationForm = ({
                     {isAdding || isUpdating ? (
                         <LoadingSpinner />
                     ) : organization ? (
-                        'Сохранить'
+                        t('button.action.save')
                     ) : (
-                        'Создать'
+                        t('button.action.create')
                     )}
                 </Button>
                 <Button
@@ -265,7 +243,7 @@ const AddOrganizationForm = ({
                     variant={'outline'}
                     onClick={() => setDialogOpen!(false)}
                 >
-                    Отменить
+                    {t('button.action.cancel')}
                 </Button>
             </Fragment>
         </CustomForm>

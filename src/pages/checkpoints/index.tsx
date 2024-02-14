@@ -1,4 +1,6 @@
 import { useState } from 'react'
+
+import { useTranslation } from 'react-i18next'
 import { checkpointsColumns } from './checkpoint-columns'
 import { checkpointsFormTab } from './checkpoint-form-tab'
 import { placeholderQuery } from '../tasklist/constants'
@@ -13,6 +15,7 @@ import { CheckpointsPayloadInterface, FormattedCheckpointsInterface } from '@/ty
 
 export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)
+    const { t } = useTranslation()
 
     const [checkpointsQuery, setCheckpointsQuery] =
         useState<CheckpointsPayloadInterface>({
@@ -43,7 +46,7 @@ export default function CheckpointsPage() {
 
     return (
         <PageLayout
-            title="Пункты пропуска"
+            title={t('checkpoints')}
             onRefreshClick={refetch}
             actionButton={
                 <FormDialog
@@ -61,10 +64,8 @@ export default function CheckpointsPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {
-                        }} />
-                        <ExcelButton buttonType="import" onClick={() => {
-                        }} />
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
                 </div>
             }

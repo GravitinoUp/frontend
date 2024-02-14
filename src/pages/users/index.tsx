@@ -1,4 +1,6 @@
 import { useState } from 'react'
+
+import { useTranslation } from 'react-i18next'
 import { usersFormTab } from './user-form-tab'
 import { usersColumns } from './users-columns'
 import { placeholderQuery } from '../tasklist/constants'
@@ -46,9 +48,11 @@ export default function UsersPage() {
     })
 
     const [formOpen, setFormOpen] = useState(false)
+    const { t } = useTranslation()
+
     return (
         <PageLayout
-            title="Пользователи"
+            title={t('users')}
             onRefreshClick={refetch}
             actionButton={
                 <FormDialog
@@ -66,10 +70,8 @@ export default function UsersPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {
-                        }} />
-                        <ExcelButton buttonType="import" onClick={() => {
-                        }} />
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
                 </div>
             }

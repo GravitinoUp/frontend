@@ -12,6 +12,7 @@ import {
     VisibilityState,
 } from '@tanstack/react-table'
 
+import { useTranslation } from 'react-i18next'
 import { getCellAlignment, getCellTextColor } from './get-cell-class'
 import { TablePagination } from './table-pagination'
 import { DebouncedInput } from '../search-input'
@@ -42,11 +43,11 @@ function DataTable<TData, TValue>({
     onRowClick,
     searchSuffixIconClick,
     columnVisibility = {},
-    getPaginationInfo = () => {
-    },
+    getPaginationInfo = () => {},
     paginationInfo,
     isLoading,
 }: DataTableProps<TData, TValue>) {
+    const { t } = useTranslation()
     const [rowSelection, setRowSelection] = useState({})
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [sorting, setSorting] = useState<SortingState>([])
@@ -131,8 +132,7 @@ function DataTable<TData, TValue>({
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
-                                                    header.column.columnDef
-                                                        .header,
+                                                    header.column.columnDef.header,
                                                     header.getContext(),
                                                 )}
                                             {header.id !== 'select' &&
@@ -198,7 +198,7 @@ function DataTable<TData, TValue>({
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    Ничего не найдено
+                                    {t('nothing.found')}
                                 </TableCell>
                             </TableRow>
                         )}

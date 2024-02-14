@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Header } from './Header'
 import { Navbar } from './Navbar'
-import useEscape from '../hooks/useEscape'
+import useEscape from '../hooks/use-escape.ts'
 
-export function Layuot() {
+export function Layout() {
     const [open, setOpen] = useState(false)
     useEscape(() => setOpen(false))
 
