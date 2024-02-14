@@ -220,11 +220,28 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             : 'organization'
     )
 
-    useEffect(() => {
-        console.log(user)
-    }, [])
-
     function handleUserSubmit() {
+        if (tabUserTypeValue === 'user') {
+            const userFormValues = userForm.getValues()
+            if (userFormValues.password !== userFormValues.repeat_password) {
+                userForm.setError('repeat_password', {
+                    message: 'Пароли не совпадают',
+                })
+                return
+            }
+        } else {
+            const organizationFormValue = organizationForm.getValues()
+            if (
+                organizationFormValue.password !==
+                organizationFormValue.repeat_password
+            ) {
+                userForm.setError('repeat_password', {
+                    message: 'Пароли не совпадают',
+                })
+                return
+            }
+        }
+
         setTabValue('role')
     }
     function handleRoleSubmit() {
