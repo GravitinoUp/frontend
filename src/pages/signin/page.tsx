@@ -8,7 +8,6 @@ import { InputField } from '@/components/input-field/input-field'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormField } from '@/components/ui/form'
-import { useToast } from '@/components/ui/use-toast'
 import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
@@ -31,8 +30,6 @@ export function SignInPage() {
     })
 
     const [shown, setShown] = useState(false)
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
     const { t } = useTranslation()
 
     const dispatch = useAppDispatch()
@@ -57,6 +54,8 @@ export function SignInPage() {
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
         authUser(data)
     }
+
+    useErrorToast(isError, () => handleSubmit)
 
     useEffect(() => {
         document.title = t('authorization')

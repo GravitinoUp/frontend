@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import { useTranslation } from 'react-i18next'
 import MultiLink from './links/multi-link.tsx'
 import SidebarLink from './links/nav-link.tsx'
 import i18next from '../i18n.ts'
@@ -15,6 +14,7 @@ import RoadFinishIcon from '@/assets/icons/Road_finish.svg'
 import TaskListIcon from '@/assets/icons/Status_list.svg'
 import VectorIcon from '@/assets/icons/Vector.svg'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export interface SingleLink {
     type: string

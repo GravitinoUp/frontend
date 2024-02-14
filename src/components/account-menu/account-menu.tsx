@@ -1,6 +1,7 @@
 import { User } from 'lucide-react'
 
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Button } from '../ui/button'
 import ChevronDown from '@/assets/icons/ChevronDown.svg'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
@@ -18,13 +19,15 @@ import {
     getJWTtokens,
     removeCookieValue,
 } from '@/utils/helpers'
+import { useAppDispatch } from '@/hooks/reduxHooks'
+import { jwtDecode } from 'jwt-decode'
+import { useErrorToast } from '@/hooks/use-error-toast'
+import { Fragment, useEffect } from 'react'
 
 export default function AccountMenu() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const { t } = useTranslation()
-
-    const { user } = useAppSelector((state) => state.auth)
 
     const accessToken = getCookieValue('accessToken')
     const { user_id }: JWT = accessToken
@@ -37,29 +40,12 @@ export default function AccountMenu() {
         useLogoutMutation()
 
     useEffect(() => {
-        if (isLogoutError) {
-            toast({
-                variant: 'destructive',
-                title: 'Упс! Что-то пошло не так.',
-                description: 'Возникла проблема с запросом',
-                duration: 3000,
-                action: (
-                    <ToastAction
-                        altText="Попробуйте еще раз"
-                        onClick={handleLogout}
-                    >
-                        Попробуйте еще раз
-                    </ToastAction>
-                ),
-            })
-        }
-
         if (isLogoutSuccess) {
             removeCookieValue('accessToken')
             removeCookieValue('refreshToken')
             navigate('/signin')
         }
-    }, [isLogoutError, isLogoutSuccess, toast])
+    }, [isLogoutSuccess])
 
     const handleLogout = () => {
         const refreshToken = getJWTtokens().refreshToken
@@ -70,6 +56,8 @@ export default function AccountMenu() {
             navigate('/signin')
         }
     }
+
+    useErrorToast(isLogoutError, handleLogout)
 
     const icon = null
     return (
@@ -112,9 +100,7 @@ export default function AccountMenu() {
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <Button
-                            onClick={() => {
-                                dispatch(fetchLogout())
-                            }}
+                            onClick={handleLogout}
                             variant="ghost"
                             className="text-destructive h-5 w-20 justify-start p-0 hover:text-destructive"
                             size="sm"
