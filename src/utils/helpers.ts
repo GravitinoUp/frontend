@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { FILE_SIZE_UNITS } from '@/constants/constants.ts'
 
 export const getJWTtokens = () => {
     const accessToken = getCookieValue('accessToken')
@@ -16,29 +17,24 @@ export const formatDate = (date?: Date | null) => {
         return ''
     }
     const newDate = new Date(date)
-    const formattedDate = format(newDate, 'dd.MM.yyyy')
-
-    return formattedDate
+    return format(newDate, 'dd.MM.yyyy')
 }
 
 export const formatInitials = (
     firstName: string,
     lastName: string,
-    patronymic: string
+    patronymic: string,
 ) => {
     const str = `${lastName} ${firstName} ${patronymic}`
 
-    return str
-        .split(/\s+/)
-        .map((w, i) => (i ? w.substring(0, 1).toUpperCase() + '.' : w))
-        .join(' ')
+    return str.split(/\s+/).map((w, i) => (i ? w.substring(0, 1).toUpperCase() + '.' : w)).join(' ')
 }
 
 export const formatFileSize = (sizeInBytes: number) => {
     let i = 0
     let formattedSize = sizeInBytes
 
-    const byteUnits = ['б', 'Кб', 'Мб', 'Гб']
+    const byteUnits = Object.values(FILE_SIZE_UNITS)
 
     while (formattedSize > 1024 && i < 3) {
         formattedSize /= 1024

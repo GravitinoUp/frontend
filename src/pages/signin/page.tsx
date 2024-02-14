@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -11,6 +12,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
+import { useErrorToast } from '@/hooks/use-error-toast'
 
 const formSchema = z.object({
     email: z.string().email('Неправильный формат Email'),
@@ -29,11 +31,12 @@ export function SignInPage() {
     })
 
     const [shown, setShown] = useState(false)
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const { t } = useTranslation()
 
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-
-    const { toast } = useToast()
 
     const [
         authUser,
@@ -41,18 +44,6 @@ export function SignInPage() {
     ] = useAuthMutation()
 
     useEffect(() => {
-        document.title = 'Авторизация'
-    }, [])
-
-    useEffect(() => {
-        if (isError) {
-            toast({
-                variant: 'destructive',
-                description: `Ошибка входа! Проверьте правильность введенных данных.`,
-                duration: 3000,
-            })
-        }
-
         if (isSuccess) {
             dispatch(setAccessToken(authData?.accessToken))
             if (form.getValues().remember_me) {
@@ -61,11 +52,15 @@ export function SignInPage() {
 
             navigate('/dashboard')
         }
-    }, [isSuccess, isError])
+    }, [isSuccess])
 
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
         authUser(data)
     }
+
+    useEffect(() => {
+        document.title = t('authorization')
+    }, [])
 
     return (
         <div className="bg-[#F8F8F8] h-screen w-screen select-none  flex items-center justify-center">
@@ -77,10 +72,10 @@ export function SignInPage() {
                 <div>
                     <div className="flex flex-col gap-16 mt-28">
                         <p className="text-[#0784D1] uppercase items-center font-pop font-bold text-[28px] flex justify-center">
-                            Гравитино АСУ УПР
+                            {t('gravitino.full.name')}
                         </p>
                         <p className="text-[#3F434A] font-pop text-[28px] flex items-center  justify-center  ">
-                            Войдите в свой аккаунт
+                            {t('authorization.title')}
                         </p>
                     </div>
                     <FormField
@@ -138,7 +133,7 @@ export function SignInPage() {
                                     name="remember_me"
                                     render={({ field }) => (
                                         <Checkbox
-                                            label="Запомнить меня"
+                                            label={t('authorization.remember')}
                                             id="remember"
                                             checked={field.value}
                                             onCheckedChange={field.onChange}
@@ -148,7 +143,7 @@ export function SignInPage() {
                             </div>
                             <Link to="/123">
                                 <p className="text-[#0784D1] font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
-                                    Забыли пароль?
+                                    {t('authorization.password.forgot')}
                                 </p>
                             </Link>
                         </div>
@@ -157,7 +152,7 @@ export function SignInPage() {
                             className="rounded-xl h-[40px] w-[400px] bg-[#0784D1] mt-6"
                             variant="default"
                         >
-                            Войти
+                            {t('button.action.enter')}
                         </Button>
                     </div>
                 </div>

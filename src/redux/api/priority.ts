@@ -4,14 +4,10 @@ import { PriorityInterface } from '@/types/interface/orders'
 
 const priorityApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getAllPriority: builder.query<PriorityInterface[], unknown>({
-            query: (body) => ({
-                url: 'priority/all',
-                method: 'POST',
-                body,
-            }),
+        getAllPriority: builder.query<PriorityInterface[], void>({
+            query: () => 'priority/all',
             transformResponse: (
-                response: FetchDataInterface<PriorityInterface[]>
+                response: FetchDataInterface<PriorityInterface[]>,
             ) => response.data,
         }),
     }),

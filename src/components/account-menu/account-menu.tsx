@@ -1,11 +1,7 @@
-import { Fragment, useEffect } from 'react'
-import { jwtDecode } from 'jwt-decode'
 import { User } from 'lucide-react'
 
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
-import { ToastAction } from '../ui/toast'
-import { useToast } from '../ui/use-toast'
 import ChevronDown from '@/assets/icons/ChevronDown.svg'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -24,8 +20,11 @@ import {
 } from '@/utils/helpers'
 
 export default function AccountMenu() {
-    const { toast } = useToast()
+    const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const { t } = useTranslation()
+
+    const { user } = useAppSelector((state) => state.auth)
 
     const accessToken = getCookieValue('accessToken')
     const { user_id }: JWT = accessToken
@@ -108,17 +107,19 @@ export default function AccountMenu() {
                             className=" h-5 w-20 justify-start p-0"
                             size="sm"
                         >
-                            Настройки
+                            {t('settings')}
                         </Button>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <Button
-                            onClick={handleLogout}
+                            onClick={() => {
+                                dispatch(fetchLogout())
+                            }}
                             variant="ghost"
                             className="text-destructive h-5 w-20 justify-start p-0 hover:text-destructive"
                             size="sm"
                         >
-                            Выйти
+                            {t('exit')}
                         </Button>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
