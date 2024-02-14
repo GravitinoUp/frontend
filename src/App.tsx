@@ -6,6 +6,7 @@ import BranchesPage from './pages/branches'
 import CheckpointsPage from './pages/checkpoints'
 import { DashboardPage } from './pages/dashboard/page'
 import ManagePropertiesPage from './pages/manage-properties'
+import MapPage from './pages/map'
 import MediaReportsPage from './pages/mediareports/page'
 import NotFoundPage from './pages/notfound/page'
 import OrganizationsPage from './pages/organizations'
@@ -70,6 +71,7 @@ function App() {
                             element={<MediaReportsPage />}
                         />
                         <Route path="reports" element={<ReportsPage />} />
+                        <Route path="map" element={<MapPage />} />
                         <Route path="settings" element={<SettingsPage />} />
                         <Route>
                             <Route path="tasklist" element={<TaskListPage />} />

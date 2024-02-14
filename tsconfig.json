@@ -15,8 +15,10 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "ymaps3": ["./node_modules/@yandex/ymaps3-types"]
         },
+        "typeRoots": ["./node_modules/@yandex/ymaps3-types"],
         /* Linting */
         "alwaysStrict": true,
         "strict": true,
