@@ -12,10 +12,11 @@ import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
 import { useErrorToast } from '@/hooks/use-error-toast'
+import i18next from 'i18next'
 
 const formSchema = z.object({
-    email: z.string().email('Неправильный формат Email'),
-    password: z.string().min(1, 'Укажите пароль'),
+    email: z.string().email(i18next.t('validation.require.email')),
+    password: z.string().min(1, i18next.t('validation.require.password')),
     remember_me: z.boolean(),
 })
 
@@ -55,7 +56,7 @@ export function SignInPage() {
         authUser(data)
     }
 
-    useErrorToast(isError, () => handleSubmit)
+    useErrorToast(isError, () => handleSubmit(form.getValues()))
 
     useEffect(() => {
         document.title = t('authorization')
@@ -94,7 +95,7 @@ export function SignInPage() {
                         render={({ field }) => (
                             <div className="relative justify-center">
                                 <InputField
-                                    label="Пароль"
+                                    label={t('authorization.password')}
                                     type={shown ? 'text' : 'password'}
                                     className="mt-3"
                                     suffixIcon={

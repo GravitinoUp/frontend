@@ -19,13 +19,11 @@ import {
     getJWTtokens,
     removeCookieValue,
 } from '@/utils/helpers'
-import { useAppDispatch } from '@/hooks/reduxHooks'
 import { jwtDecode } from 'jwt-decode'
 import { useErrorToast } from '@/hooks/use-error-toast'
 import { Fragment, useEffect } from 'react'
 
 export default function AccountMenu() {
-    const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const { t } = useTranslation()
 

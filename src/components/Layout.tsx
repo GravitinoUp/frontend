@@ -27,7 +27,7 @@ export function Layout() {
                     <Header open={open} setOpen={setOpen} />
                 </header>
 
-                <div className="bg-[#F8F8F8]  items-start flex place-items-start justify-start row-2 overflow-visible overflow-y-auto">
+                <div className="bg-[#F8F8F8] items-start flex place-items-start justify-start row-2 overflow-visible overflow-y-auto">
                     <Outlet />
                 </div>
             </div>
