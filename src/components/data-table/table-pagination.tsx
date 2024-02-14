@@ -1,19 +1,8 @@
-import {
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    DoubleArrowLeftIcon,
-    DoubleArrowRightIcon,
-} from '@radix-ui/react-icons'
+import { ChevronLeftIcon, ChevronRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons'
 import { Table } from '@tanstack/react-table'
-
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const ITEMS_PER_PAGE_LIST = [10, 20, 30, 40, 50]
 
@@ -22,6 +11,7 @@ interface TablePaginationProps<TData> {
 }
 
 export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
+    const { t } = useTranslation()
     const totalPagesCount =
         typeof table?.getPageCount() !== 'undefined' &&
         Array.from({ length: table?.getPageCount() }, (_, i) => i)
@@ -62,7 +52,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                         onClick={() => table?.setPageIndex(0)}
                         disabled={!table?.getCanPreviousPage()}
                     >
-                        <span className="sr-only">На первую страницу</span>
+                        <span className="sr-only">{t('pagination.first.page')}</span>
                         <DoubleArrowLeftIcon className="h-4 w-4" />
                     </Button>
                     <Button
@@ -71,7 +61,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                         onClick={() => table?.previousPage()}
                         disabled={!table?.getCanPreviousPage()}
                     >
-                        <span className="sr-only">Предыдущая страница</span>
+                        <span className="sr-only">{t('pagination.previous.page')}</span>
                         <ChevronLeftIcon className="h-4 w-4" />
                     </Button>
                     {totalPagesCount &&
@@ -137,7 +127,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                         onClick={() => table?.nextPage()}
                         disabled={!table?.getCanNextPage()}
                     >
-                        <span className="sr-only">Следующая страница</span>
+                        <span className="sr-only">{t('pagination.next.page')}</span>
                         <ChevronRightIcon className="h-4 w-4" />
                     </Button>
                     <Button
@@ -148,7 +138,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                         }
                         disabled={!table?.getCanNextPage()}
                     >
-                        <span className="sr-only">На последнюю страницу</span>
+                        <span className="sr-only">{t('pagination.last.page')}</span>
                         <DoubleArrowRightIcon className="h-4 w-4" />
                     </Button>
                 </div>

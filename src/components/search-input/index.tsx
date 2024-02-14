@@ -1,5 +1,6 @@
 import React from 'react'
 import { Search } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '../ui/button'
 import FilterIcon from '@/assets/icons/filter_icon.svg'
 
@@ -18,6 +19,7 @@ export const DebouncedInput: React.FC<Props> = ({
     ...props
 }) => {
     const [value, setValue] = React.useState<number | string>(initialValue)
+    const { t } = useTranslation()
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
         setValue(event.target.value)
@@ -45,7 +47,7 @@ export const DebouncedInput: React.FC<Props> = ({
                     {...props}
                     value={value}
                     onChange={handleInputChange}
-                    placeholder="Искать..."
+                    placeholder={t('placeholder.search')}
                 />
             </div>
             {suffixIconClick && (

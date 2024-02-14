@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { branchesColumns } from './branches-columns'
 import { branchesFormTab } from './branches-form-tab'
 import { placeholderQuery } from '../tasklist/constants'
@@ -27,10 +28,11 @@ const BranchesPage = () => {
     } = useGetBranchesQuery(branchesQuery)
 
     const [formOpen, setFormOpen] = useState(false)
+    const { t } = useTranslation()
 
     return (
         <PageLayout
-            title="Филиалы"
+            title={t('branches')}
             onRefreshClick={refetch}
             actionButton={
                 <FormDialog
@@ -48,8 +50,10 @@ const BranchesPage = () => {
                 <div>
                     <div className="h-16 mb-7" />
                     <div className="flex gap-3 mb-10">
-                        <ExcelButton buttonType="export" onClick={() => {}} />
-                        <ExcelButton buttonType="import" onClick={() => {}} />
+                        <ExcelButton buttonType="export" onClick={() => {
+                        }} />
+                        <ExcelButton buttonType="import" onClick={() => {
+                        }} />
                     </div>
                 </div>
             }

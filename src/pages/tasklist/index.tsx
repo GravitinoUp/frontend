@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import AddTaskForm from './add-task-form'
 import { personalOrdersQuery } from './constants'
 import ExportForm from './export-form'
 import ImportForm from './import-form'
 import TaskListContent from './tasklist-content'
+import i18next from '../../i18n.ts'
 import CalendarForm from '@/components/calendar-form/calendar-form'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import ExcelButton from '@/components/excel-button/excel-button'
@@ -14,18 +16,18 @@ import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
 const tasksPageTabs = [
     {
         value: 'allTasks',
-        head: 'Все',
+        head: i18next.t('all'),
         content: <TaskListContent />,
     },
     {
         value: 'onCheckTasks',
-        head: 'На проверке',
-        content: <p>На проверке</p>,
+        head: i18next.t('task.status.verification'),
+        content: <p>{i18next.t('task.status.verification')}</p>,
     },
     {
         value: 'closedTasks',
-        head: 'Закрыто',
-        content: <p>Закрыто</p>,
+        head: i18next.t('closed'),
+        content: <p>{i18next.t('closed')}</p>,
     },
 ]
 
@@ -34,10 +36,11 @@ export default function TaskListPage() {
     const [formOpen, setFormOpen] = useState(false)
     const [exportFormOpen, setExportFormOpen] = useState(false)
     const [importFormOpen, setImportFormOpen] = useState(false)
+    const { t } = useTranslation()
 
     return (
         <PageLayout
-            title="Список задач"
+            title={t('tasks.list')}
             onRefreshClick={refetch}
             actionButton={
                 <FormDialog

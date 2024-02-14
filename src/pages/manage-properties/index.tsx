@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import {
-    managePropertiesFormTab,
-    managePropertiesPageTab,
-} from './manage-properties-tab'
+import { useTranslation } from 'react-i18next'
+import { managePropertiesFormTab, managePropertiesPageTab } from './manage-properties-tab'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
@@ -15,10 +13,11 @@ export default function ManagePropertiesPage() {
     const [currentTab, setCurrentTab] = useState<EntityType>('Users')
 
     const { refetch } = useGetPropertiesQuery(currentTab)
+    const { t } = useTranslation()
 
     return (
         <PageLayout
-            title="Управление характеристиками"
+            title={t('manage.properties')}
             onRefreshClick={refetch}
             actionButton={
                 <FormDialog
@@ -36,8 +35,10 @@ export default function ManagePropertiesPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {}} />
-                        <ExcelButton buttonType="import" onClick={() => {}} />
+                        <ExcelButton buttonType="export" onClick={() => {
+                        }} />
+                        <ExcelButton buttonType="import" onClick={() => {
+                        }} />
                     </div>
                 </div>
             }
