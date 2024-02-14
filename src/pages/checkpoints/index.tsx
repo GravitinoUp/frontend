@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 import { checkpointsColumns } from './checkpoint-columns'
 import { checkpointsFormTab } from './checkpoint-form-tab'
 import { placeholderQuery } from '../tasklist/constants'
@@ -9,12 +8,8 @@ import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
-import {
-    CheckpointsPayloadInterface,
-    FormattedCheckpointsInterface,
-} from '@/types/interface/checkpoint'
+import { CheckpointsPayloadInterface, FormattedCheckpointsInterface } from '@/types/interface/checkpoint'
 
 export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)
@@ -66,29 +61,33 @@ export default function CheckpointsPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {}} />
-                        <ExcelButton buttonType="import" onClick={() => {}} />
+                        <ExcelButton buttonType="export" onClick={() => {
+                        }} />
+                        <ExcelButton buttonType="import" onClick={() => {
+                        }} />
                     </div>
                 </div>
             }
         >
-            {isLoading && <LoadingSpinner />}
-            {isError && <CustomAlert />}
-            <DataTable
-                data={formattedCheckpoints}
-                columns={checkpointsColumns}
-                hasBackground
-                getPaginationInfo={(pageSize, pageIndex) => {
-                    setCheckpointsQuery({
-                        ...checkpointsQuery,
-                        offset: { count: pageSize, page: pageIndex + 1 },
-                    })
-                }}
-                paginationInfo={{
-                    itemCount: checkpoints.count,
-                    pageSize: checkpointsQuery.offset.count,
-                }}
-            />
+            {isError
+                ? <CustomAlert />
+                : <DataTable
+                    data={formattedCheckpoints}
+                    columns={checkpointsColumns}
+                    hasBackground
+                    getPaginationInfo={(pageSize, pageIndex) => {
+                        setCheckpointsQuery({
+                            ...checkpointsQuery,
+                            offset: { count: pageSize, page: pageIndex + 1 },
+                        })
+                    }}
+                    paginationInfo={{
+                        itemCount: checkpoints.count,
+                        pageSize: checkpointsQuery.offset.count,
+                    }}
+                    isLoading={isLoading}
+                />
+            }
         </PageLayout>
     )
 }

@@ -2,11 +2,10 @@ import { Fragment, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { initialColumnVisibility } from './constants'
 import TaskFiltersForm from './task-filters-form'
-import { TasksFilterColumns, tasksColumns } from './tasks-columns'
+import { tasksColumns, TasksFilterColumns } from './tasks-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import FormDialog from '@/components/form-dialog/form-dialog'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
 import { OrderMyPayloadInterface } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers'
@@ -31,7 +30,7 @@ function TaskListContent() {
         })
 
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
-        initialColumnVisibility
+        initialColumnVisibility,
     )
 
     const {
@@ -60,10 +59,6 @@ function TaskListContent() {
             formatDate(row.task_end_datetime) || 'Н/Д'
         }`,
     }))
-
-    if (isLoading) {
-        return <LoadingSpinner />
-    }
 
     if (isError) {
         return <CustomAlert />
@@ -116,7 +111,7 @@ function TaskListContent() {
                                     order_status: data.order_status.map(
                                         (value) => ({
                                             order_status_name: value,
-                                        })
+                                        }),
                                     ),
                                 },
                             })
@@ -127,22 +122,22 @@ function TaskListContent() {
                         }}
                         data={{
                             branch_id:
-                                personalOrdersQuery.filter.facility?.checkpoint
-                                    ?.branch?.branch_id,
+                            personalOrdersQuery.filter.facility?.checkpoint
+                                ?.branch?.branch_id,
                             checkpoint_id:
-                                personalOrdersQuery.filter.facility?.checkpoint
-                                    ?.checkpoint_id,
+                            personalOrdersQuery.filter.facility?.checkpoint
+                                ?.checkpoint_id,
                             organization_id:
-                                personalOrdersQuery.filter.executor
-                                    ?.organization_id,
+                            personalOrdersQuery.filter.executor
+                                ?.organization_id,
                             priority_id:
-                                personalOrdersQuery.filter.priority
-                                    ?.priority_id,
+                            personalOrdersQuery.filter.priority
+                                ?.priority_id,
                             order_status: personalOrdersQuery.filter
                                 .order_status
                                 ? personalOrdersQuery.filter.order_status!.map(
-                                      (value) => `${value?.order_status_name}`
-                                  )
+                                    (value) => `${value?.order_status_name}`,
+                                )
                                 : [],
                             columns: filterColumns,
                         }}
@@ -163,7 +158,7 @@ function TaskListContent() {
                     navigate(`task`, {
                         state: {
                             order: data.data.find(
-                                (e) => e.order_id === rowData.id
+                                (e) => e.order_id === rowData.id,
                             ),
                         },
                     })
@@ -173,6 +168,7 @@ function TaskListContent() {
                     itemCount: data.count,
                     pageSize: personalOrdersQuery.offset.count,
                 }}
+                isLoading={isLoading}
             />
         </Fragment>
     )
