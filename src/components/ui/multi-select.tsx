@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Command as CommandPrimitive } from 'cmdk'
 import { X } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command'
 
@@ -27,10 +28,11 @@ export function MultiSelect({
     const inputRef = React.useRef<HTMLInputElement>(null)
     const [open, setOpen] = React.useState(false)
     const [selected, setSelected] = React.useState<Option[]>(
-        defaultOptions ?? []
+        defaultOptions ?? [],
     )
     const [inputValue, setInputValue] = React.useState('')
     const [allSelected, setAllSelected] = React.useState(false)
+    const { t } = useTranslation()
 
     const handleUnselect = React.useCallback((option: Option) => {
         setSelected((prev) => prev.filter((s) => s.value !== option.value))
@@ -89,14 +91,14 @@ export function MultiSelect({
                 }
             }
         },
-        []
+        [],
     )
 
     const selectables = options.filter(
         (option) =>
             !selected.some(
-                (item) => JSON.stringify(option) === JSON.stringify(item)
-            )
+                (item) => JSON.stringify(option) === JSON.stringify(item),
+            ),
     )
 
     React.useEffect(() => {
@@ -180,8 +182,8 @@ export function MultiSelect({
                                     className={'cursor-pointer'}
                                 >
                                     {allSelected
-                                        ? 'Отменить выбранное'
-                                        : 'Выбрать все'}
+                                        ? t('multiselect.unselect.all')
+                                        : t('multiselect.select.all')}
                                 </CommandItem>
                             )}
                             {selectables.map((item) => (
