@@ -25,6 +25,7 @@ export const api = createApi({
         'OrganizationTypes',
         'Users',
         'Checkpoints',
+        'Properties',
         'Groups',
     ],
     endpoints: () => ({}),

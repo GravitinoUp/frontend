@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Command as CommandPrimitive } from 'cmdk'
 import { X } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command'
 
@@ -13,6 +14,7 @@ interface MultiSelectProps {
     placeholder?: string
     disabled?: boolean
     onChange?: (values: Option[]) => void
+    showItems?: boolean
 }
 
 export function MultiSelect({
@@ -21,14 +23,16 @@ export function MultiSelect({
     placeholder,
     disabled,
     onChange,
+    showItems = true,
 }: MultiSelectProps) {
     const inputRef = React.useRef<HTMLInputElement>(null)
     const [open, setOpen] = React.useState(false)
     const [selected, setSelected] = React.useState<Option[]>(
-        defaultOptions ?? []
+        defaultOptions ?? [],
     )
     const [inputValue, setInputValue] = React.useState('')
     const [allSelected, setAllSelected] = React.useState(false)
+    const { t } = useTranslation()
 
     const handleUnselect = React.useCallback((option: Option) => {
         setSelected((prev) => prev.filter((s) => s.value !== option.value))
@@ -49,6 +53,29 @@ export function MultiSelect({
             e.stopPropagation()
             const input = inputRef.current
             if (input) {
+                if (!showItems && e.key === 'Enter') {
+                    if (input.value.trim() !== '') {
+                        setSelected((prev) => {
+                            const newSelected = [...prev]
+
+                            if (
+                                !prev.some(
+                                    (v) => v.value === input.value.trim()
+                                )
+                            ) {
+                                newSelected.push({
+                                    value: input.value,
+                                    label: input.value,
+                                })
+                            }
+
+                            return newSelected
+                        })
+
+                        setInputValue('')
+                    }
+                }
+
                 if (e.key === 'Delete' || e.key === 'Backspace') {
                     if (input.value === '') {
                         setSelected((prev) => {
@@ -64,14 +91,14 @@ export function MultiSelect({
                 }
             }
         },
-        []
+        [],
     )
 
     const selectables = options.filter(
         (option) =>
             !selected.some(
-                (item) => JSON.stringify(option) === JSON.stringify(item)
-            )
+                (item) => JSON.stringify(option) === JSON.stringify(item),
+            ),
     )
 
     React.useEffect(() => {
@@ -126,8 +153,8 @@ export function MultiSelect({
                         ref={inputRef}
                         value={inputValue}
                         onValueChange={setInputValue}
-                        onBlur={() => setOpen(false)}
-                        onFocus={() => setOpen(true)}
+                        onBlur={() => showItems && setOpen(false)}
+                        onFocus={() => showItems && setOpen(true)}
                         placeholder={selected.length > 0 ? void 0 : placeholder}
                         disabled={disabled}
                         className="ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1 disabled:cursor-not-allowed disabled:opacity-50"
@@ -155,8 +182,8 @@ export function MultiSelect({
                                     className={'cursor-pointer'}
                                 >
                                     {allSelected
-                                        ? 'Отменить выбранное'
-                                        : 'Выбрать все'}
+                                        ? t('multiselect.unselect.all')
+                                        : t('multiselect.select.all')}
                                 </CommandItem>
                             )}
                             {selectables.map((item) => (

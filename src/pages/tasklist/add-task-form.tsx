@@ -1,6 +1,8 @@
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import { Dispatch, SetStateAction, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { NewOrderBodyInterface, placeholderQuery } from './constants'
+import i18next from '../../i18n.ts'
 import CalendarIcon from '@/assets/icons/Calendar.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -8,32 +10,16 @@ import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { MultiSelect, Option } from '@/components/ui/multi-select'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
+import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { cn } from '@/lib/utils'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { useGetCheckpointsByBranchQuery } from '@/redux/api/checkpoints'
@@ -45,53 +31,35 @@ import { OrderInterface } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers'
 
 const baseSchema = z.object({
-    taskName: z.string().min(1, { message: 'Небходимо добавить название' }),
-    taskDescription: z
-        .string()
-        .min(5, { message: 'Небходимо добавить описание' }),
-    facilities: z
-        .array(z.number())
-        .refine((value) => value.some((item) => item), {
-            message: 'Надо выбрать хотя бы один элемент из списка',
-        }),
-    organizations: z
-        .array(z.number())
-        .refine((value) => value.some((item) => item), {
-            message: 'Надо выбрать хотя бы один элемент из списка',
-        }),
-    branchesList: z
-        .array(z.number())
-        .refine((value) => value.some((item) => item), {
-            message: 'Надо выбрать хотя бы один элемент из списка',
-        }),
-    checkpointsList: z
-        .array(z.number())
-        .refine((value) => value.some((item) => item), {
-            message: 'Надо выбрать хотя бы один элемент из списка',
-        }),
-    priority: z.string({ required_error: 'Установите приоритет задачи' }),
-    taskType: z.string({ required_error: 'Выберите тип задачи' }),
-    startDate: z.date({
-        required_error: 'Укажите дату начала',
+    taskName: z.string().min(1, { message: i18next.t('validation.require.title') }),
+    taskDescription: z.string().min(5, { message: i18next.t('validation.require.description') }),
+    facilities: z.array(z.number()).refine((value) => value.some((item) => item), {
+        message: i18next.t('validation.require.select'),
     }),
-    endDate: z.date({
-        required_error: 'Укажите дату окончания',
+    organizations: z.array(z.number()).refine((value) => value.some((item) => item), {
+        message: i18next.t('validation.require.select'),
     }),
+    branchesList: z.array(z.number()).refine((value) => value.some((item) => item), {
+        message: i18next.t('validation.require.select'),
+    }),
+    checkpointsList: z.array(z.number()).refine((value) => value.some((item) => item), {
+        message: i18next.t('validation.require.select'),
+    }),
+    priority: z.string({ required_error: i18next.t('validation.require.task.priority') }),
+    taskType: z.string({ required_error: i18next.t('validation.require.task.type') }),
 })
 
-const datesSchema = z
-    .object({
-        startDate: z.date({
-            required_error: 'Укажите дату начала',
-        }),
-        endDate: z.date({
-            required_error: 'Укажите дату окончания',
-        }),
-    })
-    .refine((data) => data.endDate > data.startDate, {
-        message: 'Дата окончания должна быть больше даты начала',
-        path: ['endDate'],
-    })
+const datesSchema = z.object({
+    startDate: z.date({
+        required_error: i18next.t('validation.require.start.date'),
+    }),
+    endDate: z.date({
+        required_error: i18next.t('validation.require.end.date'),
+    }),
+}).refine((data) => data.endDate > data.startDate, {
+    message: i18next.t('validation.require.dates.mismatch'),
+    path: ['endDate'],
+})
 
 const formSchema = z.intersection(baseSchema, datesSchema)
 
@@ -133,7 +101,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isError: checkpointsError,
     } = useGetCheckpointsByBranchQuery(
         { body: placeholderQuery, branchIDS: selectedBranches },
-        { skip: selectedBranches.length === 0 }
+        { skip: selectedBranches.length === 0 },
     )
     const mappedCheckpoints: Option[] = checkpoints?.map((checkpoint) => ({
         label: checkpoint.checkpoint_name,
@@ -147,7 +115,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isError: facilitiesError,
     } = useGetFacilitiesByCheckpointQuery(
         { body: placeholderQuery, checkpointIDS: selectedCheckpoints },
-        { skip: selectedCheckpoints.length === 0 }
+        { skip: selectedCheckpoints.length === 0 },
     )
     const mappedFacilities: Option[] = facilities?.map((facility) => ({
         label: facility.facility_name,
@@ -166,13 +134,13 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         (organization) => ({
             label: organization.short_name,
             value: organization.organization_id,
-        })
+        }),
     )
 
     const {
         data: priorities = [],
         isLoading: prioritiesLoading,
-        isError: prioritiessError,
+        isError: prioritiesError,
         isSuccess: prioritiesSuccess,
     } = useGetAllPriorityQuery()
 
@@ -200,17 +168,13 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         }
     }
 
-    const { toast } = useToast()
+    const { t } = useTranslation()
 
-    useEffect(() => {
-        if (addSuccess) {
-            toast({
-                description: `Задача успешно добавлена`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [addSuccess])
+    const addSuccessMsg = useMemo(() => t('toast.success.description.create.m', {
+        entityType: t('order'),
+    }), [])
+
+    useSuccessToast(addSuccessMsg, addSuccess, setDialogOpen)
 
     return (
         <CustomForm form={form} onSubmit={handleSubmit}>
@@ -218,15 +182,15 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                 <TabsList className="gap-2">
                     <TabsTrigger
                         value="task"
-                        className="data-[state=active]:text-primary"
+                        className="data-[state=active]:text-primary uppercase"
                     >
-                        ЗАДАЧА
+                        {t('order')}
                     </TabsTrigger>
                     <TabsTrigger
                         value="files"
                         className="data-[state=active]:text-primary"
                     >
-                        ФАЙЛЫ
+                        {t('files')}
                     </TabsTrigger>
                 </TabsList>
                 <Separator className="w-full bg-[#E8E9EB]" decorative />
@@ -237,7 +201,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="taskType"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Тип задачи</FormLabel>
+                                    <FormLabel>{t('task.type')}</FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             onValueChange={field.onChange}
@@ -249,7 +213,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                     <RadioGroupItem value="planned" />
                                                 </FormControl>
                                                 <FormLabel className="font-normal">
-                                                    Плановая
+                                                    {t('task.planned')}
                                                 </FormLabel>
                                             </FormItem>
                                             <FormItem
@@ -260,7 +224,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                     <RadioGroupItem value="unplanned" />
                                                 </FormControl>
                                                 <FormLabel className="font-normal">
-                                                    Внеплановая
+                                                    {t('task.unplanned')}
                                                 </FormLabel>
                                             </FormItem>
                                         </RadioGroup>
@@ -274,7 +238,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="taskName"
                             render={({ field }) => (
                                 <InputField
-                                    label="Название задачи"
+                                    label={t('task.title')}
                                     className="mt-3"
                                     {...field}
                                     disabled={isAdding}
@@ -286,10 +250,10 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="taskDescription"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>Описание задачи</FormLabel>
+                                    <FormLabel>{t('task.description')}</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder="Добавьте описание"
+                                            placeholder={t('task.description')}
                                             {...field}
                                         />
                                     </FormControl>
@@ -302,10 +266,10 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="branchesList"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>Филиал</FormLabel>
+                                    <FormLabel>{t('branch')}</FormLabel>
                                     {branchesLoading && <LoadingSpinner />}
                                     {branchesError && (
-                                        <CustomAlert message="Список филиалов не загрузился. Попробуйте позднее." />
+                                        <CustomAlert message={t('multiselect.error.branch')} />
                                     )}
                                     {branchesSuccess &&
                                         branches?.length > 0 && (
@@ -315,28 +279,20 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value
-                                                            )
+                                                                    value,
+                                                            ),
                                                         )
                                                     }}
                                                     options={mappedBranches}
                                                     defaultOptions={
                                                         task && [
                                                             {
-                                                                value: task
-                                                                    ?.facility
-                                                                    .checkpoint
-                                                                    .branch
-                                                                    .branch_id,
-                                                                label: task
-                                                                    ?.facility
-                                                                    .checkpoint
-                                                                    .branch
-                                                                    .branch_name,
+                                                                value: task?.facility.checkpoint.branch.branch_id,
+                                                                label: task?.facility.checkpoint.branch.branch_name,
                                                             },
                                                         ]
                                                     }
-                                                    placeholder="Выберите филиал"
+                                                    placeholder={t('multiselect.placeholder.branch')}
                                                 />
                                             </FormControl>
                                         )}
@@ -349,10 +305,10 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="checkpointsList"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>Пункт пропуска</FormLabel>
+                                    <FormLabel>{t('checkpoint')}</FormLabel>
                                     {checkpointsLoading && <LoadingSpinner />}
                                     {checkpointsError && (
-                                        <CustomAlert message="Список пунктов пропуска не загрузился. Попробуйте позднее." />
+                                        <CustomAlert message={t('multiselect.error.checkpoint')} />
                                     )}
                                     {!checkpointsError &&
                                         !checkpointsLoading && (
@@ -362,22 +318,16 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value
-                                                            )
+                                                                    value,
+                                                            ),
                                                         )
                                                     }}
                                                     options={mappedCheckpoints}
                                                     defaultOptions={
                                                         task && [
                                                             {
-                                                                value: task
-                                                                    ?.facility
-                                                                    .checkpoint
-                                                                    .checkpoint_id,
-                                                                label: task
-                                                                    ?.facility
-                                                                    .checkpoint
-                                                                    .checkpoint_name,
+                                                                value: task?.facility.checkpoint.checkpoint_id,
+                                                                label: task?.facility.checkpoint.checkpoint_name,
                                                             },
                                                         ]
                                                     }
@@ -385,7 +335,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         selectedBranches.length ===
                                                         0
                                                     }
-                                                    placeholder="Выберите пункт пропуска"
+                                                    placeholder={t('multiselect.placeholder.checkpoint')}
                                                 />
                                             </FormControl>
                                         )}
@@ -398,10 +348,10 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="facilities"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>Объекты обслуживания</FormLabel>
+                                    <FormLabel>{t('facilities')}</FormLabel>
                                     {facilitiesLoading && <LoadingSpinner />}
                                     {facilitiesError && (
-                                        <CustomAlert message="Список объектов обслуживания не загрузился. Попробуйте позднее." />
+                                        <CustomAlert message={t('multiselect.error.facility')} />
                                     )}
                                     {!facilitiesError && !facilitiesLoading && (
                                         <FormControl>
@@ -409,20 +359,16 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                 onChange={(values) => {
                                                     field.onChange(
                                                         values.map(
-                                                            ({ value }) => value
-                                                        )
+                                                            ({ value }) => value,
+                                                        ),
                                                     )
                                                 }}
                                                 options={mappedFacilities}
                                                 defaultOptions={
                                                     task && [
                                                         {
-                                                            value: task
-                                                                ?.facility
-                                                                .facility_id,
-                                                            label: task
-                                                                ?.facility
-                                                                .facility_name,
+                                                            value: task?.facility.facility_id,
+                                                            label: task?.facility.facility_name,
                                                         },
                                                     ]
                                                 }
@@ -430,7 +376,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                     selectedCheckpoints.length ===
                                                     0
                                                 }
-                                                placeholder="Выберите объект обслуживания"
+                                                placeholder={t('multiselect.placeholder.facility')}
                                             />
                                         </FormControl>
                                     )}
@@ -443,10 +389,10 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="organizations"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>Исполнитель</FormLabel>
+                                    <FormLabel>{t('executor')}</FormLabel>
                                     {organizationsLoading && <LoadingSpinner />}
                                     {organizationsError && (
-                                        <CustomAlert message="Список организаций не загрузился. Попробуйте позднее." />
+                                        <CustomAlert message={t('multiselect.error.organization')} />
                                     )}
                                     {organizationsSuccess &&
                                         organizations?.length > 0 && (
@@ -456,8 +402,8 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value
-                                                            )
+                                                                    value,
+                                                            ),
                                                         )
                                                     }}
                                                     options={
@@ -466,16 +412,12 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                     defaultOptions={
                                                         task && [
                                                             {
-                                                                value: task
-                                                                    ?.executor
-                                                                    .organization_id,
-                                                                label: task
-                                                                    ?.executor
-                                                                    .short_name,
+                                                                value: task?.executor.organization_id,
+                                                                label: task?.executor.short_name,
                                                             },
                                                         ]
                                                     }
-                                                    placeholder="Выберите исполнителя"
+                                                    placeholder={t('multiselect.placeholder.executor')}
                                                 />
                                             </FormControl>
                                         )}
@@ -488,22 +430,23 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="priority"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>Приоритет</FormLabel>
+                                    <FormLabel>{t('priority')}</FormLabel>
                                     {prioritiesLoading && <LoadingSpinner />}
-                                    {prioritiessError && (
-                                        <CustomAlert message="Приоритеты не загрузились. Попробуйте позднее." />
+                                    {prioritiesError && (
+                                        <CustomAlert message={t('multiselect.error.priority')} />
                                     )}
                                     {prioritiesSuccess &&
                                         priorities?.length > 0 && (
                                             <Select
                                                 onValueChange={field.onChange}
                                                 defaultValue={String(
-                                                    field.value
+                                                    field.value,
                                                 )}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder="Установите приоритет" />
+                                                        <SelectValue placeholder={t(
+                                                            'multiselect.placeholder.priority')} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -514,14 +457,14 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                                     priority.priority_id
                                                                 }
                                                                 value={String(
-                                                                    priority.priority_id
+                                                                    priority.priority_id,
                                                                 )}
                                                             >
                                                                 {
                                                                     priority.priority_name
                                                                 }
                                                             </SelectItem>
-                                                        )
+                                                        ),
                                                     )}
                                                 </SelectContent>
                                             </Select>
@@ -531,7 +474,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             )}
                         />
                         <p className="mt-3 text-[#8A9099] text-sm font-medium">
-                            Планируемая дата сдачи
+                            {t('delivery.planned.date')}
                         </p>
                         <div className="flex mt-4 gap-9">
                             <FormField
@@ -547,18 +490,17 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
-                                                                'text-muted-foreground'
+                                                            'text-muted-foreground',
                                                         )}
                                                     >
                                                         <CalendarIcon />
                                                         {field.value ? (
                                                             formatDate(
-                                                                field.value
+                                                                field.value,
                                                             )
                                                         ) : (
                                                             <span>
-                                                                Выберите дату
-                                                                начала
+                                                                {t('multiselect.placeholder.start.date')}
                                                             </span>
                                                         )}
                                                     </Button>
@@ -597,18 +539,17 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
-                                                                'text-muted-foreground'
+                                                            'text-muted-foreground',
                                                         )}
                                                     >
                                                         <CalendarIcon />
                                                         {field.value ? (
                                                             formatDate(
-                                                                field.value
+                                                                field.value,
                                                             )
                                                         ) : (
                                                             <span>
-                                                                Выберите дату
-                                                                окончания
+                                                                {t('multiselect.placeholder.end.date')}
                                                             </span>
                                                         )}
                                                     </Button>
@@ -642,7 +583,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             type="submit"
                             disabled={isAdding}
                         >
-                            {isAdding ? <LoadingSpinner /> : 'Создать'}
+                            {isAdding ? <LoadingSpinner /> : t('button.action.create')}
                         </Button>
                         <ScrollBar orientation="vertical" />
                     </ScrollArea>

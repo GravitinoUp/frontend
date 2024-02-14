@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ActionButtons } from './action-buttons'
+import i18next from '../../i18n.ts'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormattedCheckpointsInterface } from '@/types/interface/checkpoint'
 
@@ -31,35 +32,35 @@ export const checkpointsColumns: ColumnDef<FormattedCheckpointsInterface>[] = [
         enableHiding: false,
     },
     {
-        header: 'Номер №.',
+        header: i18next.t('number'),
         accessorKey: 'id',
     },
     {
-        header: 'Название',
+        header: i18next.t('title'),
         accessorKey: 'checkpoint_name',
     },
     {
-        header: 'Адрес',
+        header: i18next.t('address'),
         accessorKey: 'address',
     },
     {
-        header: 'Филиал',
+        header: i18next.t('branch'),
         accessorKey: 'branch_name',
     },
     {
-        header: 'Режим работы',
+        header: i18next.t('working.hours'),
         accessorKey: 'working_hours',
     },
     {
-        header: 'Приграничное государство',
+        header: i18next.t('neighboring.state'),
         accessorKey: 'neighboring_state',
     },
     {
-        header: 'Регион',
+        header: i18next.t('region'),
         accessorKey: 'region',
     },
     {
-        header: 'Тип',
+        header: i18next.t('type'),
         accessorKey: 'checkpoint_type_name',
     },
 

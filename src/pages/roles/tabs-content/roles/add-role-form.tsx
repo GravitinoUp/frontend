@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -6,15 +7,9 @@ import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useToast } from '@/components/ui/use-toast'
+import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useGetAllPermissionsQuery } from '@/redux/api/permissions'
 import { useAddRoleMutation, useUpdateRoleMutation } from '@/redux/api/roles'
 import { RoleInterface } from '@/types/interface/roles'
@@ -58,10 +53,9 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
     ] = useUpdateRoleMutation()
 
     const [searchQuery, setSearchQuery] = useState('')
-    const { toast } = useToast()
-
+    const { t } = useTranslation()
     const filteredPermissions = permissions.filter(({ permission_name }) =>
-        permission_name.toLowerCase().includes(searchQuery.toLowerCase())
+        permission_name.toLowerCase().includes(searchQuery.toLowerCase()),
     )
 
     const handleSubmit = (data: { role_name: string }) => {
@@ -72,25 +66,17 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
         }
     }
 
-    useEffect(() => {
-        if (addSuccess) {
-            toast({
-                description: `Роль успешно добавлена`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [addSuccess])
+    const addSuccessMsg = useMemo(() => t('toast.success.description.create.f', {
+        entityType: t('role'),
+    }), [])
 
-    useEffect(() => {
-        if (updateSuccess) {
-            toast({
-                description: `Роль успешно изменена`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [updateSuccess])
+    const updateSuccessMsg = useMemo(() => t('toast.success.description.update.f', {
+        entityType: t('role'),
+    }), [])
+
+    useSuccessToast(addSuccessMsg, addSuccess, setDialogOpen)
+    useSuccessToast(updateSuccessMsg, updateSuccess, setDialogOpen)
+
 
     return (
         <CustomForm className="mt-3" form={form} onSubmit={handleSubmit}>
@@ -99,7 +85,7 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                 name="role_name"
                 render={({ field }) => (
                     <InputField
-                        label="Название"
+                        label={t('title')}
                         {...field}
                         disabled={isAdding || isUpdating}
                         required
@@ -111,10 +97,10 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                 name="permissions"
                 render={() => (
                     <FormItem className="mt-4">
-                        <FormLabel>Права</FormLabel>
+                        <FormLabel>{t('permissions')}</FormLabel>
                         {permissionsLoading && <LoadingSpinner />}
                         {permissionsError && (
-                            <CustomAlert message="Список прав не загрузился. Попробуйте позднее." />
+                            <CustomAlert message={t('multiselect.error.permissions')} />
                         )}
                         {permissionsSuccess && permissions.length > 0 && (
                             <ScrollArea className="h-[445px] w-full rounded-md border px-4 py-4">
@@ -124,7 +110,7 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                                     onChange={(e) =>
                                         setSearchQuery(e.target.value)
                                     }
-                                    placeholder="Найти..."
+                                    placeholder={t('placeholder.search')}
                                     disabled={isAdding || isUpdating}
                                 />
                                 {filteredPermissions.map(
@@ -144,7 +130,7 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                                                     <FormControl>
                                                         <Checkbox
                                                             checked={field.value.includes(
-                                                                id
+                                                                id,
                                                             )}
                                                             disabled={
                                                                 isAdding ||
@@ -152,24 +138,24 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                                                                 permissionsLoading
                                                             }
                                                             onCheckedChange={(
-                                                                checked
+                                                                checked,
                                                             ) => {
                                                                 const permissions =
                                                                     checked
                                                                         ? [
-                                                                              ...field.value,
-                                                                              id,
-                                                                          ]
+                                                                            ...field.value,
+                                                                            id,
+                                                                        ]
                                                                         : field.value.filter(
-                                                                              (
-                                                                                  value
-                                                                              ) =>
-                                                                                  value !==
-                                                                                  id
-                                                                          )
+                                                                            (
+                                                                                value,
+                                                                            ) =>
+                                                                                value !==
+                                                                                id,
+                                                                        )
                                                                 form.setValue(
                                                                     'permissions',
-                                                                    permissions
+                                                                    permissions,
                                                                 )
                                                             }}
                                                         />
@@ -180,7 +166,7 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                                                 </FormItem>
                                             )}
                                         />
-                                    )
+                                    ),
                                 )}
                             </ScrollArea>
                         )}
@@ -197,9 +183,9 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                 {isAdding || isUpdating ? (
                     <LoadingSpinner />
                 ) : !role ? (
-                    'Создать'
+                    t('button.action.create')
                 ) : (
-                    'Сохранить'
+                    t('button.action.save')
                 )}
             </Button>
         </CustomForm>

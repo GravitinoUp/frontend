@@ -1,5 +1,5 @@
 import { User } from 'lucide-react'
-
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 import ChevronDown from '@/assets/icons/ChevronDown.svg'
@@ -16,6 +16,7 @@ import { fetchLogout } from '@/redux/reducers/userSlice'
 export default function AccountMenu() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const { t } = useTranslation()
 
     const { user } = useAppSelector((state) => state.auth)
 
@@ -53,7 +54,7 @@ export default function AccountMenu() {
                             className=" h-5 w-20 justify-start p-0"
                             size="sm"
                         >
-                            Настройки
+                            {t('settings')}
                         </Button>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
@@ -65,7 +66,7 @@ export default function AccountMenu() {
                             className="text-destructive h-5 w-20 justify-start p-0 hover:text-destructive"
                             size="sm"
                         >
-                            Выйти
+                            {t('exit')}
                         </Button>
                     </DropdownMenuItem>
                 </DropdownMenuContent>

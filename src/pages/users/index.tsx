@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useTranslation } from 'react-i18next'
 import AddUserForm from './add-user-form'
 import { usersColumns } from './users-columns'
 import { placeholderQuery } from '../tasklist/constants'
@@ -48,9 +49,11 @@ export default function UsersPage() {
     })
 
     const [formOpen, setFormOpen] = useState(false)
+    const { t } = useTranslation()
+
     return (
         <PageLayout
-            title="Пользователи"
+            title={t('users')}
             onRefreshClick={refetch}
             actionButton={
                 <FormDialog

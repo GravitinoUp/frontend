@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { MoreVertical } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { branchesFormTab } from './branches-form-tab'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import FormDialog from '@/components/form-dialog/form-dialog'
@@ -10,43 +11,28 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ToastAction } from '@/components/ui/toast'
-import { useToast } from '@/components/ui/use-toast'
+import { useErrorToast } from '@/hooks/use-error-toast.tsx'
+import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useDeleteBranchMutation } from '@/redux/api/branch'
 import { BranchInterface } from '@/types/interface/branch'
 
 export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
     const [deleteBranch, { isError, isSuccess, isLoading }] =
         useDeleteBranchMutation()
-
-    const { toast } = useToast()
-
-    useEffect(() => {
-        if (isError) {
-            toast({
-                variant: 'destructive',
-                title: 'Упс! Что-то пошло не так.',
-                description: 'Возникла проблема с запросом',
-                duration: 3000,
-                action: (
-                    <ToastAction
-                        altText="Попробуйте еще раз"
-                        onClick={() => deleteBranch(branch.branch_id)}
-                    >
-                        Попробуйте еще раз
-                    </ToastAction>
-                ),
-            })
-        }
-
-        if (isSuccess) {
-            toast({
-                description: `Филиал "${branch.branch_name}" удален`,
-                duration: 1500,
-            })
-        }
-    }, [isError, isSuccess, toast])
     const [formOpen, setFormOpen] = useState(false)
+    const { t } = useTranslation()
+
+    const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.m', {
+        entityType: t('branch'),
+        entityName: branch.branch_name,
+    }), [])
+
+    const handleBranchDelete = useCallback(() => {
+        deleteBranch(branch.branch_id)
+    }, [branch.branch_id, deleteBranch])
+
+    useErrorToast(isError, handleBranchDelete)
+    useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
         <Fragment>
@@ -67,7 +53,7 @@ export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
                         variant="ghost"
                         className="h-8 w-8 p-0 text-[#8A9099]"
                     >
-                        <span className="sr-only">Открыть меню</span>
+                        <span className="sr-only">{t('action.dropdown.menu.open')}</span>
                         <MoreVertical className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
@@ -77,14 +63,14 @@ export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
                             setFormOpen(true)
                         }}
                     >
-                        Редактировать
+                        {t('action.dropdown.edit')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
-                        onClick={() => deleteBranch(branch.branch_id)}
+                        onClick={handleBranchDelete}
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Удаляем...' : 'Удалить'}
+                        {t('action.dropdown.delete')}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

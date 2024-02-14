@@ -1,4 +1,5 @@
-import { BaseSyntheticEvent, Fragment, useRef, useState } from 'react'
+import React, { BaseSyntheticEvent, Fragment, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '../ui/button'
 import ArchiveImportLight from '@/assets/icons/archive_import_light.svg'
 import DeleteIcon from '@/assets/icons/delete.svg'
@@ -13,6 +14,7 @@ interface FileContainerProps {
 const FileContainer = ({ onSubmit }: FileContainerProps) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [selectedFile, setSelectedFile] = useState<File>()
+    const { t } = useTranslation()
 
     const [dragActive, setDragActive] = useState<boolean>(false)
 
@@ -54,7 +56,7 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
             <div
                 className={cn(
                     'flex flex-col items-center mt-8 justify-center bg-muted border-[#C6C9CC] border-[1.5px] border-dashed rounded-xl select-none h-[120px]',
-                    !selectedFile ? 'cursor-pointer p-7' : 'p-5'
+                    !selectedFile ? 'cursor-pointer p-7' : 'p-5',
                 )}
                 onClick={handleAddClick}
                 onDragOver={handleDrag}
@@ -87,7 +89,7 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                                 className="px-6 py-2 mr-4"
                                 onClick={() => onSubmit(selectedFile)}
                             >
-                                Импорт
+                                {t('import')}
                             </Button>
                             <div
                                 className="cursor-pointer"
@@ -106,11 +108,11 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                     >
                         <ArchiveImportLight />
                         <p>
-                            Перетащите файл или{' '}
+                            {t('file.import.drag')}
                             <span className="text-primary underline font-semibold">
-                                Нажмите
+                                {t('file.import.click')}
                             </span>{' '}
-                            чтобы Импортировать
+                            {t('file.import')}
                         </p>
                     </div>
                 )}

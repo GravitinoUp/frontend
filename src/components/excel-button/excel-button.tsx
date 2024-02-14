@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '../ui/button'
 import ArchiveExport from '@/assets/icons/archive_export.svg'
 import ArchiveImport from '@/assets/icons/archive_import.svg'
@@ -10,19 +11,23 @@ interface ExcelButtonProps
 }
 
 const ExcelButton = React.forwardRef<HTMLButtonElement, ExcelButtonProps>(
-    ({ buttonType, onClick }, ref) => (
-        <Button
-            ref={ref}
-            className="bg-white hover:bg-accent rounded-xl"
-            onClick={onClick}
-        >
-            {buttonType === 'export' ? <ArchiveExport /> : <ArchiveImport />}
-            <p className="mx-[8px] text-base font-normal">
-                {buttonType === 'export' ? 'Экспорт' : 'Импорт'}
-            </p>
-            <ArrowDown />
-        </Button>
-    )
+    ({ buttonType, onClick }, ref) => {
+        const { t } = useTranslation()
+
+        return (
+            <Button
+                ref={ref}
+                className="bg-white hover:bg-accent rounded-xl"
+                onClick={onClick}
+            >
+                {buttonType === 'export' ? <ArchiveExport /> : <ArchiveImport />}
+                <p className="mx-[8px] text-base font-normal">
+                    {buttonType === 'export' ? t('export') : t('import')}
+                </p>
+                <ArrowDown />
+            </Button>
+        )
+    },
 )
 
 ExcelButton.displayName = 'ExcelButton'
