@@ -1,5 +1,5 @@
-import i18next from '../../i18n.ts'
 import AddUserForm from './add-user-form'
+import i18next from '../../i18n.ts'
 import { UserInterface } from '@/types/interface/user'
 
 export const usersFormTab = (user?: UserInterface) => [

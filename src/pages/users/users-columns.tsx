@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ActionButtons } from './action-buttons'
-import i18next from '../../i18n.ts'
 import UserSwitch from './user-switch'
+import i18next from '../../i18n.ts'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormattedUsersInterface } from '@/types/interface/user'
 

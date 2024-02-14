@@ -1,4 +1,6 @@
 import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { placeholderQuery } from '../tasklist/constants'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
@@ -41,15 +43,23 @@ import {
 } from '@/types/interface/user'
 
 const userFormSchema = z.object({
-    last_name: z.string().min(1, { message: 'Необходимо добавить фамилию' }),
-    first_name: z.string().min(1, { message: 'Необходимо добавить имя' }),
+    last_name: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.last.name') }),
+    first_name: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.last.name') }),
     patronymic: z.string(),
     phone: z.string().refine((value) => /^\d{11}$/.test(value), {
-        message: 'Номер должен быть в формате: 7XXXXXXXXXX',
+        message: i18next.t('validation.require.phone'),
     }),
     email: z.string(),
-    password: z.string().min(1, { message: 'Укажите пароль' }),
-    repeat_password: z.string().min(1, { message: 'Укажите пароль' }),
+    password: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.password') }),
+    repeat_password: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.password') }),
 })
 
 const organizationFormSchema = z.object({
@@ -57,17 +67,21 @@ const organizationFormSchema = z.object({
     short_name: z.string(),
     organization_type_id: z.string(),
     phone: z.string().refine((value) => /^\d{11}$/.test(value), {
-        message: 'Номер должен быть в формате: 7XXXXXXXXXX',
+        message: i18next.t('validation.require.phone'),
     }),
     email: z.string(),
-    password: z.string().min(1, { message: 'Укажите пароль' }),
-    repeat_password: z.string().min(1, { message: 'Укажите пароль' }),
+    password: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.password') }),
+    repeat_password: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.password') }),
 })
 
 const roleFormSchema = z.object({
     role_id: z
         .string()
-        .refine((value) => value !== '', 'Роль должна быть выбрана'),
+        .refine((value) => value !== '', i18next.t('validation.require.role')),
     group_id: z.string().optional(),
 })
 
@@ -81,6 +95,7 @@ interface AddUserFormProps {
 }
 
 const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
+    const { t } = useTranslation()
     const { toast } = useToast()
 
     const userForm = useForm({
@@ -225,7 +240,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             const userFormValues = userForm.getValues()
             if (userFormValues.password !== userFormValues.repeat_password) {
                 userForm.setError('repeat_password', {
-                    message: 'Пароли не совпадают',
+                    message: t('validation.require.password.mismatch'),
                 })
                 return
             }
@@ -236,7 +251,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                 organizationFormValue.repeat_password
             ) {
                 userForm.setError('repeat_password', {
-                    message: 'Пароли не совпадают',
+                    message: t('validation.require.password.mismatch'),
                 })
                 return
             }
@@ -298,7 +313,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
     useEffect(() => {
         if (userCreateSuccess || organizationCreateSuccess) {
             toast({
-                description: `Пользователь успешно создан`,
+                description: t('toast.success.description.create.m'),
                 duration: 1500,
             })
             setDialogOpen?.(false)
@@ -306,7 +321,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
 
         if (userUpdateSuccess || organizationUpdateSuccess) {
             toast({
-                description: `Пользователь успешно обновлен`,
+                description: t('toast.success.description.update.m'),
                 duration: 1500,
             })
             setDialogOpen?.(false)
@@ -329,19 +344,19 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     value="user"
                     className="data-[state=active]:text-primary"
                 >
-                    ОБЩЕЕ
+                    {t('tabs.common')}
                 </TabsTrigger>
                 <TabsTrigger
                     value="role"
                     className="data-[state=active]:text-primary"
                 >
-                    РОЛИ И ПРАВА ДОСТУПА
+                    {t('tabs.roles.and.permissions')}
                 </TabsTrigger>
                 <TabsTrigger
                     value="image"
                     className="data-[state=active]:text-primary"
                 >
-                    ИЗОБРАЖЕНИЕ
+                    {t('tabs.image')}
                 </TabsTrigger>
             </TabsList>
             <Separator className="w-full bg-[#E8E9EB]" decorative />
@@ -362,20 +377,20 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         {!user && (
                             <Fragment>
                                 <p className="mt-3 mb-4 text-[#8A9099] text-sm font-medium">
-                                    Тип пользователя
+                                    {t('user.type')}
                                 </p>
                                 <TabsList className="gap-2">
                                     <TabsTrigger
                                         className="bg-white border-accent text-black font-normal data-[state=active]:bg-[#3F434A] data-[state=active]:border-accent data-[state=active]:text-white py-1.5 px-4 rounded-3xl border-2"
                                         value="user"
                                     >
-                                        Работник
+                                        {t('user.type.worker')}
                                     </TabsTrigger>
                                     <TabsTrigger
                                         className="bg-white border-accent text-black font-normal data-[state=active]:bg-[#3F434A] data-[state=active]:border-accent data-[state=active]:text-white   py-1.5 px-4 rounded-3xl border-2"
                                         value="organization"
                                     >
-                                        Подрядчик
+                                        {t('user.type.organization')}
                                     </TabsTrigger>
                                 </TabsList>
                             </Fragment>
@@ -391,7 +406,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="last_name"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Фамилия"
+                                            label={t('user.last.name')}
                                             className="mt-3"
                                             {...field}
                                         />
@@ -402,7 +417,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="first_name"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Имя"
+                                            label={t('user.first.name')}
                                             className="mt-3"
                                             {...field}
                                         />
@@ -413,7 +428,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="patronymic"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Отчество"
+                                            label={t('user.patronymic')}
                                             className="mt-3"
                                             {...field}
                                         />
@@ -424,7 +439,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="phone"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Телефон"
+                                            label={t('user.phone')}
                                             className="mt-3"
                                             maxLength={11}
                                             {...field}
@@ -448,7 +463,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="password"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Пароль"
+                                            label={t('authorization.password')}
                                             type="password"
                                             className="mt-3"
                                             {...field}
@@ -461,7 +476,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="repeat_password"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Подтвердить пароль"
+                                            label={t('repeat.password')}
                                             type="password"
                                             className="mt-3"
                                             {...field}
@@ -472,7 +487,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     className="w-[100px] mt-10 mr-4"
                                     type="submit"
                                 >
-                                    Далее
+                                    {t('button.action.next')}
                                 </Button>
                                 <Button
                                     className="w-[100px] mt-10"
@@ -480,7 +495,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     variant={'outline'}
                                     onClick={() => setDialogOpen!(false)}
                                 >
-                                    Отменить
+                                    {t('button.action.back')}
                                 </Button>
                             </CustomForm>
                         </TabsContent>
@@ -494,7 +509,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="short_name"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Название организации"
+                                            label={t('user.organization')}
                                             className="mt-3"
                                             {...field}
                                         />
@@ -505,7 +520,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="full_name"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Полное название"
+                                            label={t('full.name')}
                                             className="mt-3"
                                             {...field}
                                         />
@@ -516,7 +531,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="phone"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Телефон"
+                                            label={t('user.phone')}
                                             className="mt-3"
                                             maxLength={11}
                                             {...field}
@@ -541,13 +556,17 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     render={({ field }) => (
                                         <FormItem className="mt-3">
                                             <FormLabel>
-                                                Профиль организации
+                                                {t('organization.type')}
                                             </FormLabel>
                                             {organizationsTypesLoading && (
                                                 <LoadingSpinner />
                                             )}
                                             {organizationsTypesError && (
-                                                <CustomAlert message="Приоритеты не загрузились. Попробуйте позднее." />
+                                                <CustomAlert
+                                                    message={t(
+                                                        'multiselect.error.organization.types'
+                                                    )}
+                                                />
                                             )}
                                             {organizationsTypesSuccess &&
                                                 organizationsTypes?.length >
@@ -562,7 +581,11 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger>
-                                                                <SelectValue placeholder="Установите приоритет" />
+                                                                <SelectValue
+                                                                    placeholder={t(
+                                                                        'multiselect.placeholder.organization.type'
+                                                                    )}
+                                                                />
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
@@ -596,7 +619,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="password"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Пароль"
+                                            label={t('authorization.password')}
                                             type="password"
                                             className="mt-3"
                                             {...field}
@@ -608,7 +631,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="repeat_password"
                                     render={({ field }) => (
                                         <InputField
-                                            label="Подтвердить пароль"
+                                            label={t('repeat.password')}
                                             type="password"
                                             className="mt-3"
                                             {...field}
@@ -619,7 +642,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     className="w-[100px] mt-10 mr-4"
                                     type="submit"
                                 >
-                                    Далее
+                                    {t('button.action.next')}
                                 </Button>
                                 <Button
                                     className="w-[100px] mt-10"
@@ -627,7 +650,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     variant={'outline'}
                                     onClick={() => setDialogOpen!(false)}
                                 >
-                                    Отменить
+                                    {t('button.action.back')}
                                 </Button>
                             </CustomForm>
                         </TabsContent>
@@ -642,10 +665,12 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         name="role_id"
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
-                                <FormLabel>Роль</FormLabel>
+                                <FormLabel>{t('role')}</FormLabel>
                                 {rolesLoading && <LoadingSpinner />}
                                 {rolesError && (
-                                    <CustomAlert message="Роли не загрузились. Попробуйте позднее." />
+                                    <CustomAlert
+                                        message={t('multiselect.error.roles')}
+                                    />
                                 )}
                                 {rolesSuccess && roles?.length > 0 && (
                                     <Select
@@ -654,7 +679,11 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Выберите роль" />
+                                                <SelectValue
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.role'
+                                                    )}
+                                                />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -678,10 +707,12 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         name="group_id"
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
-                                <FormLabel>Группа</FormLabel>
+                                <FormLabel>{t('group')}</FormLabel>
                                 {groupsLoading && <LoadingSpinner />}
                                 {groupsError && (
-                                    <CustomAlert message="Группы не загрузились. Попробуйте позднее." />
+                                    <CustomAlert
+                                        message={t('multiselect.error.groups')}
+                                    />
                                 )}
                                 {groupsSuccess && groups?.length > 0 && (
                                     <Select
@@ -690,7 +721,11 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Выберите группу" />
+                                                <SelectValue
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.group'
+                                                    )}
+                                                />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -711,7 +746,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         )}
                     />
                     <Button className="w-[100px] mt-10 mr-4" type="submit">
-                        Далее
+                        {t('button.action.next')}
                     </Button>
                     <Button
                         className="w-[100px] mt-10"
@@ -719,7 +754,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         variant={'outline'}
                         onClick={() => setTabValue('user')}
                     >
-                        Назад
+                        {t('button.action.back')}
                     </Button>
                 </CustomForm>
             </TabsContent>
@@ -739,9 +774,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         isOrganizationUpdating ? (
                             <LoadingSpinner />
                         ) : !user ? (
-                            'Создать'
+                            t('button.action.create')
                         ) : (
-                            'Сохранить'
+                            t('button.action.save')
                         )}
                     </Button>
                     <Button
@@ -750,7 +785,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         variant={'outline'}
                         onClick={() => setTabValue('role')}
                     >
-                        Назад
+                        {t('button.action.back')}
                     </Button>
                 </CustomForm>
             </TabsContent>

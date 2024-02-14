@@ -1,23 +1,18 @@
-import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Switch } from '@/components/ui/switch'
-import { useToast } from '@/components/ui/use-toast'
+import { useSuccessToast } from '@/hooks/use-success-toast'
 import { useChangeUserStatusMutation } from '@/redux/api/users'
 import { UserInterface } from '@/types/interface/user'
+
 export default function UserSwitch({ user }: { user: UserInterface }) {
-    const { toast } = useToast()
+    const { t } = useTranslation()
+
     const [
         changeUserStatus,
         { isLoading: isUpdating, isSuccess: updateSuccess },
     ] = useChangeUserStatusMutation()
 
-    useEffect(() => {
-        if (updateSuccess) {
-            toast({
-                description: `Статус пользователя изменен`,
-                duration: 1500,
-            })
-        }
-    }, [updateSuccess])
+    useSuccessToast(t('toast.success.description.update.m'), updateSuccess)
 
     const updateStatus = () =>
         changeUserStatus({
