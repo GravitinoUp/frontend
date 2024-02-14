@@ -1,4 +1,5 @@
 import { Fragment, useEffect } from 'react'
+import { jwtDecode } from 'jwt-decode'
 import { User } from 'lucide-react'
 
 import { useNavigate } from 'react-router-dom'
@@ -14,17 +15,30 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useLogoutMutation } from '@/redux/api/auth'
-import { getJWTtokens, removeCookieValue } from '@/utils/helpers'
+import { useGetUserByIdQuery } from '@/redux/api/users'
+import { JWT } from '@/types/interface/auth'
+import {
+    getCookieValue,
+    getJWTtokens,
+    removeCookieValue,
+} from '@/utils/helpers'
 
 export default function AccountMenu() {
     const { toast } = useToast()
     const navigate = useNavigate()
 
-    const [logout, { isError: isError, isSuccess: isSuccess }] =
+    const accessToken = getCookieValue('accessToken')
+    const { user_id }: JWT = accessToken
+        ? jwtDecode(accessToken)
+        : { user_id: -1, email: '' }
+
+    const { data: user } = useGetUserByIdQuery(user_id)
+
+    const [logout, { isError: isLogoutError, isSuccess: isLogoutSuccess }] =
         useLogoutMutation()
 
     useEffect(() => {
-        if (isError) {
+        if (isLogoutError) {
             toast({
                 variant: 'destructive',
                 title: 'Упс! Что-то пошло не так.',
@@ -41,12 +55,12 @@ export default function AccountMenu() {
             })
         }
 
-        if (isSuccess) {
+        if (isLogoutSuccess) {
             removeCookieValue('accessToken')
             removeCookieValue('refreshToken')
             navigate('/signin')
         }
-    }, [isError, isSuccess, toast])
+    }, [isLogoutError, isLogoutSuccess, toast])
 
     const handleLogout = () => {
         const refreshToken = getJWTtokens().refreshToken
@@ -75,7 +89,10 @@ export default function AccountMenu() {
                         )}
 
                         <div className="font-pop text-[14px] text-[#3F434A]">
-                            {`TODO`}
+                            <p>
+                                {user?.person.last_name}{' '}
+                                {user?.person.first_name}
+                            </p>
                         </div>
                         <ChevronDown />
                     </div>

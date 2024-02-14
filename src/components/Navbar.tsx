@@ -6,7 +6,6 @@ import CompassIcon from '@/assets/icons/Compass.svg'
 import DashboardIcon from '@/assets/icons/darhboard_alt.svg'
 import FilterIcon from '@/assets/icons/Filter.svg'
 import FoldersGroupIcon from '@/assets/icons/Folders_group.svg'
-import FormIcon from '@/assets/icons/Form.svg'
 import GroupIcon from '@/assets/icons/Group_add.svg'
 import HomeIcon from '@/assets/icons/Home.svg'
 import ParametersIcon from '@/assets/icons/Parameters.svg'
@@ -51,13 +50,6 @@ const links: (SingleLink | MultiLink)[] = [
         title: 'Отчеты',
         count: 9,
         children: <ChartIcon />,
-    },
-    {
-        type: 'single',
-        path: '/scheduler',
-        title: 'Планировщик',
-        count: null,
-        children: <FormIcon />,
     },
     {
         type: 'single',

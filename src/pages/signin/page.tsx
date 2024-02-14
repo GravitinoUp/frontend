@@ -7,13 +7,14 @@ import { InputField } from '@/components/input-field/input-field'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormField } from '@/components/ui/form'
+import { useToast } from '@/components/ui/use-toast'
 import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
 
 const formSchema = z.object({
-    email: z.string(),
-    password: z.string(),
+    email: z.string().email('Неправильный формат Email'),
+    password: z.string().min(1, 'Укажите пароль'),
     remember_me: z.boolean(),
 })
 
@@ -27,17 +28,31 @@ export function SignInPage() {
         },
     })
 
-    document.title = 'Авторизация'
-
     const [shown, setShown] = useState(false)
 
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const [authUser, { data: authData, isSuccess: isSuccess }] =
-        useAuthMutation()
+    const { toast } = useToast()
+
+    const [
+        authUser,
+        { data: authData, isSuccess: isSuccess, isError: isError },
+    ] = useAuthMutation()
 
     useEffect(() => {
+        document.title = 'Авторизация'
+    }, [])
+
+    useEffect(() => {
+        if (isError) {
+            toast({
+                variant: 'destructive',
+                description: `Ошибка входа! Проверьте правильность введенных данных.`,
+                duration: 3000,
+            })
+        }
+
         if (isSuccess) {
             dispatch(setAccessToken(authData?.accessToken))
             if (form.getValues().remember_me) {
@@ -46,7 +61,7 @@ export function SignInPage() {
 
             navigate('/dashboard')
         }
-    }, [isSuccess])
+    }, [isSuccess, isError])
 
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
         authUser(data)
@@ -146,15 +161,17 @@ export function SignInPage() {
                         </Button>
                     </div>
                 </div>
-                <div className="mt-16 flex items-center justify-center gap-1">
-                    <p className="text-[#8A9099] font-pop font-[400] text-[15px] flex items-end  justify-end ">
-                        У вас нет учетной записи?
-                    </p>
-                    <Link to="/register">
-                        <p className="text-[#0784D1] font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
-                            Зарегистрироваться
+                <div className="absolute w-full bottom-3 left-0">
+                    <div className="flex justify-center gap-1">
+                        <p className="text-[#8A9099] font-pop font-[400] text-[15px] flex items-end  justify-end ">
+                            У вас нет учетной записи?
                         </p>
-                    </Link>
+                        <Link to="/register">
+                            <p className="text-[#0784D1] font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
+                                Зарегистрироваться
+                            </p>
+                        </Link>
+                    </div>
                 </div>
             </CustomForm>
         </div>

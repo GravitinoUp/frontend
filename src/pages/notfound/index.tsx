@@ -1,10 +1,13 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '../../hooks/reduxHooks'
 
 export default function NotFoundPage() {
-    document.title = 'Страница не найдена'
-
     const { isLogin } = useAppSelector((state) => state.auth)
+
+    useEffect(() => {
+        document.title = 'Страница не найдена'
+    }, [])
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center">

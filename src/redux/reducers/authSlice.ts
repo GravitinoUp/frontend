@@ -11,7 +11,7 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         setAccessToken: (_, action) => {
-            document.cookie = `accessToken=${action.payload}; Secure`
+            document.cookie = `accessToken=${action.payload}; Secure; Max-Age=43200`
         },
         setRefreshToken: (_, action) => {
             document.cookie = `refreshToken=${action.payload}; Secure`

@@ -35,12 +35,13 @@ function App() {
 
     useEffect(() => {
         if (loading === null) {
+            const accessToken = getCookieValue('accessToken')
             const refreshToken = getCookieValue('refreshToken')
 
-            if (refreshToken !== null) {
+            if (refreshToken) {
                 fetchRefreshToken({ refresh_token: `${refreshToken}` })
                 setLoading(true)
-            } else {
+            } else if (!accessToken) {
                 navigate('/signin')
                 setLoading(false)
             }
@@ -70,41 +71,26 @@ function App() {
     return (
         <div>
             <Routes>
-                {!loading && (
-                    <Route path="/" element={<Layuot />}>
-                        <Route
-                            index
-                            path="dashboard"
-                            element={<DashboardPage />}
-                        />
-                        <Route
-                            path="mediareports"
-                            element={<MediaReportspage />}
-                        />
-                        <Route path="reports" element={<ReportsPage />} />
-                        <Route path="settings" element={<SettingsPage />} />
-                        <Route>
-                            <Route path="tasklist" element={<TaskListPage />} />
-                            <Route
-                                path="tasklist/task"
-                                element={<TaskPage />}
-                            />
-                        </Route>
-                        <Route path="users" element={<UsersPage />} />
-                        <Route path="roles" element={<RolesPage />} />
-                        <Route
-                            path="organizations"
-                            element={<OrganizationsPage />}
-                        />
-
-                        <Route
-                            path="checkpoints"
-                            element={<CheckpointsPage />}
-                        />
-                        <Route path="branches" element={<BranchesPage />} />
-                        <Route path="*" element={<NotFoundPage />} />
+                <Route path="/" element={<Layuot />}>
+                    <Route index path="dashboard" element={<DashboardPage />} />
+                    <Route path="mediareports" element={<MediaReportspage />} />
+                    <Route path="reports" element={<ReportsPage />} />
+                    <Route path="settings" element={<SettingsPage />} />
+                    <Route>
+                        <Route path="tasklist" element={<TaskListPage />} />
+                        <Route path="tasklist/task" element={<TaskPage />} />
                     </Route>
-                )}
+                    <Route path="users" element={<UsersPage />} />
+                    <Route path="roles" element={<RolesPage />} />
+                    <Route
+                        path="organizations"
+                        element={<OrganizationsPage />}
+                    />
+
+                    <Route path="checkpoints" element={<CheckpointsPage />} />
+                    <Route path="branches" element={<BranchesPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Route>
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="*" element={<NotFoundPage />} />
