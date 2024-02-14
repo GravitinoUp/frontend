@@ -93,6 +93,7 @@ function App() {
                         path="manage-properties"
                         element={<ManagePropertiesPage />}
                     />
+                    <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/register" element={<RegisterPage />} />

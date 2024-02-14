@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import i18next from 'i18next'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,10 +10,9 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormField } from '@/components/ui/form'
 import { useAppDispatch } from '@/hooks/reduxHooks'
+import { useErrorToast } from '@/hooks/use-error-toast'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
-import { useErrorToast } from '@/hooks/use-error-toast'
-import i18next from 'i18next'
 
 const formSchema = z.object({
     email: z.string().email(i18next.t('validation.require.email')),
@@ -154,18 +154,6 @@ export function SignInPage() {
                         >
                             {t('button.action.enter')}
                         </Button>
-                    </div>
-                </div>
-                <div className="absolute w-full bottom-3 left-0">
-                    <div className="flex justify-center gap-1">
-                        <p className="text-[#8A9099] font-pop font-[400] text-[15px] flex items-end  justify-end ">
-                            У вас нет учетной записи?
-                        </p>
-                        <Link to="/register">
-                            <p className="text-[#0784D1] font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
-                                Зарегистрироваться
-                            </p>
-                        </Link>
                     </div>
                 </div>
             </CustomForm>
