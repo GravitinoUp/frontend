@@ -63,10 +63,14 @@ function DataTable<TData, TValue>({
                 ? columns.map((column) => ({
                     ...column,
                     cell: ({ cell }: { cell: Cell<unknown, unknown> }) => {
-                        if (cell.column.id === 'actions' || cell.column.id === 'select') {
+                        const isActions = cell.column.id === 'actions'
+                        const isId = cell.column.id === 'id'
+                        const isSelect = cell.column.id === 'select'
+                        if (isActions || isId) {
                             return <Skeleton className="h-6 w-6" />
                         }
-                        return <Skeleton className="h-6 w-[100px]" />
+
+                        return <Skeleton className={isSelect ? 'h-4 w-4' : 'h-6 w-[100px]'} />
                     },
                 }))
                 : columns,
