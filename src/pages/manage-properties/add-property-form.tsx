@@ -1,31 +1,23 @@
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import { Dispatch, SetStateAction, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
+import i18next from '../../i18n.ts'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { MultiSelect } from '@/components/ui/multi-select'
-import { useToast } from '@/components/ui/use-toast'
+import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useCreatePropertyMutation } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
 
 const propertySchema = z.object({
-    property_name: z
-        .string()
-        .min(1, { message: 'Небходимо добавить название' }),
-    property_values: z
-        .array(z.string())
-        .refine((value) => value.some((item) => item), {
-            message: 'Нужно добавить хотя бы одно значение',
-        }),
+    property_name: z.string().min(1, { message: i18next.t('validation.require.title') }),
+    property_values: z.array(z.string()).refine((value) => value.some((item) => item), {
+        message: i18next.t('validation.require.select.add'),
+    }),
     entity_name: z.string(),
 })
 
@@ -35,7 +27,7 @@ interface AddPropertyFormProps {
 }
 
 const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
-    const { toast } = useToast()
+    const { t } = useTranslation()
 
     const form = useForm({
         schema: propertySchema,
@@ -51,15 +43,11 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
         { isLoading: isAdding, isError: createError, isSuccess: createSuccess },
     ] = useCreatePropertyMutation()
 
-    useEffect(() => {
-        if (createSuccess) {
-            toast({
-                description: `Характеристика успешно добавлена`,
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [createSuccess])
+    const createSuccessMsg = useMemo(() => t('toast.success.description.create.f', {
+        entityType: t('property'),
+    }), [])
+
+    useSuccessToast(createSuccessMsg, createSuccess, setDialogOpen)
 
     const handleSubmit = (values: z.infer<typeof propertySchema>) => {
         createProperty({
@@ -74,7 +62,7 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
                 control={form.control}
                 name="property_name"
                 render={({ field }) => (
-                    <InputField label="Название" {...field} />
+                    <InputField label={t('title')} {...field} />
                 )}
             />
             <FormField
@@ -82,7 +70,7 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
                 name="property_values"
                 render={({ field }) => (
                     <FormItem className="mt-3">
-                        <FormLabel>Значения</FormLabel>
+                        <FormLabel>{t('values')}</FormLabel>
                         <FormControl>
                             <MultiSelect
                                 defaultOptions={field.value.map((value) => ({
@@ -91,10 +79,10 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
                                 }))}
                                 onChange={(values) => {
                                     field.onChange(
-                                        values.map(({ value }) => value)
+                                        values.map(({ value }) => value),
                                     )
                                 }}
-                                placeholder="Добавьте значения"
+                                placeholder={t('multiselect.placeholder.values')}
                                 options={[]}
                                 showItems={false}
                             />
@@ -109,15 +97,15 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
                 type="submit"
                 disabled={isAdding}
             >
-                {isAdding ? <LoadingSpinner /> : 'Создать'}
+                {isAdding ? <LoadingSpinner /> : t('button.action.create')}
             </Button>
             <Button
                 className="w-[100px] mt-10"
                 type="button"
-                variant={'outline'}
+                variant="outline"
                 onClick={() => setDialogOpen!(false)}
             >
-                Отменить
+                {t('button.action.cancel')}
             </Button>
         </CustomForm>
     )

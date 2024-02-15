@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react'
 import {
     ColumnDef,
     ColumnFiltersState,
-    SortingState,
-    VisibilityState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getSortedRowModel,
+    SortingState,
     useReactTable,
+    VisibilityState,
 } from '@tanstack/react-table'
 
+import { useTranslation } from 'react-i18next'
 import { getCellAlignment, getCellTextColor } from './get-cell-class'
 import { TablePagination } from './table-pagination'
 import { DebouncedInput } from '../search-input'
@@ -47,6 +48,7 @@ function DataTable<TData, TValue>({
     getPaginationInfo = () => {},
     paginationInfo,
 }: DataTableProps<TData, TValue>) {
+    const { t } = useTranslation()
     const [rowSelection, setRowSelection] = useState({})
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [sorting, setSorting] = useState<SortingState>([])
@@ -112,10 +114,9 @@ function DataTable<TData, TValue>({
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext()
-                                                  )}
+                                                    header.column.columnDef.header,
+                                                    header.getContext(),
+                                                )}
                                             {header.id !== 'select' &&
                                                 header.id !== 'actions' && (
                                                     <Button
@@ -179,7 +180,7 @@ function DataTable<TData, TValue>({
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    Ничего не найдено
+                                    {t('nothing.found')}
                                 </TableCell>
                             </TableRow>
                         )}

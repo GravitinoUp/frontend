@@ -1,8 +1,9 @@
+/* eslint-disable i18n/no-russian-character */
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+
 export function RegisterPage() {
     const [shown, setShown] = useState(false)
     const [repeat, setRepeat] = useState(false)

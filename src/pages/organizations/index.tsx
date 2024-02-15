@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { organizationFormTab } from './organization-form-tab'
 import { organizationsColumns } from './organizations-columns'
 import { placeholderQuery } from '../tasklist/constants'
@@ -25,10 +26,11 @@ const OrganizationsPage = () => {
         refetch,
     } = useGetAllOrganizationsQuery(organizationsQuery)
     const [formOpen, setFormOpen] = useState(false)
+    const { t } = useTranslation()
 
     return (
         <PageLayout
-            title="Организации"
+            title={t('organizations')}
             onRefreshClick={refetch}
             actionButton={
                 <FormDialog

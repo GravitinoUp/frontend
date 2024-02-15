@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import CloseRounded from '@/assets/icons/close_rounded.svg'
 import DownloadIcon from '@/assets/icons/download.svg'
 import DownloadAllIcon from '@/assets/icons/download_all.svg'
@@ -53,6 +54,7 @@ interface TaskInfoContentProps {
 
 const TaskInfoContent = ({ order }: TaskInfoContentProps) => {
     const [open, setOpen] = useState(false)
+    const { t } = useTranslation()
 
     return (
         <Fragment>
@@ -83,50 +85,50 @@ const TaskInfoContent = ({ order }: TaskInfoContentProps) => {
             <div className="flex">
                 <div className="w-full mr-[100px]">
                     <TaskInfoField
-                        title="Название"
+                        title={t('title')}
                         content={order.order_name}
                     />
                     <TaskInfoField
-                        title="Описание"
+                        title={t('description')}
                         content={order.order_description}
                         multiline
                     />
                     <TaskInfoField
-                        title="Пункт пропуска"
+                        title={t('checkpoint')}
                         content={order.facility.checkpoint.checkpoint_name}
                     />
                     <TaskInfoField
-                        title="Исполнитель"
+                        title={t('executor')}
                         content={order.executor.full_name}
                     />
                     <TaskInfoField
-                        title="Приоритет"
+                        title={t('priority')}
                         content={order.priority.priority_name}
                     />
                 </div>
                 <div className="w-full mr-[100px]">
                     <TaskInfoField
-                        title="Создатель задачи"
+                        title={t('task.creator')}
                         content={order.creator.person.last_name}
                     />
                     <TaskInfoField
-                        title="Филиал"
+                        title={t('branch')}
                         content={order.facility.checkpoint.branch.branch_name}
                     />
                     <TaskInfoField
-                        title="Дата создания"
+                        title={t('creation.date')}
                         content={formatDate(order.createdAt)}
                     />
                     <TaskInfoField
-                        title="Дата завершения"
+                        title={t('end.date')}
                         content={
                             order.ended_at_datetime
                                 ? formatDate(order.ended_at_datetime)
-                                : 'Не завершено'
+                                : t('not.finished')
                         }
                     />
                     <TaskInfoField
-                        title="Тип задачи"
+                        title={t('task.type')}
                         content={order.task.category.category_name}
                     />
                 </div>
@@ -166,7 +168,7 @@ const TaskInfoContent = ({ order }: TaskInfoContentProps) => {
                             onClick={() => {}}
                         >
                             <DownloadAllIcon />
-                            <p className="text-xs">Скачать все</p>
+                            <p className="text-xs">{t('download.all')}</p>
                         </Button>
                     </CarouselItem>
                 </CarouselContent>
