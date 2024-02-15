@@ -65,10 +65,13 @@ const TaskInfoContent = ({ order }: TaskInfoContentProps) => {
                     <Carousel className="border-none rounded-xl mt-10 p-3 select-none">
                         <CarouselContent className="h-full">
                             {order.files?.map((value) => (
-                                <CarouselItem key={value} className="flex">
+                                <CarouselItem
+                                    key={value}
+                                    className="flex justify-center"
+                                >
                                     <img
                                         src={value}
-                                        className="flex-auto object-none align-middle"
+                                        className="object-none align-middle"
                                     />
                                 </CarouselItem>
                             ))}
