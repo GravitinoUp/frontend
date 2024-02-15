@@ -46,12 +46,6 @@ export const ActionButtons = ({ user }: { user: UserInterface }) => {
                     >
                         {t('action.dropdown.edit')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                        className="text-[#FF6B6B]"
-                        onClick={() => {}}
-                    >
-                        {t('action.dropdown.delete')}
-                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </Fragment>

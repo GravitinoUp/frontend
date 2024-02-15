@@ -342,19 +342,19 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             <TabsList className="gap-2">
                 <TabsTrigger
                     value="user"
-                    className="data-[state=active]:text-primary"
+                    className="data-[state=active]:text-primary uppercase"
                 >
                     {t('tabs.common')}
                 </TabsTrigger>
                 <TabsTrigger
                     value="role"
-                    className="data-[state=active]:text-primary"
+                    className="data-[state=active]:text-primary uppercase"
                 >
                     {t('tabs.roles.and.permissions')}
                 </TabsTrigger>
                 <TabsTrigger
                     value="image"
-                    className="data-[state=active]:text-primary"
+                    className="data-[state=active]:text-primary uppercase"
                 >
                     {t('tabs.image')}
                 </TabsTrigger>
