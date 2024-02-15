@@ -61,6 +61,8 @@ module.exports = {
                 },
                 map: {
                     closed: '#49C96D',
+                    'completed-yellow': '#FFD240',
+                    'completed-red': '#FF6B6B',
                 },
             },
             borderRadius: {

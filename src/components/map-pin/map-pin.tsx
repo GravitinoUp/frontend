@@ -10,6 +10,7 @@ export default function MapPin({
     icon: JSX.Element
     checkpoint: CheckpointInterface
 }) {
+    const completedCount = checkpoint.checkpoint_id == 1 ? 10 : checkpoint.checkpoint_id == 4 ? 19 : 25
     return (
         <div
             className="
@@ -21,14 +22,14 @@ export default function MapPin({
             <Popover>
                 <PopoverTrigger>
                     <div
-                        className="
-                    absolute
-                    bg-primary
-                    rounded-full
-                    flex justify-center items-center
-                    top-0
-                    m-1
-                "
+                        className={`
+                            absolute
+                            ${completedCount < 15 ? 'bg-map-completed-red' : completedCount < 20 ? 'bg-map-completed-yellow' : 'bg-map-closed'}
+                            rounded-full
+                            flex justify-center items-center
+                            top-0
+                            m-1
+                        `}
                     >
                         <div className="p-2">{icon}</div>
                     </div>
@@ -42,6 +43,6 @@ export default function MapPin({
                     />
                 </PopoverContent>
             </Popover>
-        </div>
+        </div >
     )
 }
