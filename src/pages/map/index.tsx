@@ -1,28 +1,58 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import ReactDOM from 'react-dom'
-import MapPin from '@/assets/icons/map_pin.svg'
+import { useGetMapCheckpointsQuery } from '@/redux/ymaps-api/map'
+import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
+import { CheckpointsPayloadInterface } from '@/types/interface/checkpoint'
+import { placeholderQuery } from '../tasklist/constants'
+import MapPin from '@/components/map-pin/map-pin'
+import CarIcon from '@/assets/icons/car_icon.svg'
 
 const ymaps3Reactify = await ymaps3.import('@yandex/ymaps3-reactify')
 const reactify = ymaps3Reactify.reactify.bindTo(React, ReactDOM)
-const { YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapMarker } =
-    reactify.module(ymaps3)
+const {
+    YMap,
+    YMapDefaultSchemeLayer,
+    YMapDefaultFeaturesLayer,
+    YMapMarker,
+    YMapControls,
+} = reactify.module(ymaps3)
+
 export default function MapPage() {
+    const [checkpointsQuery, setCheckpointsQuery] =
+        useState<CheckpointsPayloadInterface>({
+            ...placeholderQuery,
+            sorts: { checkpoint_id: 'ASC' },
+        })
+
+    const {
+        data: checkpoints = { count: 0, data: [] },
+        isError,
+        isLoading,
+        refetch,
+    } = useGetCheckpointsQuery(checkpointsQuery)
+
     return (
         <Fragment>
             <YMap
                 location={{ center: [37.61556, 55.75222], zoom: 9 }}
                 mode="vector"
             >
+                <YMapControls position={'top left'} />
+
                 <YMapDefaultSchemeLayer />
                 <YMapDefaultFeaturesLayer />
 
-                <YMapMarker coordinates={[37.61556, 55.75222]}>
-                    <MapPin />
-                </YMapMarker>
-
-                <YMapMarker coordinates={[38.61556, 55.75222]}>
-                    <MapPin />
-                </YMapMarker>
+                {checkpoints.data.map((checkpoint, index) => (
+                    <YMapMarker
+                        key={index}
+                        coordinates={[37.61556 + index, 55.75222]}
+                    >
+                        <MapPin
+                            icon={<CarIcon />}
+                            onClick={() => console.log('123')}
+                        />
+                    </YMapMarker>
+                ))}
             </YMap>
         </Fragment>
     )
