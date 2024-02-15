@@ -6,6 +6,11 @@ export interface CheckpointsPayloadInterface extends IQuery {
     filter: Partial<CheckpointInterface>
 }
 
+export interface CheckpointTypesPayloadInterface extends IQuery {
+    sorts: CheckpointTypeSortInterface
+    filter: Partial<CheckpointTypeInterface>
+}
+
 export interface FormattedCheckpointsInterface {
     checkpoint: CheckpointInterface
     key: number
@@ -20,6 +25,19 @@ export interface FormattedCheckpointsInterface {
 }
 
 // CHECKPOINT
+
+export interface CheckpointPayloadInterface {
+    checkpoint_id: number
+    checkpoint_name: string
+    address: string
+    branch_id: string
+    neighboring_state_id?: string
+    district?: string
+    region?: string
+    checkpoint_type_id: string
+    working_hours_id?: string
+    operating_mode_id?: string
+}
 
 export interface CheckpointInterface {
     checkpoint_id: number

@@ -1,6 +1,7 @@
 import { api } from './'
 import {
     CheckpointInterface,
+    CheckpointPayloadInterface,
     CheckpointsPayloadInterface,
 } from '@/types/interface/checkpoint'
 import {
@@ -39,6 +40,28 @@ const checkpointsApi = api.injectEndpoints({
                 response: FetchDataInterface<CheckpointInterface[]>
             ) => response.data,
         }),
+        createCheckpoint: builder.mutation<
+            FetchResultInterface,
+            Omit<CheckpointPayloadInterface, 'checkpoint_id'>
+        >({
+            query: (body) => ({
+                url: 'checkpoint',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Checkpoints'],
+        }),
+        updateCheckpoint: builder.mutation<
+            FetchResultInterface,
+            CheckpointPayloadInterface
+        >({
+            query: (body) => ({
+                url: 'checkpoint',
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['Checkpoints'],
+        }),
         deleteCheckpoint: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
                 url: `checkpoint/${id}`,
@@ -53,5 +76,7 @@ const checkpointsApi = api.injectEndpoints({
 export const {
     useGetCheckpointsQuery,
     useGetCheckpointsByBranchQuery,
+    useCreateCheckpointMutation,
+    useUpdateCheckpointMutation,
     useDeleteCheckpointMutation,
 } = checkpointsApi
