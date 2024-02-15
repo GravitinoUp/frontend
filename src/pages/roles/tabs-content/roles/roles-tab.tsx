@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { rolesTableColumns } from './roles-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { placeholderQuery } from '@/pages/tasklist/constants'
 import { useGetRolesQuery } from '@/redux/api/roles'
 import { RolesPayloadInterface } from '@/types/interface/roles'
@@ -18,10 +17,6 @@ const RolesTab = () => {
         isError,
         isLoading,
     } = useGetRolesQuery(rolesQuery)
-
-    if (isLoading) {
-        return <LoadingSpinner />
-    }
 
     if (isError) {
         return <CustomAlert />
@@ -41,6 +36,7 @@ const RolesTab = () => {
                 itemCount: roles.count,
                 pageSize: rolesQuery.offset.count,
             }}
+            isLoading={isLoading}
         />
     )
 }

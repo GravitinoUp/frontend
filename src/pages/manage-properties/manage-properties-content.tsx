@@ -3,7 +3,6 @@ import { managePropertiesColumns } from './manage-properties-columns'
 import { placeholderQuery } from '../tasklist/constants'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetPropertiesQuery } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
 import { PropertyPayloadInterface } from '@/types/interface/properties'
@@ -21,10 +20,6 @@ function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
         isError,
         isLoading,
     } = useGetPropertiesQuery(entity)
-
-    if (isLoading) {
-        return <LoadingSpinner />
-    }
 
     if (isError) {
         return <CustomAlert />
@@ -44,6 +39,7 @@ function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
                 itemCount: properties.count,
                 pageSize: propertiesQuery.offset.count,
             }}
+            isLoading={isLoading}
         />
     )
 }

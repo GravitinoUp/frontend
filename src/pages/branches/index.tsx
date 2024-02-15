@@ -9,7 +9,6 @@ import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { BranchesPayloadInterface } from '@/types/interface/branch'
 
@@ -58,23 +57,25 @@ const BranchesPage = () => {
                 </div>
             }
         >
-            {isLoading && <LoadingSpinner />}
-            {isError && <CustomAlert />}
-            <DataTable
-                data={branches.data}
-                columns={branchesColumns}
-                hasBackground
-                getPaginationInfo={(pageSize, pageIndex) => {
-                    setBranchesQuery({
-                        ...branchesQuery,
-                        offset: { count: pageSize, page: pageIndex + 1 },
-                    })
-                }}
-                paginationInfo={{
-                    itemCount: branches.count,
-                    pageSize: branchesQuery.offset.count,
-                }}
-            />
+            {isError
+                ? <CustomAlert />
+                : <DataTable
+                    data={branches.data}
+                    columns={branchesColumns}
+                    hasBackground
+                    getPaginationInfo={(pageSize, pageIndex) => {
+                        setBranchesQuery({
+                            ...branchesQuery,
+                            offset: { count: pageSize, page: pageIndex + 1 },
+                        })
+                    }}
+                    paginationInfo={{
+                        itemCount: branches.count,
+                        pageSize: branchesQuery.offset.count,
+                    }}
+                    isLoading={isLoading}
+                />
+            }
         </PageLayout>
     )
 }
