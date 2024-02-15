@@ -59,6 +59,9 @@ module.exports = {
                     appointed: '#ECF5FC',
                     verification: '#FFFBF0',
                 },
+                map: {
+                    closed: '#49C96D',
+                },
             },
             borderRadius: {
                 lg: 'var(--radius)',
