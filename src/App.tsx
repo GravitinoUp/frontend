@@ -9,7 +9,6 @@ import ManagePropertiesPage from './pages/manage-properties'
 import MediaReportsPage from './pages/mediareports/page'
 import NotFoundPage from './pages/notfound/'
 import OrganizationsPage from './pages/organizations'
-import { RegisterPage } from './pages/register/page'
 import ReportsPage from './pages/reports/page'
 import RolesPage from './pages/roles'
 import SettingsPage from './pages/settings'
@@ -96,7 +95,6 @@ function App() {
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/signin" element={<SignInPage />} />
-                <Route path="/register" element={<RegisterPage />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>

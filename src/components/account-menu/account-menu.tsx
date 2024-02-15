@@ -1,7 +1,9 @@
+import { Fragment, useEffect } from 'react'
+import { jwtDecode } from 'jwt-decode'
 import { User } from 'lucide-react'
 
-import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 import ChevronDown from '@/assets/icons/ChevronDown.svg'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
@@ -11,6 +13,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useErrorToast } from '@/hooks/use-error-toast'
 import { useLogoutMutation } from '@/redux/api/auth'
 import { useGetUserByIdQuery } from '@/redux/api/users'
 import { JWT } from '@/types/interface/auth'
@@ -19,9 +22,6 @@ import {
     getJWTtokens,
     removeCookieValue,
 } from '@/utils/helpers'
-import { jwtDecode } from 'jwt-decode'
-import { useErrorToast } from '@/hooks/use-error-toast'
-import { Fragment, useEffect } from 'react'
 
 export default function AccountMenu() {
     const navigate = useNavigate()
