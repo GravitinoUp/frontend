@@ -16,6 +16,7 @@ const orderJournalApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            providesTags: ['OrderJournal'],
         }),
     }),
     overrideExisting: true,
