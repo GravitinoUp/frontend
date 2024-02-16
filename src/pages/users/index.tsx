@@ -26,7 +26,7 @@ export default function UsersPage() {
     } = useGetUsersQuery(usersQuery)
 
     const formattedUsers: FormattedUsersInterface[] = users.data.map((row) => {
-        const isPerson = row.person.first_name !== null
+        const isPerson = row.person.person_id !== null
 
         return {
             user: row,

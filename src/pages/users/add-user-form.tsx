@@ -1,4 +1,4 @@
-import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, Fragment, SetStateAction, useMemo, useState } from 'react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useToast } from '@/components/ui/use-toast'
+import { useSuccessToast } from '@/hooks/use-success-toast'
 import { useGetGroupsQuery } from '@/redux/api/groups'
 import { useGetAllOrganizationTypesQuery } from '@/redux/api/organization-types'
 import { useGetRolesQuery } from '@/redux/api/roles'
@@ -42,47 +42,75 @@ import {
     UserPayloadInterface,
 } from '@/types/interface/user'
 
-const userFormSchema = z.object({
-    last_name: z
-        .string()
-        .min(1, { message: i18next.t('validation.require.last.name') }),
-    first_name: z
-        .string()
-        .min(1, { message: i18next.t('validation.require.last.name') }),
-    patronymic: z.string(),
-    phone: z.string().refine((value) => /^\d{11}$/.test(value), {
-        message: i18next.t('validation.require.phone'),
-    }),
-    email: z.string(),
-    password: z
-        .string()
-        .min(1, { message: i18next.t('validation.require.password') }),
-    repeat_password: z
-        .string()
-        .min(1, { message: i18next.t('validation.require.password') }),
-})
+const userFormSchema = z
+    .object({
+        user_id: z.number().optional(),
+        last_name: z
+            .string()
+            .min(1, { message: i18next.t('validation.require.last.name') }),
+        first_name: z
+            .string()
+            .min(1, { message: i18next.t('validation.require.last.name') }),
+        patronymic: z.string(),
+        phone: z.string().refine((value) => /^[+]\d{11}$/.test(value), {
+            message: i18next.t('validation.require.phone'),
+        }),
+        email: z.string().email(i18next.t('validation.require.email')),
+        password: z.string(),
+        repeat_password: z.string(),
+    })
+    .refine(
+        (data) =>
+            (data.user_id && data.password === '') || data.password !== '',
+        {
+            message: i18next.t('validation.require.password'),
+            path: ['password'],
+        }
+    )
+    .refine((data) => data.password === data.repeat_password, {
+        message: i18next.t('validation.require.password.mismatch'),
+        path: ['repeat_password'],
+    })
 
-const organizationFormSchema = z.object({
-    full_name: z.string(),
-    short_name: z.string(),
-    organization_type_id: z.string(),
-    phone: z.string().refine((value) => /^\d{11}$/.test(value), {
-        message: i18next.t('validation.require.phone'),
-    }),
-    email: z.string(),
-    password: z
-        .string()
-        .min(1, { message: i18next.t('validation.require.password') }),
-    repeat_password: z
-        .string()
-        .min(1, { message: i18next.t('validation.require.password') }),
-})
+const organizationFormSchema = z
+    .object({
+        user_id: z.number().optional(),
+        full_name: z
+            .string()
+            .min(1, { message: i18next.t('validation.require.full.name') }),
+        short_name: z
+            .string()
+            .min(1, { message: i18next.t('validation.require.short.name') }),
+        organization_type_id: z.string({
+            required_error: i18next.t(
+                'multiselect.placeholder.organization.type'
+            ),
+        }),
+        phone: z.string().refine((value) => /^[+]\d{11}$/.test(value), {
+            message: i18next.t('validation.require.phone'),
+        }),
+        email: z.string().email(i18next.t('validation.require.email')),
+        password: z.string(),
+        repeat_password: z.string(),
+    })
+    .refine(
+        (data) =>
+            (data.user_id && data.password === '') || data.password !== '',
+        {
+            message: i18next.t('validation.require.password'),
+            path: ['password'],
+        }
+    )
+    .refine((data) => data.password === data.repeat_password, {
+        message: i18next.t('validation.require.password.mismatch'),
+        path: ['repeat_password'],
+    })
 
 const roleFormSchema = z.object({
     role_id: z
         .string()
-        .refine((value) => value !== '', i18next.t('validation.require.role')),
-    group_id: z.string().optional(),
+        .min(1, { message: i18next.t('validation.require.role') }),
+    group_id: z.string().optional().nullable(),
 })
 
 const imageFormSchema = z.object({
@@ -96,17 +124,19 @@ interface AddUserFormProps {
 
 const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
     const { t } = useTranslation()
-    const { toast } = useToast()
 
     const userForm = useForm({
         schema: userFormSchema,
         defaultValues: user
             ? {
+                  ...user,
+                  user_id: user.user_id,
                   last_name: user.person.last_name,
                   first_name: user.person.first_name,
                   patronymic: user.person.patronymic,
                   phone: user.person.phone,
-                  ...user,
+                  password: '',
+                  repeat_password: '',
               }
             : {
                   last_name: '',
@@ -123,13 +153,16 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         schema: organizationFormSchema,
         defaultValues: user
             ? {
+                  ...user,
+                  user_id: user.user_id,
                   full_name: user.organization?.full_name,
                   short_name: user.organization?.short_name,
                   phone: user.organization?.phone,
                   organization_type_id: String(
                       user.organization?.organization_type.organization_type_id
                   ),
-                  ...user,
+                  password: '',
+                  repeat_password: '',
               }
             : {
                   full_name: '',
@@ -146,9 +179,10 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         defaultValues: user
             ? {
                   role_id: String(user.role.role_id),
-                  group_id: user.group
-                      ? String(user.group?.group_id)
-                      : undefined,
+                  group_id:
+                      user.group?.group_id !== null
+                          ? String(user.group?.group_id)
+                          : null,
               }
             : {
                   role_id: '',
@@ -228,37 +262,15 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
 
     const [tabValue, setTabValue] = useState('user')
     const [tabUserTypeValue, setTabUserTypeValue] = useState(
-        !user
-            ? 'user'
-            : user.organization?.organization_id === null
+        !user || user.organization?.organization_id === null
             ? 'user'
             : 'organization'
     )
 
     function handleUserSubmit() {
-        if (tabUserTypeValue === 'user') {
-            const userFormValues = userForm.getValues()
-            if (userFormValues.password !== userFormValues.repeat_password) {
-                userForm.setError('repeat_password', {
-                    message: t('validation.require.password.mismatch'),
-                })
-                return
-            }
-        } else {
-            const organizationFormValue = organizationForm.getValues()
-            if (
-                organizationFormValue.password !==
-                organizationFormValue.repeat_password
-            ) {
-                userForm.setError('repeat_password', {
-                    message: t('validation.require.password.mismatch'),
-                })
-                return
-            }
-        }
-
         setTabValue('role')
     }
+
     function handleRoleSubmit() {
         setTabValue('image')
     }
@@ -277,7 +289,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                 role_id: roleFormValues.role_id,
                 group_id: roleFormValues.group_id,
                 email: userFormValues.email,
-                password: userFormValues.password,
+                password: userFormValues.password
+                    ? userFormValues.password
+                    : undefined,
             }
 
             if (!user) {
@@ -299,7 +313,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                 role_id: roleFormValues.role_id,
                 group_id: roleFormValues.group_id,
                 email: organizationFormValue.email,
-                password: organizationFormValue.password,
+                password: organizationFormValue.password
+                    ? organizationFormValue.password
+                    : undefined,
             }
 
             if (!user) {
@@ -310,35 +326,28 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         }
     }
 
-    useEffect(() => {
-        if (userCreateSuccess || organizationCreateSuccess) {
-            toast({
-                description: t('toast.success.description.create.m'),
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
+    const createSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.create.m', {
+                entityType: t('user.title'),
+            }),
+        []
+    )
+    const updateSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.update.m', {
+                entityType: t('user.title'),
+            }),
+        []
+    )
 
-        if (userUpdateSuccess || organizationUpdateSuccess) {
-            toast({
-                description: t('toast.success.description.update.m'),
-                duration: 1500,
-            })
-            setDialogOpen?.(false)
-        }
-    }, [
-        userCreateSuccess,
-        organizationCreateSuccess,
-        userUpdateSuccess,
-        organizationUpdateSuccess,
-    ])
+    useSuccessToast(createSuccessMsg, userCreateSuccess, setDialogOpen)
+    useSuccessToast(updateSuccessMsg, userUpdateSuccess, setDialogOpen)
+    useSuccessToast(createSuccessMsg, organizationCreateSuccess, setDialogOpen)
+    useSuccessToast(updateSuccessMsg, organizationUpdateSuccess, setDialogOpen)
 
     return (
-        <Tabs
-            value={tabValue}
-            onValueChange={setTabValue}
-            className="overflow-auto w-full h-full"
-        >
+        <Tabs value={tabValue} className="overflow-auto w-full h-full">
             <TabsList className="gap-2">
                 <TabsTrigger
                     value="user"
@@ -409,6 +418,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             label={t('user.last.name')}
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -420,6 +430,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             label={t('user.first.name')}
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -441,8 +452,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                         <InputField
                                             label={t('user.phone')}
                                             className="mt-3"
-                                            maxLength={11}
+                                            maxLength={12}
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -452,9 +464,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     render={({ field }) => (
                                         <InputField
                                             label="Email"
-                                            type="email"
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -467,6 +479,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             type="password"
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -480,6 +493,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             type="password"
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -512,6 +526,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             label={t('user.organization')}
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -520,9 +535,10 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     name="full_name"
                                     render={({ field }) => (
                                         <InputField
-                                            label={t('full.name')}
+                                            label={t('title.full')}
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -533,8 +549,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                         <InputField
                                             label={t('user.phone')}
                                             className="mt-3"
-                                            maxLength={11}
+                                            maxLength={12}
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -544,9 +561,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                     render={({ field }) => (
                                         <InputField
                                             label="Email"
-                                            type="email"
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -623,6 +640,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             type="password"
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -635,6 +653,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             type="password"
                                             className="mt-3"
                                             {...field}
+                                            isRequired
                                         />
                                     )}
                                 />
@@ -760,7 +779,10 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             </TabsContent>
             <TabsContent value="image" className="w-full">
                 <CustomForm form={imageForm} onSubmit={handleSubmit}>
-                    <FileContainer onSubmit={(file) => console.log(file)} />
+                    <FileContainer
+                        onSubmit={(file) => console.log(file)}
+                        fileType="image/*"
+                    />
                     {(userCreateError ||
                         organizationCreateError ||
                         userUpdateError ||

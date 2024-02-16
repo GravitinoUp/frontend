@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Switch } from '@/components/ui/switch'
 import { useSuccessToast } from '@/hooks/use-success-toast'
@@ -12,7 +13,16 @@ export default function UserSwitch({ user }: { user: UserInterface }) {
         { isLoading: isUpdating, isSuccess: updateSuccess },
     ] = useChangeUserStatusMutation()
 
-    useSuccessToast(t('toast.success.description.update.m'), updateSuccess)
+    const updateSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.update.sm', {
+                entityType: t('user.title'),
+                entityName: user.email,
+            }),
+        []
+    )
+
+    useSuccessToast(updateSuccessMsg, updateSuccess)
 
     const updateStatus = () =>
         changeUserStatus({

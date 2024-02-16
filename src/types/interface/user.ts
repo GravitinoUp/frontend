@@ -30,9 +30,9 @@ export interface UserPayloadInterface {
     patronymic: string
     phone: string
     role_id: string
-    group_id?: string
+    group_id?: string | null
     email: string
-    password: string
+    password?: string
 }
 
 export interface OrganizationUserPayloadInterface {
@@ -42,9 +42,9 @@ export interface OrganizationUserPayloadInterface {
     short_name: string
     phone: string
     role_id: string
-    group_id?: string
+    group_id?: string | null
     email: string
-    password: string
+    password?: string
 }
 
 // USER
@@ -72,19 +72,15 @@ export interface UserSortInterface {
 // PERSON
 
 export interface PersonInterface {
-    person_id: number
+    person_id: number | null
     last_name: string
     first_name: string
     patronymic: string
-    gender: unknown
     phone: string
-    createdAt: string
-    updatedAt: string
+    property_values?: number[]
 }
 
-export interface PersonSortInterface {
-    last_name?: SortOptionsType
-    first_name?: SortOptionsType
-    patronymic?: SortOptionsType
-    phone?: SortOptionsType
-}
+export type PersonSortInterface = Omit<
+    Partial<Record<keyof PersonInterface, SortOptionsType>>,
+    'property_values'
+>
