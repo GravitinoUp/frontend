@@ -1,15 +1,15 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { placeholderQuery } from '../tasklist/constants'
+import FilterIcon from '@/assets/icons/filter_icon.svg'
+import MinimizeIcon from '@/assets/icons/minimize_icon.svg'
+import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import MapPin from '@/components/map-pin/map-pin'
+import RoundedButton from '@/components/rounded-button/rounded-button'
+import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { CheckpointsPayloadInterface } from '@/types/interface/checkpoint'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import { LoadingSpinner } from '@/components/spinner/spinner'
-import { useTranslation } from 'react-i18next'
-import RoundedButton from '@/components/rounded-button/rounded-button'
-import MinimizeIcon from '@/assets/icons/minimize_icon.svg'
-import FilterIcon from '@/assets/icons/filter_icon.svg'
 
 const ymaps3Reactify = await ymaps3.import('@yandex/ymaps3-reactify')
 const reactify = ymaps3Reactify.reactify.bindTo(React, ReactDOM)
@@ -24,7 +24,7 @@ const {
 export default function MapPage() {
     const { t } = useTranslation()
 
-    const [checkpointsQuery, setCheckpointsQuery] =
+    const [checkpointsQuery] =
         useState<CheckpointsPayloadInterface>({
             ...placeholderQuery,
             sorts: { checkpoint_id: 'ASC' },
@@ -34,7 +34,6 @@ export default function MapPage() {
         data: checkpoints = { count: 0, data: [] },
         isError,
         isLoading,
-        refetch,
     } = useGetCheckpointsQuery(checkpointsQuery)
 
     return (
@@ -53,6 +52,8 @@ export default function MapPage() {
                     location={{ center: [37.61556, 55.75222], zoom: 4 }}
                     mode="vector"
                 >
+                    <YMapControls position='right' />
+
                     <YMapDefaultSchemeLayer />
                     <YMapDefaultFeaturesLayer />
 

@@ -1,9 +1,9 @@
-import MapPinIcon from '@/assets/icons/map_pin_icon.svg'
+import { PlaneIcon, ShipIcon, TrainFrontIcon } from 'lucide-react'
 import MapCheckpointPopover from '../map-checkpoint-popover/map-checkpoint-popover'
-import { CheckpointInterface } from '@/types/interface/checkpoint'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import CarIcon from '@/assets/icons/car_icon.svg'
-import { PlaneIcon, ShipIcon, TrainFrontIcon } from 'lucide-react'
+import MapPinIcon from '@/assets/icons/map_pin_icon.svg'
+import { CheckpointInterface } from '@/types/interface/checkpoint'
 
 export default function MapPin({
     checkpoint,

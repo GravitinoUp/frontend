@@ -1,9 +1,9 @@
-import { CheckpointInterface } from '@/types/interface/checkpoint'
-import { ClockIcon, Edit2Icon } from 'lucide-react'
+import { PopoverClose } from '@radix-ui/react-popover'
+import { ClockIcon } from 'lucide-react'
+import CountField from './count-field'
 import CloseIcon from '@/assets/icons/close_rounded.svg'
 import EditIcon from '@/assets/icons/edit_icon.svg'
-import { PopoverClose } from '@radix-ui/react-popover'
-import CountField from './count-field'
+import { CheckpointInterface } from '@/types/interface/checkpoint'
 
 export default function MapCheckpointPopover({
     checkpoint,
