@@ -12,7 +12,10 @@ import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
-import { CheckpointsPayloadInterface, FormattedCheckpointsInterface } from '@/types/interface/checkpoint'
+import {
+    CheckpointsPayloadInterface,
+    FormattedCheckpointsInterface,
+} from '@/types/interface/checkpoint'
 
 export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)

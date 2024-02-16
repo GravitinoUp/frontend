@@ -13,6 +13,7 @@ import {
     FormField,
     FormItem,
     FormLabel,
+    FormMessage,
 } from '@/components/ui/form'
 import {
     Select,
@@ -248,6 +249,7 @@ const AddCheckpointForm = ({
                                         </SelectContent>
                                     </Select>
                                 )}
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -289,6 +291,7 @@ const AddCheckpointForm = ({
                                     </SelectContent>
                                 </Select>
                             )}
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -355,6 +358,7 @@ const AddCheckpointForm = ({
                                         </SelectContent>
                                     </Select>
                                 )}
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
