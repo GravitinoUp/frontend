@@ -35,7 +35,7 @@ export interface ExecutorInterface {
     email: string
 }
 
-export interface OrderMyPayloadInterface extends IQuery {
+export interface OrderPayloadInterface extends IQuery {
     sorts: OrderSortInterface
     filter: RecursivePartial<OrderFilterInterface>
     period: {
@@ -157,6 +157,11 @@ export type PeriodicitySortInterface = Partial<
 >
 
 // ORDER STATUS
+
+export interface UpdateStatusPayloadInterface {
+    order_id: number
+    order_status_id: string
+}
 
 export interface OrderStatusInterface {
     order_status_id: number
