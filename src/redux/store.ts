@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { api } from './api'
-import authReducer from './reducers/userSlice'
+import authReducer from './reducers/authSlice'
 
 export const store = configureStore({
     reducer: {
@@ -12,8 +12,7 @@ export const store = configureStore({
         getDefaultMiddleware().concat(api.middleware),
 })
 
-export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>
 
-// Это нужно для refetchOnFocus/refetchOnReconnect behaviors
 setupListeners(store.dispatch)
