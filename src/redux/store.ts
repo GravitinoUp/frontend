@@ -2,13 +2,11 @@ import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { api } from './api'
 import authReducer from './reducers/userSlice'
-import { ymapsApi } from './ymaps-api'
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
-        [api.reducerPath]: api.reducer,
-        [ymapsApi.reducerPath]: ymapsApi.reducer,
+        [api.reducerPath]: api.reducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(api.middleware),
