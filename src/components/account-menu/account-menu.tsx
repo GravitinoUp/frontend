@@ -1,4 +1,7 @@
+import { Fragment, useEffect } from 'react'
+import { jwtDecode } from 'jwt-decode'
 import { User } from 'lucide-react'
+
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
@@ -10,15 +13,49 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks'
-import { fetchLogout } from '@/redux/reducers/userSlice'
+import { useErrorToast } from '@/hooks/use-error-toast'
+import { useLogoutMutation } from '@/redux/api/auth'
+import { useGetUserByIdQuery } from '@/redux/api/users'
+import { JWT } from '@/types/interface/auth'
+import {
+    getCookieValue,
+    getJWTtokens,
+    removeCookieValue,
+} from '@/utils/helpers'
 
 export default function AccountMenu() {
-    const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const { user } = useAppSelector((state) => state.auth)
+    const accessToken = getCookieValue('accessToken')
+    const { user_id }: JWT = accessToken
+        ? jwtDecode(accessToken)
+        : { user_id: -1, email: '' }
+
+    const { data: user } = useGetUserByIdQuery(user_id)
+
+    const [logout, { isError: isLogoutError, isSuccess: isLogoutSuccess }] =
+        useLogoutMutation()
+
+    useEffect(() => {
+        if (isLogoutSuccess) {
+            removeCookieValue('accessToken')
+            removeCookieValue('refreshToken')
+            navigate('/signin')
+        }
+    }, [isLogoutSuccess])
+
+    const handleLogout = () => {
+        const refreshToken = getJWTtokens().refreshToken
+
+        if (refreshToken) {
+            logout({ refresh_token: refreshToken! })
+        } else {
+            navigate('/signin')
+        }
+    }
+
+    useErrorToast(isLogoutError, handleLogout)
 
     const icon = null
     return (
@@ -31,13 +68,16 @@ export default function AccountMenu() {
                                 <AvatarImage src="https://github.com/shadcn.png" />
                             </Avatar>
                         ) : (
-                            <>
+                            <Fragment>
                                 <User />
-                            </>
+                            </Fragment>
                         )}
 
                         <div className="font-pop text-[14px] text-[#3F434A]">
-                            {`${user?.person.last_name} ${user?.person.first_name}`}
+                            <p>
+                                {user?.person.last_name}{' '}
+                                {user?.person.first_name}
+                            </p>
                         </div>
                         <ChevronDown />
                     </div>
@@ -58,9 +98,7 @@ export default function AccountMenu() {
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <Button
-                            onClick={() => {
-                                dispatch(fetchLogout())
-                            }}
+                            onClick={handleLogout}
                             variant="ghost"
                             className="text-destructive h-5 w-20 justify-start p-0 hover:text-destructive"
                             size="sm"

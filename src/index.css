@@ -69,6 +69,7 @@
 @layer base {
     * {
         @apply border-border;
+        @apply focus:outline-primary;
     }
 
     body {
@@ -78,7 +79,7 @@
 
 body,
 html {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Exo 2', sans-serif;
 }
 
 .ymaps3x0--marker {

@@ -8,7 +8,6 @@ import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
 import { OrganizationsPayloadInterface } from '@/types/interface/organizations'
 
@@ -45,23 +44,25 @@ const OrganizationsPage = () => {
                 />
             }
         >
-            {isLoading && <LoadingSpinner />}
-            {isError && <CustomAlert />}
-            <DataTable
-                data={organizations.data}
-                columns={organizationsColumns}
-                hasBackground
-                getPaginationInfo={(pageSize, pageIndex) => {
-                    setOrganizationsQuery({
-                        ...organizationsQuery,
-                        offset: { count: pageSize, page: pageIndex + 1 },
-                    })
-                }}
-                paginationInfo={{
-                    itemCount: organizations.count,
-                    pageSize: organizationsQuery.offset.count,
-                }}
-            />
+            {isError
+                ? <CustomAlert />
+                : <DataTable
+                    data={organizations.data}
+                    columns={organizationsColumns}
+                    hasBackground
+                    getPaginationInfo={(pageSize, pageIndex) => {
+                        setOrganizationsQuery({
+                            ...organizationsQuery,
+                            offset: { count: pageSize, page: pageIndex + 1 },
+                        })
+                    }}
+                    paginationInfo={{
+                        itemCount: organizations.count,
+                        pageSize: organizationsQuery.offset.count,
+                    }}
+                    isLoading={isLoading}
+                />
+            }
         </PageLayout>
     )
 }

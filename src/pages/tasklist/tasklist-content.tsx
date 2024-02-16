@@ -7,7 +7,6 @@ import { tasksColumns, TasksFilterColumns } from './tasks-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import FormDialog from '@/components/form-dialog/form-dialog'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
 import { OrderMyPayloadInterface } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers'
@@ -62,10 +61,6 @@ function TaskListContent() {
             formatDate(row.task_end_datetime)
         }`,
     }))
-
-    if (isLoading) {
-        return <LoadingSpinner />
-    }
 
     if (isError) {
         return <CustomAlert />
@@ -160,7 +155,7 @@ function TaskListContent() {
                     navigate(`task`, {
                         state: {
                             order: data.data.find(
-                                (e) => e.order_id === rowData.id
+                                (e) => e.order_id === rowData.id,
                             ),
                         },
                     })
@@ -170,6 +165,7 @@ function TaskListContent() {
                     itemCount: data.count,
                     pageSize: personalOrdersQuery.offset.count,
                 }}
+                isLoading={isLoading}
             />
         </Fragment>
     )
