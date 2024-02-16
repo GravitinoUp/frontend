@@ -17,7 +17,9 @@ const usersApi = api.injectEndpoints({
             UsersPayloadInterface
         >({
             query: (body) => ({ url: 'users/all', method: 'POST', body }),
-            providesTags: ['Users'],
+        }),
+        getUserById: builder.query<UserInterface, number>({
+            query: (id) => ({ url: `users/${id}`, method: 'GET' }),
         }),
         createUser: builder.mutation<
             FetchResultInterface<UserInterface>,
@@ -87,6 +89,7 @@ const usersApi = api.injectEndpoints({
 
 export const {
     useGetUsersQuery,
+    useGetUserByIdQuery,
     useCreateUserMutation,
     useCreateOrganizationUserMutation,
     useUpdateUserMutation,

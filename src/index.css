@@ -69,6 +69,7 @@
 @layer base {
     * {
         @apply border-border;
+        @apply focus:outline-primary;
     }
     body {
         @apply bg-background text-foreground;
@@ -77,5 +78,5 @@
 
 body,
 html {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Exo 2', sans-serif;
 }

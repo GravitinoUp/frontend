@@ -20,10 +20,10 @@ export default function Sidebar() {
     return (
         <div className=" absolute  top-0 right-0">
             <div
-                className="justify-center items-center relactive flex hover:cursor-pointer   bg-[#FFFFFF]  h-[80px] w-[350px]"
+                className="justify-center items-center relactive flex hover:cursor-pointer bg-[#FFFFFF] h-[80px] w-[350px]"
                 onClick={() => setOpen(!open)}
             >
-                <div className="justify-center items-center flex place-items-center font-pop text-[20px] select-none  text-[#3F434A] font-[700]">
+                <div className="justify-center items-center flex place-items-center font-pop text-[20px] select-none text-[#3F434A] font-[700]">
                     {currentTime.toLocaleDateString() +
                         ' ' +
                         currentTime.getHours() +

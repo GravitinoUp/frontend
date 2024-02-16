@@ -2,8 +2,8 @@ import { format } from 'date-fns'
 import { FILE_SIZE_UNITS } from '@/constants/constants.ts'
 
 export const getJWTtokens = () => {
-    const accessToken = localStorage.getItem('accessToken')
-    const refreshToken = localStorage.getItem('refreshToken')
+    const accessToken = getCookieValue('accessToken')
+    const refreshToken = getCookieValue('refreshToken')
 
     return {
         accessToken,
@@ -42,4 +42,17 @@ export const formatFileSize = (sizeInBytes: number) => {
     }
 
     return `${formattedSize.toFixed(i !== 0 ? 2 : 0)} ${byteUnits[i]}`
+}
+
+export const getCookieValue = (key: string) => {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith(`${key}=`))
+        ?.split('=')[1]
+
+    return cookieValue
+}
+
+export const removeCookieValue = (key: string) => {
+    document.cookie = `${key}=; Max-Age=-1`
 }

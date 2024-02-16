@@ -9,8 +9,6 @@ import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
-
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetUsersQuery } from '@/redux/api/users'
 import { FormattedUsersInterface } from '@/types/interface/user'
 import { formatInitials } from '@/utils/helpers'
@@ -34,10 +32,10 @@ export default function UsersPage() {
             id: row.user_id,
             FIO: isPerson
                 ? formatInitials(
-                      row.person.first_name,
-                      row.person.last_name,
-                      row.person.patronymic
-                  )
+                    row.person.first_name,
+                    row.person.last_name,
+                    row.person.patronymic,
+                )
                 : '',
             phone: isPerson ? row.person.phone : row.organization?.phone,
             email: row.email,
@@ -72,23 +70,25 @@ export default function UsersPage() {
                 </div>
             }
         >
-            {isLoading && <LoadingSpinner />}
-            {isError && <CustomAlert />}
-            <DataTable
-                data={formattedUsers}
-                columns={usersColumns}
-                hasBackground
-                getPaginationInfo={(pageSize, pageIndex) => {
-                    setUsersQuery({
-                        ...usersQuery,
-                        offset: { count: pageSize, page: pageIndex + 1 },
-                    })
-                }}
-                paginationInfo={{
-                    itemCount: users.count,
-                    pageSize: usersQuery.offset.count,
-                }}
-            />
+            {isError ?
+                <CustomAlert />
+                : <DataTable
+                    data={formattedUsers}
+                    columns={usersColumns}
+                    hasBackground
+                    getPaginationInfo={(pageSize, pageIndex) => {
+                        setUsersQuery({
+                            ...usersQuery,
+                            offset: { count: pageSize, page: pageIndex + 1 },
+                        })
+                    }}
+                    paginationInfo={{
+                        itemCount: users.count,
+                        pageSize: usersQuery.offset.count,
+                    }}
+                    isLoading={isLoading}
+                />
+            }
         </PageLayout>
     )
 }
