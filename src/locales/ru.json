@@ -25,6 +25,7 @@
     "property": "Характеристика",
     "property.add": "Создание характеристики",
     "values": "Значения",
+    "action": "Действие",
     "manage.properties": "Управление характеристиками",
     "administration": "Администрирование",
     "settings": "Настройки",
@@ -69,6 +70,7 @@
     "executor": "Исполнитель",
     "priority": "Приоритет",
     "date": "Дата",
+    "date.and.time": "Дата и время",
     "creation.date": "Дата создания",
     "end.date": "Дата завершения",
     "delivery.date": "дата сдачи",
@@ -165,6 +167,9 @@
         "unplanned": "Внеплановая",
         "type": "Тип задачи",
         "need.work.tooltip": "Необходимо доработать задачу..."
+    },
+    "user": {
+        "title": "Пользователь"
     },
     "toast": {
         "error": {
