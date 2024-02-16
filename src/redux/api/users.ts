@@ -10,8 +10,11 @@ const usersApi = api.injectEndpoints({
         >({
             query: (body) => ({ url: 'users/all', method: 'POST', body }),
         }),
+        getUserById: builder.query<UserInterface, number>({
+            query: (id) => ({ url: `users/${id}`, method: 'GET' }),
+        }),
     }),
     overrideExisting: true,
 })
 
-export const { useGetUsersQuery } = usersApi
+export const { useGetUsersQuery, useGetUserByIdQuery } = usersApi

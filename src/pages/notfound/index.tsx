@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { useAppSelector } from '@/hooks/reduxHooks.ts'
+import { useAppSelector } from '../../hooks/reduxHooks'
 
 export default function NotFoundPage() {
     const { isLogin } = useAppSelector((state) => state.auth)
@@ -12,18 +12,19 @@ export default function NotFoundPage() {
     }, [])
 
     return (
-        <div className="grid grid-rows-3 justify-center items-center">
-            <div className="row-1">404 errors</div>
+        <div className="w-full h-full flex flex-col items-center justify-center">
+            <div className="text-4xl font-semibold mb-3">
+                {t('error.not.found')}
+            </div>
 
-            <div className="row-2">NotFound</div>
             <div className="row-3">
                 {isLogin ? (
                     <Link className="underline" to="/dashboard">
-                        To Dashboard
+                        {t('to.dashboard')}
                     </Link>
                 ) : (
                     <Link className="underline" to="/signin">
-                        To Sign In
+                        {t('to.signin')}
                     </Link>
                 )}
             </div>
