@@ -70,6 +70,7 @@
     * {
         @apply border-border;
     }
+
     body {
         @apply bg-background text-foreground;
     }
@@ -78,4 +79,9 @@
 body,
 html {
     font-family: 'Open Sans', sans-serif;
+}
+
+.ymaps3x0--marker {
+    width: 0px;
+    height: 0px;
 }

@@ -2,15 +2,16 @@ import MapPinIcon from '@/assets/icons/map_pin_icon.svg'
 import MapCheckpointPopover from '../map-checkpoint-popover/map-checkpoint-popover'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import CarIcon from '@/assets/icons/car_icon.svg'
+import { PlaneIcon, ShipIcon, TrainFrontIcon } from 'lucide-react'
 
 export default function MapPin({
-    icon,
     checkpoint,
 }: {
-    icon: JSX.Element
     checkpoint: CheckpointInterface
 }) {
     const completedCount = checkpoint.checkpoint_id == 1 ? 10 : checkpoint.checkpoint_id == 4 ? 19 : 25
+    const checkpointTypeId = checkpoint.checkpoint_type.checkpoint_type_id
     return (
         <div
             className="
@@ -31,7 +32,12 @@ export default function MapPin({
                             m-1
                         `}
                     >
-                        <div className="p-2">{icon}</div>
+                        <div className="p-2">
+                            {checkpointTypeId == 1 && <CarIcon />}
+                            {checkpointTypeId == 2 && <TrainFrontIcon size={20} color='white' />}
+                            {checkpointTypeId == 3 && <ShipIcon size={20} color='white' />}
+                            {checkpointTypeId == 4 && <PlaneIcon size={20} color='white' />}
+                        </div>
                     </div>
 
                     <MapPinIcon />

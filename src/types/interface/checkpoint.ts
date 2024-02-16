@@ -25,6 +25,8 @@ export interface CheckpointInterface {
     checkpoint_id: number
     checkpoint_name: string
     address: string
+    lat: number
+    lng: number
     branch: BranchInterface
     neighboring_state?: NeighboringStateInterface | null
     district?: string | null
@@ -48,23 +50,6 @@ export interface CheckpointSortInterface {
     region?: SortOptionsType
     working_hours?: WorkingHoursSortInterface | null
     operating_mode?: OperatingModeSortInterface | null
-}
-
-export interface MapCheckpointInterface {
-    checkpoint_id: number
-    checkpoint_name: string
-    address: string
-    coordinates: number[]
-    branch: BranchInterface
-    neighboring_state?: NeighboringStateInterface | null
-    district?: string | null
-    region?: string | null
-    checkpoint_type: CheckpointTypeInterface
-    working_hours?: WorkingHoursInterface | null
-    operating_mode?: OperatingModeInterface | null
-    createdAt: Date
-    updatedAt: Date
-    property_values?: number[] | null
 }
 
 // CHECKPOINT TYPE

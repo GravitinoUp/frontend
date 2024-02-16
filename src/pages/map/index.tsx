@@ -1,11 +1,8 @@
 import React, { Fragment, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { placeholderQuery } from '../tasklist/constants'
-import CarIcon from '@/assets/icons/car_icon.svg'
-import MapCheckpointPopover from '@/components/map-checkpoint-popover/map-checkpoint-popover'
 import MapPin from '@/components/map-pin/map-pin'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
-import { useGetMapCheckpointsQuery } from '@/redux/ymaps-api/map'
 import { CheckpointsPayloadInterface } from '@/types/interface/checkpoint'
 
 const ymaps3Reactify = await ymaps3.import('@yandex/ymaps3-reactify')
@@ -46,9 +43,9 @@ export default function MapPage() {
                 {checkpoints.data.map((checkpoint, index) => (
                     <YMapMarker
                         key={index}
-                        coordinates={[37.61556 + index, 55.75222]}
+                        coordinates={[checkpoint.lat, checkpoint.lng]}
                     >
-                        <MapPin icon={<CarIcon />} checkpoint={checkpoint} />
+                        <MapPin checkpoint={checkpoint} />
                     </YMapMarker>
                 ))}
             </YMap>
