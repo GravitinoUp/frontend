@@ -3,6 +3,7 @@ import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { placeholderQuery } from '../tasklist/constants'
+import UploadIcon from '@/assets/icons/upload.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import FileContainer from '@/components/file-container/file-container'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -81,11 +82,9 @@ const organizationFormSchema = z
         short_name: z
             .string()
             .min(1, { message: i18next.t('validation.require.short.name') }),
-        organization_type_id: z.string({
-            required_error: i18next.t(
-                'multiselect.placeholder.organization.type'
-            ),
-        }),
+        organization_type_id: z
+            .string()
+            .min(1, i18next.t('multiselect.placeholder.organization.type')),
         phone: z.string().refine((value) => /^[+]\d{11}$/.test(value), {
             message: i18next.t('validation.require.phone'),
         }),
@@ -169,6 +168,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                   short_name: '',
                   email: '',
                   phone: '',
+                  organization_type_id: '',
                   password: '',
                   repeat_password: '',
               },
@@ -186,6 +186,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
               }
             : {
                   role_id: '',
+                  group_id: '',
               },
     })
 
@@ -341,10 +342,16 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         []
     )
 
-    useSuccessToast(createSuccessMsg, userCreateSuccess, setDialogOpen)
-    useSuccessToast(updateSuccessMsg, userUpdateSuccess, setDialogOpen)
-    useSuccessToast(createSuccessMsg, organizationCreateSuccess, setDialogOpen)
-    useSuccessToast(updateSuccessMsg, organizationUpdateSuccess, setDialogOpen)
+    useSuccessToast(
+        createSuccessMsg,
+        userCreateSuccess || organizationCreateSuccess,
+        setDialogOpen
+    )
+    useSuccessToast(
+        updateSuccessMsg,
+        userUpdateSuccess || organizationUpdateSuccess,
+        setDialogOpen
+    )
 
     return (
         <Tabs value={tabValue} className="overflow-auto w-full h-full">
@@ -782,6 +789,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     <FileContainer
                         onSubmit={(file) => console.log(file)}
                         fileType="image/*"
+                        uploadIcon={<UploadIcon />}
                     />
                     {(userCreateError ||
                         organizationCreateError ||

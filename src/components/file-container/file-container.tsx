@@ -10,9 +10,14 @@ import { formatFileSize } from '@/utils/helpers'
 interface FileContainerProps {
     onSubmit: (file: File) => void
     fileType?: string
+    uploadIcon?: React.ReactNode
 }
 
-const FileContainer = ({ onSubmit, fileType = '*/*' }: FileContainerProps) => {
+const FileContainer = ({
+    onSubmit,
+    fileType = '*/*',
+    uploadIcon = <ArchiveImportLight />,
+}: FileContainerProps) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [selectedFile, setSelectedFile] = useState<File>()
     const { t } = useTranslation()
@@ -74,13 +79,11 @@ const FileContainer = ({ onSubmit, fileType = '*/*' }: FileContainerProps) => {
                 {selectedFile ? (
                     <div className="w-full flex justify-between border rounded-xl p-4">
                         <div className="flex items-center">
-                            <div className="w-[31px] h-[40px]">
-                                {fileType === 'text/csv' ? (
+                            {fileType === 'text/csv' && (
+                                <div className="w-[31px] h-[40px]">
                                     <ExcelFile />
-                                ) : (
-                                    <div>FILE</div>
-                                )}
-                            </div>
+                                </div>
+                            )}
                             <div className="ml-4">
                                 <p className="text-xs">{selectedFile.name}</p>
                                 <p className="text-xs text-body-light mt-1">
@@ -111,8 +114,8 @@ const FileContainer = ({ onSubmit, fileType = '*/*' }: FileContainerProps) => {
                             dragActive && 'invisible'
                         )}
                     >
-                        <ArchiveImportLight />
-                        <p>
+                        {uploadIcon}
+                        <p className="mt-2">
                             {t('file.import.drag')}
                             <span className="text-primary underline font-semibold">
                                 {t('file.import.click')}
