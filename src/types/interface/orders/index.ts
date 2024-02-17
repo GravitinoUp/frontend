@@ -63,6 +63,7 @@ export interface OrderInterface {
     createdAt: Date
     updatedAt: Date
     property_values?: number[] | null
+    files: string[]
 }
 
 export interface OrderUserInterface {
