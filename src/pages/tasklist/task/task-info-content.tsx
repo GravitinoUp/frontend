@@ -1,7 +1,6 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import ImageCarousel from '@/components/image-carousel/image-carousel'
-import ImageCarouselDialog from '@/components/image-carousel/image-carousel-dialog'
 import OrderStatus from '@/components/order-status/order-status'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -45,17 +44,9 @@ interface TaskInfoContentProps {
 
 const TaskInfoContent = ({ order }: TaskInfoContentProps) => {
     const { t } = useTranslation()
-    const [open, setOpen] = useState(false)
-    const [dialogStartIndex, setDialogStartIndex] = useState(0)
 
     return (
         <Fragment>
-            <ImageCarouselDialog
-                files={order.files}
-                startIndex={dialogStartIndex}
-                open={open}
-                setOpen={setOpen}
-            />
             <OrderStatus status={order.order_status.order_status_name} />
             <div className="flex">
                 <div className="w-full mr-[100px]">
@@ -108,13 +99,7 @@ const TaskInfoContent = ({ order }: TaskInfoContentProps) => {
                     />
                 </div>
             </div>
-            <ImageCarousel
-                files={order.files}
-                onShowClick={(index) => {
-                    setDialogStartIndex(index)
-                    setOpen(true)
-                }}
-            />
+            <ImageCarousel files={order.files} />
         </Fragment>
     )
 }
