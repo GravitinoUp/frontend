@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import ImageCarousel from '@/components/image-carousel/image-carousel'
 import OrderStatus from '@/components/order-status/order-status'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -49,7 +50,10 @@ const TaskInfoContent = ({ order }: TaskInfoContentProps) => {
             <OrderStatus status={order.order_status.order_status_name} />
             <div className="flex">
                 <div className="w-full mr-[100px]">
-                    <TaskInfoField title={t('title')} content={order.order_name} />
+                    <TaskInfoField
+                        title={t('title')}
+                        content={order.order_name}
+                    />
                     <TaskInfoField
                         title={t('description')}
                         content={order.order_description}
@@ -95,6 +99,7 @@ const TaskInfoContent = ({ order }: TaskInfoContentProps) => {
                     />
                 </div>
             </div>
+            <ImageCarousel files={order.files} />
         </Fragment>
     )
 }

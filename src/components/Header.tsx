@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 
 export function Header({ open, setOpen }: NavbarProps) {
     return (
-        <div className="grid grid-cols-[50px_auto]  items-center min-w-full bg-white h-16 border-solid border-l-[2px] border-b-[2px] ">
+        <div className="grid grid-cols-[50px_auto] items-center min-w-full bg-white h-16 border-solid border-l-[2px] border-b-[2px] ">
             <div
                 className="items-center cursor-pointer justify-center ml-3"
                 onClick={() => setOpen(!open)}
