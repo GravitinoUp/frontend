@@ -1,10 +1,7 @@
 import { FacilityInterface, FacilitySortInterface } from '../facility'
 import { IQuery, SortOptionsType } from '../fetch'
 import { GroupInterface, GroupSortInterface } from '../group'
-import {
-    OrganizationInterface,
-    OrganizationSortInterface,
-} from '../organizations'
+import { OrganizationInterface, OrganizationSortInterface } from '../organizations'
 import { RoleInterface, RoleSortInterface } from '../roles'
 import { UserInterface } from '../user'
 import { RecursivePartial } from '@/utils/recursive-partial'
@@ -23,16 +20,6 @@ export interface FormattedTaskInterface {
     deliveryDate?: string
     taskCreator?: string
     taskType?: number | null
-}
-
-export interface ExecutorInterface {
-    organization_id: number
-    organization_type_id: number
-    full_name: string
-    short_name: string
-    register_number: string
-    phone: string
-    email: string
 }
 
 export interface OrderMyPayloadInterface extends IQuery {
@@ -145,6 +132,11 @@ export type CategorySortInterface = Partial<
     Record<keyof CategoryInterface, SortOptionsType>
 >
 
+export interface CategoryPayloadInterface extends IQuery {
+    sorts: CategorySortInterface
+    filter: Partial<CategoryInterface>
+}
+
 // PERIODICITY
 
 export interface PeriodicityInterface {
@@ -173,8 +165,6 @@ export interface PriorityInterface {
     priority_id: number
     priority_name: string
 }
-
-export interface PriorityPayloadInterface {}
 
 export type PrioritySortInterface = Partial<
     Record<keyof PriorityInterface, SortOptionsType>

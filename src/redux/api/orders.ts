@@ -1,5 +1,5 @@
 import { api } from './'
-import { NewOrderBodyInterface } from '@/pages/tasklist/constants'
+import { NewOrderBodyInterface, NewTaskBodyInterface } from '@/pages/tasklist/constants'
 import {
     FetchDataInterface,
     FetchResultInterface,
@@ -40,6 +40,17 @@ const ordersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Orders'],
         }),
+        addTask: builder.mutation<
+            FetchResultInterface<OrderInterface>,
+            NewTaskBodyInterface
+        >({
+            query: (body) => ({
+                url: 'task',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Orders'],
+        }),
         deleteOrder: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
                 url: `order/${id}`,
@@ -55,5 +66,6 @@ export const {
     useGetOrdersQuery,
     useGetPersonalOrdersQuery,
     useAddOrderMutation,
+    useAddTaskMutation,
     useDeleteOrderMutation,
 } = ordersApi

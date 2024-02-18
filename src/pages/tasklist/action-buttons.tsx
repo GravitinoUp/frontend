@@ -34,7 +34,7 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
 
     const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.f', {
         entityType: t('order'),
-        entityName: task.taskName,
+        entityName: taskInfo?.order_name || '',
     }), [])
 
     const handleOrderDelete = useCallback(() => {

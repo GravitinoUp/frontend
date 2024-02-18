@@ -1,19 +1,21 @@
-import { Dispatch, SetStateAction, useMemo } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { NewOrderBodyInterface, placeholderQuery } from './constants'
+import { NewOrderBodyInterface, NewTaskBodyInterface, placeholderQuery } from './constants'
 import i18next from '../../i18n.ts'
 import CalendarIcon from '@/assets/icons/Calendar.svg'
+import DeleteIcon from '@/assets/icons/delete.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { FileData, MultiFileInput } from '@/components/file-container/multi-file-input.tsx'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
+import { RadioField } from '@/components/input-field/radio-field.tsx'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { MultiSelect, Option } from '@/components/ui/multi-select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
@@ -22,10 +24,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { cn } from '@/lib/utils'
 import { useGetBranchesQuery } from '@/redux/api/branch'
+import { useGetCategoriesQuery } from '@/redux/api/categories.ts'
 import { useGetCheckpointsByBranchQuery } from '@/redux/api/checkpoints'
-import { useGetFacilitiesByCheckpointQuery } from '@/redux/api/facility'
-import { useAddOrderMutation } from '@/redux/api/orders'
+import { useGetFacilitiesByBranchQuery } from '@/redux/api/facility'
+import { useAddOrderMutation, useAddTaskMutation } from '@/redux/api/orders'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
+import { useGetAllPeriodicityQuery } from '@/redux/api/periodicity.ts'
 import { useGetAllPriorityQuery } from '@/redux/api/priority'
 import { OrderInterface } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers'
@@ -46,6 +50,8 @@ const baseSchema = z.object({
         message: i18next.t('validation.require.select'),
     }),
     priority: z.string({ required_error: i18next.t('validation.require.task.priority') }),
+    periodicity: z.string({ required_error: i18next.t('validation.require.task.periodicity') }),
+    category: z.string({ required_error: i18next.t('validation.require.task.category') }),
     taskType: z.string({ required_error: i18next.t('validation.require.task.type') }),
 })
 
@@ -78,6 +84,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
             branchesList: [],
             checkpointsList: [],
             priority: task ? String(task.priority.priority_id) : '',
+            periodicity: task ? String(task.task.periodicity?.periodicity_id) : '',
+            category: task ? String(task.task.category.category_id) : '',
+            taskType: task ? (task.task.task_id === null ? 'unplanned' : 'planned') : 'unplanned',
         },
     })
 
@@ -107,15 +116,14 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         label: checkpoint.checkpoint_name,
         value: checkpoint.checkpoint_id,
     }))
-    const selectedCheckpoints = form.watch('checkpointsList')
 
     const {
         data: facilities = [],
         isLoading: facilitiesLoading,
         isError: facilitiesError,
-    } = useGetFacilitiesByCheckpointQuery(
-        { body: placeholderQuery, checkpointIDS: selectedCheckpoints },
-        { skip: selectedCheckpoints.length === 0 },
+    } = useGetFacilitiesByBranchQuery(
+        { body: placeholderQuery, branchIDS: selectedBranches },
+        { skip: selectedBranches.length === 0 },
     )
     const mappedFacilities: Option[] = facilities?.map((facility) => ({
         label: facility.facility_name,
@@ -144,91 +152,126 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isSuccess: prioritiesSuccess,
     } = useGetAllPriorityQuery()
 
+    const isPlannedTask = form.watch('taskType') === 'planned'
+    const {
+        data: periodicity = [],
+        isLoading: periodicityLoading,
+        isError: periodicityError,
+        isSuccess: periodicitySuccess,
+    } = useGetAllPeriodicityQuery(void 0, { skip: !isPlannedTask })
+
+    const {
+        data: categories = [],
+        isLoading: categoriesLoading,
+        isError: categoriesError,
+        isSuccess: categoriesSuccess,
+    } = useGetCategoriesQuery(placeholderQuery,
+        { selectFromResult: (result) => ({ ...result, data: result.data?.data }), skip: !isPlannedTask })
+    console.log(categories, periodicity)
+    // создание внеплановой задачи
     const [
         addOrder,
-        { isLoading: isAdding, isError: addError, isSuccess: addSuccess },
+        { isLoading: isOrderAdding, isError: addOrderError, isSuccess: addOrderSuccess },
     ] = useAddOrderMutation()
 
+    // создание плановой задачи
+    const [addTask, {
+        isLoading: isTaskAdding,
+        isError: addTaskError,
+        isSuccess: addTaskSuccess,
+    }] = useAddTaskMutation()
+
     function handleSubmit(data: z.infer<typeof formSchema>) {
-        const formattedData: NewOrderBodyInterface = {
-            order_name: data.taskName,
-            order_description: data.taskDescription,
-            branch_ids: data.branchesList,
-            checkpoint_ids: data.checkpointsList,
-            facility_ids: data.facilities,
-            executor_ids: data.organizations,
-            planned_datetime: data.startDate.toISOString(),
-            task_end_datetime: data.endDate.toISOString(),
-            priority_id: Number(data.priority),
-            property_values: [],
+        if (data.taskType === 'unplanned') {
+            const newOrderData: NewOrderBodyInterface = {
+                order_name: data.taskName,
+                order_description: data.taskDescription,
+                branch_ids: data.branchesList,
+                checkpoint_ids: data.checkpointsList,
+                facility_ids: data.facilities,
+                executor_ids: data.organizations,
+                planned_datetime: data.startDate.toISOString(),
+                task_end_datetime: data.endDate.toISOString(),
+                priority_id: Number(data.priority),
+                property_values: [],
+            }
+
+            addOrder(newOrderData)
         }
 
-        if (data.taskType === 'unplanned') {
-            addOrder(formattedData)
+        if (data.taskType === 'planned') {
+            const newTaskData: NewTaskBodyInterface = {
+                task_name: data.taskName,
+                task_description: data.taskDescription,
+                category_id: Number(data.category),
+                periodicity_id: Number(data.periodicity),
+                branch_ids: data.branchesList,
+                checkpoint_ids: data.checkpointsList,
+                facility_ids: data.facilities,
+                executor_ids: data.organizations,
+                priority_id: Number(data.priority),
+                period_start: data.startDate.toISOString(),
+                period_end: data.endDate.toISOString(),
+            }
+
+            addTask(newTaskData)
         }
     }
 
+    const [activeTab, setActiveTab] = useState('task')
     const { t } = useTranslation()
-
     const addSuccessMsg = useMemo(() => t('toast.success.description.create.m', {
         entityType: t('order'),
     }), [])
 
-    useSuccessToast(addSuccessMsg, addSuccess, setDialogOpen)
+    useSuccessToast(addSuccessMsg, addOrderSuccess || addTaskSuccess, setDialogOpen)
+
+    const [selectedFiles, setSelectedFiles] = useState<FileData[]>([])
+    const handleFileUpload = () => {
+
+    }
+
+    const handleFileDelete = (id: string) => {
+        const result = selectedFiles.filter((data) => data.id !== id)
+        setSelectedFiles(result)
+    }
 
     return (
-        <CustomForm form={form} onSubmit={handleSubmit}>
-            <Tabs defaultValue="task" className="overflow-auto  w-full h-full">
-                <TabsList className="gap-2">
-                    <TabsTrigger
-                        value="task"
-                        className="data-[state=active]:text-primary uppercase"
-                    >
-                        {t('order')}
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="files"
-                        className="data-[state=active]:text-primary"
-                    >
-                        {t('files')}
-                    </TabsTrigger>
-                </TabsList>
-                <Separator className="w-full bg-[#E8E9EB]" decorative />
-                <TabsContent value="task" className="w-full">
-                    <ScrollArea className="w-full h-[691px] pr-3">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="overflow-auto  w-full h-full">
+            <TabsList className="gap-2">
+                <TabsTrigger
+                    value="task"
+                    className="data-[state=active]:text-primary uppercase"
+                >
+                    {t('order')}
+                </TabsTrigger>
+                <TabsTrigger
+                    value="files"
+                    className="data-[state=active]:text-primary uppercase"
+                >
+                    {t('files')}
+                </TabsTrigger>
+            </TabsList>
+            <Separator className="w-full bg-[#E8E9EB]" decorative />
+            <TabsContent value="task" className="w-full">
+                <ScrollArea className="w-full h-[691px] pr-3">
+                    <CustomForm form={form} onSubmit={handleSubmit}>
                         <FormField
                             control={form.control}
                             name="taskType"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('task.type')}</FormLabel>
-                                    <FormControl>
-                                        <RadioGroup
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                            className="flex space-y-1"
-                                        >
-                                            <FormItem className="flex items-center space-x-3 space-y-0">
-                                                <FormControl>
-                                                    <RadioGroupItem value="planned" />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">
-                                                    {t('task.planned')}
-                                                </FormLabel>
-                                            </FormItem>
-                                            <FormItem
-                                                className="flex items-center space-x-3 space-y-0"
-                                                style={{ marginTop: '0px' }}
-                                            >
-                                                <FormControl>
-                                                    <RadioGroupItem value="unplanned" />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">
-                                                    {t('task.unplanned')}
-                                                </FormLabel>
-                                            </FormItem>
-                                        </RadioGroup>
-                                    </FormControl>
+                                    <div className="flex gap-2.5">
+                                        <FormControl>
+                                            <RadioField selectedValue={field.value} value="planned"
+                                                        label={t('task.planned')} onChange={field.onChange} />
+                                        </FormControl>
+                                        <FormControl>
+                                            <RadioField selectedValue={field.value} value="unplanned"
+                                                        label={t('task.unplanned')} onChange={field.onChange} />
+                                        </FormControl>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -241,7 +284,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     label={t('task.title')}
                                     className="mt-3"
                                     {...field}
-                                    disabled={isAdding}
+                                    disabled={isOrderAdding || isTaskAdding}
                                 />
                             )}
                         />
@@ -302,6 +345,47 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                         />
                         <FormField
                             control={form.control}
+                            name="facilities"
+                            render={({ field }) => (
+                                <FormItem className="mt-3">
+                                    <FormLabel>{t('facilities')}</FormLabel>
+                                    {facilitiesLoading && <LoadingSpinner />}
+                                    {facilitiesError && (
+                                        <CustomAlert message={t('multiselect.error.facility')} />
+                                    )}
+                                    {!facilitiesError && !facilitiesLoading && (
+                                        <FormControl>
+                                            <MultiSelect
+                                                onChange={(values) => {
+                                                    field.onChange(
+                                                        values.map(
+                                                            ({ value }) => value,
+                                                        ),
+                                                    )
+                                                }}
+                                                options={mappedFacilities}
+                                                defaultOptions={
+                                                    task && [
+                                                        {
+                                                            value: task?.facility.facility_id,
+                                                            label: task?.facility.facility_name,
+                                                        },
+                                                    ]
+                                                }
+                                                disabled={
+                                                    selectedBranches.length ===
+                                                    0
+                                                }
+                                                placeholder={t('multiselect.placeholder.facility')}
+                                            />
+                                        </FormControl>
+                                    )}
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
                             name="checkpointsList"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
@@ -339,47 +423,6 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                 />
                                             </FormControl>
                                         )}
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="facilities"
-                            render={({ field }) => (
-                                <FormItem className="mt-3">
-                                    <FormLabel>{t('facilities')}</FormLabel>
-                                    {facilitiesLoading && <LoadingSpinner />}
-                                    {facilitiesError && (
-                                        <CustomAlert message={t('multiselect.error.facility')} />
-                                    )}
-                                    {!facilitiesError && !facilitiesLoading && (
-                                        <FormControl>
-                                            <MultiSelect
-                                                onChange={(values) => {
-                                                    field.onChange(
-                                                        values.map(
-                                                            ({ value }) => value,
-                                                        ),
-                                                    )
-                                                }}
-                                                options={mappedFacilities}
-                                                defaultOptions={
-                                                    task && [
-                                                        {
-                                                            value: task?.facility.facility_id,
-                                                            label: task?.facility.facility_name,
-                                                        },
-                                                    ]
-                                                }
-                                                disabled={
-                                                    selectedCheckpoints.length ===
-                                                    0
-                                                }
-                                                placeholder={t('multiselect.placeholder.facility')}
-                                            />
-                                        </FormControl>
-                                    )}
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -439,30 +482,22 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                         priorities?.length > 0 && (
                                             <Select
                                                 onValueChange={field.onChange}
-                                                defaultValue={String(
-                                                    field.value,
-                                                )}
+                                                defaultValue={String(field.value)}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder={t(
-                                                            'multiselect.placeholder.priority')} />
+                                                        <SelectValue
+                                                            placeholder={t('multiselect.placeholder.priority')} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
                                                     {priorities.map(
                                                         (priority) => (
                                                             <SelectItem
-                                                                key={
-                                                                    priority.priority_id
-                                                                }
-                                                                value={String(
-                                                                    priority.priority_id,
-                                                                )}
+                                                                key={priority.priority_id}
+                                                                value={String(priority.priority_id)}
                                                             >
-                                                                {
-                                                                    priority.priority_name
-                                                                }
+                                                                {priority.priority_name}
                                                             </SelectItem>
                                                         ),
                                                     )}
@@ -473,6 +508,93 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                 </FormItem>
                             )}
                         />
+                        {
+                            isPlannedTask &&
+                            <FormField
+                                control={form.control}
+                                name="periodicity"
+                                render={({ field }) => (
+                                    <FormItem className="mt-3">
+                                        <FormLabel>{t('periodicity')}</FormLabel>
+                                        {periodicityLoading && <LoadingSpinner />}
+                                        {periodicityError && (
+                                            <CustomAlert message={t('multiselect.error.periodicity')} />
+                                        )}
+                                        {periodicitySuccess &&
+                                            periodicity?.length > 0 && (
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={String(field.value)}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue
+                                                                placeholder={t(
+                                                                    'multiselect.placeholder.periodicity')} />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {periodicity.map(
+                                                            (period) => (
+                                                                <SelectItem
+                                                                    key={period.periodicity_id}
+                                                                    value={String(period.periodicity_id)}
+                                                                >
+                                                                    {period.periodicity_name}
+                                                                </SelectItem>
+                                                            ),
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        }
+                        {
+                            isPlannedTask &&
+                            <FormField
+                                control={form.control}
+                                name="category"
+                                render={({ field }) => (
+                                    <FormItem className="mt-3">
+                                        <FormLabel>{t('category')}</FormLabel>
+                                        {categoriesLoading && <LoadingSpinner />}
+                                        {categoriesError && (
+                                            <CustomAlert message={t('multiselect.error.category')} />
+                                        )}
+                                        {categoriesSuccess &&
+                                            categories?.length > 0 && (
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={String(field.value)}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder={t(
+                                                                'multiselect.placeholder.category')} />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {categories.map(
+                                                            (category) => (
+                                                                <SelectItem
+                                                                    key={category.category_id}
+                                                                    value={String(category.category_id)}
+                                                                >
+                                                                    {category.category_name}
+                                                                </SelectItem>
+                                                            ),
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        }
                         <p className="mt-3 text-[#8A9099] text-sm font-medium">
                             {t('delivery.planned.date')}
                         </p>
@@ -577,19 +699,53 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             />
                         </div>
                         <FormMessage />
-                        {addError && <CustomAlert className="mt-3" />}
+                        {addOrderError || addTaskError && <CustomAlert className="mt-3" />}
                         <Button
-                            className="mt-10 mr-4"
+                            className="mt-10 mr-4 rounded-xl w-[120px]"
                             type="submit"
-                            disabled={isAdding}
+                            disabled={isOrderAdding || isTaskAdding}
                         >
-                            {isAdding ? <LoadingSpinner /> : t('button.action.create')}
+                            {isOrderAdding || isTaskAdding ? <LoadingSpinner /> : t('button.action.create')}
                         </Button>
-                        <ScrollBar orientation="vertical" />
-                    </ScrollArea>
-                </TabsContent>
-            </Tabs>
-        </CustomForm>
+                    </CustomForm>
+                    <ScrollBar orientation="vertical" />
+                </ScrollArea>
+            </TabsContent>
+            <TabsContent value="files">
+                <ScrollArea className="w-full h-[691px] pr-3">
+                    <MultiFileInput setSelectedFiles={setSelectedFiles} />
+                    <div className="flex flex-col gap-16 mt-16">
+                        <div className="flex flex-col gap-3">
+                            {selectedFiles.length > 0 && selectedFiles.map(({ id, filename, fileimage }) => (
+                                <div key={id}
+                                     className="h-[90px] border rounded-xl flex justify-between items-center px-8">
+                                    <div className="flex gap-2 items-center">
+                                        <img src={fileimage} className="h-[72px] w-[72px] rounded-xl"
+                                             alt="" />
+                                        <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">{filename}</p>
+                                    </div>
+                                    <Button variant="ghost" onClick={() => handleFileDelete(id)}>
+                                        <DeleteIcon />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex gap-4">
+                            <Button type="submit" className="rounded-xl w-[120px]" onClick={handleFileUpload}>
+                                {t('button.action.create')}
+                            </Button>
+                            <Button type="button" variant="outline" className="rounded-xl w-[120px]"
+                                    onClick={() => {
+                                        form.clearErrors()
+                                        setActiveTab('task')
+                                    }}>
+                                {t('button.action.back')}
+                            </Button>
+                        </div>
+                    </div>
+                </ScrollArea>
+            </TabsContent>
+        </Tabs>
     )
 }
 

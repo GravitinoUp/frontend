@@ -53,3 +53,17 @@ export interface NewOrderBodyInterface {
     priority_id: number
     property_values: string[]
 }
+
+export interface NewTaskBodyInterface {
+    task_name: string,
+    task_description: string,
+    category_id: number,
+    periodicity_id: number,
+    branch_ids: number[],
+    checkpoint_ids: number[],
+    facility_ids: number[],
+    executor_ids: number[],
+    priority_id: number,
+    period_start: string
+    period_end: string
+}
