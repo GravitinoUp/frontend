@@ -3,6 +3,7 @@ import MapCheckpointPopover from '../map-checkpoint-popover/map-checkpoint-popov
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import CarIcon from '@/assets/icons/car_icon.svg'
 import MapPinIcon from '@/assets/icons/map_pin_icon.svg'
+import { CHECKPOINT_COMPLETED_STATUSES, CHECKPOINT_TYPES } from '@/constants/constants'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
 
 export default function MapPin({
@@ -10,7 +11,7 @@ export default function MapPin({
 }: {
     checkpoint: CheckpointInterface
 }) {
-    const completedCount = checkpoint.checkpoint_id == 1 ? 10 : checkpoint.checkpoint_id == 4 ? 19 : 25
+    const completedCount = checkpoint.checkpoint_id == 1 ? 7 : checkpoint.checkpoint_id == 4 ? 14 : 25
     const checkpointTypeId = checkpoint.checkpoint_type.checkpoint_type_id
     return (
         <div
@@ -25,7 +26,7 @@ export default function MapPin({
                     <div
                         className={`
                             absolute
-                            ${completedCount < 15 ? 'bg-map-completed-red' : completedCount < 20 ? 'bg-map-completed-yellow' : 'bg-map-closed'}
+                            ${completedCount < CHECKPOINT_COMPLETED_STATUSES.MIN ? 'bg-map-completed-red' : completedCount < CHECKPOINT_COMPLETED_STATUSES.MEDIUM ? 'bg-map-completed-yellow' : 'bg-map-closed'}
                             rounded-full
                             flex justify-center items-center
                             top-0
@@ -33,10 +34,10 @@ export default function MapPin({
                         `}
                     >
                         <div className="p-2">
-                            {checkpointTypeId == 1 && <CarIcon />}
-                            {checkpointTypeId == 2 && <TrainFrontIcon size={20} color='white' />}
-                            {checkpointTypeId == 3 && <ShipIcon size={20} color='white' />}
-                            {checkpointTypeId == 4 && <PlaneIcon size={20} color='white' />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.CAR && <CarIcon />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.TRAIN && <TrainFrontIcon size={20} color='white' />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.SHIP && <ShipIcon size={20} color='white' />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.PLANE && <PlaneIcon size={20} color='white' />}
                         </div>
                     </div>
 
