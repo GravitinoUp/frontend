@@ -73,12 +73,14 @@ export default function AccountMenu() {
                             </Fragment>
                         )}
 
-                        <div className="font-pop text-[14px] text-[#3F434A]">
-                            <p>
-                                {user?.person.last_name}{' '}
-                                {user?.person.first_name}
-                            </p>
-                        </div>
+                        {user?.person && (
+                            <div className="font-pop text-[14px] text-[#3F434A]">
+                                <p>
+                                    {user.person.last_name}{' '}
+                                    {user.person.first_name}
+                                </p>
+                            </div>
+                        )}
                         <ChevronDown />
                     </div>
                 </DropdownMenuTrigger>
