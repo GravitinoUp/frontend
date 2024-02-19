@@ -9,9 +9,15 @@ import { formatFileSize } from '@/utils/helpers'
 
 interface FileContainerProps {
     onSubmit: (file: File) => void
+    fileType?: string
+    uploadIcon?: React.ReactNode
 }
 
-const FileContainer = ({ onSubmit }: FileContainerProps) => {
+const FileContainer = ({
+    onSubmit,
+    fileType = '*/*',
+    uploadIcon = <ArchiveImportLight />,
+}: FileContainerProps) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [selectedFile, setSelectedFile] = useState<File>()
     const { t } = useTranslation()
@@ -56,7 +62,7 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
             <div
                 className={cn(
                     'flex flex-col items-center mt-8 justify-center bg-muted border-[#C6C9CC] border-[1.5px] border-dashed rounded-xl select-none h-[120px]',
-                    !selectedFile ? 'cursor-pointer p-7' : 'p-5',
+                    !selectedFile ? 'cursor-pointer p-7' : 'p-5'
                 )}
                 onClick={handleAddClick}
                 onDragOver={handleDrag}
@@ -67,15 +73,17 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                     style={{ display: 'none' }}
                     ref={inputRef}
                     type="file"
-                    accept="text/csv"
+                    accept={fileType}
                     onChange={handleFileChange}
                 />
                 {selectedFile ? (
                     <div className="w-full flex justify-between border rounded-xl p-4">
                         <div className="flex items-center">
-                            <div className="w-[31px] h-[40px]">
-                                <ExcelFile />
-                            </div>
+                            {fileType === 'text/csv' && (
+                                <div className="w-[31px] h-[40px]">
+                                    <ExcelFile />
+                                </div>
+                            )}
                             <div className="ml-4">
                                 <p className="text-xs">{selectedFile.name}</p>
                                 <p className="text-xs text-body-light mt-1">
@@ -85,6 +93,7 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                         </div>
                         <div className="flex items-center">
                             <Button
+                                type="button"
                                 className="px-6 py-2 mr-4"
                                 onClick={() => onSubmit(selectedFile)}
                             >
@@ -105,8 +114,8 @@ const FileContainer = ({ onSubmit }: FileContainerProps) => {
                             dragActive && 'invisible'
                         )}
                     >
-                        <ArchiveImportLight />
-                        <p>
+                        {uploadIcon}
+                        <p className="mt-2">
                             {t('file.import.drag')}
                             <span className="text-primary underline font-semibold">
                                 {t('file.import.click')}

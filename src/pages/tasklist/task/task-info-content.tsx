@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import ImageCarousel from '@/components/image-carousel/image-carousel'
 import ChangeStatusForm from './change-status-form'
 import { placeholderQuery } from '../constants'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
@@ -126,6 +127,7 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                             />
                         </div>
                     </div>
+                    <ImageCarousel files={order.files} />
                     <FormDialog
                         open={statusFormOpen}
                         setOpen={setStatusFormOpen}

@@ -8,12 +8,14 @@ const ImportForm = () => {
 
     return (
         <Fragment>
-            <FileContainer onSubmit={(file) => console.log(file)} />
+            <FileContainer
+                onSubmit={(file) => console.log(file)}
+                fileType="text/csv"
+            />
             <Button
                 variant="link"
                 className="text-sm font-normal"
-                onClick={() => {
-                }}
+                onClick={() => {}}
             >
                 {t('file.example.download')}
             </Button>
