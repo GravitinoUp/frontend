@@ -4,6 +4,7 @@ import ChangeStatusForm from './change-status-form'
 import { placeholderQuery } from '../constants'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import FormDialog from '@/components/form-dialog/form-dialog'
+import ImageCarousel from '@/components/image-carousel/image-carousel'
 import OrderStatus from '@/components/order-status/order-status'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
@@ -126,6 +127,7 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                             />
                         </div>
                     </div>
+                    <ImageCarousel files={order.files} />
                     <FormDialog
                         open={statusFormOpen}
                         setOpen={setStatusFormOpen}
