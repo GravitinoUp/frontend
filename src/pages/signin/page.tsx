@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormField } from '@/components/ui/form'
 import { useAppDispatch } from '@/hooks/reduxHooks'
-import { useErrorToast } from '@/hooks/use-error-toast'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
 
@@ -36,10 +35,8 @@ export function SignInPage() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const [
-        authUser,
-        { data: authData, isSuccess: isSuccess, isError: isError },
-    ] = useAuthMutation()
+    const [authUser, { data: authData, isSuccess: isSuccess }] =
+        useAuthMutation()
 
     useEffect(() => {
         if (isSuccess) {
@@ -55,8 +52,6 @@ export function SignInPage() {
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
         authUser(data)
     }
-
-    useErrorToast(isError, () => handleSubmit(form.getValues()))
 
     useEffect(() => {
         document.title = t('authorization')
