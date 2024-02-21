@@ -27,6 +27,10 @@ export const api = createApi({
         'Checkpoints',
         'Properties',
         'Groups',
+        'NeighboringStates',
+        'CheckpointTypes',
+        'WorkingHours',
+        'OperatingMode',
     ],
     endpoints: () => ({}),
 })
