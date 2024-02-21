@@ -15,6 +15,7 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area.tsx'
 import {
     Select,
     SelectContent,
@@ -180,161 +181,103 @@ const AddCheckpointForm = ({
 
     return (
         <CustomForm className="mt-3" form={form} onSubmit={handleSubmit}>
-            <FormField
-                control={form.control}
-                name="checkpoint_name"
-                render={({ field }) => (
-                    <InputField label={t('title')} {...field} />
-                )}
-            />
-            <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                    <InputField
-                        className="mt-3"
-                        label={t('address')}
-                        {...field}
-                    />
-                )}
-            />
-            <FormField
-                control={form.control}
-                name="district"
-                render={({ field }) => (
-                    <InputField
-                        className="mt-3"
-                        label={t('district')}
-                        {...field}
-                    />
-                )}
-            />
-            <div className="flex">
+            <ScrollArea className="w-full h-[670px] pr-3">
                 <FormField
                     control={form.control}
-                    name="neighboring_state_id"
+                    name="checkpoint_name"
                     render={({ field }) => (
-                        <FormItem className="w-full mr-5 mt-3">
-                            <FormLabel>{t('neighboring.state')}</FormLabel>
-                            {neighboringStatesLoading && <LoadingSpinner />}
-                            {neighboringStatesError && (
-                                <CustomAlert
-                                    message={t(
-                                        'multiselect.error.neighboring.states'
-                                    )}
-                                />
-                            )}
-                            {neighboringStatesSuccess &&
-                                neighboringStates?.length > 0 && (
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={String(field.value)}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue
-                                                    placeholder={t(
-                                                        'multiselect.placeholder.neighboring.states'
-                                                    )}
-                                                />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {neighboringStates.map(
-                                                (neighboringState) => (
-                                                    <SelectItem
-                                                        key={
-                                                            neighboringState.neighboring_state_id
-                                                        }
-                                                        value={String(
-                                                            neighboringState.neighboring_state_id
-                                                        )}
-                                                    >
-                                                        {
-                                                            neighboringState.neighboring_state_name
-                                                        }
-                                                    </SelectItem>
-                                                )
-                                            )}
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                            <FormMessage />
-                        </FormItem>
+                        <InputField label={t('title')} {...field} />
                     )}
                 />
                 <FormField
                     control={form.control}
-                    name="branch_id"
-                    render={({ field }) => (
-                        <FormItem className="w-full mt-3">
-                            <FormLabel>{t('branch')}</FormLabel>
-                            {branchesLoading && <LoadingSpinner />}
-                            {branchesError && (
-                                <CustomAlert
-                                    message={t('multiselect.error.branch')}
-                                />
-                            )}
-                            {branchesSuccess && branches?.length > 0 && (
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={String(field.value)}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue
-                                                placeholder={t(
-                                                    'multiselect.placeholder.branch'
-                                                )}
-                                            />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {branches.map((branch) => (
-                                            <SelectItem
-                                                key={branch.branch_id}
-                                                value={String(branch.branch_id)}
-                                            >
-                                                {branch.branch_name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            )}
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            </div>
-            <div className="flex">
-                <FormField
-                    control={form.control}
-                    name="region"
+                    name="address"
                     render={({ field }) => (
                         <InputField
-                            className="w-full mr-5 mt-3"
-                            label={t('region')}
+                            className="mt-3"
+                            label={t('address')}
                             {...field}
                         />
                     )}
                 />
-
                 <FormField
                     control={form.control}
-                    name="checkpoint_type_id"
+                    name="district"
                     render={({ field }) => (
-                        <FormItem className="w-full mt-3">
-                            <FormLabel>{t('type')}</FormLabel>
-                            {checkpointTypesLoading && <LoadingSpinner />}
-                            {checkpointTypesError && (
-                                <CustomAlert
-                                    message={t(
-                                        'multiselect.error.checkpoint.type'
+                        <InputField
+                            className="mt-3"
+                            label={t('district')}
+                            {...field}
+                        />
+                    )}
+                />
+                <div className="flex">
+                    <FormField
+                        control={form.control}
+                        name="neighboring_state_id"
+                        render={({ field }) => (
+                            <FormItem className="w-full mr-5 mt-3">
+                                <FormLabel>{t('neighboring.state')}</FormLabel>
+                                {neighboringStatesLoading && <LoadingSpinner />}
+                                {neighboringStatesError && (
+                                    <CustomAlert
+                                        message={t(
+                                            'multiselect.error.neighboring.states'
+                                        )}
+                                    />
+                                )}
+                                {neighboringStatesSuccess &&
+                                    neighboringStates?.length > 0 && (
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={String(field.value)}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        placeholder={t(
+                                                            'multiselect.placeholder.neighboring.states'
+                                                        )}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {neighboringStates.map(
+                                                    (neighboringState) => (
+                                                        <SelectItem
+                                                            key={
+                                                                neighboringState.neighboring_state_id
+                                                            }
+                                                            value={String(
+                                                                neighboringState.neighboring_state_id
+                                                            )}
+                                                        >
+                                                            {
+                                                                neighboringState.neighboring_state_name
+                                                            }
+                                                        </SelectItem>
+                                                    )
+                                                )}
+                                            </SelectContent>
+                                        </Select>
                                     )}
-                                />
-                            )}
-                            {checkpointTypesSuccess &&
-                                checkpointTypes?.length > 0 && (
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="branch_id"
+                        render={({ field }) => (
+                            <FormItem className="w-full mt-3">
+                                <FormLabel>{t('branch')}</FormLabel>
+                                {branchesLoading && <LoadingSpinner />}
+                                {branchesError && (
+                                    <CustomAlert
+                                        message={t('multiselect.error.branch')}
+                                    />
+                                )}
+                                {branchesSuccess && branches?.length > 0 && (
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={String(field.value)}
@@ -343,24 +286,189 @@ const AddCheckpointForm = ({
                                             <SelectTrigger>
                                                 <SelectValue
                                                     placeholder={t(
-                                                        'multiselect.placeholder.checkpoint.type'
+                                                        'multiselect.placeholder.branch'
                                                     )}
                                                 />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {checkpointTypes.map(
-                                                (checkpointType) => (
+                                            {branches.map((branch) => (
+                                                <SelectItem
+                                                    key={branch.branch_id}
+                                                    value={String(
+                                                        branch.branch_id
+                                                    )}
+                                                >
+                                                    {branch.branch_name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <div className="flex">
+                    <FormField
+                        control={form.control}
+                        name="region"
+                        render={({ field }) => (
+                            <InputField
+                                className="w-full mr-5 mt-3"
+                                label={t('region')}
+                                {...field}
+                            />
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="checkpoint_type_id"
+                        render={({ field }) => (
+                            <FormItem className="w-full mt-3">
+                                <FormLabel>{t('type')}</FormLabel>
+                                {checkpointTypesLoading && <LoadingSpinner />}
+                                {checkpointTypesError && (
+                                    <CustomAlert
+                                        message={t(
+                                            'multiselect.error.checkpoint.type'
+                                        )}
+                                    />
+                                )}
+                                {checkpointTypesSuccess &&
+                                    checkpointTypes?.length > 0 && (
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={String(field.value)}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        placeholder={t(
+                                                            'multiselect.placeholder.checkpoint.type'
+                                                        )}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {checkpointTypes.map(
+                                                    (checkpointType) => (
+                                                        <SelectItem
+                                                            key={
+                                                                checkpointType.checkpoint_type_id
+                                                            }
+                                                            value={String(
+                                                                checkpointType.checkpoint_type_id
+                                                            )}
+                                                        >
+                                                            {
+                                                                checkpointType.checkpoint_type_name
+                                                            }
+                                                        </SelectItem>
+                                                    )
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <FormField
+                    control={form.control}
+                    name="working_hours_id"
+                    render={({ field }) => (
+                        <FormItem className="w-full mt-3">
+                            <FormLabel>{t('working.hours')}</FormLabel>
+                            {workingHoursLoading && <LoadingSpinner />}
+                            {workingHoursError && (
+                                <CustomAlert
+                                    message={t(
+                                        'multiselect.error.working.hours'
+                                    )}
+                                />
+                            )}
+                            {workingHoursSuccess &&
+                                workingHours?.length > 0 && (
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={String(field.value)}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.working.hours'
+                                                    )}
+                                                />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {workingHours.map((workingHour) => (
+                                                <SelectItem
+                                                    key={
+                                                        workingHour.working_hours_id
+                                                    }
+                                                    value={String(
+                                                        workingHour.working_hours_id
+                                                    )}
+                                                >
+                                                    {
+                                                        workingHour.working_hours_name
+                                                    }
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="operating_mode_id"
+                    render={({ field }) => (
+                        <FormItem className="w-full mt-3">
+                            <FormLabel>{t('operating.mode')}</FormLabel>
+                            {operatingModesLoading && <LoadingSpinner />}
+                            {operatingModesError && (
+                                <CustomAlert
+                                    message={t(
+                                        'multiselect.error.operating.mode'
+                                    )}
+                                />
+                            )}
+                            {operatingModesSuccess &&
+                                operatingModes?.length > 0 && (
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={String(field.value)}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.operating.mode'
+                                                    )}
+                                                />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {operatingModes.map(
+                                                (operatingMode) => (
                                                     <SelectItem
                                                         key={
-                                                            checkpointType.checkpoint_type_id
+                                                            operatingMode.operating_mode_id
                                                         }
                                                         value={String(
-                                                            checkpointType.checkpoint_type_id
+                                                            operatingMode.operating_mode_id
                                                         )}
                                                     >
                                                         {
-                                                            checkpointType.checkpoint_type_name
+                                                            operatingMode.operating_mode_name
                                                         }
                                                     </SelectItem>
                                                 )
@@ -368,126 +476,37 @@ const AddCheckpointForm = ({
                                         </SelectContent>
                                     </Select>
                                 )}
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
-            </div>
-            <FormField
-                control={form.control}
-                name="working_hours_id"
-                render={({ field }) => (
-                    <FormItem className="w-full mt-3">
-                        <FormLabel>{t('working.hours')}</FormLabel>
-                        {workingHoursLoading && <LoadingSpinner />}
-                        {workingHoursError && (
-                            <CustomAlert
-                                message={t('multiselect.error.working.hours')}
-                            />
-                        )}
-                        {workingHoursSuccess && workingHours?.length > 0 && (
-                            <Select
-                                onValueChange={field.onChange}
-                                defaultValue={String(field.value)}
-                            >
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue
-                                            placeholder={t(
-                                                'multiselect.placeholder.working.hours'
-                                            )}
-                                        />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    {workingHours.map((workingHour) => (
-                                        <SelectItem
-                                            key={workingHour.working_hours_id}
-                                            value={String(
-                                                workingHour.working_hours_id
-                                            )}
-                                        >
-                                            {workingHour.working_hours_name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        )}
-                    </FormItem>
+                {(createError || updateError) && (
+                    <CustomAlert className="mt-3" />
                 )}
-            />
-            <FormField
-                control={form.control}
-                name="operating_mode_id"
-                render={({ field }) => (
-                    <FormItem className="w-full mt-3">
-                        <FormLabel>{t('operating.mode')}</FormLabel>
-                        {operatingModesLoading && <LoadingSpinner />}
-                        {operatingModesError && (
-                            <CustomAlert
-                                message={t('multiselect.error.operating.mode')}
-                            />
+                <Fragment>
+                    <Button
+                        className="w-[100px] mt-10 mr-4"
+                        type="submit"
+                        disabled={isAdding || isUpdating}
+                    >
+                        {isAdding || isUpdating ? (
+                            <LoadingSpinner />
+                        ) : checkpoint ? (
+                            t('button.action.save')
+                        ) : (
+                            t('button.action.create')
                         )}
-                        {operatingModesSuccess &&
-                            operatingModes?.length > 0 && (
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={String(field.value)}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue
-                                                placeholder={t(
-                                                    'multiselect.placeholder.operating.mode'
-                                                )}
-                                            />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {operatingModes.map((operatingMode) => (
-                                            <SelectItem
-                                                key={
-                                                    operatingMode.operating_mode_id
-                                                }
-                                                value={String(
-                                                    operatingMode.operating_mode_id
-                                                )}
-                                            >
-                                                {
-                                                    operatingMode.operating_mode_name
-                                                }
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            )}
-                    </FormItem>
-                )}
-            />
-            {(createError || updateError) && <CustomAlert className="mt-3" />}
-            <Fragment>
-                <Button
-                    className="w-[100px] mt-10 mr-4"
-                    type="submit"
-                    disabled={isAdding || isUpdating}
-                >
-                    {isAdding || isUpdating ? (
-                        <LoadingSpinner />
-                    ) : checkpoint ? (
-                        t('button.action.save')
-                    ) : (
-                        t('button.action.create')
-                    )}
-                </Button>
-                <Button
-                    className="w-[100px] mt-10"
-                    type="button"
-                    variant="outline"
-                    onClick={() => setDialogOpen!(false)}
-                >
-                    {t('button.action.cancel')}
-                </Button>
-            </Fragment>
+                    </Button>
+                    <Button
+                        className="w-[100px] mt-10"
+                        type="button"
+                        variant="outline"
+                        onClick={() => setDialogOpen!(false)}
+                    >
+                        {t('button.action.cancel')}
+                    </Button>
+                </Fragment>
+                <ScrollBar orientation="vertical" />
+            </ScrollArea>
         </CustomForm>
     )
 }
