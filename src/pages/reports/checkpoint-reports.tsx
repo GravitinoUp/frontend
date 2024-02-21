@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { reportsColumns } from './reports-columns'
 import ExportForm from '../tasklist/export-form'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
@@ -12,17 +12,22 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
-import { useGetBranchReportsQuery } from '@/redux/api/reports'
-import { BranchReportsPayloadInterface } from '@/types/interface/reports'
+import { useGetCheckpointReportsQuery } from '@/redux/api/reports'
+import { BranchInterface } from '@/types/interface/branch'
+import { CheckpointReportsPayloadInterface } from '@/types/interface/reports'
 
-export default function ReportsPage() {
+export default function CheckpointReportsPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
 
+    const { state } = useLocation()
+    const branch: BranchInterface = state.branch
+
     const [exportFormOpen, setExportFormOpen] = useState(false)
 
-    const [branchReportsQuery, setBranchReportsQuery] =
-        useState<BranchReportsPayloadInterface>({
+    const [checkpointReportsQuery, setCheckpointReportsQuery] =
+        useState<CheckpointReportsPayloadInterface>({
+            branch_id: branch.branch_id,
             offset: {
                 count: 50,
                 page: 1,
@@ -39,12 +44,12 @@ export default function ReportsPage() {
         data = { count: 0, data: [] },
         isError,
         isLoading,
-    } = useGetBranchReportsQuery(branchReportsQuery)
+    } = useGetCheckpointReportsQuery(checkpointReportsQuery)
 
     const formattedReports = data.data.map((row) => ({
-        key: row.branch.branch_id,
-        id: row.branch.branch_id,
-        name: row.branch.branch_name,
+        key: row.checkpoint.checkpoint_id,
+        id: row.checkpoint.checkpoint_id,
+        name: row.checkpoint.checkpoint_name,
         completedPercent: row.completed_percent,
         completedCount: row.completed_count,
         checkedPercent: row.checked_percent,
@@ -87,23 +92,23 @@ export default function ReportsPage() {
                 columns={reportsColumns}
                 hasBackground
                 getPaginationInfo={(pageSize, pageIndex) => {
-                    setBranchReportsQuery({
-                        ...branchReportsQuery,
+                    setCheckpointReportsQuery({
+                        ...checkpointReportsQuery,
                         offset: { count: pageSize, page: pageIndex + 1 },
                     })
                 }}
                 onRowClick={(rowData) =>
-                    navigate(`checkpoints`, {
+                    navigate(`organizations`, {
                         state: {
-                            branch: data.data.find(
-                                (e) => e.branch.branch_id === rowData.id
-                            )?.branch,
+                            checkpoint: data.data.find(
+                                (e) => e.checkpoint.checkpoint_id === rowData.id
+                            ),
                         },
                     })
                 }
                 paginationInfo={{
                     itemCount: data.count,
-                    pageSize: branchReportsQuery.offset.count,
+                    pageSize: checkpointReportsQuery.offset.count,
                 }}
                 isLoading={isLoading}
             />
