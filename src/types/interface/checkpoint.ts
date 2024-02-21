@@ -43,6 +43,8 @@ export interface CheckpointInterface {
     checkpoint_id: number
     checkpoint_name: string
     address: string
+    lat: number
+    lng: number
     branch: BranchInterface
     neighboring_state?: NeighboringStateInterface | null
     district?: string | null

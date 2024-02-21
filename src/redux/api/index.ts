@@ -26,6 +26,7 @@ export const api = createApi({
         'Users',
         'Checkpoints',
         'Properties',
+        'Groups',
         'NeighboringStates',
         'CheckpointTypes',
         'WorkingHours',

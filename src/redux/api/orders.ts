@@ -6,13 +6,18 @@ import {
 } from '@/types/interface/fetch'
 import {
     OrderInterface,
-    OrderMyPayloadInterface,
+    OrderPayloadInterface,
+    UpdateStatusPayloadInterface,
 } from '@/types/interface/orders'
 
 const ordersApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getOrders: builder.query<OrderInterface[], void>({
-            query: () => 'order/all',
+        getOrders: builder.query<OrderInterface[], OrderPayloadInterface>({
+            query: (body) => ({
+                url: 'order/all',
+                method: 'POST',
+                body,
+            }),
             transformResponse: (
                 response: FetchDataInterface<OrderInterface[]>
             ) => response.data,
@@ -20,7 +25,7 @@ const ordersApi = api.injectEndpoints({
         }),
         getPersonalOrders: builder.query<
             FetchDataInterface<OrderInterface[]>,
-            OrderMyPayloadInterface
+            OrderPayloadInterface
         >({
             query: (body) => ({
                 url: 'order/my',
@@ -47,6 +52,17 @@ const ordersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Orders'],
         }),
+        updateStatus: builder.mutation<
+            FetchResultInterface,
+            UpdateStatusPayloadInterface
+        >({
+            query: (body) => ({
+                url: 'order/update-status',
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['Orders'],
+        }),
     }),
     overrideExisting: true,
 })
@@ -56,4 +72,5 @@ export const {
     useGetPersonalOrdersQuery,
     useAddOrderMutation,
     useDeleteOrderMutation,
+    useUpdateStatusMutation,
 } = ordersApi
