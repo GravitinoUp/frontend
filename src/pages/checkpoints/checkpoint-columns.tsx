@@ -52,6 +52,10 @@ export const checkpointsColumns: ColumnDef<FormattedCheckpointsInterface>[] = [
         accessorKey: 'working_hours',
     },
     {
+        header: i18next.t('operating.mode'),
+        accessorKey: 'operating_mode',
+    },
+    {
         header: i18next.t('neighboring.state'),
         accessorKey: 'neighboring_state',
     },

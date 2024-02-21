@@ -30,6 +30,7 @@ import {
     useUpdateCheckpointMutation,
 } from '@/redux/api/checkpoints.ts'
 import { useGetNeighboringStatesQuery } from '@/redux/api/neighboring-states.ts'
+import { useGetOperatingModesQuery } from '@/redux/api/operating-modes.ts'
 import { useGetAllWorkingHoursQueryQuery } from '@/redux/api/working-hours.ts'
 import { CheckpointInterface } from '@/types/interface/checkpoint.ts'
 
@@ -53,7 +54,9 @@ const checkpointSchema = z.object({
     checkpoint_type_id: z
         .string()
         .min(1, i18next.t('validation.require.select')),
-    //operating_mode_id: z.string(i18next.t('validation.require.select')),
+    operating_mode_id: z
+        .string()
+        .min(1, i18next.t('validation.require.select')),
     working_hours_id: z.string().min(1, i18next.t('validation.require.select')),
 })
 
@@ -79,7 +82,7 @@ const AddCheckpointForm = ({
                   district: '',
                   region: '',
                   checkpoint_type_id: '',
-                  //operating_mode_id: '',
+                  operating_mode_id: '',
                   working_hours_id: '',
               }
             : {
@@ -90,7 +93,7 @@ const AddCheckpointForm = ({
                   working_hours_id: `${checkpoint.working_hours?.working_hours_id}`,
                   district: `${checkpoint.district}`,
                   region: `${checkpoint.region}`,
-                  //operating_mode_id: `${checkpoint.operating_mode_id}`,
+                  operating_mode_id: `${checkpoint.operating_mode?.operating_mode_id}`,
               },
     })
 
@@ -123,6 +126,13 @@ const AddCheckpointForm = ({
         isError: workingHoursError,
         isSuccess: workingHoursSuccess,
     } = useGetAllWorkingHoursQueryQuery()
+
+    const {
+        data: operatingModes = [],
+        isLoading: operatingModesLoading,
+        isError: operatingModesError,
+        isSuccess: operatingModesSuccess,
+    } = useGetOperatingModesQuery()
 
     const [
         createCheckpoint,
@@ -403,6 +413,54 @@ const AddCheckpointForm = ({
                                 </SelectContent>
                             </Select>
                         )}
+                    </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="operating_mode_id"
+                render={({ field }) => (
+                    <FormItem className="w-full mt-3">
+                        <FormLabel>{t('operating.mode')}</FormLabel>
+                        {operatingModesLoading && <LoadingSpinner />}
+                        {operatingModesError && (
+                            <CustomAlert
+                                message={t('multiselect.error.operating.mode')}
+                            />
+                        )}
+                        {operatingModesSuccess &&
+                            operatingModes?.length > 0 && (
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={String(field.value)}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue
+                                                placeholder={t(
+                                                    'multiselect.placeholder.operating.mode'
+                                                )}
+                                            />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {operatingModes.map((operatingMode) => (
+                                            <SelectItem
+                                                key={
+                                                    operatingMode.operating_mode_id
+                                                }
+                                                value={String(
+                                                    operatingMode.operating_mode_id
+                                                )}
+                                            >
+                                                {
+                                                    operatingMode.operating_mode_name
+                                                }
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
                     </FormItem>
                 )}
             />
