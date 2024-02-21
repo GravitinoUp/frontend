@@ -8,7 +8,7 @@ import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
-import { OrderMyPayloadInterface } from '@/types/interface/orders'
+import { OrderPayloadInterface } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers'
 
 function TaskListContent() {
@@ -16,7 +16,7 @@ function TaskListContent() {
     const { t } = useTranslation()
 
     const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderMyPayloadInterface>({
+        useState<OrderPayloadInterface>({
             offset: {
                 count: 50,
                 page: 1,
@@ -32,7 +32,7 @@ function TaskListContent() {
         })
 
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
-        initialColumnVisibility,
+        initialColumnVisibility
     )
 
     const {
@@ -57,9 +57,9 @@ function TaskListContent() {
         taskCreator: `${row.creator?.person.last_name} ${row.creator?.person.first_name} ${row.creator?.person.patronymic}`,
         taskType: row.task.task_id,
         closeDate: formatDate(row.ended_at_datetime) || '',
-        deliveryDate: `${formatDate(row.planned_datetime)}-${
-            formatDate(row.task_end_datetime)
-        }`,
+        deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
+            row.task_end_datetime
+        )}`,
     }))
 
     if (isError) {
@@ -113,7 +113,7 @@ function TaskListContent() {
                                     order_status: data.order_status.map(
                                         (value) => ({
                                             order_status_name: value,
-                                        }),
+                                        })
                                     ),
                                 },
                             })
@@ -124,17 +124,22 @@ function TaskListContent() {
                         }}
                         data={{
                             branch_id:
-                            personalOrdersQuery.filter.facility?.checkpoint?.branch?.branch_id,
+                                personalOrdersQuery.filter.facility?.checkpoint
+                                    ?.branch?.branch_id,
                             checkpoint_id:
-                            personalOrdersQuery.filter.facility?.checkpoint?.checkpoint_id,
+                                personalOrdersQuery.filter.facility?.checkpoint
+                                    ?.checkpoint_id,
                             organization_id:
-                            personalOrdersQuery.filter.executor?.organization_id,
+                                personalOrdersQuery.filter.executor
+                                    ?.organization_id,
                             priority_id:
-                            personalOrdersQuery.filter.priority?.priority_id,
-                            order_status: personalOrdersQuery.filter.order_status
+                                personalOrdersQuery.filter.priority
+                                    ?.priority_id,
+                            order_status: personalOrdersQuery.filter
+                                .order_status
                                 ? personalOrdersQuery.filter.order_status!.map(
-                                    (value) => `${value?.order_status_name}`,
-                                )
+                                      (value) => `${value?.order_status_name}`
+                                  )
                                 : [],
                             columns: filterColumns,
                         }}
@@ -155,7 +160,7 @@ function TaskListContent() {
                     navigate(`task`, {
                         state: {
                             order: data.data.find(
-                                (e) => e.order_id === rowData.id,
+                                (e) => e.order_id === rowData.id
                             ),
                         },
                     })

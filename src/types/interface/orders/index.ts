@@ -1,7 +1,10 @@
 import { FacilityInterface, FacilitySortInterface } from '../facility'
 import { IQuery, SortOptionsType } from '../fetch'
 import { GroupInterface, GroupSortInterface } from '../group'
-import { OrganizationInterface, OrganizationSortInterface } from '../organizations'
+import {
+    OrganizationInterface,
+    OrganizationSortInterface,
+} from '../organizations'
 import { RoleInterface, RoleSortInterface } from '../roles'
 import { UserInterface } from '../user'
 import { RecursivePartial } from '@/utils/recursive-partial'

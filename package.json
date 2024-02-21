@@ -33,6 +33,7 @@
         "@tanstack/react-table": "^8.11.6",
         "@types/react-datepicker": "^4.19.4",
         "@types/react-redux": "^7.1.33",
+        "@yandex/ymaps3-types": "^0.0.21",
         "axios": "^1.6.2",
         "bcrypt": "^5.1.1",
         "class-variance-authority": "^0.7.0",

@@ -1,5 +1,5 @@
 import { TasksFilterColumns } from './tasks-columns'
-import { OrderMyPayloadInterface } from '@/types/interface/orders'
+import { OrderPayloadInterface } from '@/types/interface/orders'
 
 export const initialColumnVisibility: TasksFilterColumns = {
     key: true,
@@ -15,7 +15,7 @@ export const initialColumnVisibility: TasksFilterColumns = {
     deliveryDate: true,
 }
 
-export const personalOrdersQuery: OrderMyPayloadInterface = {
+export const personalOrdersQuery: OrderPayloadInterface = {
     offset: {
         count: 50,
         page: 1,

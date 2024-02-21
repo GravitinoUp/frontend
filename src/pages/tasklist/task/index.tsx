@@ -5,11 +5,11 @@ import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import { PageLayout } from '@/components/PageLayout'
 import { OrderInterface } from '@/types/interface/orders'
 
-const taskPageTabs = (order: OrderInterface) => [
+const taskPageTabs = (order_id: number) => [
     {
         value: 'taskInfo',
         head: i18next.t('tabs.task.info'),
-        content: <TaskInfoContent order={order} />,
+        content: <TaskInfoContent order_id={order_id} />,
     },
     {
         value: 'taskHistory',
@@ -24,7 +24,7 @@ export default function TaskPage() {
 
     return (
         <PageLayout title={order.task.task_name} backButtonEnabled>
-            <CustomTabs tabs={taskPageTabs(order)} />
+            <CustomTabs tabs={taskPageTabs(order.order_id)} />
         </PageLayout>
     )
 }
