@@ -8,41 +8,51 @@ export interface TabPage {
     value: string
     head: string
     isDialog?: boolean
-    height?: number
     content: ReactElement
 }
 
 export interface TabsProps {
     tabs: TabPage[]
+    getCurrentPage?: (value: string) => void
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-export default function CustomTabs({ tabs, setDialogOpen }: TabsProps) {
+export default function CustomTabs({
+    tabs,
+    getCurrentPage,
+    setDialogOpen,
+}: TabsProps) {
     return (
         <Tabs
             defaultValue={tabs[0].value}
-            className="overflow-auto  w-full h-full"
+            className="overflow-auto w-full h-full"
+            onValueChange={getCurrentPage}
         >
             <TabsList className="gap-2">
                 {tabs.map((tab, key) => (
-                    <TabsTrigger key={key} value={tab.value}>
+                    <TabsTrigger
+                        key={key}
+                        value={tab.value}
+                        className={
+                            tabs[0].isDialog
+                                ? 'data-[state=active]:text-primary uppercase'
+                                : ''
+                        }
+                    >
                         {tab.head}
                     </TabsTrigger>
                 ))}
             </TabsList>
             <Separator className="w-full bg-[#E8E9EB]" decorative />
-
             {tabs.map((tab, key) => {
                 if (tab.isDialog) {
-                    const height = 'h-[' + `${tab.height}` + 'px]'
-
                     return (
                         <TabsContent
                             key={key}
                             value={tab.value}
                             className="w-full"
                         >
-                            <ScrollArea className={'w-full ' + `${height}`}>
+                            <ScrollArea className="w-full max-h-[691px]">
                                 {React.cloneElement(tab.content, {
                                     setDialogOpen,
                                 })}

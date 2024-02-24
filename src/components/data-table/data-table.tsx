@@ -1,31 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
+    Cell,
     ColumnDef,
     ColumnFiltersState,
-    SortingState,
-    VisibilityState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel,
     getSortedRowModel,
+    SortingState,
     useReactTable,
+    VisibilityState,
 } from '@tanstack/react-table'
 
+import { useTranslation } from 'react-i18next'
 import { getCellAlignment, getCellTextColor } from './get-cell-class'
 import { TablePagination } from './table-pagination'
 import { DebouncedInput } from '../search-input'
 import { Button } from '../ui/button'
 import { ScrollArea, ScrollBar } from '../ui/scroll-area'
 import ArrowDown from '@/assets/icons/Arrod-down.svg'
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
+const SKELETON_ITEMS_COUNT = 5
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -34,6 +31,9 @@ interface DataTableProps<TData, TValue> {
     onRowClick?: (rowData: TData) => void
     searchSuffixIconClick?: () => void
     columnVisibility?: VisibilityState
+    getPaginationInfo?: (pageSize: number, pageIndex: number) => void
+    paginationInfo: { itemCount: number; pageSize: number }
+    isLoading?: boolean
 }
 
 function DataTable<TData, TValue>({
@@ -43,15 +43,42 @@ function DataTable<TData, TValue>({
     onRowClick,
     searchSuffixIconClick,
     columnVisibility = {},
+    getPaginationInfo = () => {},
+    paginationInfo,
+    isLoading,
 }: DataTableProps<TData, TValue>) {
+    const { t } = useTranslation()
     const [rowSelection, setRowSelection] = useState({})
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [sorting, setSorting] = useState<SortingState>([])
     const [globalFilter, setGlobalFilter] = useState('')
 
+    const tableData = useMemo(
+        () => (isLoading ? Array(SKELETON_ITEMS_COUNT).fill({}) : data),
+        [isLoading, data],
+    )
+    const tableColumns = useMemo(
+        () =>
+            isLoading
+                ? columns.map((column) => ({
+                    ...column,
+                    cell: ({ cell }: { cell: Cell<unknown, unknown> }) => {
+                        const isActions = cell.column.id === 'actions'
+                        const isId = cell.column.id === 'id'
+                        const isSelect = cell.column.id === 'select'
+                        if (isActions || isId) {
+                            return <Skeleton className="h-6 w-6" />
+                        }
+
+                        return <Skeleton className={isSelect ? 'h-4 w-4' : 'h-6 w-[100px]'} />
+                    },
+                }))
+                : columns,
+        [isLoading, columns],
+    )
     const table = useReactTable({
-        data,
-        columns,
+        data: tableData,
+        columns: tableColumns,
         state: {
             columnFilters,
             columnVisibility,
@@ -59,6 +86,10 @@ function DataTable<TData, TValue>({
             rowSelection,
             sorting,
         },
+        manualPagination: true,
+        pageCount: Math.ceil(
+            paginationInfo.itemCount / paginationInfo.pageSize,
+        ),
         onColumnFiltersChange: setColumnFilters,
         onGlobalFilterChange: setGlobalFilter,
         onRowSelectionChange: setRowSelection,
@@ -66,8 +97,17 @@ function DataTable<TData, TValue>({
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
     })
+
+    useEffect(() => {
+        getPaginationInfo(
+            table.getState().pagination.pageSize,
+            table.getState().pagination.pageIndex,
+        )
+    }, [
+        table.getState().pagination.pageSize,
+        table.getState().pagination.pageIndex,
+    ])
 
     return (
         <div
@@ -96,10 +136,9 @@ function DataTable<TData, TValue>({
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext()
-                                                  )}
+                                                    header.column.columnDef.header,
+                                                    header.getContext(),
+                                                )}
                                             {header.id !== 'select' &&
                                                 header.id !== 'actions' && (
                                                     <Button
@@ -113,7 +152,7 @@ function DataTable<TData, TValue>({
                                                         onClick={() =>
                                                             header.column.toggleSorting(
                                                                 header.column.getIsSorted() ===
-                                                                    'asc'
+                                                                'asc',
                                                             )
                                                         }
                                                     >
@@ -144,14 +183,14 @@ function DataTable<TData, TValue>({
                                         <TableCell
                                             key={cell.id}
                                             className={`text-[15px] ${getCellTextColor(
-                                                cell.column.id
+                                                cell.column.id,
                                             )} ${getCellAlignment(
-                                                cell.column.id
+                                                cell.column.id,
                                             )}`}
                                         >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
-                                                cell.getContext()
+                                                cell.getContext(),
                                             )}
                                         </TableCell>
                                     ))}
@@ -163,7 +202,7 @@ function DataTable<TData, TValue>({
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    Ничего не найдено
+                                    {t('nothing.found')}
                                 </TableCell>
                             </TableRow>
                         )}

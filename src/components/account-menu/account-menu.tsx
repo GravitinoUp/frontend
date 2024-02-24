@@ -1,25 +1,63 @@
-import { User } from "lucide-react";
+import { Fragment, useEffect } from 'react'
+import { jwtDecode } from 'jwt-decode'
+import { User } from 'lucide-react'
 
-import { useNavigate } from "react-router-dom";
-import { Button } from "../ui/button";
-import ChevronDown from "@/assets/icons/ChevronDown.svg";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { Button } from '../ui/button'
+import ChevronDown from '@/assets/icons/ChevronDown.svg'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { fetchLogout } from "@/redux/reducers/userSlice";
+} from '@/components/ui/dropdown-menu'
+import { useErrorToast } from '@/hooks/use-error-toast'
+import { useLogoutMutation } from '@/redux/api/auth'
+import { useGetUserByIdQuery } from '@/redux/api/users'
+import { JWT } from '@/types/interface/auth'
+import {
+    getCookieValue,
+    getJWTtokens,
+    removeCookieValue,
+} from '@/utils/helpers'
 
 export default function AccountMenu() {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+    const { t } = useTranslation()
 
-    const { user } = useAppSelector((state) => state.auth);
+    const accessToken = getCookieValue('accessToken')
+    const { user_id }: JWT = accessToken
+        ? jwtDecode(accessToken)
+        : { user_id: -1, email: '' }
 
-    const icon = null;
+    const { data: user } = useGetUserByIdQuery(user_id)
+
+    const [logout, { isError: isLogoutError, isSuccess: isLogoutSuccess }] =
+        useLogoutMutation()
+
+    useEffect(() => {
+        if (isLogoutSuccess) {
+            removeCookieValue('accessToken')
+            removeCookieValue('refreshToken')
+            navigate('/signin')
+        }
+    }, [isLogoutSuccess])
+
+    const handleLogout = () => {
+        const refreshToken = getJWTtokens().refreshToken
+
+        if (refreshToken) {
+            logout({ refresh_token: refreshToken! })
+        } else {
+            navigate('/signin')
+        }
+    }
+
+    useErrorToast(isLogoutError, handleLogout)
+
+    const icon = null
     return (
         <div className="flex items-center justify-center mr-5 gap-3">
             <DropdownMenu>
@@ -30,14 +68,19 @@ export default function AccountMenu() {
                                 <AvatarImage src="https://github.com/shadcn.png" />
                             </Avatar>
                         ) : (
-                            <>
+                            <Fragment>
                                 <User />
-                            </>
+                            </Fragment>
                         )}
 
-                        <div className="font-pop text-[14px] text-[#3F434A]">
-                            {`${user?.person.last_name} ${user?.person.first_name}`}
-                        </div>
+                        {user?.person && (
+                            <div className="font-pop text-[14px] text-[#3F434A]">
+                                <p>
+                                    {user.person.last_name}{' '}
+                                    {user.person.first_name}
+                                </p>
+                            </div>
+                        )}
                         <ChevronDown />
                     </div>
                 </DropdownMenuTrigger>
@@ -47,28 +90,26 @@ export default function AccountMenu() {
                 >
                     <DropdownMenuItem>
                         <Button
-                            onClick={() => navigate("/settings")}
+                            onClick={() => navigate('/settings')}
                             variant="ghost"
                             className=" h-5 w-20 justify-start p-0"
                             size="sm"
                         >
-                            Настройки
+                            {t('settings')}
                         </Button>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <Button
-                            onClick={() => {
-                                dispatch(fetchLogout());
-                            }}
+                            onClick={handleLogout}
                             variant="ghost"
                             className="text-destructive h-5 w-20 justify-start p-0 hover:text-destructive"
                             size="sm"
                         >
-                            Выйти
+                            {t('exit')}
                         </Button>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
-    );
+    )
 }

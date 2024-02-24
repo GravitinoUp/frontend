@@ -3,20 +3,24 @@ import {
     BranchInterface,
     BranchesPayloadInterface,
 } from '@/types/interface/branch'
-import { FetchResultInterface } from '@/types/interface/fetch'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 
 const branchApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getBranches: builder.query<BranchInterface[], BranchesPayloadInterface>(
-            {
-                query: (body) => ({
-                    url: 'branch/all',
-                    method: 'POST',
-                    body,
-                }),
-                providesTags: ['Branches'],
-            }
-        ),
+        getBranches: builder.query<
+            FetchDataInterface<BranchInterface[]>,
+            BranchesPayloadInterface
+        >({
+            query: (body) => ({
+                url: 'branch/all',
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['Branches'],
+        }),
         createBranch: builder.mutation<
             FetchResultInterface<BranchInterface>,
             Partial<Omit<BranchInterface, 'branch_id'>>

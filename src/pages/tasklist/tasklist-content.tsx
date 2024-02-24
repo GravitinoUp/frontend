@@ -1,29 +1,33 @@
 import { Fragment, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { initialColumnVisibility } from './constants'
 import TaskFiltersForm from './task-filters-form'
-import { TasksFilterColumns, tasksColumns } from './tasks-columns'
+import { tasksColumns, TasksFilterColumns } from './tasks-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import FormDialog from '@/components/form-dialog/form-dialog'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
-import { OrderMyPayloadInterface } from '@/types/interface/orders'
+import { OrderPayloadInterface } from '@/types/interface/orders'
+import { formatDate } from '@/utils/helpers'
 
 function TaskListContent() {
     const navigate = useNavigate()
+    const { t } = useTranslation()
 
     const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderMyPayloadInterface>({
+        useState<OrderPayloadInterface>({
             offset: {
                 count: 50,
                 page: 1,
             },
             filter: {},
-            sorts: {},
+            sorts: {
+                order_id: 'ASC',
+            },
             period: {
                 date_start: '2024-01-01',
-                date_end: '2024-01-26',
+                date_end: '2025-01-26',
             },
         })
 
@@ -32,30 +36,31 @@ function TaskListContent() {
     )
 
     const {
-        data = [],
-        isLoading,
+        data = { count: 0, data: [] },
         isError,
-        refetch,
+        isLoading,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
     const [formOpen, setFormOpen] = useState(false)
 
-    const formattedTasks = data.map((row) => ({
+    const formattedTasks = data.data.map((row) => ({
         key: row.order_id,
         id: row.order_id,
+        facility: row.facility.facility_name,
         checkpoint: row.facility?.checkpoint?.checkpoint_name,
-        taskDescription: row.task.task_description,
+        taskDescription: row.order_description || '',
         status: row.order_status?.order_status_name,
-        taskName: row.task.task_name,
+        taskName: row.order_name || '',
         priorityStatus: row.priority.priority_name,
-        executor: row.executor?.short_name,
-        facility: row.facility?.facility_name,
+        executor: row.executor.short_name,
         branch: row.facility.checkpoint.branch.branch_name,
+        taskCreator: `${row.creator?.person.last_name} ${row.creator?.person.first_name} ${row.creator?.person.patronymic}`,
+        taskType: row.task.task_id,
+        closeDate: formatDate(row.ended_at_datetime) || '',
+        deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
+            row.task_end_datetime
+        )}`,
     }))
-
-    if (isLoading) {
-        return <LoadingSpinner />
-    }
 
     if (isError) {
         return <CustomAlert />
@@ -70,7 +75,7 @@ function TaskListContent() {
                 size="md"
                 headerContent={
                     <h2 className="text-3xl font-semibold text-black">
-                        Подобрать фильтры
+                        {t('choose.filters')}
                     </h2>
                 }
                 addItemForm={
@@ -115,7 +120,6 @@ function TaskListContent() {
 
                             setFilterColumns(data.columns)
 
-                            refetch()
                             setFormOpen(false)
                         }}
                         data={{
@@ -146,14 +150,27 @@ function TaskListContent() {
                 data={formattedTasks}
                 columns={tasksColumns}
                 columnVisibility={filterColumns}
+                getPaginationInfo={(pageSize, pageIndex) => {
+                    setPersonalOrdersQuery({
+                        ...personalOrdersQuery,
+                        offset: { count: pageSize, page: pageIndex + 1 },
+                    })
+                }}
                 onRowClick={(rowData) =>
                     navigate(`task`, {
                         state: {
-                            order: data.find((e) => e.order_id === rowData.id),
+                            order: data.data.find(
+                                (e) => e.order_id === rowData.id
+                            ),
                         },
                     })
                 }
                 searchSuffixIconClick={() => setFormOpen(true)}
+                paginationInfo={{
+                    itemCount: data.count,
+                    pageSize: personalOrdersQuery.offset.count,
+                }}
+                isLoading={isLoading}
             />
         </Fragment>
     )

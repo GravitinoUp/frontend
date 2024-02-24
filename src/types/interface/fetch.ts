@@ -17,4 +17,18 @@ export interface FetchResultInterface<T = void> {
     data?: T
 }
 
+export interface FetchDataInterface<T> {
+    count: number
+    data: T
+}
+
 export type SortOptionsType = 'ASC' | 'DESC' | null | undefined
+
+export type EntityType =
+    | 'Users'
+    | 'Tasks'
+    | 'Reports'
+    | 'Organizations'
+    | 'Checkpoints'
+    | 'Branches'
+    | 'Roles'

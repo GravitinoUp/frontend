@@ -1,5 +1,8 @@
 import { api } from './'
-import { FetchResultInterface } from '@/types/interface/fetch'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 import {
     OrganizationInterface,
     OrganizationsPayloadInterface,
@@ -8,7 +11,7 @@ import {
 const organizationsApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getAllOrganizations: builder.query<
-            OrganizationInterface[],
+            FetchDataInterface<OrganizationInterface[]>,
             OrganizationsPayloadInterface
         >({
             query: (body) => ({

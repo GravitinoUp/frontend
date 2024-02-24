@@ -1,18 +1,19 @@
 import { useLocation } from 'react-router-dom'
 import TaskInfoContent from './task-info-content'
+import i18next from '../../../i18n.ts'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import { PageLayout } from '@/components/PageLayout'
 import { OrderInterface } from '@/types/interface/orders'
 
-const taskPageTabs = (order: OrderInterface) => [
+const taskPageTabs = (order_id: number) => [
     {
         value: 'taskInfo',
-        head: 'Детали задачи',
-        content: <TaskInfoContent order={order} />,
+        head: i18next.t('tabs.task.info'),
+        content: <TaskInfoContent order_id={order_id} />,
     },
     {
         value: 'taskHistory',
-        head: 'Журнал',
+        head: i18next.t('tabs.task.history'),
         content: <p>PLACEHOLDER</p>,
     },
 ]
@@ -23,7 +24,7 @@ export default function TaskPage() {
 
     return (
         <PageLayout title={order.task.task_name} backButtonEnabled>
-            <CustomTabs tabs={taskPageTabs(order)} />
+            <CustomTabs tabs={taskPageTabs(order.order_id)} />
         </PageLayout>
     )
 }

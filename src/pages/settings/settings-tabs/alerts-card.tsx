@@ -1,3 +1,4 @@
+/* eslint-disable i18n/no-russian-character */
 import { Switch } from '@/components/ui/switch'
 
 export function AlertsCard() {

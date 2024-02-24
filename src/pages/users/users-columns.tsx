@@ -1,7 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ActionButtons } from './action-buttons'
+import UserSwitch from './user-switch'
+import i18next from '../../i18n.ts'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Switch } from '@/components/ui/switch'
 import { FormattedUsersInterface } from '@/types/interface/user'
 
 export const usersColumns: ColumnDef<FormattedUsersInterface>[] = [
@@ -32,15 +33,15 @@ export const usersColumns: ColumnDef<FormattedUsersInterface>[] = [
         enableHiding: false,
     },
     {
-        header: 'номер №.',
+        header: i18next.t('number'),
         accessorKey: 'id',
     },
     {
-        header: 'ФИО',
+        header: i18next.t('full.name'),
         accessorKey: 'FIO',
     },
     {
-        header: 'Телефон',
+        header: i18next.t('phone'),
         accessorKey: 'phone',
     },
     {
@@ -48,29 +49,21 @@ export const usersColumns: ColumnDef<FormattedUsersInterface>[] = [
         accessorKey: 'email',
     },
     {
-        header: 'Компания',
+        header: i18next.t('company'),
         accessorKey: 'company',
     },
     {
-        header: 'Тип',
+        header: i18next.t('type'),
         accessorKey: 'type',
     },
     {
-        header: 'Роль',
+        header: i18next.t('role'),
         accessorKey: 'role',
     },
     {
-        header: 'Статус',
+        header: i18next.t('status'),
         accessorKey: 'is_active',
-        cell: ({ row }) => {
-            const { is_active } = row.original
-
-            return (
-                <div className="flex items-center ">
-                    <Switch checked={is_active} onCheckedChange={() => {}} />
-                </div>
-            )
-        },
+        cell: ({ row }) => <UserSwitch user={row.original.user} />,
     },
     {
         id: 'actions',
