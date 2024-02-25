@@ -31,6 +31,7 @@ export const api = createApi({
         'CheckpointTypes',
         'WorkingHours',
         'OperatingMode',
+        'OrderJournal',
     ],
     endpoints: () => ({}),
 })
