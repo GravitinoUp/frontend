@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [react(), svgr({
     include: '**/*.svg',
   })],
+  build: {
+    target: 'esnext'
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
