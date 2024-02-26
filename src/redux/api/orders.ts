@@ -72,7 +72,7 @@ const ordersApi = api.injectEndpoints({
                 method: 'PATCH',
                 body,
             }),
-            invalidatesTags: ['Orders'],
+            invalidatesTags: ['Orders', 'OrderJournal'],
         }),
     }),
     overrideExisting: true,
