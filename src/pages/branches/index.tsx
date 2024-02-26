@@ -47,19 +47,18 @@ const BranchesPage = () => {
             }
             rightBlock={
                 <div>
-                    <div className="h-16 mb-7" />
-                    <div className="flex gap-3 mb-10">
-                        <ExcelButton buttonType="export" onClick={() => {
-                        }} />
-                        <ExcelButton buttonType="import" onClick={() => {
-                        }} />
+                    <div className="h-16" />
+                    <div className="flex gap-3 mb-3">
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
                 </div>
             }
         >
-            {isError
-                ? <CustomAlert />
-                : <DataTable
+            {isError ? (
+                <CustomAlert />
+            ) : (
+                <DataTable
                     data={branches.data}
                     columns={branchesColumns}
                     hasBackground
@@ -75,7 +74,7 @@ const BranchesPage = () => {
                     }}
                     isLoading={isLoading}
                 />
-            }
+            )}
         </PageLayout>
     )
 }

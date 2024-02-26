@@ -24,8 +24,8 @@ export const PageLayout = ({
     const navigate = useNavigate()
 
     return (
-        <div className="flex flex-col p-7 gap-20 w-full">
-            <div className="flex justify-between items-start">
+        <div className="flex flex-col p-7 w-full">
+            <div className="flex justify-between items-start mb-10">
                 <div className="flex items-center justify-start font-[700] font-pop text-[28px] gap-3">
                     {backButtonEnabled && (
                         <Button

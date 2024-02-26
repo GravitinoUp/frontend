@@ -5,6 +5,7 @@ import { reportsColumns } from './reports-columns'
 import ExportForm from '../tasklist/export-form'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
+import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
 import CalendarForm from '@/components/calendar-form/calendar-form'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
@@ -14,6 +15,13 @@ import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { useGetBranchReportsQuery } from '@/redux/api/reports'
 import { BranchReportsPayloadInterface } from '@/types/interface/reports'
+
+export const reportItems = [
+    { to: '', label: 'Отчёты' },
+    { to: '/reports', label: 'Филиалы' },
+    { to: '/reports/checkpoints', label: 'Пункты пропуска' },
+    { to: '/reports/checkpoints/organizations', label: 'Подрядчики' },
+]
 
 export default function ReportsPage() {
     const { t } = useTranslation()
@@ -84,6 +92,7 @@ export default function ReportsPage() {
                 </div>
             }
         >
+            <Breadcrumbs items={reportItems} />
             <DataTable
                 data={formattedReports}
                 columns={reportsColumns}

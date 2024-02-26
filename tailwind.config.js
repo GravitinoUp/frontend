@@ -52,6 +52,9 @@ module.exports = {
                     DEFAULT: 'hsl(var(--card))',
                     foreground: 'hsl(var(--card-foreground))',
                 },
+                body: {
+                    light: '#8A9099',
+                },
                 status: {
                     'in-progress': '#F6F3FC',
                     closed: '#F1FBF3',

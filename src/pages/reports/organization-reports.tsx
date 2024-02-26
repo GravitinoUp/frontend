@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
+import { reportItems } from '.'
 import { reportsColumns } from './reports-columns'
 import ExportForm from '../tasklist/export-form'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
+import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
 import CalendarForm from '@/components/calendar-form/calendar-form'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
@@ -87,6 +89,7 @@ export default function OrganizationReportsPage() {
                 </div>
             }
         >
+            <Breadcrumbs items={reportItems} />
             <DataTable
                 data={formattedReports}
                 columns={reportsColumns}
