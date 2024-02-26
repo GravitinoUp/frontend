@@ -39,6 +39,7 @@ export default function ReportsPage() {
         data = { count: 0, data: [] },
         isError,
         isLoading,
+        refetch,
     } = useGetBranchReportsQuery(branchReportsQuery)
 
     const formattedReports = data.data.map((row) => ({
@@ -58,6 +59,7 @@ export default function ReportsPage() {
     return (
         <PageLayout
             title={t('reports')}
+            onRefreshClick={refetch}
             rightBlock={
                 <div>
                     <CalendarForm open={false} />

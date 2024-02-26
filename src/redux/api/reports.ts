@@ -5,6 +5,8 @@ import {
     BranchReportsPayloadInterface,
     CheckpointReportInterface,
     CheckpointReportsPayloadInterface,
+    OrganizationReportInterface,
+    OrganizationReportsPayloadInterface,
 } from '@/types/interface/reports'
 
 const checkpointsApi = api.injectEndpoints({
@@ -31,9 +33,23 @@ const checkpointsApi = api.injectEndpoints({
             }),
             providesTags: ['Reports'],
         }),
+        getOrganizationReports: builder.query<
+            FetchDataInterface<OrganizationReportInterface[]>,
+            OrganizationReportsPayloadInterface
+        >({
+            query: (body) => ({
+                url: `report/organization/${body.checkpoint_id}`,
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['Reports'],
+        }),
     }),
     overrideExisting: true,
 })
 
-export const { useGetBranchReportsQuery, useGetCheckpointReportsQuery } =
-    checkpointsApi
+export const {
+    useGetBranchReportsQuery,
+    useGetCheckpointReportsQuery,
+    useGetOrganizationReportsQuery,
+} = checkpointsApi

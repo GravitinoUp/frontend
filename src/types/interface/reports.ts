@@ -1,6 +1,7 @@
 import { BranchInterface } from './branch'
 import { CheckpointInterface } from './checkpoint'
 import { IQuery, SortOptionsType } from './fetch'
+import { OrganizationInterface } from './organizations'
 
 // Branch
 
@@ -39,6 +40,26 @@ export interface CheckpointSortInterface extends ReportSortInterface {
 
 export interface CheckpointReportInterface extends ReportInterface {
     checkpoint: CheckpointInterface
+}
+
+// Organization
+
+export interface OrganizationReportsPayloadInterface extends IQuery {
+    checkpoint_id: number
+    filter: Partial<OrganizationReportInterface>
+    sorts: OrganizationSortInterface
+    period: {
+        period_start: string
+        period_end: string
+    }
+}
+
+export interface OrganizationSortInterface extends ReportSortInterface {
+    organization?: OrganizationReportInterface
+}
+
+export interface OrganizationReportInterface extends ReportInterface {
+    organization: OrganizationInterface
 }
 
 type ReportSortInterface = Partial<
