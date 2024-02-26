@@ -11,7 +11,10 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
-import { CheckpointsPayloadInterface, FormattedCheckpointsInterface } from '@/types/interface/checkpoint'
+import {
+    CheckpointsPayloadInterface,
+    FormattedCheckpointsInterface,
+} from '@/types/interface/checkpoint'
 
 export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)
@@ -40,6 +43,7 @@ export default function CheckpointsPage() {
             branch_name: row.branch.branch_name,
             working_hours: row.working_hours?.working_hours_name,
             neighboring_state: row.neighboring_state?.neighboring_state_name,
+            operating_mode: row.operating_mode?.operating_mode_name,
             region: row.region,
             checkpoint_type_name: row.checkpoint_type.checkpoint_type_name,
         }))
@@ -70,9 +74,10 @@ export default function CheckpointsPage() {
                 </div>
             }
         >
-            {isError
-                ? <CustomAlert />
-                : <DataTable
+            {isError ? (
+                <CustomAlert />
+            ) : (
+                <DataTable
                     data={formattedCheckpoints}
                     columns={checkpointsColumns}
                     hasBackground
@@ -88,7 +93,7 @@ export default function CheckpointsPage() {
                     }}
                     isLoading={isLoading}
                 />
-            }
+            )}
         </PageLayout>
     )
 }
