@@ -21,7 +21,7 @@ const errorHandlerMiddleware: Middleware = () => (next) => (action) => {
             variant: 'destructive',
             title: i18next.t('toast.error.title'),
             description: data.text,
-            duration: 1500,
+            duration: 3000,
         })
     }
 
