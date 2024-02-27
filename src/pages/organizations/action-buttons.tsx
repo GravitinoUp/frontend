@@ -26,10 +26,14 @@ export const ActionButtons = ({
     const [formOpen, setFormOpen] = useState(false)
     const { t } = useTranslation()
 
-    const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.f', {
-        entityType: t('organization'),
-        entityName: organization.short_name,
-    }), [])
+    const deleteSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.delete.f', {
+                entityType: t('organization'),
+                entityName: organization.short_name,
+            }),
+        []
+    )
 
     const handleOrganizationDelete = useCallback(() => {
         deleteOrganization(organization.organization_id)
@@ -57,7 +61,9 @@ export const ActionButtons = ({
                         variant="ghost"
                         className="h-8 w-8 p-0 text-[#8A9099]"
                     >
-                        <span className="sr-only">{t('action.dropdown.menu.open')}</span>
+                        <span className="sr-only">
+                            {t('action.dropdown.menu.open')}
+                        </span>
                         <MoreVertical className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
