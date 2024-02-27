@@ -26,7 +26,7 @@ const RolesTab = () => {
         <DataTable
             data={roles.data}
             columns={rolesTableColumns}
-            getPaginationInfo={(pageSize, pageIndex) => {
+            getTableInfo={(pageSize, pageIndex) => {
                 setRolesQuery({
                     ...rolesQuery,
                     offset: { count: pageSize, page: pageIndex + 1 },

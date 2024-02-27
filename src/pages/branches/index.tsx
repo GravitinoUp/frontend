@@ -16,7 +16,6 @@ const BranchesPage = () => {
     const [branchesQuery, setBranchesQuery] =
         useState<BranchesPayloadInterface>({
             ...placeholderQuery,
-            sorts: { branch_id: 'ASC' },
         })
 
     const {
@@ -49,23 +48,31 @@ const BranchesPage = () => {
                 <div>
                     <div className="h-16 mb-7" />
                     <div className="flex gap-3 mb-10">
-                        <ExcelButton buttonType="export" onClick={() => {
-                        }} />
-                        <ExcelButton buttonType="import" onClick={() => {
-                        }} />
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
                 </div>
             }
         >
-            {isError
-                ? <CustomAlert />
-                : <DataTable
+            {isError ? (
+                <CustomAlert />
+            ) : (
+                <DataTable
                     data={branches.data}
                     columns={branchesColumns}
                     hasBackground
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                        let sorts = {}
+                        sorting.forEach((value) => {
+                            sorts = {
+                                ...sorts,
+                                [`${value.id}`]: value.desc ? 'DESC' : 'ASC',
+                            }
+                        })
+
                         setBranchesQuery({
                             ...branchesQuery,
+                            sorts: sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}
@@ -75,7 +82,7 @@ const BranchesPage = () => {
                     }}
                     isLoading={isLoading}
                 />
-            }
+            )}
         </PageLayout>
     )
 }

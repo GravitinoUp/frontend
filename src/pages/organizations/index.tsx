@@ -44,13 +44,14 @@ const OrganizationsPage = () => {
                 />
             }
         >
-            {isError
-                ? <CustomAlert />
-                : <DataTable
+            {isError ? (
+                <CustomAlert />
+            ) : (
+                <DataTable
                     data={organizations.data}
                     columns={organizationsColumns}
                     hasBackground
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex) => {
                         setOrganizationsQuery({
                             ...organizationsQuery,
                             offset: { count: pageSize, page: pageIndex + 1 },
@@ -62,7 +63,7 @@ const OrganizationsPage = () => {
                     }}
                     isLoading={isLoading}
                 />
-            }
+            )}
         </PageLayout>
     )
 }

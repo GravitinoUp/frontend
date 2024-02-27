@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { initialColumnVisibility } from './constants'
+import { initialColumnVisibility, placeholderQuery } from './constants'
 import TaskFiltersForm from './task-filters-form'
 import { tasksColumns, TasksFilterColumns } from './tasks-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
@@ -16,20 +16,7 @@ function TaskListContent() {
     const { t } = useTranslation()
 
     const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderPayloadInterface>({
-            offset: {
-                count: 50,
-                page: 1,
-            },
-            filter: {},
-            sorts: {
-                order_id: 'ASC',
-            },
-            period: {
-                date_start: '2024-01-01',
-                date_end: '2025-01-26',
-            },
-        })
+        useState<OrderPayloadInterface>(placeholderQuery)
 
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
         initialColumnVisibility
@@ -150,7 +137,7 @@ function TaskListContent() {
                 data={formattedTasks}
                 columns={tasksColumns}
                 columnVisibility={filterColumns}
-                getPaginationInfo={(pageSize, pageIndex) => {
+                getTableInfo={(pageSize, pageIndex) => {
                     setPersonalOrdersQuery({
                         ...personalOrdersQuery,
                         offset: { count: pageSize, page: pageIndex + 1 },

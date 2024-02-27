@@ -29,7 +29,7 @@ function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
         <DataTable
             data={properties.data}
             columns={managePropertiesColumns}
-            getPaginationInfo={(pageSize, pageIndex) => {
+            getTableInfo={(pageSize, pageIndex) => {
                 setPropertiesQuery({
                     ...propertiesQuery,
                     offset: { count: pageSize, page: pageIndex + 1 },

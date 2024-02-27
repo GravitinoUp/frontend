@@ -81,7 +81,7 @@ export default function CheckpointsPage() {
                     data={formattedCheckpoints}
                     columns={checkpointsColumns}
                     hasBackground
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex) => {
                         setCheckpointsQuery({
                             ...checkpointsQuery,
                             offset: { count: pageSize, page: pageIndex + 1 },

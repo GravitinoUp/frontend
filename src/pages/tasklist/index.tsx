@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddTaskForm from './add-task-form'
-import { personalOrdersQuery } from './constants'
+import { placeholderQuery } from './constants'
 import ExportForm from './export-form'
 import ImportForm from './import-form'
 import TaskListContent from './tasklist-content'
@@ -32,7 +32,7 @@ const tasksPageTabs = [
 ]
 
 export default function TaskListPage() {
-    const { refetch } = useGetPersonalOrdersQuery(personalOrdersQuery)
+    const { refetch } = useGetPersonalOrdersQuery(placeholderQuery)
     const [formOpen, setFormOpen] = useState(false)
     const [exportFormOpen, setExportFormOpen] = useState(false)
     const [importFormOpen, setImportFormOpen] = useState(false)

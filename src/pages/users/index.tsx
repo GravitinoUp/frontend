@@ -32,10 +32,10 @@ export default function UsersPage() {
             id: row.user_id,
             FIO: isPerson
                 ? formatInitials(
-                    row.person.first_name,
-                    row.person.last_name,
-                    row.person.patronymic,
-                )
+                      row.person.first_name,
+                      row.person.last_name,
+                      row.person.patronymic
+                  )
                 : '',
             phone: isPerson ? row.person.phone : row.organization?.phone,
             email: row.email,
@@ -70,13 +70,14 @@ export default function UsersPage() {
                 </div>
             }
         >
-            {isError ?
+            {isError ? (
                 <CustomAlert />
-                : <DataTable
+            ) : (
+                <DataTable
                     data={formattedUsers}
                     columns={usersColumns}
                     hasBackground
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex) => {
                         setUsersQuery({
                             ...usersQuery,
                             offset: { count: pageSize, page: pageIndex + 1 },
@@ -88,7 +89,7 @@ export default function UsersPage() {
                     }}
                     isLoading={isLoading}
                 />
-            }
+            )}
         </PageLayout>
     )
 }
