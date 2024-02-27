@@ -2,6 +2,7 @@ import { BranchInterface } from './branch'
 import { CheckpointInterface } from './checkpoint'
 import { IQuery, SortOptionsType } from './fetch'
 import { OrganizationInterface } from './organizations'
+import { RecursivePartial } from '@/utils/recursive-partial'
 
 // Branch
 
@@ -26,7 +27,7 @@ export interface BranchReportInterface extends ReportInterface {
 
 export interface CheckpointReportsPayloadInterface extends IQuery {
     branch_id: number
-    filter: Partial<CheckpointReportInterface>
+    filter: RecursivePartial<CheckpointReportInterface>
     sorts: CheckpointSortInterface
     period: {
         period_start: string
@@ -46,7 +47,7 @@ export interface CheckpointReportInterface extends ReportInterface {
 
 export interface OrganizationReportsPayloadInterface extends IQuery {
     checkpoint_id: number
-    filter: Partial<OrganizationReportInterface>
+    filter: RecursivePartial<OrganizationReportInterface>
     sorts: OrganizationSortInterface
     period: {
         period_start: string

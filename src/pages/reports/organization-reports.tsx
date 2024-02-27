@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
-import { reportItems } from '.'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { reportItems } from './constants'
 import { reportsColumns } from './reports-columns'
 import ExportForm from '../tasklist/export-form'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
@@ -21,10 +21,10 @@ import { OrganizationReportsPayloadInterface } from '@/types/interface/reports'
 export default function OrganizationReportsPage() {
     const { t } = useTranslation()
     const { state } = useLocation()
+    const navigate = useNavigate()
     const checkpoint: CheckpointInterface = state.checkpoint
 
     const [exportFormOpen, setExportFormOpen] = useState(false)
-
     const [organizationReportsQuery, setOrganizationReportsQuery] =
         useState<OrganizationReportsPayloadInterface>({
             checkpoint_id: checkpoint.checkpoint_id,
@@ -71,7 +71,7 @@ export default function OrganizationReportsPage() {
                     <div className="flex gap-3">
                         <Button
                             className="bg-white hover:bg-accent rounded-xl"
-                            onClick={() => {}}
+                            onClick={() => navigate('/reports/saved')}
                         >
                             <SavedIcon />
                             <p className="mx-[8px] text-base font-normal">

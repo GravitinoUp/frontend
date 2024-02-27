@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { MoreVertical } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import ImportIcon from '@/assets/icons/import.svg'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -8,12 +9,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { FormattedReportInterface } from '@/types/interface/report'
+import { FormattedSavedReportInterface } from '@/types/interface/report'
 
 export const ActionButtons = ({
-    report,
+    savedReport,
 }: {
-    report: FormattedReportInterface
+    savedReport: FormattedSavedReportInterface
 }) => {
     const { t } = useTranslation()
 
@@ -33,7 +34,8 @@ export const ActionButtons = ({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => console.log('Download')}>
-                        {t('action.dropdown.download.data')}
+                        <ImportIcon />
+                        <p className="ml-2">{t('action.dropdown.download')}</p>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

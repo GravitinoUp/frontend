@@ -72,7 +72,7 @@ function TaskListContent() {
                 open={formOpen}
                 setOpen={setFormOpen}
                 actionButton={<Fragment />}
-                size="md"
+                size="lg"
                 headerContent={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('choose.filters')}

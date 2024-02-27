@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { reportItems } from './constants'
 import { reportsColumns } from './reports-columns'
 import ExportForm from '../tasklist/export-form'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
@@ -15,13 +16,6 @@ import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { useGetBranchReportsQuery } from '@/redux/api/reports'
 import { BranchReportsPayloadInterface } from '@/types/interface/reports'
-
-export const reportItems = [
-    { to: '', label: 'Отчёты' },
-    { to: '/reports', label: 'Филиалы' },
-    { to: '/reports/checkpoints', label: 'Пункты пропуска' },
-    { to: '/reports/checkpoints/organizations', label: 'Подрядчики' },
-]
 
 export default function ReportsPage() {
     const { t } = useTranslation()
@@ -65,59 +59,63 @@ export default function ReportsPage() {
     }
 
     return (
-        <PageLayout
-            title={t('reports')}
-            onRefreshClick={refetch}
-            rightBlock={
-                <div>
-                    <CalendarForm open={false} />
-                    <div className="flex gap-3">
-                        <Button
-                            className="bg-white hover:bg-accent rounded-xl"
-                            onClick={() => {}}
-                        >
-                            <SavedIcon />
-                            <p className="mx-[8px] text-base font-normal">
-                                {t('saved')}
-                            </p>
-                            <ArrowDown />
-                        </Button>
-                        <FormDialog
-                            open={exportFormOpen}
-                            setOpen={setExportFormOpen}
-                            actionButton={<ExcelButton buttonType="export" />}
-                            addItemForm={<ExportForm />}
-                        />
+        <Fragment>
+            <PageLayout
+                title={t('reports')}
+                onRefreshClick={refetch}
+                rightBlock={
+                    <div>
+                        <CalendarForm open={false} />
+                        <div className="flex gap-3">
+                            <Button
+                                className="bg-white hover:bg-accent rounded-xl"
+                                onClick={() => navigate('/reports/saved')}
+                            >
+                                <SavedIcon />
+                                <p className="mx-[8px] text-base font-normal">
+                                    {t('saved')}
+                                </p>
+                                <ArrowDown />
+                            </Button>
+                            <FormDialog
+                                open={exportFormOpen}
+                                setOpen={setExportFormOpen}
+                                actionButton={
+                                    <ExcelButton buttonType="export" />
+                                }
+                                addItemForm={<ExportForm />}
+                            />
+                        </div>
                     </div>
-                </div>
-            }
-        >
-            <Breadcrumbs items={reportItems} />
-            <DataTable
-                data={formattedReports}
-                columns={reportsColumns}
-                hasBackground
-                getPaginationInfo={(pageSize, pageIndex) => {
-                    setBranchReportsQuery({
-                        ...branchReportsQuery,
-                        offset: { count: pageSize, page: pageIndex + 1 },
-                    })
-                }}
-                onRowClick={(rowData) =>
-                    navigate(`checkpoints`, {
-                        state: {
-                            branch: data.data.find(
-                                (e) => e.branch.branch_id === rowData.id
-                            )?.branch,
-                        },
-                    })
                 }
-                paginationInfo={{
-                    itemCount: data.count,
-                    pageSize: branchReportsQuery.offset.count,
-                }}
-                isLoading={isLoading}
-            />
-        </PageLayout>
+            >
+                <Breadcrumbs items={reportItems} />
+                <DataTable
+                    data={formattedReports}
+                    columns={reportsColumns}
+                    hasBackground
+                    getPaginationInfo={(pageSize, pageIndex) => {
+                        setBranchReportsQuery({
+                            ...branchReportsQuery,
+                            offset: { count: pageSize, page: pageIndex + 1 },
+                        })
+                    }}
+                    onRowClick={(rowData) =>
+                        navigate(`checkpoints`, {
+                            state: {
+                                branch: data.data.find(
+                                    (e) => e.branch.branch_id === rowData.id
+                                )?.branch,
+                            },
+                        })
+                    }
+                    paginationInfo={{
+                        itemCount: data.count,
+                        pageSize: branchReportsQuery.offset.count,
+                    }}
+                    isLoading={isLoading}
+                />
+            </PageLayout>
+        </Fragment>
     )
 }

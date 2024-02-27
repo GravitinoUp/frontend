@@ -7,3 +7,10 @@ export interface FormattedReportInterface {
     checkedPercent: number
     checkedCount: number
 }
+
+export interface FormattedSavedReportInterface {
+    key: number
+    name: string
+    creationDate: string
+    size: string
+}
