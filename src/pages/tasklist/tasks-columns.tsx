@@ -10,16 +10,19 @@ import { FormattedTaskInterface } from '@/types/interface/orders'
 
 export const tasksColumnsSchema = z.object({
     key: z.boolean().default(true).optional(),
-    id: z.boolean().default(true).optional(),
-    checkpoint: z.boolean().default(true).optional(),
-    taskDescription: z.boolean().default(true).optional(),
-    status: z.boolean().default(true).optional(),
-    taskName: z.boolean().default(true).optional(),
-    priorityStatus: z.boolean().default(true).optional(),
+    order_id: z.boolean().default(true).optional(),
+    order_name: z.boolean().default(true).optional(),
+    facility_name: z.boolean().default(true).optional(),
+    checkpoint_name: z.boolean().default(true).optional(),
+    branch_name: z.boolean().default(true).optional(),
+    order_description: z.boolean().default(true).optional(),
+    order_status_name: z.boolean().default(true).optional(),
+    priority_name: z.boolean().default(true).optional(),
     executor: z.boolean().default(true).optional(),
-    facility: z.boolean().default(true).optional(),
-    branch: z.boolean().default(true).optional(),
+    creator: z.boolean().default(true).optional(),
     deliveryDate: z.boolean().default(true).optional(),
+    ended_at_datetime: z.boolean().default(true).optional(),
+    taskType: z.boolean().default(true).optional(),
 })
 
 export type TasksFilterColumns = z.infer<typeof tasksColumnsSchema>
