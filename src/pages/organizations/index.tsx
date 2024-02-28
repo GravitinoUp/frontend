@@ -77,7 +77,7 @@ const OrganizationsPage = () => {
 
                         setOrganizationsQuery({
                             ...organizationsQuery,
-                            sorts: sorts,
+                            sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

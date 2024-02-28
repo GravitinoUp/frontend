@@ -30,20 +30,20 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
             data: result.data?.data,
         }),
     })
-    const taskInfo = tasks.find((item) => item.order_id === task?.id)
+    const taskInfo = tasks.find((item) => item.order_id === task?.order_id)
 
     const deleteSuccessMsg = useMemo(
         () =>
             t('toast.success.description.delete.f', {
                 entityType: t('order'),
-                entityName: task.taskName,
+                entityName: task.order_name,
             }),
         []
     )
 
     const handleOrderDelete = useCallback(() => {
-        deleteOrder(task.id)
-    }, [task.id, deleteOrder])
+        deleteOrder(task.order_id)
+    }, [task.order_id, deleteOrder])
 
     useErrorToast(isError, handleOrderDelete)
     useSuccessToast(deleteSuccessMsg, isSuccess)

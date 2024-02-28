@@ -11,6 +11,7 @@ import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { BranchesPayloadInterface } from '@/types/interface/branch'
+import { getColumnSorts } from '@/utils/helpers'
 
 const BranchesPage = () => {
     const [branchesQuery, setBranchesQuery] =
@@ -62,17 +63,11 @@ const BranchesPage = () => {
                     columns={branchesColumns}
                     hasBackground
                     getTableInfo={(pageSize, pageIndex, sorting) => {
-                        let sorts = {}
-                        sorting.forEach((value) => {
-                            sorts = {
-                                ...sorts,
-                                [`${value.id}`]: value.desc ? 'DESC' : 'ASC',
-                            }
-                        })
+                        const sorts = getColumnSorts(sorting)
 
                         setBranchesQuery({
                             ...branchesQuery,
-                            sorts: sorts,
+                            sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

@@ -53,23 +53,23 @@ export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
     },
     {
         header: i18next.t('number'),
-        accessorKey: 'id',
+        accessorKey: 'order_id',
     },
     {
         header: i18next.t('title'),
-        accessorKey: 'taskName',
+        accessorKey: 'order_name',
     },
     {
         header: i18next.t('facility'),
-        accessorKey: 'facility',
+        accessorKey: 'facility_name',
     },
     {
         header: i18next.t('checkpoint'),
-        accessorKey: 'checkpoint',
+        accessorKey: 'checkpoint_name',
     },
     {
         header: i18next.t('branch'),
-        accessorKey: 'branch',
+        accessorKey: 'branch_name',
     },
     {
         header: i18next.t('executor'),
@@ -77,18 +77,20 @@ export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
     },
     {
         header: i18next.t('task.creator'),
-        accessorKey: 'taskCreator',
+        accessorKey: 'creator',
     },
     {
         header: i18next.t('priority'),
-        accessorKey: 'priorityStatus',
+        accessorKey: 'priority_name',
     },
     {
         header: i18next.t('type'),
         accessorKey: 'taskType',
         cell: ({ row }) => {
             const { taskType } = row.original
-            return i18next.t(`task.${taskType === null ? 'unplanned' : 'planned'}`)
+            return i18next.t(
+                `task.${taskType === null ? 'unplanned' : 'planned'}`
+            )
         },
     },
     {
@@ -97,17 +99,17 @@ export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
     },
     {
         header: i18next.t('close.date'),
-        accessorKey: 'closeDate',
+        accessorKey: 'ended_at_datetime',
     },
     {
         header: i18next.t('task.description'),
-        accessorKey: 'taskDescription',
+        accessorKey: 'order_description',
     },
     {
         header: i18next.t('status'),
-        accessorKey: 'status',
+        accessorKey: 'order_status_name',
         cell: ({ row }) => {
-            const { status } = row.original
+            const { order_status_name: status } = row.original
             const className = getStatusCellClass(status)
             const isWorkNeeded =
                 status.toLowerCase() === TASK_STATUSES.NEED_WORK

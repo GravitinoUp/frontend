@@ -29,7 +29,7 @@ export default function UsersPage() {
         return {
             user: row,
             key: row.user_id,
-            id: row.user_id,
+            user_id: row.user_id,
             FIO: isPerson
                 ? formatInitials(
                       row.person.first_name,
@@ -39,9 +39,10 @@ export default function UsersPage() {
                 : '',
             phone: isPerson ? row.person.phone : row.organization?.phone,
             email: row.email,
-            company: row.organization?.short_name,
-            type: row.organization?.organization_type.organization_type_name,
-            role: row.role.role_name,
+            organization_name: row.organization?.short_name,
+            organization_type_name:
+                row.organization?.organization_type.organization_type_name,
+            role_name: row.role.role_name,
             is_active: row.is_active,
         }
     })
@@ -77,9 +78,68 @@ export default function UsersPage() {
                     data={formattedUsers}
                     columns={usersColumns}
                     hasBackground
-                    getTableInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                        let sorts = {}
+                        sorting.forEach((value) => {
+                            const desc = value.desc ? 'DESC' : 'ASC'
+
+                            switch (value.id) {
+                                case 'FIO':
+                                    sorts = {
+                                        ...sorts,
+                                        person: {
+                                            last_name: desc,
+                                            first_name: desc,
+                                            patronymic: desc,
+                                        },
+                                    }
+                                    break
+                                case 'phone':
+                                    sorts = {
+                                        ...sorts,
+                                        person: {
+                                            [`${value.id}`]: desc,
+                                        },
+                                    }
+                                    break
+                                case 'short_name':
+                                    sorts = {
+                                        ...sorts,
+                                        organization: {
+                                            [`${value.id}`]: desc,
+                                        },
+                                    }
+                                    break
+                                case 'organization_type_name':
+                                    sorts = {
+                                        ...sorts,
+                                        organization: {
+                                            organization_type: {
+                                                [`${value.id}`]: desc,
+                                            },
+                                        },
+                                    }
+                                    break
+                                case 'role_name':
+                                    sorts = {
+                                        ...sorts,
+                                        role: {
+                                            [`${value.id}`]: desc,
+                                        },
+                                    }
+                                    break
+                                default:
+                                    sorts = {
+                                        ...sorts,
+                                        [`${value.id}`]: desc,
+                                    }
+                                    break
+                            }
+                        })
+
                         setUsersQuery({
                             ...usersQuery,
+                            sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

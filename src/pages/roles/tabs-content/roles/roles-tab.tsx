@@ -5,6 +5,7 @@ import DataTable from '@/components/data-table/data-table'
 import { placeholderQuery } from '@/pages/tasklist/constants'
 import { useGetRolesQuery } from '@/redux/api/roles'
 import { RolesPayloadInterface } from '@/types/interface/roles'
+import { getColumnSorts } from '@/utils/helpers'
 
 const RolesTab = () => {
     const [rolesQuery, setRolesQuery] = useState<RolesPayloadInterface>({
@@ -26,9 +27,12 @@ const RolesTab = () => {
         <DataTable
             data={roles.data}
             columns={rolesTableColumns}
-            getTableInfo={(pageSize, pageIndex) => {
+            getTableInfo={(pageSize, pageIndex, sorting) => {
+                const sorts = getColumnSorts(sorting)
+
                 setRolesQuery({
                     ...rolesQuery,
+                    sorts,
                     offset: { count: pageSize, page: pageIndex + 1 },
                 })
             }}
