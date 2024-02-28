@@ -30,10 +30,11 @@ export default function MapPin({
                             rounded-full
                             flex justify-center items-center
                             top-0
-                            m-1
+                            mx-[5px]
+                            mt-[4px]
                         `}
                     >
-                        <div className="p-2">
+                        <div className="w-[33px] h-[33px] flex justify-center items-center">
                             {checkpointTypeId == CHECKPOINT_TYPES.CAR && <CarIcon />}
                             {checkpointTypeId == CHECKPOINT_TYPES.TRAIN && <TrainFrontIcon size={20} color='white' />}
                             {checkpointTypeId == CHECKPOINT_TYPES.SHIP && <ShipIcon size={20} color='white' />}
