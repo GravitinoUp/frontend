@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormField } from '@/components/ui/form'
 import { useAppDispatch } from '@/hooks/reduxHooks'
+import { useErrorToast } from '@/hooks/use-error-toast'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
 
@@ -35,7 +36,7 @@ export function SignInPage() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const [authUser, { data: authData, isSuccess: isSuccess }] =
+    const [authUser, { data: authData, isSuccess: isSuccess, error }] =
         useAuthMutation()
 
     useEffect(() => {
@@ -56,6 +57,8 @@ export function SignInPage() {
     useEffect(() => {
         document.title = t('authorization')
     }, [])
+
+    useErrorToast(() => handleSubmit(form.getValues()), error)
 
     return (
         <div className="bg-[#F8F8F8] h-screen w-screen select-none  flex items-center justify-center">

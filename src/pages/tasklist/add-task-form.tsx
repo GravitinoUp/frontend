@@ -4,18 +4,37 @@ import { z } from 'zod'
 import { NewOrderBodyInterface, placeholderQuery } from './constants'
 import i18next from '../../i18n.ts'
 import CalendarIcon from '@/assets/icons/Calendar.svg'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import {
+    CustomAlert,
+    ErrorCustomAlert,
+} from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
 import { MultiSelect, Option } from '@/components/ui/multi-select'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
@@ -31,35 +50,53 @@ import { OrderInterface } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers'
 
 const baseSchema = z.object({
-    taskName: z.string().min(1, { message: i18next.t('validation.require.title') }),
-    taskDescription: z.string().min(5, { message: i18next.t('validation.require.description') }),
-    facilities: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select'),
+    taskName: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.title') }),
+    taskDescription: z
+        .string()
+        .min(5, { message: i18next.t('validation.require.description') }),
+    facilities: z
+        .array(z.number())
+        .refine((value) => value.some((item) => item), {
+            message: i18next.t('validation.require.select'),
+        }),
+    organizations: z
+        .array(z.number())
+        .refine((value) => value.some((item) => item), {
+            message: i18next.t('validation.require.select'),
+        }),
+    branchesList: z
+        .array(z.number())
+        .refine((value) => value.some((item) => item), {
+            message: i18next.t('validation.require.select'),
+        }),
+    checkpointsList: z
+        .array(z.number())
+        .refine((value) => value.some((item) => item), {
+            message: i18next.t('validation.require.select'),
+        }),
+    priority: z.string({
+        required_error: i18next.t('validation.require.task.priority'),
     }),
-    organizations: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select'),
+    taskType: z.string({
+        required_error: i18next.t('validation.require.task.type'),
     }),
-    branchesList: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select'),
-    }),
-    checkpointsList: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select'),
-    }),
-    priority: z.string({ required_error: i18next.t('validation.require.task.priority') }),
-    taskType: z.string({ required_error: i18next.t('validation.require.task.type') }),
 })
 
-const datesSchema = z.object({
-    startDate: z.date({
-        required_error: i18next.t('validation.require.start.date'),
-    }),
-    endDate: z.date({
-        required_error: i18next.t('validation.require.end.date'),
-    }),
-}).refine((data) => data.endDate > data.startDate, {
-    message: i18next.t('validation.require.dates.mismatch'),
-    path: ['endDate'],
-})
+const datesSchema = z
+    .object({
+        startDate: z.date({
+            required_error: i18next.t('validation.require.start.date'),
+        }),
+        endDate: z.date({
+            required_error: i18next.t('validation.require.end.date'),
+        }),
+    })
+    .refine((data) => data.endDate > data.startDate, {
+        message: i18next.t('validation.require.dates.mismatch'),
+        path: ['endDate'],
+    })
 
 const formSchema = z.intersection(baseSchema, datesSchema)
 
@@ -101,7 +138,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isError: checkpointsError,
     } = useGetCheckpointsByBranchQuery(
         { body: placeholderQuery, branchIDS: selectedBranches },
-        { skip: selectedBranches.length === 0 },
+        { skip: selectedBranches.length === 0 }
     )
     const mappedCheckpoints: Option[] = checkpoints?.map((checkpoint) => ({
         label: checkpoint.checkpoint_name,
@@ -115,7 +152,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isError: facilitiesError,
     } = useGetFacilitiesByCheckpointQuery(
         { body: placeholderQuery, checkpointIDS: selectedCheckpoints },
-        { skip: selectedCheckpoints.length === 0 },
+        { skip: selectedCheckpoints.length === 0 }
     )
     const mappedFacilities: Option[] = facilities?.map((facility) => ({
         label: facility.facility_name,
@@ -134,7 +171,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         (organization) => ({
             label: organization.short_name,
             value: organization.organization_id,
-        }),
+        })
     )
 
     const {
@@ -146,7 +183,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
 
     const [
         addOrder,
-        { isLoading: isAdding, isError: addError, isSuccess: addSuccess },
+        { isLoading: isAdding, error: addError, isSuccess: addSuccess },
     ] = useAddOrderMutation()
 
     function handleSubmit(data: z.infer<typeof formSchema>) {
@@ -170,9 +207,13 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
 
     const { t } = useTranslation()
 
-    const addSuccessMsg = useMemo(() => t('toast.success.description.create.m', {
-        entityType: t('order'),
-    }), [])
+    const addSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.create.m', {
+                entityType: t('order'),
+            }),
+        []
+    )
 
     useSuccessToast(addSuccessMsg, addSuccess, setDialogOpen)
 
@@ -250,7 +291,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="taskDescription"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('task.description')}</FormLabel>
+                                    <FormLabel>
+                                        {t('task.description')}
+                                    </FormLabel>
                                     <FormControl>
                                         <Textarea
                                             placeholder={t('task.description')}
@@ -269,7 +312,11 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     <FormLabel>{t('branch')}</FormLabel>
                                     {branchesLoading && <LoadingSpinner />}
                                     {branchesError && (
-                                        <CustomAlert message={t('multiselect.error.branch')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.branch'
+                                            )}
+                                        />
                                     )}
                                     {branchesSuccess &&
                                         branches?.length > 0 && (
@@ -279,20 +326,30 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value,
-                                                            ),
+                                                                    value
+                                                            )
                                                         )
                                                     }}
                                                     options={mappedBranches}
                                                     defaultOptions={
                                                         task && [
                                                             {
-                                                                value: task?.facility.checkpoint.branch.branch_id,
-                                                                label: task?.facility.checkpoint.branch.branch_name,
+                                                                value: task
+                                                                    ?.facility
+                                                                    .checkpoint
+                                                                    .branch
+                                                                    .branch_id,
+                                                                label: task
+                                                                    ?.facility
+                                                                    .checkpoint
+                                                                    .branch
+                                                                    .branch_name,
                                                             },
                                                         ]
                                                     }
-                                                    placeholder={t('multiselect.placeholder.branch')}
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.branch'
+                                                    )}
                                                 />
                                             </FormControl>
                                         )}
@@ -308,7 +365,11 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     <FormLabel>{t('checkpoint')}</FormLabel>
                                     {checkpointsLoading && <LoadingSpinner />}
                                     {checkpointsError && (
-                                        <CustomAlert message={t('multiselect.error.checkpoint')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.checkpoint'
+                                            )}
+                                        />
                                     )}
                                     {!checkpointsError &&
                                         !checkpointsLoading && (
@@ -318,16 +379,22 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value,
-                                                            ),
+                                                                    value
+                                                            )
                                                         )
                                                     }}
                                                     options={mappedCheckpoints}
                                                     defaultOptions={
                                                         task && [
                                                             {
-                                                                value: task?.facility.checkpoint.checkpoint_id,
-                                                                label: task?.facility.checkpoint.checkpoint_name,
+                                                                value: task
+                                                                    ?.facility
+                                                                    .checkpoint
+                                                                    .checkpoint_id,
+                                                                label: task
+                                                                    ?.facility
+                                                                    .checkpoint
+                                                                    .checkpoint_name,
                                                             },
                                                         ]
                                                     }
@@ -335,7 +402,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         selectedBranches.length ===
                                                         0
                                                     }
-                                                    placeholder={t('multiselect.placeholder.checkpoint')}
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.checkpoint'
+                                                    )}
                                                 />
                                             </FormControl>
                                         )}
@@ -351,7 +420,11 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     <FormLabel>{t('facilities')}</FormLabel>
                                     {facilitiesLoading && <LoadingSpinner />}
                                     {facilitiesError && (
-                                        <CustomAlert message={t('multiselect.error.facility')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.facility'
+                                            )}
+                                        />
                                     )}
                                     {!facilitiesError && !facilitiesLoading && (
                                         <FormControl>
@@ -359,16 +432,20 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                 onChange={(values) => {
                                                     field.onChange(
                                                         values.map(
-                                                            ({ value }) => value,
-                                                        ),
+                                                            ({ value }) => value
+                                                        )
                                                     )
                                                 }}
                                                 options={mappedFacilities}
                                                 defaultOptions={
                                                     task && [
                                                         {
-                                                            value: task?.facility.facility_id,
-                                                            label: task?.facility.facility_name,
+                                                            value: task
+                                                                ?.facility
+                                                                .facility_id,
+                                                            label: task
+                                                                ?.facility
+                                                                .facility_name,
                                                         },
                                                     ]
                                                 }
@@ -376,7 +453,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                     selectedCheckpoints.length ===
                                                     0
                                                 }
-                                                placeholder={t('multiselect.placeholder.facility')}
+                                                placeholder={t(
+                                                    'multiselect.placeholder.facility'
+                                                )}
                                             />
                                         </FormControl>
                                     )}
@@ -392,7 +471,11 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     <FormLabel>{t('executor')}</FormLabel>
                                     {organizationsLoading && <LoadingSpinner />}
                                     {organizationsError && (
-                                        <CustomAlert message={t('multiselect.error.organization')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.organization'
+                                            )}
+                                        />
                                     )}
                                     {organizationsSuccess &&
                                         organizations?.length > 0 && (
@@ -402,8 +485,8 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value,
-                                                            ),
+                                                                    value
+                                                            )
                                                         )
                                                     }}
                                                     options={
@@ -412,12 +495,18 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                     defaultOptions={
                                                         task && [
                                                             {
-                                                                value: task?.executor.organization_id,
-                                                                label: task?.executor.short_name,
+                                                                value: task
+                                                                    ?.executor
+                                                                    .organization_id,
+                                                                label: task
+                                                                    ?.executor
+                                                                    .short_name,
                                                             },
                                                         ]
                                                     }
-                                                    placeholder={t('multiselect.placeholder.executor')}
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.executor'
+                                                    )}
                                                 />
                                             </FormControl>
                                         )}
@@ -433,20 +522,27 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     <FormLabel>{t('priority')}</FormLabel>
                                     {prioritiesLoading && <LoadingSpinner />}
                                     {prioritiesError && (
-                                        <CustomAlert message={t('multiselect.error.priority')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.priority'
+                                            )}
+                                        />
                                     )}
                                     {prioritiesSuccess &&
                                         priorities?.length > 0 && (
                                             <Select
                                                 onValueChange={field.onChange}
                                                 defaultValue={String(
-                                                    field.value,
+                                                    field.value
                                                 )}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder={t(
-                                                            'multiselect.placeholder.priority')} />
+                                                        <SelectValue
+                                                            placeholder={t(
+                                                                'multiselect.placeholder.priority'
+                                                            )}
+                                                        />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -457,14 +553,14 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                                     priority.priority_id
                                                                 }
                                                                 value={String(
-                                                                    priority.priority_id,
+                                                                    priority.priority_id
                                                                 )}
                                                             >
                                                                 {
                                                                     priority.priority_name
                                                                 }
                                                             </SelectItem>
-                                                        ),
+                                                        )
                                                     )}
                                                 </SelectContent>
                                             </Select>
@@ -490,17 +586,19 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
-                                                            'text-muted-foreground',
+                                                                'text-muted-foreground'
                                                         )}
                                                     >
                                                         <CalendarIcon />
                                                         {field.value ? (
                                                             formatDate(
-                                                                field.value,
+                                                                field.value
                                                             )
                                                         ) : (
                                                             <span>
-                                                                {t('multiselect.placeholder.start.date')}
+                                                                {t(
+                                                                    'multiselect.placeholder.start.date'
+                                                                )}
                                                             </span>
                                                         )}
                                                     </Button>
@@ -539,17 +637,19 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
-                                                            'text-muted-foreground',
+                                                                'text-muted-foreground'
                                                         )}
                                                     >
                                                         <CalendarIcon />
                                                         {field.value ? (
                                                             formatDate(
-                                                                field.value,
+                                                                field.value
                                                             )
                                                         ) : (
                                                             <span>
-                                                                {t('multiselect.placeholder.end.date')}
+                                                                {t(
+                                                                    'multiselect.placeholder.end.date'
+                                                                )}
                                                             </span>
                                                         )}
                                                     </Button>
@@ -577,13 +677,17 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             />
                         </div>
                         <FormMessage />
-                        {addError && <CustomAlert className="mt-3" />}
+                        {addError && <ErrorCustomAlert error={addError} />}
                         <Button
                             className="mt-10 mr-4"
                             type="submit"
                             disabled={isAdding}
                         >
-                            {isAdding ? <LoadingSpinner /> : t('button.action.create')}
+                            {isAdding ? (
+                                <LoadingSpinner />
+                            ) : (
+                                t('button.action.create')
+                            )}
                         </Button>
                         <ScrollBar orientation="vertical" />
                     </ScrollArea>

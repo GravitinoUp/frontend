@@ -1,8 +1,11 @@
+import { SerializedError } from '@reduxjs/toolkit'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { AlertCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { ErrorInterface } from '@/types/interface/fetch'
 
 interface CustomAlertProps {
     message?: string
@@ -64,4 +67,14 @@ export function CustomAlert({
             </div>
         </Alert>
     )
+}
+
+export const ErrorCustomAlert = ({
+    error,
+}: {
+    error?: FetchBaseQueryError | SerializedError | undefined
+}) => {
+    const errorData = error as { status: number; data: ErrorInterface }
+
+    return <CustomAlert className="mt-3" message={errorData.data.text} />
 }
