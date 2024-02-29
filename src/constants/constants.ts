@@ -28,4 +28,8 @@ export const CHECKPOINT_TYPES = {
     TRAIN: 2,
     SHIP: 3,
     PLANE: 4,
+    RIVER: 5,
+    MIXED: 6,
+    PEOPLE: 7,
+    LAKE: 8,
 }

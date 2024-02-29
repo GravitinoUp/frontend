@@ -1,25 +1,14 @@
-import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { placeholderQuery } from '../tasklist/constants'
 import FilterIcon from '@/assets/icons/filter_icon.svg'
 import MinimizeIcon from '@/assets/icons/minimize_icon.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import MapPin from '@/components/map-pin/map-pin'
 import RoundedButton from '@/components/rounded-button/rounded-button'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { CheckpointsPayloadInterface } from '@/types/interface/checkpoint'
-
-const ymaps3Reactify = await ymaps3.import('@yandex/ymaps3-reactify')
-const reactify = ymaps3Reactify.reactify.bindTo(React, ReactDOM)
-const {
-    YMap,
-    YMapDefaultSchemeLayer,
-    YMapDefaultFeaturesLayer,
-    YMapMarker,
-    YMapControls,
-} = reactify.module(ymaps3)
+import YandexMap from '@/components/map/yandex-map'
 
 export default function MapPage() {
     const { t } = useTranslation()
@@ -47,27 +36,8 @@ export default function MapPage() {
             </div>
             {isLoading && <LoadingSpinner />}
             {isError && <CustomAlert />}
-            <div className='w-full h-full overflow-hidden'>
-                <YMap
-                    location={{ center: [37.61556, 55.75222], zoom: 4 }}
-                    mode="vector"
-                >
-                    <YMapControls position='right' />
 
-                    <YMapDefaultSchemeLayer />
-                    <YMapDefaultFeaturesLayer />
-
-                    {checkpoints.data.map((checkpoint, index) => (
-                        <YMapMarker
-                            key={index}
-                            coordinates={[checkpoint.lat, checkpoint.lng]}
-                        >
-                            <MapPin checkpoint={checkpoint} />
-                        </YMapMarker>
-                    ))}
-                </YMap>
-            </div>
-
+            <YandexMap checkpoints={checkpoints} enableRounded={false} />
         </div>
     )
 }

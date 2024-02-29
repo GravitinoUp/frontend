@@ -1,7 +1,11 @@
-import { PlaneIcon, ShipIcon, TrainFrontIcon } from 'lucide-react'
 import MapCheckpointPopover from '../map-checkpoint-popover/map-checkpoint-popover'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import CarIcon from '@/assets/icons/car_icon.svg'
+import TrainIcon from '@/assets/icons/train_icon.svg'
+import ShipIcon from '@/assets/icons/ship_icon.svg'
+import PeopleIcon from '@/assets/icons/people_icon.svg'
+import PlaneIcon from '@/assets/icons/plane_icon.svg'
+import MixedIcon from '@/assets/icons/mixed_icon.svg'
 import MapPinIcon from '@/assets/icons/map_pin_icon.svg'
 import { CHECKPOINT_COMPLETED_STATUSES, CHECKPOINT_TYPES } from '@/constants/constants'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
@@ -30,15 +34,19 @@ export default function MapPin({
                             rounded-full
                             flex justify-center items-center
                             top-0
-                            mx-[5px]
+                            mx-[4px]
                             mt-[4px]
                         `}
                     >
-                        <div className="w-[33px] h-[33px] flex justify-center items-center">
+                        <div className="w-[34px] h-[34px] flex justify-center items-center fill-white">
                             {checkpointTypeId == CHECKPOINT_TYPES.CAR && <CarIcon />}
-                            {checkpointTypeId == CHECKPOINT_TYPES.TRAIN && <TrainFrontIcon size={20} color='white' />}
-                            {checkpointTypeId == CHECKPOINT_TYPES.SHIP && <ShipIcon size={20} color='white' />}
-                            {checkpointTypeId == CHECKPOINT_TYPES.PLANE && <PlaneIcon size={20} color='white' />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.TRAIN && <TrainIcon />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.SHIP && <ShipIcon />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.PLANE && <PlaneIcon />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.RIVER && <ShipIcon />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.MIXED && <MixedIcon />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.PEOPLE && <PeopleIcon />}
+                            {checkpointTypeId == CHECKPOINT_TYPES.LAKE && <ShipIcon />}
                         </div>
                     </div>
 
