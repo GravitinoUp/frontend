@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
 import DownloadIcon from '@/assets/icons/download.svg'
 import DownloadAllIcon from '@/assets/icons/download_all.svg'
 import ViewIcon from '@/assets/icons/view.svg'
+import { useDownload } from '@/hooks/use-download'
 
 interface ImageCarouselProps {
     files: string[]
@@ -13,6 +14,7 @@ interface ImageCarouselProps {
 
 const ImageCarousel = ({ files }: ImageCarouselProps) => {
     const { t } = useTranslation()
+    const { handleZip } = useDownload()
     const [open, setOpen] = useState(false)
     const [dialogStartIndex, setDialogStartIndex] = useState(0)
 
@@ -62,7 +64,9 @@ const ImageCarousel = ({ files }: ImageCarouselProps) => {
                         <Button
                             variant="ghost"
                             className="w-[90px] h-[90px] flex flex-col justify-center items-center rounded-xl"
-                            onClick={() => {}}
+                            onClick={() => {
+                                handleZip(files)
+                            }}
                         >
                             <DownloadAllIcon />
                             <p className="text-xs">{t('download.all')}</p>
