@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { initialColumnVisibility } from './constants'
@@ -16,23 +16,29 @@ function TaskListContent() {
     const { t } = useTranslation()
 
     const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderPayloadInterface>({
-            offset: {
-                count: 50,
-                page: 1,
-            },
-            filter: {},
-            sorts: {
-                order_id: 'ASC',
-            },
-            period: {
-                date_start: '2024-01-01',
-                date_end: '2025-01-26',
-            },
-        })
+        useState<OrderPayloadInterface>(
+            localStorage.getItem('personalOrdersQuery') !== null
+                ? JSON.parse(localStorage.getItem('personalOrdersQuery')!)
+                : {
+                      offset: {
+                          count: 50,
+                          page: 1,
+                      },
+                      filter: {},
+                      sorts: {
+                          order_id: 'ASC',
+                      },
+                      period: {
+                          date_start: '2024-01-01',
+                          date_end: '2025-01-26',
+                      },
+                  }
+        )
 
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
-        initialColumnVisibility
+        localStorage.getItem('filterColumns') !== null
+            ? JSON.parse(localStorage.getItem('filterColumns')!)
+            : initialColumnVisibility
     )
 
     const {
@@ -61,6 +67,19 @@ function TaskListContent() {
             row.task_end_datetime
         )}`,
     }))
+
+    useEffect(() => {
+        localStorage.setItem(
+            'personalOrdersQuery',
+            JSON.stringify(personalOrdersQuery)
+        )
+    }, [personalOrdersQuery])
+
+    useEffect(() => {
+        console.log(filterColumns)
+
+        localStorage.setItem('filterColumns', JSON.stringify(filterColumns))
+    }, [filterColumns])
 
     if (isError) {
         return <CustomAlert />
@@ -117,7 +136,6 @@ function TaskListContent() {
                                     ),
                                 },
                             })
-
                             setFilterColumns(data.columns)
 
                             setFormOpen(false)
