@@ -11,7 +11,7 @@ import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
 import { OrderPayloadInterface } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers'
 
-function TaskListContent() {
+function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
@@ -21,7 +21,11 @@ function TaskListContent() {
                 count: 50,
                 page: 1,
             },
-            filter: {},
+            filter: {
+                order_status: orderStatus
+                    ? [{ order_status_name: orderStatus }]
+                    : undefined,
+            },
             sorts: {
                 order_id: 'ASC',
             },

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddTaskForm from './add-task-form'
-import { personalOrdersQuery } from './constants'
+import { placeholderQuery } from './constants'
 import ExportForm from './export-form'
 import ImportForm from './import-form'
 import TaskListContent from './tasklist-content'
@@ -11,28 +11,73 @@ import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
+import { TASK_STATUSES } from '@/constants/constants.ts'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
 
-const tasksPageTabs = [
+const tasksPageTabs = (all: number) => [
     {
         value: 'allTasks',
         head: i18next.t('all'),
         content: <TaskListContent />,
+        count: all,
     },
     {
-        value: 'onCheckTasks',
+        value: 'createdTasks',
+        head: i18next.t('task.status.header.created'),
+        content: <TaskListContent orderStatus={TASK_STATUSES.CREATED} />,
+        count: -1,
+    },
+    {
+        value: 'appointedTasks',
+        head: i18next.t('task.status.header.appointed'),
+        content: <TaskListContent orderStatus={TASK_STATUSES.APPOINTED} />,
+        count: -1,
+    },
+    {
+        value: 'inProgressTasks',
+        head: i18next.t('task.status.in-progress'),
+        content: <TaskListContent orderStatus={TASK_STATUSES.IN_PROGRESS} />,
+        count: -1,
+    },
+    {
+        value: 'verificationTasks',
         head: i18next.t('task.status.verification'),
-        content: <p>{i18next.t('task.status.verification')}</p>,
+        content: (
+            <TaskListContent orderStatus={TASK_STATUSES.ON_VERIFICATION} />
+        ),
+        count: -1,
     },
     {
         value: 'closedTasks',
-        head: i18next.t('closed'),
-        content: <p>{i18next.t('closed')}</p>,
+        head: i18next.t('task.status.header.closed'),
+        content: <TaskListContent orderStatus={TASK_STATUSES.CLOSED} />,
+        count: -1,
+    },
+    {
+        value: 'canceledTasks',
+        head: i18next.t('task.status.header.canceled'),
+        content: <TaskListContent orderStatus={TASK_STATUSES.CANCELED} />,
+        count: -1,
+    },
+    {
+        value: 'deadlineClosedTasks',
+        head: i18next.t('task.status.header.deadline'),
+        content: (
+            <TaskListContent orderStatus={TASK_STATUSES.DEADLINE_CLOSED} />
+        ),
+        count: -1,
+    },
+    {
+        value: 'needWorkTasks',
+        head: i18next.t('task.status.need-work'),
+        content: <TaskListContent orderStatus={TASK_STATUSES.NEED_WORK} />,
+        count: -1,
     },
 ]
 
 export default function TaskListPage() {
-    const { refetch } = useGetPersonalOrdersQuery(personalOrdersQuery)
+    const { data: orders = { count: 0, data: [] }, refetch } =
+        useGetPersonalOrdersQuery(placeholderQuery)
     const [formOpen, setFormOpen] = useState(false)
     const [exportFormOpen, setExportFormOpen] = useState(false)
     const [importFormOpen, setImportFormOpen] = useState(false)
@@ -69,7 +114,7 @@ export default function TaskListPage() {
                 </div>
             }
         >
-            <CustomTabs tabs={tasksPageTabs} />
+            <CustomTabs tabs={tasksPageTabs(orders.count)} />
         </PageLayout>
     )
 }
