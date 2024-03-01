@@ -1,12 +1,11 @@
 import { api } from './'
-import { NewOrderBodyInterface, NewTaskBodyInterface } from '@/pages/tasklist/constants'
+import { FetchDataInterface, FetchResultInterface } from '@/types/interface/fetch'
 import {
-    FetchDataInterface,
-    FetchResultInterface,
-} from '@/types/interface/fetch'
-import {
+    NewOrderBodyInterface,
+    NewTaskBodyInterface,
     OrderInterface,
     OrderPayloadInterface,
+    OrderUpdateInterface,
     UpdateStatusPayloadInterface,
 } from '@/types/interface/orders'
 
@@ -19,7 +18,7 @@ const ordersApi = api.injectEndpoints({
                 body,
             }),
             transformResponse: (
-                response: FetchDataInterface<OrderInterface[]>
+                response: FetchDataInterface<OrderInterface[]>,
             ) => response.data,
             providesTags: ['Orders'],
         }),
@@ -35,7 +34,7 @@ const ordersApi = api.injectEndpoints({
             providesTags: ['Orders'],
         }),
         addOrder: builder.mutation<
-            FetchResultInterface<OrderInterface>,
+            OrderInterface[] | undefined,
             NewOrderBodyInterface
         >({
             query: (body) => ({
@@ -43,10 +42,21 @@ const ordersApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformResponse: (
+                response: FetchResultInterface<FetchDataInterface<OrderInterface[]>>,
+            ) => response.data?.data,
+            invalidatesTags: ['Orders'],
+        }),
+        updateOrder: builder.mutation<OrderInterface, OrderUpdateInterface>({
+            query: (body) => ({
+                url: 'order',
+                method: 'PATCH',
+                body,
+            }),
             invalidatesTags: ['Orders'],
         }),
         addTask: builder.mutation<
-            FetchResultInterface<OrderInterface>,
+            OrderInterface[] | undefined,
             NewTaskBodyInterface
         >({
             query: (body) => ({
@@ -54,6 +64,9 @@ const ordersApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformResponse: (
+                response: FetchResultInterface<FetchDataInterface<OrderInterface[]>>,
+            ) => response.data?.data,
             invalidatesTags: ['Orders'],
         }),
         deleteOrder: builder.mutation<FetchResultInterface, number>({
@@ -74,6 +87,19 @@ const ordersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Orders', 'OrderJournal'],
         }),
+        uploadFile: builder.mutation<unknown, { orderIDs: number[], directory: string, formData: FormData }>({
+            query: ({ orderIDs, directory, formData }) => {
+                const queryParams = orderIDs
+                    .map((id) => `order_ids=${id}`)
+                    .join('&')
+                return {
+                    url: `files/upload-images?${queryParams}&directory=${directory}`,
+                    method: 'POST',
+                    body: formData,
+                }
+            }
+            ,
+        }),
     }),
     overrideExisting: true,
 })
@@ -82,7 +108,9 @@ export const {
     useGetOrdersQuery,
     useGetPersonalOrdersQuery,
     useAddOrderMutation,
+    useUpdateOrderMutation,
     useAddTaskMutation,
     useDeleteOrderMutation,
     useUpdateStatusMutation,
+    useUploadFileMutation,
 } = ordersApi

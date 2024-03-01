@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { z } from 'zod'
-import { ActionButtons } from './action-buttons'
 import i18next from '../../i18n.ts'
 import OrderStatus from '@/components/order-status/order-status.tsx'
 import { Checkbox } from '@/components/ui/checkbox'
+import { ActionButtons } from '@/pages/tasklist/components/action-buttons.tsx'
 import { FormattedTaskInterface } from '@/types/interface/orders'
 
 export const tasksColumnsSchema = z.object({

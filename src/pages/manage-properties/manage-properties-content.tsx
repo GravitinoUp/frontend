@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { managePropertiesColumns } from './manage-properties-columns'
-import { placeholderQuery } from '../tasklist/constants'
+import { placeholderQuery } from '../tasklist/constants.ts'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import { useGetPropertiesQuery } from '@/redux/api/properties'

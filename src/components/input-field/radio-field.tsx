@@ -6,8 +6,7 @@ interface RadioFieldProps {
     onChange: (value: string) => void
     selectedValue: string
 }
-export const RadioField = ({ selectedValue, value, label, onChange }: RadioFieldProps) => {
-    return (
+export const RadioField = ({ selectedValue, value, label, onChange }: RadioFieldProps) => (
         <label className="flex items-center cursor-pointer">
             <input
                 type="radio"
@@ -23,4 +22,3 @@ export const RadioField = ({ selectedValue, value, label, onChange }: RadioField
             )}>{label}</span>
         </label>
     );
-};

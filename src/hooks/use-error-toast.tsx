@@ -5,7 +5,7 @@ import { useToast } from '@/components/ui/use-toast.ts'
 
 const ERROR_DURATION = 3000
 
-export const useErrorToast = (isError: boolean, repeatFn: () => void) => {
+export const useErrorToast = (isError: boolean, repeatFn?: () => void) => {
     const { toast } = useToast()
     const { t } = useTranslation()
 
@@ -16,7 +16,7 @@ export const useErrorToast = (isError: boolean, repeatFn: () => void) => {
                 title: t('toast.error.title'),
                 description: t('toast.error.description'),
                 duration: ERROR_DURATION,
-                action: (
+                action: typeof repeatFn === 'undefined' ? undefined : (
                     <ToastAction
                         altText={t('toast.error.try.again')}
                         onClick={repeatFn}

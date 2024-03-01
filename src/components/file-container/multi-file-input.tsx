@@ -12,9 +12,10 @@ export interface FileData {
 
 interface MultiFileInputProps {
     setSelectedFiles: Dispatch<SetStateAction<FileData[]>>
+    disabled?: boolean
 }
 
-export const MultiFileInput = ({ setSelectedFiles }: MultiFileInputProps) => {
+export const MultiFileInput = ({ setSelectedFiles, disabled }: MultiFileInputProps) => {
     const { t } = useTranslation()
     const inputRef = useRef<HTMLInputElement>(null)
     const [dragActive, setDragActive] = useState<boolean>(false)
@@ -67,7 +68,9 @@ export const MultiFileInput = ({ setSelectedFiles }: MultiFileInputProps) => {
     return (
         <Fragment>
             <div
-                className="cursor-pointer flex flex-col items-center mt-8 justify-center bg-muted border-[#C6C9CC] border-[1.5px] border-dashed rounded-xl select-none h-[120px]"
+                className={cn(
+                    'flex flex-col items-center mt-8 justify-center bg-muted border-[#C6C9CC] border-[1.5px] border-dashed rounded-xl select-none h-[120px]',
+                    disabled ? 'cursor-default opacity-45' : 'cursor-pointer')}
                 onClick={handleAddClick}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -80,6 +83,7 @@ export const MultiFileInput = ({ setSelectedFiles }: MultiFileInputProps) => {
                     accept="image/*"
                     multiple
                     onChange={handleFileChange}
+                    disabled={disabled}
                 />
                 <div
                     className={cn(

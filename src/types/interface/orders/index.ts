@@ -1,10 +1,7 @@
 import { FacilityInterface, FacilitySortInterface } from '../facility'
 import { IQuery, SortOptionsType } from '../fetch'
 import { GroupInterface, GroupSortInterface } from '../group'
-import {
-    OrganizationInterface,
-    OrganizationSortInterface,
-} from '../organizations'
+import { OrganizationInterface, OrganizationSortInterface } from '../organizations'
 import { RoleInterface, RoleSortInterface } from '../roles'
 import { UserInterface } from '../user'
 import { RecursivePartial } from '@/utils/recursive-partial'
@@ -25,7 +22,7 @@ export interface FormattedTaskInterface {
     taskType?: number | null
 }
 
-export interface OrderMyPayloadInterface extends IQuery {
+export interface OrderPayloadInterface extends IQuery {
     sorts: OrderSortInterface
     filter: RecursivePartial<OrderFilterInterface>
     period: {
@@ -35,7 +32,6 @@ export interface OrderMyPayloadInterface extends IQuery {
 }
 
 // ORDER
-
 export interface OrderInterface {
     order_id: number
     order_name?: string | null
@@ -44,9 +40,9 @@ export interface OrderInterface {
     executor: OrganizationInterface
     completed_by?: OrderUserInterface | null
     creator: UserInterface
-    planned_datetime: Date
-    task_end_datetime: Date
-    ended_at_datetime?: Date | null
+    planned_datetime: string
+    task_end_datetime: string
+    ended_at_datetime?: string | null
     task: TaskInterface
     order_status: OrderStatusInterface
     priority: PriorityInterface
@@ -102,6 +98,36 @@ export type OrderFilterInterface = Omit<OrderInterface, 'order_status'> & {
     order_status: OrderStatusInterface[]
 }
 
+export interface NewOrderBodyInterface {
+    order_name: string
+    order_description: string
+    branch_ids: number[]
+    checkpoint_ids?: number[]
+    facility_ids?: number[]
+    executor_ids: number[]
+    planned_datetime: string
+    task_end_datetime: string
+    priority_id: number
+    property_values: string[]
+}
+
+export interface OrderUpdateInterface {
+    order_id: number
+    task_id: number
+    order_name: string
+    order_description: string
+    facility_id: number
+    executor_id: number
+    completed_by?: number
+    creator_id?: number
+    order_status_id?: number
+    planned_datetime: string
+    task_end_datetime: string
+    ended_at_datetime?: string
+    priority_id: number
+    property_values: []
+}
+
 // TASK
 export interface TaskInterface {
     task_id: number
@@ -111,8 +137,8 @@ export interface TaskInterface {
     periodicity: PeriodicityInterface | null
     period_start?: Date | null
     period_end?: Date | null
-    createdAt: Date | null
-    updatedAt: Date | null
+    createdAt?: Date | null
+    updatedAt?: Date | null
 }
 
 export interface TaskSortInterface {
@@ -123,6 +149,20 @@ export interface TaskSortInterface {
     periodicity?: PeriodicitySortInterface | null
     period_start?: SortOptionsType
     period_end?: SortOptionsType
+}
+
+export interface NewTaskBodyInterface {
+    task_name: string,
+    task_description: string,
+    category_id: number,
+    periodicity_id: number,
+    branch_ids: number[],
+    checkpoint_ids?: number[],
+    facility_ids?: number[],
+    executor_ids: number[],
+    priority_id: number,
+    period_start: string
+    period_end: string
 }
 
 // CATEGORY
@@ -153,6 +193,10 @@ export type PeriodicitySortInterface = Partial<
 >
 
 // ORDER STATUS
+export interface UpdateStatusPayloadInterface {
+    order_id: number
+    order_status_id: string
+}
 
 export interface OrderStatusInterface {
     order_status_id: number

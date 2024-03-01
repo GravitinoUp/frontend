@@ -2,7 +2,7 @@ import { Dispatch, Fragment, SetStateAction, useMemo, useState } from 'react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { placeholderQuery } from '../tasklist/constants'
+import { placeholderQuery } from '../tasklist/constants.ts'
 import UploadIcon from '@/assets/icons/upload.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import FileContainer from '@/components/file-container/file-container'
@@ -10,21 +10,9 @@ import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSuccessToast } from '@/hooks/use-success-toast'
@@ -37,11 +25,7 @@ import {
     useUpdateOrganizationUserMutation,
     useUpdateUserMutation,
 } from '@/redux/api/users'
-import {
-    OrganizationUserPayloadInterface,
-    UserInterface,
-    UserPayloadInterface,
-} from '@/types/interface/user'
+import { OrganizationUserPayloadInterface, UserInterface, UserPayloadInterface } from '@/types/interface/user'
 
 const userFormSchema = z
     .object({
@@ -66,7 +50,7 @@ const userFormSchema = z
         {
             message: i18next.t('validation.require.password'),
             path: ['password'],
-        }
+        },
     )
     .refine((data) => data.password === data.repeat_password, {
         message: i18next.t('validation.require.password.mismatch'),
@@ -98,7 +82,7 @@ const organizationFormSchema = z
         {
             message: i18next.t('validation.require.password'),
             path: ['password'],
-        }
+        },
     )
     .refine((data) => data.password === data.repeat_password, {
         message: i18next.t('validation.require.password.mismatch'),
@@ -128,66 +112,66 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         schema: userFormSchema,
         defaultValues: user
             ? {
-                  ...user,
-                  user_id: user.user_id,
-                  last_name: user.person.last_name,
-                  first_name: user.person.first_name,
-                  patronymic: user.person.patronymic,
-                  phone: user.person.phone,
-                  password: '',
-                  repeat_password: '',
-              }
+                ...user,
+                user_id: user.user_id,
+                last_name: user.person.last_name,
+                first_name: user.person.first_name,
+                patronymic: user.person.patronymic,
+                phone: user.person.phone,
+                password: '',
+                repeat_password: '',
+            }
             : {
-                  last_name: '',
-                  first_name: '',
-                  patronymic: '',
-                  email: '',
-                  phone: '',
-                  password: '',
-                  repeat_password: '',
-              },
+                last_name: '',
+                first_name: '',
+                patronymic: '',
+                email: '',
+                phone: '',
+                password: '',
+                repeat_password: '',
+            },
     })
 
     const organizationForm = useForm({
         schema: organizationFormSchema,
         defaultValues: user
             ? {
-                  ...user,
-                  user_id: user.user_id,
-                  full_name: user.organization?.full_name,
-                  short_name: user.organization?.short_name,
-                  phone: user.organization?.phone,
-                  organization_type_id: String(
-                      user.organization?.organization_type.organization_type_id
-                  ),
-                  password: '',
-                  repeat_password: '',
-              }
+                ...user,
+                user_id: user.user_id,
+                full_name: user.organization?.full_name,
+                short_name: user.organization?.short_name,
+                phone: user.organization?.phone,
+                organization_type_id: String(
+                    user.organization?.organization_type.organization_type_id,
+                ),
+                password: '',
+                repeat_password: '',
+            }
             : {
-                  full_name: '',
-                  short_name: '',
-                  email: '',
-                  phone: '',
-                  organization_type_id: '',
-                  password: '',
-                  repeat_password: '',
-              },
+                full_name: '',
+                short_name: '',
+                email: '',
+                phone: '',
+                organization_type_id: '',
+                password: '',
+                repeat_password: '',
+            },
     })
 
     const roleForm = useForm({
         schema: roleFormSchema,
         defaultValues: user
             ? {
-                  role_id: String(user.role.role_id),
-                  group_id:
-                      user.group?.group_id !== null
-                          ? String(user.group?.group_id)
-                          : null,
-              }
+                role_id: String(user.role.role_id),
+                group_id:
+                    user.group?.group_id !== null
+                        ? String(user.group?.group_id)
+                        : null,
+            }
             : {
-                  role_id: '',
-                  group_id: '',
-              },
+                role_id: '',
+                group_id: '',
+            },
     })
 
     const imageForm = useForm({
@@ -265,7 +249,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
     const [tabUserTypeValue, setTabUserTypeValue] = useState(
         !user || user.organization?.organization_id === null
             ? 'user'
-            : 'organization'
+            : 'organization',
     )
 
     function handleUserSubmit() {
@@ -307,7 +291,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             const userPayload: OrganizationUserPayloadInterface = {
                 user_id: user?.user_id,
                 organization_type_id:
-                    organizationFormValue.organization_type_id,
+                organizationFormValue.organization_type_id,
                 full_name: organizationFormValue.full_name,
                 short_name: organizationFormValue.short_name,
                 phone: organizationFormValue.phone,
@@ -332,25 +316,25 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             t('toast.success.description.create.m', {
                 entityType: t('user.title'),
             }),
-        []
+        [],
     )
     const updateSuccessMsg = useMemo(
         () =>
             t('toast.success.description.update.m', {
                 entityType: t('user.title'),
             }),
-        []
+        [],
     )
 
     useSuccessToast(
         createSuccessMsg,
         userCreateSuccess || organizationCreateSuccess,
-        setDialogOpen
+        setDialogOpen,
     )
     useSuccessToast(
         updateSuccessMsg,
         userUpdateSuccess || organizationUpdateSuccess,
-        setDialogOpen
+        setDialogOpen,
     )
 
     return (
@@ -588,26 +572,26 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             {organizationsTypesError && (
                                                 <CustomAlert
                                                     message={t(
-                                                        'multiselect.error.organization.types'
+                                                        'multiselect.error.organization.types',
                                                     )}
                                                 />
                                             )}
                                             {organizationsTypesSuccess &&
                                                 organizationsTypes?.length >
-                                                    0 && (
+                                                0 && (
                                                     <Select
                                                         onValueChange={
                                                             field.onChange
                                                         }
                                                         defaultValue={String(
-                                                            field.value
+                                                            field.value,
                                                         )}
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger>
                                                                 <SelectValue
                                                                     placeholder={t(
-                                                                        'multiselect.placeholder.organization.type'
+                                                                        'multiselect.placeholder.organization.type',
                                                                     )}
                                                                 />
                                                             </SelectTrigger>
@@ -615,21 +599,21 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                                         <SelectContent>
                                                             {organizationsTypes.map(
                                                                 (
-                                                                    organizationsType
+                                                                    organizationsType,
                                                                 ) => (
                                                                     <SelectItem
                                                                         key={
                                                                             organizationsType.organization_type_id
                                                                         }
                                                                         value={String(
-                                                                            organizationsType.organization_type_id
+                                                                            organizationsType.organization_type_id,
                                                                         )}
                                                                     >
                                                                         {
                                                                             organizationsType.organization_type_name
                                                                         }
                                                                     </SelectItem>
-                                                                )
+                                                                ),
                                                             )}
                                                         </SelectContent>
                                                     </Select>
@@ -707,7 +691,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             <SelectTrigger>
                                                 <SelectValue
                                                     placeholder={t(
-                                                        'multiselect.placeholder.role'
+                                                        'multiselect.placeholder.role',
                                                     )}
                                                 />
                                             </SelectTrigger>
@@ -749,7 +733,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             <SelectTrigger>
                                                 <SelectValue
                                                     placeholder={t(
-                                                        'multiselect.placeholder.group'
+                                                        'multiselect.placeholder.group',
                                                     )}
                                                 />
                                             </SelectTrigger>
@@ -759,7 +743,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                                 <SelectItem
                                                     key={group.group_id}
                                                     value={String(
-                                                        group.group_id
+                                                        group.group_id,
                                                     )}
                                                 >
                                                     {group.group_name}

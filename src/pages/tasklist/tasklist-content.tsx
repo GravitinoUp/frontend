@@ -1,40 +1,25 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { initialColumnVisibility } from './constants'
-import TaskFiltersForm from './task-filters-form'
-import { tasksColumns, TasksFilterColumns } from './tasks-columns'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import DataTable from '@/components/data-table/data-table'
-import FormDialog from '@/components/form-dialog/form-dialog'
-import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
-import { OrderPayloadInterface } from '@/types/interface/orders'
-import { formatDate } from '@/utils/helpers'
+import TaskFiltersForm from './components/task-filters-form.tsx'
+import { initialColumnVisibility } from './constants.ts'
+import { tasksColumns, TasksFilterColumns } from './tasks-columns.tsx'
+import { CustomAlert } from '@/components/custom-alert/custom-alert.tsx'
+import DataTable from '@/components/data-table/data-table.tsx'
+import FormDialog from '@/components/form-dialog/form-dialog.tsx'
+import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
+import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
+import { formatDate } from '@/utils/helpers.ts'
 
 function TaskListContent() {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderPayloadInterface>({
-            offset: {
-                count: 50,
-                page: 1,
-            },
-            filter: {},
-            sorts: {
-                order_id: 'ASC',
-            },
-            period: {
-                date_start: '2024-01-01',
-                date_end: '2025-01-26',
-            },
-        })
-
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
-        initialColumnVisibility
+        initialColumnVisibility,
     )
 
+    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(TasksFilterQueryContext)
     const {
         data = { count: 0, data: [] },
         isError,
@@ -47,7 +32,7 @@ function TaskListContent() {
         key: row.order_id,
         id: row.order_id,
         facility: row.facility.facility_name,
-        checkpoint: row.facility?.checkpoint?.checkpoint_name,
+        checkpoint: row.facility.checkpoint.checkpoint_name,
         taskDescription: row.order_description || '',
         status: row.order_status?.order_status_name,
         taskName: row.order_name || '',
@@ -58,7 +43,7 @@ function TaskListContent() {
         taskType: row.task.task_id,
         closeDate: formatDate(row.ended_at_datetime) || '',
         deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
-            row.task_end_datetime
+            row.task_end_datetime,
         )}`,
     }))
 
@@ -113,7 +98,7 @@ function TaskListContent() {
                                     order_status: data.order_status.map(
                                         (value) => ({
                                             order_status_name: value,
-                                        })
+                                        }),
                                     ),
                                 },
                             })
@@ -124,22 +109,22 @@ function TaskListContent() {
                         }}
                         data={{
                             branch_id:
-                                personalOrdersQuery.filter.facility?.checkpoint
-                                    ?.branch?.branch_id,
+                            personalOrdersQuery.filter.facility?.checkpoint
+                                ?.branch?.branch_id,
                             checkpoint_id:
-                                personalOrdersQuery.filter.facility?.checkpoint
-                                    ?.checkpoint_id,
+                            personalOrdersQuery.filter.facility?.checkpoint
+                                ?.checkpoint_id,
                             organization_id:
-                                personalOrdersQuery.filter.executor
-                                    ?.organization_id,
+                            personalOrdersQuery.filter.executor
+                                ?.organization_id,
                             priority_id:
-                                personalOrdersQuery.filter.priority
-                                    ?.priority_id,
+                            personalOrdersQuery.filter.priority
+                                ?.priority_id,
                             order_status: personalOrdersQuery.filter
                                 .order_status
                                 ? personalOrdersQuery.filter.order_status!.map(
-                                      (value) => `${value?.order_status_name}`
-                                  )
+                                    (value) => `${value?.order_status_name}`,
+                                )
                                 : [],
                             columns: filterColumns,
                         }}
@@ -160,7 +145,7 @@ function TaskListContent() {
                     navigate(`task`, {
                         state: {
                             order: data.data.find(
-                                (e) => e.order_id === rowData.id
+                                (e) => e.order_id === rowData.id,
                             ),
                         },
                     })

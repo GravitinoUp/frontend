@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddUserForm from './add-user-form'
 import { usersColumns } from './users-columns'
-import { placeholderQuery } from '../tasklist/constants'
+import { placeholderQuery } from '../tasklist/constants.ts'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
@@ -64,8 +64,10 @@ export default function UsersPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {}} />
-                        <ExcelButton buttonType="import" onClick={() => {}} />
+                        <ExcelButton buttonType="export" onClick={() => {
+                        }} />
+                        <ExcelButton buttonType="import" onClick={() => {
+                        }} />
                     </div>
                 </div>
             }

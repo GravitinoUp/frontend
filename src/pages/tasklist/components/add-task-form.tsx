@@ -1,38 +1,38 @@
-import { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { NewOrderBodyInterface, NewTaskBodyInterface, placeholderQuery } from './constants'
-import i18next from '../../i18n.ts'
+import i18next from '../../../i18n.ts'
+import { placeholderQuery } from '../constants.ts'
 import CalendarIcon from '@/assets/icons/Calendar.svg'
-import DeleteIcon from '@/assets/icons/delete.svg'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import { FileData, MultiFileInput } from '@/components/file-container/multi-file-input.tsx'
-import CustomForm, { useForm } from '@/components/form/form'
-import { InputField } from '@/components/input-field/input-field'
+import { CustomAlert } from '@/components/custom-alert/custom-alert.tsx'
+import CustomForm, { useForm } from '@/components/form/form.tsx'
+import { InputField } from '@/components/input-field/input-field.tsx'
 import { RadioField } from '@/components/input-field/radio-field.tsx'
-import { LoadingSpinner } from '@/components/spinner/spinner'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { MultiSelect, Option } from '@/components/ui/multi-select'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Textarea } from '@/components/ui/textarea'
+import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
+import { Button } from '@/components/ui/button.tsx'
+import { Calendar } from '@/components/ui/calendar.tsx'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx'
+import { MultiSelect, Option } from '@/components/ui/multi-select.tsx'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area.tsx'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx'
+import { Separator } from '@/components/ui/separator.tsx'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx'
+import { Textarea } from '@/components/ui/textarea.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
-import { cn } from '@/lib/utils'
-import { useGetBranchesQuery } from '@/redux/api/branch'
+import { cn } from '@/lib/utils.ts'
+import { FilesUploadForm } from '@/pages/tasklist/components/files-upload-form.tsx'
+import { useGetBranchesQuery } from '@/redux/api/branch.ts'
 import { useGetCategoriesQuery } from '@/redux/api/categories.ts'
-import { useGetCheckpointsByBranchQuery } from '@/redux/api/checkpoints'
-import { useGetFacilitiesByBranchQuery } from '@/redux/api/facility'
-import { useAddOrderMutation, useAddTaskMutation } from '@/redux/api/orders'
-import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
+import { useGetCheckpointsByBranchQuery } from '@/redux/api/checkpoints.ts'
+import { useGetFacilitiesQuery } from '@/redux/api/facility.ts'
+import { useAddOrderMutation, useAddTaskMutation } from '@/redux/api/orders.ts'
+import { useGetAllOrganizationsQuery } from '@/redux/api/organizations.ts'
 import { useGetAllPeriodicityQuery } from '@/redux/api/periodicity.ts'
-import { useGetAllPriorityQuery } from '@/redux/api/priority'
-import { OrderInterface } from '@/types/interface/orders'
-import { formatDate } from '@/utils/helpers'
+import { useGetAllPriorityQuery } from '@/redux/api/priority.ts'
+import { NewOrderBodyInterface, NewTaskBodyInterface, OrderInterface } from '@/types/interface/orders'
+import { formatDate } from '@/utils/helpers.ts'
 
 const baseSchema = z.object({
     taskName: z.string().min(1, { message: i18next.t('validation.require.title') }),
@@ -46,14 +46,12 @@ const baseSchema = z.object({
     branchesList: z.array(z.number()).refine((value) => value.some((item) => item), {
         message: i18next.t('validation.require.select'),
     }),
-    checkpointsList: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select'),
-    }),
-    priority: z.string({ required_error: i18next.t('validation.require.task.priority') }),
-    periodicity: z.string({ required_error: i18next.t('validation.require.task.periodicity') }),
-    category: z.string({ required_error: i18next.t('validation.require.task.category') }),
-    taskType: z.string({ required_error: i18next.t('validation.require.task.type') }),
-})
+    checkpointsList: z.array(z.number()),
+    priority: z.string().min(1, i18next.t('validation.require.task.priority')),
+    periodicity: z.string().min(1, i18next.t('validation.require.task.periodicity')),
+    category: z.string().min(1, i18next.t('validation.require.task.category')),
+    taskType: z.enum(['planned', 'unplanned'], { required_error: i18next.t('validation.require.task.type') }),
+}).superRefine((values) => values.taskType !== 'unplanned')
 
 const datesSchema = z.object({
     startDate: z.date({
@@ -83,10 +81,10 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
             facilities: [],
             branchesList: [],
             checkpointsList: [],
-            priority: task ? String(task.priority.priority_id) : '',
-            periodicity: task ? String(task.task.periodicity?.periodicity_id) : '',
-            category: task ? String(task.task.category.category_id) : '',
-            taskType: task ? (task.task.task_id === null ? 'unplanned' : 'planned') : 'unplanned',
+            priority: '',
+            periodicity: '',
+            category: '',
+            taskType: 'unplanned',
         },
     })
 
@@ -121,10 +119,8 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         data: facilities = [],
         isLoading: facilitiesLoading,
         isError: facilitiesError,
-    } = useGetFacilitiesByBranchQuery(
-        { body: placeholderQuery, branchIDS: selectedBranches },
-        { skip: selectedBranches.length === 0 },
-    )
+        isSuccess: facilitiesSuccess,
+    } = useGetFacilitiesQuery(placeholderQuery)
     const mappedFacilities: Option[] = facilities?.map((facility) => ({
         label: facility.facility_name,
         value: facility.facility_id,
@@ -167,19 +163,24 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isSuccess: categoriesSuccess,
     } = useGetCategoriesQuery(placeholderQuery,
         { selectFromResult: (result) => ({ ...result, data: result.data?.data }), skip: !isPlannedTask })
-    console.log(categories, periodicity)
+
     // создание внеплановой задачи
     const [
         addOrder,
-        { isLoading: isOrderAdding, isError: addOrderError, isSuccess: addOrderSuccess },
+        { data: newOrder, isLoading: isOrderAdding, error: addOrderError, isSuccess: addOrderSuccess },
     ] = useAddOrderMutation()
+
+    const newOrdersIDS = newOrder?.map((el) => el.order_id)
 
     // создание плановой задачи
     const [addTask, {
+        data: newTask,
         isLoading: isTaskAdding,
-        isError: addTaskError,
+        error: addTaskError,
         isSuccess: addTaskSuccess,
     }] = useAddTaskMutation()
+
+    const newTaskIDS = newTask?.map((el) => el.order_id)
 
     function handleSubmit(data: z.infer<typeof formSchema>) {
         if (data.taskType === 'unplanned') {
@@ -224,20 +225,17 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         entityType: t('order'),
     }), [])
 
-    useSuccessToast(addSuccessMsg, addOrderSuccess || addTaskSuccess, setDialogOpen)
+    useEffect(() => {
+        if (addTaskSuccess || addOrderSuccess) {
+            setActiveTab('files')
+        }
 
-    const [selectedFiles, setSelectedFiles] = useState<FileData[]>([])
-    const handleFileUpload = () => {
+    }, [addTaskSuccess, addOrderSuccess])
 
-    }
-
-    const handleFileDelete = (id: string) => {
-        const result = selectedFiles.filter((data) => data.id !== id)
-        setSelectedFiles(result)
-    }
+    useSuccessToast(addSuccessMsg, addOrderSuccess || addTaskSuccess)
 
     return (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="overflow-auto  w-full h-full">
+        <Tabs value={activeTab} onValueChange={task && setActiveTab} className="w-full h-full">
             <TabsList className="gap-2">
                 <TabsTrigger
                     value="task"
@@ -310,7 +308,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('branch')}</FormLabel>
-                                    {branchesLoading && <LoadingSpinner />}
+                                    {branchesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
                                     {branchesError && (
                                         <CustomAlert message={t('multiselect.error.branch')} />
                                     )}
@@ -327,14 +325,6 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         )
                                                     }}
                                                     options={mappedBranches}
-                                                    defaultOptions={
-                                                        task && [
-                                                            {
-                                                                value: task?.facility.checkpoint.branch.branch_id,
-                                                                label: task?.facility.checkpoint.branch.branch_name,
-                                                            },
-                                                        ]
-                                                    }
                                                     placeholder={t('multiselect.placeholder.branch')}
                                                 />
                                             </FormControl>
@@ -349,37 +339,26 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('facilities')}</FormLabel>
-                                    {facilitiesLoading && <LoadingSpinner />}
+                                    {facilitiesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
                                     {facilitiesError && (
                                         <CustomAlert message={t('multiselect.error.facility')} />
                                     )}
-                                    {!facilitiesError && !facilitiesLoading && (
-                                        <FormControl>
-                                            <MultiSelect
-                                                onChange={(values) => {
-                                                    field.onChange(
-                                                        values.map(
-                                                            ({ value }) => value,
-                                                        ),
-                                                    )
-                                                }}
-                                                options={mappedFacilities}
-                                                defaultOptions={
-                                                    task && [
-                                                        {
-                                                            value: task?.facility.facility_id,
-                                                            label: task?.facility.facility_name,
-                                                        },
-                                                    ]
-                                                }
-                                                disabled={
-                                                    selectedBranches.length ===
-                                                    0
-                                                }
-                                                placeholder={t('multiselect.placeholder.facility')}
-                                            />
-                                        </FormControl>
-                                    )}
+                                    {facilitiesSuccess &&
+                                        facilities.length > 0 && (
+                                            <FormControl>
+                                                <MultiSelect
+                                                    onChange={(values) => {
+                                                        field.onChange(
+                                                            values.map(
+                                                                ({ value }) => value,
+                                                            ),
+                                                        )
+                                                    }}
+                                                    options={mappedFacilities}
+                                                    placeholder={t('multiselect.placeholder.facility')}
+                                                />
+                                            </FormControl>
+                                        )}
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -390,7 +369,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('checkpoint')}</FormLabel>
-                                    {checkpointsLoading && <LoadingSpinner />}
+                                    {checkpointsLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
                                     {checkpointsError && (
                                         <CustomAlert message={t('multiselect.error.checkpoint')} />
                                     )}
@@ -407,14 +386,6 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         )
                                                     }}
                                                     options={mappedCheckpoints}
-                                                    defaultOptions={
-                                                        task && [
-                                                            {
-                                                                value: task?.facility.checkpoint.checkpoint_id,
-                                                                label: task?.facility.checkpoint.checkpoint_name,
-                                                            },
-                                                        ]
-                                                    }
                                                     disabled={
                                                         selectedBranches.length ===
                                                         0
@@ -433,7 +404,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('executor')}</FormLabel>
-                                    {organizationsLoading && <LoadingSpinner />}
+                                    {organizationsLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
                                     {organizationsError && (
                                         <CustomAlert message={t('multiselect.error.organization')} />
                                     )}
@@ -452,14 +423,6 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                     options={
                                                         mappedOrganizations
                                                     }
-                                                    defaultOptions={
-                                                        task && [
-                                                            {
-                                                                value: task?.executor.organization_id,
-                                                                label: task?.executor.short_name,
-                                                            },
-                                                        ]
-                                                    }
                                                     placeholder={t('multiselect.placeholder.executor')}
                                                 />
                                             </FormControl>
@@ -474,7 +437,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('priority')}</FormLabel>
-                                    {prioritiesLoading && <LoadingSpinner />}
+                                    {prioritiesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
                                     {prioritiesError && (
                                         <CustomAlert message={t('multiselect.error.priority')} />
                                     )}
@@ -510,90 +473,89 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                         />
                         {
                             isPlannedTask &&
-                            <FormField
-                                control={form.control}
-                                name="periodicity"
-                                render={({ field }) => (
-                                    <FormItem className="mt-3">
-                                        <FormLabel>{t('periodicity')}</FormLabel>
-                                        {periodicityLoading && <LoadingSpinner />}
-                                        {periodicityError && (
-                                            <CustomAlert message={t('multiselect.error.periodicity')} />
-                                        )}
-                                        {periodicitySuccess &&
-                                            periodicity?.length > 0 && (
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={String(field.value)}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue
-                                                                placeholder={t(
-                                                                    'multiselect.placeholder.periodicity')} />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {periodicity.map(
-                                                            (period) => (
-                                                                <SelectItem
-                                                                    key={period.periodicity_id}
-                                                                    value={String(period.periodicity_id)}
-                                                                >
-                                                                    {period.periodicity_name}
-                                                                </SelectItem>
-                                                            ),
-                                                        )}
-                                                    </SelectContent>
-                                                </Select>
+                            <>
+                                <FormField
+                                    control={form.control}
+                                    name="periodicity"
+                                    render={({ field }) => (
+                                        <FormItem className="mt-3">
+                                            <FormLabel>{t('periodicity')}</FormLabel>
+                                            {periodicityLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                            {periodicityError && (
+                                                <CustomAlert message={t('multiselect.error.periodicity')} />
                                             )}
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        }
-                        {
-                            isPlannedTask &&
-                            <FormField
-                                control={form.control}
-                                name="category"
-                                render={({ field }) => (
-                                    <FormItem className="mt-3">
-                                        <FormLabel>{t('category')}</FormLabel>
-                                        {categoriesLoading && <LoadingSpinner />}
-                                        {categoriesError && (
-                                            <CustomAlert message={t('multiselect.error.category')} />
-                                        )}
-                                        {categoriesSuccess &&
-                                            categories?.length > 0 && (
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={String(field.value)}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder={t(
-                                                                'multiselect.placeholder.category')} />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {categories.map(
-                                                            (category) => (
-                                                                <SelectItem
-                                                                    key={category.category_id}
-                                                                    value={String(category.category_id)}
-                                                                >
-                                                                    {category.category_name}
-                                                                </SelectItem>
-                                                            ),
-                                                        )}
-                                                    </SelectContent>
-                                                </Select>
+                                            {periodicitySuccess &&
+                                                periodicity?.length > 0 && (
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={String(field.value)}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue
+                                                                    placeholder={t(
+                                                                        'multiselect.placeholder.periodicity')} />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {periodicity.map(
+                                                                (period) => (
+                                                                    <SelectItem
+                                                                        key={period.periodicity_id}
+                                                                        value={String(period.periodicity_id)}
+                                                                    >
+                                                                        {period.periodicity_name}
+                                                                    </SelectItem>
+                                                                ),
+                                                            )}
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="category"
+                                    render={({ field }) => (
+                                        <FormItem className="mt-3">
+                                            <FormLabel>{t('category')}</FormLabel>
+                                            {categoriesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                            {categoriesError && (
+                                                <CustomAlert message={t('multiselect.error.category')} />
                                             )}
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                            {categoriesSuccess &&
+                                                categories?.length > 0 && (
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={String(field.value)}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder={t(
+                                                                    'multiselect.placeholder.category')} />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {categories.map(
+                                                                (category) => (
+                                                                    <SelectItem
+                                                                        key={category.category_id}
+                                                                        value={String(category.category_id)}
+                                                                    >
+                                                                        {category.category_name}
+                                                                    </SelectItem>
+                                                                ),
+                                                            )}
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </>
                         }
                         <p className="mt-3 text-[#8A9099] text-sm font-medium">
                             {t('delivery.planned.date')}
@@ -608,7 +570,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                             <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
-                                                        variant={'outline'}
+                                                        variant="outline"
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
@@ -657,7 +619,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                             <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
-                                                        variant={'outline'}
+                                                        variant="outline"
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
@@ -699,51 +661,22 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             />
                         </div>
                         <FormMessage />
-                        {addOrderError || addTaskError && <CustomAlert className="mt-3" />}
+                        {addOrderError && <CustomAlert className="mt-3" />}
+                        {addTaskError && <CustomAlert className="mt-3" />}
                         <Button
                             className="mt-10 mr-4 rounded-xl w-[120px]"
                             type="submit"
                             disabled={isOrderAdding || isTaskAdding}
                         >
-                            {isOrderAdding || isTaskAdding ? <LoadingSpinner /> : t('button.action.create')}
+                            {isOrderAdding || isTaskAdding ? <LoadingSpinner />
+                                : (task ? t('button.action.change') : t('button.action.next'))}
                         </Button>
                     </CustomForm>
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
             </TabsContent>
-            <TabsContent value="files">
-                <ScrollArea className="w-full h-[691px] pr-3">
-                    <MultiFileInput setSelectedFiles={setSelectedFiles} />
-                    <div className="flex flex-col gap-16 mt-16">
-                        <div className="flex flex-col gap-3">
-                            {selectedFiles.length > 0 && selectedFiles.map(({ id, filename, fileimage }) => (
-                                <div key={id}
-                                     className="h-[90px] border rounded-xl flex justify-between items-center px-8">
-                                    <div className="flex gap-2 items-center">
-                                        <img src={fileimage} className="h-[72px] w-[72px] rounded-xl"
-                                             alt="" />
-                                        <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">{filename}</p>
-                                    </div>
-                                    <Button variant="ghost" onClick={() => handleFileDelete(id)}>
-                                        <DeleteIcon />
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="flex gap-4">
-                            <Button type="submit" className="rounded-xl w-[120px]" onClick={handleFileUpload}>
-                                {t('button.action.create')}
-                            </Button>
-                            <Button type="button" variant="outline" className="rounded-xl w-[120px]"
-                                    onClick={() => {
-                                        form.clearErrors()
-                                        setActiveTab('task')
-                                    }}>
-                                {t('button.action.back')}
-                            </Button>
-                        </div>
-                    </div>
-                </ScrollArea>
+            <TabsContent value="files" className="h-[668px] mt-0">
+                <FilesUploadForm orderIDs={newOrdersIDS || newTaskIDS} setDialogOpen={setDialogOpen} />
             </TabsContent>
         </Tabs>
     )
