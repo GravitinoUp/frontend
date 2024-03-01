@@ -52,18 +52,16 @@ export function DashboardPage() {
                                 setOpen={setFormOpen}
                                 actionButton={<RoundedButton icon={<FilterIcon />} onClick={() => { }} />}
                                 addItemForm={
-                                    <MapFiltersForm handleSubmit={(value) => {
+                                    <MapFiltersForm handleSubmit={(data) => {
                                         setCheckpointQuery({
                                             ...checkpointsQuery,
                                             filter: {
-                                                checkpoint_type: {
-                                                    checkpoint_type_id: value.checkpoint_types[0],
-                                                }
+                                                checkpoint_type: data.checkpoint_types,
                                             }
                                         })
 
                                         setFormOpen(false)
-                                    }} data={{ checkpoint_types: [checkpointsQuery.filter.checkpoint_type?.checkpoint_type_id ?? 1], minPercent: '0', maxPercent: '100' }} />
+                                    }} data={{ checkpoint_types: checkpointsQuery.filter?.checkpoint_type ?? [], minPercent: '0', maxPercent: '100' }} />
                                 }
                             />
                             <RoundedButton icon={<MinimizeIcon />} onClick={() => {

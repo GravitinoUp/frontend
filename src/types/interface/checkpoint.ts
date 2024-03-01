@@ -4,7 +4,7 @@ import { IQuery, SortOptionsType } from './fetch'
 
 export interface CheckpointsPayloadInterface extends IQuery {
     sorts: CheckpointSortInterface
-    filter: RecursivePartial<CheckpointInterface>
+    filter: RecursivePartial<CheckpointFilterInterface>
 }
 
 export interface CheckpointTypesPayloadInterface extends IQuery {
@@ -59,6 +59,10 @@ export interface CheckpointInterface {
     property_values?: number[] | null
 }
 
+export type CheckpointFilterInterface = Omit<CheckpointInterface, 'checkpoint_type'> & {
+    checkpoint_type?: CheckpointTypeFilterInterface[]
+}
+
 export interface CheckpointSortInterface {
     checkpoint_id?: SortOptionsType
     checkpoint_name?: SortOptionsType
@@ -77,6 +81,9 @@ export interface CheckpointSortInterface {
 export interface CheckpointTypeInterface {
     checkpoint_type_id: number
     checkpoint_type_name: string
+}
+export type CheckpointTypeFilterInterface = Omit<CheckpointTypeInterface, 'checkpoint_type_name'> & {
+    checkpoint_type_name?: string
 }
 
 export type CheckpointTypeSortInterface = Partial<

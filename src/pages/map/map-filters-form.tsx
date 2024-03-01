@@ -16,7 +16,7 @@ import { InputField } from "@/components/input-field/input-field"
 import { Button } from "@/components/ui/button"
 
 const filterSchema = z.object({
-    checkpoint_types: z.array(z.number()),
+    checkpoint_types: z.array(z.object({ checkpoint_type_id: z.number(), checkpoint_type_name: z.string().optional() })),
     minPercent: z.string().default('0').refine((value) => Number(value) >= 0 && Number(value) <= 100, 'Число должно быть от 0 до 100'),
     maxPercent: z.string().default('100').refine((value) => Number(value) >= 0 && Number(value) <= 100, 'Число должно быть от 0 до 100'),
 })
@@ -52,26 +52,28 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                                     key={type}
                                     className={cn(
                                         field.value.find(
-                                            (value) => value === type,
+                                            (value) => value.checkpoint_type_id === type,
                                         )
                                             ? 'bg-[#3F434A]'
                                             : 'bg-muted',
                                         'p-2 rounded-full hover:bg-[#3F434A] group',
                                     )}
                                     onClick={() => {
+                                        console.log(type);
+
                                         if (
                                             !field.value.find(
-                                                (value) => value === type,
+                                                (value) => value.checkpoint_type_id === type,
                                             )
                                         ) {
                                             field.onChange([
                                                 ...field.value,
-                                                type,
+                                                { checkpoint_type_id: type },
                                             ])
                                         } else {
                                             field.onChange(
                                                 field.value.filter(
-                                                    (value) => value !== type,
+                                                    (value) => value.checkpoint_type_id !== type,
                                                 ),
                                             )
                                         }
@@ -81,7 +83,7 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                                             w-6 h-6
                                             flex items-center justify-center
                                             ${field.value.find(
-                                        (value) => value === type,
+                                        (value) => value.checkpoint_type_id === type,
                                     )
                                             ? 'fill-muted'
                                             : 'fill-[#3F434A]'}
