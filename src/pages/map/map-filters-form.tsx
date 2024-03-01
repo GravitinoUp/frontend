@@ -10,6 +10,8 @@ import ShipIcon from '@/assets/icons/ship_icon.svg'
 import PeopleIcon from '@/assets/icons/people_icon.svg'
 import PlaneIcon from '@/assets/icons/plane_icon.svg'
 import MixedIcon from '@/assets/icons/mixed_icon.svg'
+import LakeIcon from '@/assets/icons/lake_icon.svg'
+import RiverIcon from '@/assets/icons/river_icon.svg'
 
 import { z } from 'zod'
 import { InputField } from "@/components/input-field/input-field"
@@ -93,10 +95,10 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                                         {type == CHECKPOINT_TYPES.TRAIN && <TrainIcon />}
                                         {type == CHECKPOINT_TYPES.SHIP && <ShipIcon />}
                                         {type == CHECKPOINT_TYPES.PLANE && <PlaneIcon />}
-                                        {type == CHECKPOINT_TYPES.RIVER && <ShipIcon />}
+                                        {type == CHECKPOINT_TYPES.RIVER && <RiverIcon />}
                                         {type == CHECKPOINT_TYPES.MIXED && <MixedIcon />}
                                         {type == CHECKPOINT_TYPES.PEOPLE && <PeopleIcon />}
-                                        {type == CHECKPOINT_TYPES.LAKE && <ShipIcon />}
+                                        {type == CHECKPOINT_TYPES.LAKE && <LakeIcon />}
                                     </div>
                                 </div>
                             ))}

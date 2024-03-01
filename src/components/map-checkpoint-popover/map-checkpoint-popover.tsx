@@ -39,10 +39,10 @@ export default function MapCheckpointPopover({
             </div>
             <div className="h-[1px] w-full bg-[#EDEDED]" />
             <div className="p-5 flex flex-row items-center">
-                <CountField title="Активных задач" count={20} colorClassName="bg-primary" />
+                <CountField title="Исполненных задач" count={checkpoint.report?.completed_count ?? 0} colorClassName="bg-primary" />
                 <CountField
-                    title="Закрытых задач"
-                    count={20}
+                    title="Проверенных задач"
+                    count={checkpoint.report?.checked_count ?? 0}
                     colorClassName="bg-map-closed"
                 />
             </div>

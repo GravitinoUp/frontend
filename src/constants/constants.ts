@@ -18,9 +18,9 @@ export const FILE_SIZE_UNITS = {
 }
 
 export const CHECKPOINT_COMPLETED_STATUSES = {
-    MIN: 10,
-    MEDIUM: 15,
-    MAX: 20,
+    MIN: 0,
+    MEDIUM: 50,
+    MAX: 90,
 }
 
 export const CHECKPOINT_TYPES = {
