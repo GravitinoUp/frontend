@@ -32,6 +32,7 @@ export const api = createApi({
         'WorkingHours',
         'OperatingMode',
         'OrderJournal',
+        'OrderStatuses',
     ],
     endpoints: () => ({}),
 })
