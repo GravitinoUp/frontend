@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { branchesColumns } from './branches-columns'
 import { branchesFormTab } from './branches-form-tab'
 import { placeholderQuery } from '../tasklist/constants'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
@@ -21,7 +21,7 @@ const BranchesPage = () => {
 
     const {
         data: branches = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
         refetch,
     } = useGetBranchesQuery(branchesQuery)
@@ -49,17 +49,16 @@ const BranchesPage = () => {
                 <div>
                     <div className="h-16 mb-7" />
                     <div className="flex gap-3 mb-10">
-                        <ExcelButton buttonType="export" onClick={() => {
-                        }} />
-                        <ExcelButton buttonType="import" onClick={() => {
-                        }} />
+                        <ExcelButton buttonType="export" onClick={() => {}} />
+                        <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
                 </div>
             }
         >
-            {isError
-                ? <CustomAlert />
-                : <DataTable
+            {error ? (
+                <ErrorCustomAlert error={error} />
+            ) : (
+                <DataTable
                     data={branches.data}
                     columns={branchesColumns}
                     hasBackground
@@ -75,7 +74,7 @@ const BranchesPage = () => {
                     }}
                     isLoading={isLoading}
                 />
-            }
+            )}
         </PageLayout>
     )
 }
