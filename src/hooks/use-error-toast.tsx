@@ -16,9 +16,9 @@ export const useErrorToast = (
     const { t } = useTranslation()
 
     useEffect(() => {
-        const errorData = error as { status: number; data: ErrorInterface }
-
         if (error) {
+            const errorData = error as { status: number; data: ErrorInterface }
+
             toast({
                 variant: 'destructive',
                 title: t('toast.error.title'),
