@@ -16,3 +16,16 @@ export const FILE_SIZE_UNITS = {
     MB: i18next.t('units.mb'),
     GB: i18next.t('units.gb'),
 }
+
+export const CHECKPOINT_COMPLETED_STATUSES = {
+    MIN: 10,
+    MEDIUM: 15,
+    MAX: 20,
+}
+
+export const CHECKPOINT_TYPES = {
+    CAR: 1,
+    TRAIN: 2,
+    SHIP: 3,
+    PLANE: 4,
+}

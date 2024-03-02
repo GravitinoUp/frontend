@@ -43,6 +43,7 @@ export default function CheckpointsPage() {
             branch_name: row.branch.branch_name,
             working_hours: row.working_hours?.working_hours_name,
             neighboring_state: row.neighboring_state?.neighboring_state_name,
+            operating_mode: row.operating_mode?.operating_mode_name,
             region: row.region,
             checkpoint_type_name: row.checkpoint_type.checkpoint_type_name,
         }))
