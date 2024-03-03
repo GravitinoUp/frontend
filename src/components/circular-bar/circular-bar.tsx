@@ -22,7 +22,7 @@ const CircularBar = ({ value }: CircularBarProps) => {
     const [percent, setPercent] = useState(0)
 
     useEffect(() => {
-        setPercent(value ?? 0)
+        setPercent(value)
     }, [])
 
     return (

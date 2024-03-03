@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import ArrowLeft from '@/assets/icons/arrow_left.svg'
+import ArrowRight from '@/assets/icons/arrow_right.svg'
 
 interface BreadcrumbsProps {
     items: { to: string; label: string }[]
@@ -17,7 +17,7 @@ const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                         <Fragment key={value.to}>
                             {index !== 0 && (
                                 <div className="mx-2">
-                                    <ArrowLeft />
+                                    <ArrowRight />
                                 </div>
                             )}
                             <Link

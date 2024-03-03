@@ -20,6 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useGetFacilitiesQuery } from '@/redux/api/facility'
 import { useGetNeighboringStatesQuery } from '@/redux/api/neighboring-states'
 
@@ -67,7 +68,9 @@ const ReportFiltersForm = ({ handleSubmit, data }: ReportFiltersFormProps) => {
                                 <FormLabel className="text-xl w-full">
                                     {t('neighboring.state')}
                                 </FormLabel>
-                                {neighboringStatesLoading && <LoadingSpinner />}
+                                {neighboringStatesLoading && (
+                                    <Skeleton className="w-full h-10" />
+                                )}
                                 {neighboringStatesError && (
                                     <CustomAlert
                                         message={t(
