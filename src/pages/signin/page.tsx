@@ -36,10 +36,8 @@ export function SignInPage() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const [
-        authUser,
-        { data: authData, isSuccess: isSuccess, isError: isError },
-    ] = useAuthMutation()
+    const [authUser, { data: authData, isSuccess: isSuccess, error }] =
+        useAuthMutation()
 
     useEffect(() => {
         if (isSuccess) {
@@ -56,11 +54,11 @@ export function SignInPage() {
         authUser(data)
     }
 
-    useErrorToast(isError, () => handleSubmit(form.getValues()))
-
     useEffect(() => {
         document.title = t('authorization')
     }, [])
+
+    useErrorToast(() => handleSubmit(form.getValues()), error)
 
     return (
         <div className="bg-[#F8F8F8] h-screen w-screen select-none  flex items-center justify-center">

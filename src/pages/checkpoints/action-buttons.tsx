@@ -21,21 +21,25 @@ export const ActionButtons = ({
 }: {
     checkpoint: CheckpointInterface
 }) => {
-    const [deleteCheckpoint, { isError, isSuccess, isLoading }] =
+    const [deleteCheckpoint, { error, isSuccess, isLoading }] =
         useDeleteCheckpointMutation()
     const { t } = useTranslation()
     const [formOpen, setFormOpen] = useState(false)
 
-    const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.m', {
-        entityType: t('checkpoint'),
-        entityName: checkpoint.checkpoint_name,
-    }), [])
+    const deleteSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.delete.m', {
+                entityType: t('checkpoint'),
+                entityName: checkpoint.checkpoint_name,
+            }),
+        []
+    )
 
     const handleCheckpointDelete = useCallback(() => {
         deleteCheckpoint(checkpoint.checkpoint_id)
     }, [checkpoint.checkpoint_id, deleteCheckpoint])
 
-    useErrorToast(isError, handleCheckpointDelete)
+    useErrorToast(handleCheckpointDelete, error)
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
@@ -57,7 +61,9 @@ export const ActionButtons = ({
                         variant="ghost"
                         className="h-8 w-8 p-0 text-[#8A9099]"
                     >
-                        <span className="sr-only">{t('action.dropdown.menu.open')}</span>
+                        <span className="sr-only">
+                            {t('action.dropdown.menu.open')}
+                        </span>
                         <MoreVertical className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>

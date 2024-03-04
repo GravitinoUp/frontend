@@ -17,21 +17,25 @@ import { useDeleteBranchMutation } from '@/redux/api/branch'
 import { BranchInterface } from '@/types/interface/branch'
 
 export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
-    const [deleteBranch, { isError, isSuccess, isLoading }] =
+    const [deleteBranch, { error, isSuccess, isLoading }] =
         useDeleteBranchMutation()
     const [formOpen, setFormOpen] = useState(false)
     const { t } = useTranslation()
 
-    const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.m', {
-        entityType: t('branch'),
-        entityName: branch.branch_name,
-    }), [])
+    const deleteSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.delete.m', {
+                entityType: t('branch'),
+                entityName: branch.branch_name,
+            }),
+        []
+    )
 
     const handleBranchDelete = useCallback(() => {
         deleteBranch(branch.branch_id)
     }, [branch.branch_id, deleteBranch])
 
-    useErrorToast(isError, handleBranchDelete)
+    useErrorToast(handleBranchDelete, error)
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
@@ -53,7 +57,9 @@ export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
                         variant="ghost"
                         className="h-8 w-8 p-0 text-[#8A9099]"
                     >
-                        <span className="sr-only">{t('action.dropdown.menu.open')}</span>
+                        <span className="sr-only">
+                            {t('action.dropdown.menu.open')}
+                        </span>
                         <MoreVertical className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { rolesTableColumns } from './roles-columns'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import { placeholderQuery } from '@/pages/tasklist/constants'
 import { useGetRolesQuery } from '@/redux/api/roles'
@@ -14,12 +14,12 @@ const RolesTab = () => {
 
     const {
         data: roles = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
     } = useGetRolesQuery(rolesQuery)
 
-    if (isError) {
-        return <CustomAlert />
+    if (error) {
+        return <ErrorCustomAlert error={error} />
     }
 
     return (
