@@ -10,13 +10,34 @@ import { RadioField } from '@/components/input-field/radio-field.tsx'
 import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Calendar } from '@/components/ui/calendar.tsx'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form.tsx'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover.tsx'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area.tsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select.tsx'
 import { Separator } from '@/components/ui/separator.tsx'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx'
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '@/components/ui/tabs.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
@@ -37,24 +58,30 @@ interface EditTaskFormProps {
 }
 
 const baseFieldsSchema = z.object({
-    taskName: z.string().min(1, { message: i18next.t('validation.require.title') }),
-    taskDescription: z.string().min(5, { message: i18next.t('validation.require.description') }),
+    taskName: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.title') }),
+    taskDescription: z
+        .string()
+        .min(5, { message: i18next.t('validation.require.description') }),
     facility: z.string().optional(),
     executor: z.string(),
     priority: z.string(),
 })
 
-const datesSchema = z.object({
-    startDate: z.date({
-        required_error: i18next.t('validation.require.start.date'),
-    }),
-    endDate: z.date({
-        required_error: i18next.t('validation.require.end.date'),
-    }),
-}).refine((data) => data.endDate > data.startDate, {
-    message: i18next.t('validation.require.dates.mismatch'),
-    path: ['endDate'],
-})
+const datesSchema = z
+    .object({
+        startDate: z.date({
+            required_error: i18next.t('validation.require.start.date'),
+        }),
+        endDate: z.date({
+            required_error: i18next.t('validation.require.end.date'),
+        }),
+    })
+    .refine((data) => data.endDate > data.startDate, {
+        message: i18next.t('validation.require.dates.mismatch'),
+        path: ['endDate'],
+    })
 
 const formSchema = z.intersection(baseFieldsSchema, datesSchema)
 
@@ -72,13 +99,19 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
             endDate: parseISO(task.task_end_datetime),
         },
     })
-    const taskType = useMemo(() => task?.task?.task_id === null ? 'unplanned' : 'planned', [task])
+    const taskType = useMemo(
+        () => (task?.task?.task_id === null ? 'unplanned' : 'planned'),
+        [task]
+    )
 
-    const [updateOrder, {
-        isLoading: isOrderUpdating,
-        isError: updateOrderError,
-        isSuccess: updateOrderSuccess,
-    }] = useUpdateOrderMutation()
+    const [
+        updateOrder,
+        {
+            isLoading: isOrderUpdating,
+            error: updateOrderError,
+            isSuccess: updateOrderSuccess,
+        },
+    ] = useUpdateOrderMutation()
 
     const {
         data: facilities = [],
@@ -120,12 +153,16 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
         updateOrder(updatedOrderData)
     }
 
-    const updateSuccessMsg = useMemo(() => t('toast.success.description.update.f', {
-        entityType: t('order'),
-    }), [])
+    const updateSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.update.f', {
+                entityType: t('order'),
+            }),
+        []
+    )
 
     useSuccessToast(updateSuccessMsg, updateOrderSuccess, setDialogOpen)
-    useErrorToast(updateOrderError)
+    useErrorToast(void 0, updateOrderError)
 
     return (
         <Tabs defaultValue="task" className="w-full h-full">
@@ -147,8 +184,12 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
             <TabsContent value="task" className="w-full">
                 <ScrollArea className="w-full h-[691px] pr-3">
                     <CustomForm form={form} onSubmit={handleSubmit}>
-                        <RadioField selectedValue={taskType} value={taskType} label={t(`task.${taskType}`)}
-                                    onChange={() => void 0} />
+                        <RadioField
+                            selectedValue={taskType}
+                            value={taskType}
+                            label={t(`task.${taskType}`)}
+                            onChange={() => void 0}
+                        />
                         <FormField
                             control={form.control}
                             name="taskName"
@@ -166,7 +207,9 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             name="taskDescription"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('task.description')}</FormLabel>
+                                    <FormLabel>
+                                        {t('task.description')}
+                                    </FormLabel>
                                     <FormControl>
                                         <Textarea
                                             placeholder={t('task.description')}
@@ -189,32 +232,49 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('facility')}</FormLabel>
-                                    {facilitiesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                    {facilitiesLoading && (
+                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                    )}
                                     {facilitiesError && (
-                                        <CustomAlert message={t('multiselect.error.facility')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.facility'
+                                            )}
+                                        />
                                     )}
                                     {facilitiesSuccess &&
                                         facilities?.length > 0 && (
                                             <Select
                                                 onValueChange={field.onChange}
-                                                defaultValue={String(field.value)}
+                                                defaultValue={String(
+                                                    field.value
+                                                )}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue
-                                                            placeholder={t('multiselect.placeholder.facility')} />
+                                                            placeholder={t(
+                                                                'multiselect.placeholder.facility'
+                                                            )}
+                                                        />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
                                                     {facilities.map(
                                                         (facility) => (
                                                             <SelectItem
-                                                                key={facility.facility_id}
-                                                                value={String(facility.facility_id)}
+                                                                key={
+                                                                    facility.facility_id
+                                                                }
+                                                                value={String(
+                                                                    facility.facility_id
+                                                                )}
                                                             >
-                                                                {facility.facility_name}
+                                                                {
+                                                                    facility.facility_name
+                                                                }
                                                             </SelectItem>
-                                                        ),
+                                                        )
                                                     )}
                                                 </SelectContent>
                                             </Select>
@@ -235,32 +295,49 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('executor')}</FormLabel>
-                                    {organizationsLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                    {organizationsLoading && (
+                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                    )}
                                     {organizationsError && (
-                                        <CustomAlert message={t('multiselect.error.organization')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.organization'
+                                            )}
+                                        />
                                     )}
                                     {organizationsSuccess &&
                                         organizations?.length > 0 && (
                                             <Select
                                                 onValueChange={field.onChange}
-                                                defaultValue={String(field.value)}
+                                                defaultValue={String(
+                                                    field.value
+                                                )}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue
-                                                            placeholder={t('multiselect.placeholder.executor')} />
+                                                            placeholder={t(
+                                                                'multiselect.placeholder.executor'
+                                                            )}
+                                                        />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
                                                     {organizations.map(
                                                         (organization) => (
                                                             <SelectItem
-                                                                key={organization.organization_id}
-                                                                value={String(organization.organization_id)}
+                                                                key={
+                                                                    organization.organization_id
+                                                                }
+                                                                value={String(
+                                                                    organization.organization_id
+                                                                )}
                                                             >
-                                                                {organization.short_name}
+                                                                {
+                                                                    organization.short_name
+                                                                }
                                                             </SelectItem>
-                                                        ),
+                                                        )
                                                     )}
                                                 </SelectContent>
                                             </Select>
@@ -275,32 +352,49 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('priority')}</FormLabel>
-                                    {prioritiesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                    {prioritiesLoading && (
+                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                    )}
                                     {prioritiesError && (
-                                        <CustomAlert message={t('multiselect.error.priority')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.priority'
+                                            )}
+                                        />
                                     )}
                                     {prioritiesSuccess &&
                                         priorities?.length > 0 && (
                                             <Select
                                                 onValueChange={field.onChange}
-                                                defaultValue={String(field.value)}
+                                                defaultValue={String(
+                                                    field.value
+                                                )}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue
-                                                            placeholder={t('multiselect.placeholder.priority')} />
+                                                            placeholder={t(
+                                                                'multiselect.placeholder.priority'
+                                                            )}
+                                                        />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
                                                     {priorities.map(
                                                         (priority) => (
                                                             <SelectItem
-                                                                key={priority.priority_id}
-                                                                value={String(priority.priority_id)}
+                                                                key={
+                                                                    priority.priority_id
+                                                                }
+                                                                value={String(
+                                                                    priority.priority_id
+                                                                )}
                                                             >
-                                                                {priority.priority_name}
+                                                                {
+                                                                    priority.priority_name
+                                                                }
                                                             </SelectItem>
-                                                        ),
+                                                        )
                                                     )}
                                                 </SelectContent>
                                             </Select>
@@ -326,17 +420,19 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
-                                                            'text-muted-foreground',
+                                                                'text-muted-foreground'
                                                         )}
                                                     >
                                                         <CalendarIcon />
                                                         {field.value ? (
                                                             formatDate(
-                                                                field.value,
+                                                                field.value
                                                             )
                                                         ) : (
                                                             <span>
-                                                                {t('multiselect.placeholder.start.date')}
+                                                                {t(
+                                                                    'multiselect.placeholder.start.date'
+                                                                )}
                                                             </span>
                                                         )}
                                                     </Button>
@@ -375,17 +471,19 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
-                                                            'text-muted-foreground',
+                                                                'text-muted-foreground'
                                                         )}
                                                     >
                                                         <CalendarIcon />
                                                         {field.value ? (
                                                             formatDate(
-                                                                field.value,
+                                                                field.value
                                                             )
                                                         ) : (
                                                             <span>
-                                                                {t('multiselect.placeholder.end.date')}
+                                                                {t(
+                                                                    'multiselect.placeholder.end.date'
+                                                                )}
                                                             </span>
                                                         )}
                                                     </Button>
@@ -418,14 +516,21 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             type="submit"
                             disabled={isOrderUpdating}
                         >
-                            {isOrderUpdating ? <LoadingSpinner /> : t('button.action.change')}
+                            {isOrderUpdating ? (
+                                <LoadingSpinner />
+                            ) : (
+                                t('button.action.change')
+                            )}
                         </Button>
                     </CustomForm>
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
             </TabsContent>
             <TabsContent value="files" className="h-[668px] mt-0">
-                <FilesUploadForm orderIDs={[task.order_id]} setDialogOpen={setDialogOpen} />
+                <FilesUploadForm
+                    orderIDs={[task.order_id]}
+                    setDialogOpen={setDialogOpen}
+                />
             </TabsContent>
         </Tabs>
     )

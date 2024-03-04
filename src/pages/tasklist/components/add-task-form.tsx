@@ -11,15 +11,37 @@ import { RadioField } from '@/components/input-field/radio-field.tsx'
 import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Calendar } from '@/components/ui/calendar.tsx'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form.tsx'
 import { MultiSelect, Option } from '@/components/ui/multi-select.tsx'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover.tsx'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area.tsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select.tsx'
 import { Separator } from '@/components/ui/separator.tsx'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx'
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '@/components/ui/tabs.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
+import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { cn } from '@/lib/utils.ts'
 import { FilesUploadForm } from '@/pages/tasklist/components/files-upload-form.tsx'
@@ -31,39 +53,81 @@ import { useAddOrderMutation, useAddTaskMutation } from '@/redux/api/orders.ts'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations.ts'
 import { useGetAllPeriodicityQuery } from '@/redux/api/periodicity.ts'
 import { useGetAllPriorityQuery } from '@/redux/api/priority.ts'
-import { NewOrderBodyInterface, NewTaskBodyInterface, OrderInterface } from '@/types/interface/orders'
+import {
+    NewOrderBodyInterface,
+    NewTaskBodyInterface,
+    OrderInterface,
+} from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers.ts'
 
-const baseSchema = z.object({
-    taskName: z.string().min(1, { message: i18next.t('validation.require.title') }),
-    taskDescription: z.string().min(5, { message: i18next.t('validation.require.description') }),
-    facilities: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select'),
-    }),
-    organizations: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select'),
-    }),
-    branchesList: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select'),
-    }),
-    checkpointsList: z.array(z.number()),
-    priority: z.string().min(1, i18next.t('validation.require.task.priority')),
-    periodicity: z.string().min(1, i18next.t('validation.require.task.periodicity')),
-    category: z.string().min(1, i18next.t('validation.require.task.category')),
-    taskType: z.enum(['planned', 'unplanned'], { required_error: i18next.t('validation.require.task.type') }),
-}).superRefine((values) => values.taskType !== 'unplanned')
+const baseSchema = z
+    .object({
+        taskName: z
+            .string()
+            .min(1, { message: i18next.t('validation.require.title') }),
+        taskDescription: z
+            .string()
+            .min(5, { message: i18next.t('validation.require.description') }),
+        facilities: z
+            .array(z.number())
+            .refine((value) => value.some((item) => item), {
+                message: i18next.t('validation.require.select'),
+            }),
+        organizations: z
+            .array(z.number())
+            .refine((value) => value.some((item) => item), {
+                message: i18next.t('validation.require.select'),
+            }),
+        branchesList: z
+            .array(z.number())
+            .refine((value) => value.some((item) => item), {
+                message: i18next.t('validation.require.select'),
+            }),
+        checkpointsList: z.array(z.number()),
+        priority: z
+            .string()
+            .min(1, i18next.t('validation.require.task.priority')),
+        periodicity: z.string().optional(),
+        category: z.string().optional(),
+        taskType: z.enum(['planned', 'unplanned'], {
+            required_error: i18next.t('validation.require.task.type'),
+        }),
+    })
+    .superRefine((values, ctx) => {
+        if (values.taskType === 'planned') {
+            if (!values.periodicity) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ['periodicity'],
+                    fatal: true,
+                    message: i18next.t('validation.require.task.periodicity'),
+                })
+            }
 
-const datesSchema = z.object({
-    startDate: z.date({
-        required_error: i18next.t('validation.require.start.date'),
-    }),
-    endDate: z.date({
-        required_error: i18next.t('validation.require.end.date'),
-    }),
-}).refine((data) => data.endDate > data.startDate, {
-    message: i18next.t('validation.require.dates.mismatch'),
-    path: ['endDate'],
-})
+            if (!values.category) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ['category'],
+                    fatal: true,
+                    message: i18next.t('validation.require.task.category'),
+                })
+            }
+        }
+    })
+
+const datesSchema = z
+    .object({
+        startDate: z.date({
+            required_error: i18next.t('validation.require.start.date'),
+        }),
+        endDate: z.date({
+            required_error: i18next.t('validation.require.end.date'),
+        }),
+    })
+    .refine((data) => data.endDate > data.startDate, {
+        message: i18next.t('validation.require.dates.mismatch'),
+        path: ['endDate'],
+    })
 
 const formSchema = z.intersection(baseSchema, datesSchema)
 
@@ -84,7 +148,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
             priority: '',
             periodicity: '',
             category: '',
-            taskType: 'unplanned',
+            taskType: 'planned',
         },
     })
 
@@ -108,7 +172,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isError: checkpointsError,
     } = useGetCheckpointsByBranchQuery(
         { body: placeholderQuery, branchIDS: selectedBranches },
-        { skip: selectedBranches.length === 0 },
+        { skip: selectedBranches.length === 0 }
     )
     const mappedCheckpoints: Option[] = checkpoints?.map((checkpoint) => ({
         label: checkpoint.checkpoint_name,
@@ -138,7 +202,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         (organization) => ({
             label: organization.short_name,
             value: organization.organization_id,
-        }),
+        })
     )
 
     const {
@@ -161,24 +225,34 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
         isLoading: categoriesLoading,
         isError: categoriesError,
         isSuccess: categoriesSuccess,
-    } = useGetCategoriesQuery(placeholderQuery,
-        { selectFromResult: (result) => ({ ...result, data: result.data?.data }), skip: !isPlannedTask })
+    } = useGetCategoriesQuery(placeholderQuery, {
+        selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+        skip: !isPlannedTask,
+    })
 
     // создание внеплановой задачи
     const [
         addOrder,
-        { data: newOrder, isLoading: isOrderAdding, error: addOrderError, isSuccess: addOrderSuccess },
+        {
+            data: newOrder,
+            isLoading: isOrderAdding,
+            error: addOrderError,
+            isSuccess: addOrderSuccess,
+        },
     ] = useAddOrderMutation()
 
     const newOrdersIDS = newOrder?.map((el) => el.order_id)
 
     // создание плановой задачи
-    const [addTask, {
-        data: newTask,
-        isLoading: isTaskAdding,
-        error: addTaskError,
-        isSuccess: addTaskSuccess,
-    }] = useAddTaskMutation()
+    const [
+        addTask,
+        {
+            data: newTask,
+            isLoading: isTaskAdding,
+            error: addTaskError,
+            isSuccess: addTaskSuccess,
+        },
+    ] = useAddTaskMutation()
 
     const newTaskIDS = newTask?.map((el) => el.order_id)
 
@@ -221,21 +295,30 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
 
     const [activeTab, setActiveTab] = useState('task')
     const { t } = useTranslation()
-    const addSuccessMsg = useMemo(() => t('toast.success.description.create.m', {
-        entityType: t('order'),
-    }), [])
+    const addSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.create.m', {
+                entityType: t('order'),
+            }),
+        []
+    )
 
     useEffect(() => {
         if (addTaskSuccess || addOrderSuccess) {
             setActiveTab('files')
         }
-
     }, [addTaskSuccess, addOrderSuccess])
 
     useSuccessToast(addSuccessMsg, addOrderSuccess || addTaskSuccess)
+    useErrorToast(void 0, addTaskError)
+    useErrorToast(void 0, addOrderError)
 
     return (
-        <Tabs value={activeTab} onValueChange={task && setActiveTab} className="w-full h-full">
+        <Tabs
+            value={activeTab}
+            onValueChange={task && setActiveTab}
+            className="w-full h-full"
+        >
             <TabsList className="gap-2">
                 <TabsTrigger
                     value="task"
@@ -262,12 +345,20 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     <FormLabel>{t('task.type')}</FormLabel>
                                     <div className="flex gap-2.5">
                                         <FormControl>
-                                            <RadioField selectedValue={field.value} value="planned"
-                                                        label={t('task.planned')} onChange={field.onChange} />
+                                            <RadioField
+                                                selectedValue={field.value}
+                                                value="planned"
+                                                label={t('task.planned')}
+                                                onChange={field.onChange}
+                                            />
                                         </FormControl>
                                         <FormControl>
-                                            <RadioField selectedValue={field.value} value="unplanned"
-                                                        label={t('task.unplanned')} onChange={field.onChange} />
+                                            <RadioField
+                                                selectedValue={field.value}
+                                                value="unplanned"
+                                                label={t('task.unplanned')}
+                                                onChange={field.onChange}
+                                            />
                                         </FormControl>
                                     </div>
                                     <FormMessage />
@@ -291,7 +382,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             name="taskDescription"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('task.description')}</FormLabel>
+                                    <FormLabel>
+                                        {t('task.description')}
+                                    </FormLabel>
                                     <FormControl>
                                         <Textarea
                                             placeholder={t('task.description')}
@@ -308,9 +401,15 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('branch')}</FormLabel>
-                                    {branchesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                    {branchesLoading && (
+                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                    )}
                                     {branchesError && (
-                                        <CustomAlert message={t('multiselect.error.branch')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.branch'
+                                            )}
+                                        />
                                     )}
                                     {branchesSuccess &&
                                         branches?.length > 0 && (
@@ -320,12 +419,14 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value,
-                                                            ),
+                                                                    value
+                                                            )
                                                         )
                                                     }}
                                                     options={mappedBranches}
-                                                    placeholder={t('multiselect.placeholder.branch')}
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.branch'
+                                                    )}
                                                 />
                                             </FormControl>
                                         )}
@@ -339,9 +440,15 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('facilities')}</FormLabel>
-                                    {facilitiesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                    {facilitiesLoading && (
+                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                    )}
                                     {facilitiesError && (
-                                        <CustomAlert message={t('multiselect.error.facility')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.facility'
+                                            )}
+                                        />
                                     )}
                                     {facilitiesSuccess &&
                                         facilities.length > 0 && (
@@ -350,12 +457,15 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                     onChange={(values) => {
                                                         field.onChange(
                                                             values.map(
-                                                                ({ value }) => value,
-                                                            ),
+                                                                ({ value }) =>
+                                                                    value
+                                                            )
                                                         )
                                                     }}
                                                     options={mappedFacilities}
-                                                    placeholder={t('multiselect.placeholder.facility')}
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.facility'
+                                                    )}
                                                 />
                                             </FormControl>
                                         )}
@@ -369,9 +479,15 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('checkpoint')}</FormLabel>
-                                    {checkpointsLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                    {checkpointsLoading && (
+                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                    )}
                                     {checkpointsError && (
-                                        <CustomAlert message={t('multiselect.error.checkpoint')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.checkpoint'
+                                            )}
+                                        />
                                     )}
                                     {!checkpointsError &&
                                         !checkpointsLoading && (
@@ -381,8 +497,8 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value,
-                                                            ),
+                                                                    value
+                                                            )
                                                         )
                                                     }}
                                                     options={mappedCheckpoints}
@@ -390,7 +506,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         selectedBranches.length ===
                                                         0
                                                     }
-                                                    placeholder={t('multiselect.placeholder.checkpoint')}
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.checkpoint'
+                                                    )}
                                                 />
                                             </FormControl>
                                         )}
@@ -404,9 +522,15 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('executor')}</FormLabel>
-                                    {organizationsLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                    {organizationsLoading && (
+                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                    )}
                                     {organizationsError && (
-                                        <CustomAlert message={t('multiselect.error.organization')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.organization'
+                                            )}
+                                        />
                                     )}
                                     {organizationsSuccess &&
                                         organizations?.length > 0 && (
@@ -416,14 +540,16 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         field.onChange(
                                                             values.map(
                                                                 ({ value }) =>
-                                                                    value,
-                                                            ),
+                                                                    value
+                                                            )
                                                         )
                                                     }}
                                                     options={
                                                         mappedOrganizations
                                                     }
-                                                    placeholder={t('multiselect.placeholder.executor')}
+                                                    placeholder={t(
+                                                        'multiselect.placeholder.executor'
+                                                    )}
                                                 />
                                             </FormControl>
                                         )}
@@ -437,32 +563,49 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel>{t('priority')}</FormLabel>
-                                    {prioritiesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                    {prioritiesLoading && (
+                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                    )}
                                     {prioritiesError && (
-                                        <CustomAlert message={t('multiselect.error.priority')} />
+                                        <CustomAlert
+                                            message={t(
+                                                'multiselect.error.priority'
+                                            )}
+                                        />
                                     )}
                                     {prioritiesSuccess &&
                                         priorities?.length > 0 && (
                                             <Select
                                                 onValueChange={field.onChange}
-                                                defaultValue={String(field.value)}
+                                                defaultValue={String(
+                                                    field.value
+                                                )}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue
-                                                            placeholder={t('multiselect.placeholder.priority')} />
+                                                            placeholder={t(
+                                                                'multiselect.placeholder.priority'
+                                                            )}
+                                                        />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
                                                     {priorities.map(
                                                         (priority) => (
                                                             <SelectItem
-                                                                key={priority.priority_id}
-                                                                value={String(priority.priority_id)}
+                                                                key={
+                                                                    priority.priority_id
+                                                                }
+                                                                value={String(
+                                                                    priority.priority_id
+                                                                )}
                                                             >
-                                                                {priority.priority_name}
+                                                                {
+                                                                    priority.priority_name
+                                                                }
                                                             </SelectItem>
-                                                        ),
+                                                        )
                                                     )}
                                                 </SelectContent>
                                             </Select>
@@ -471,42 +614,61 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                 </FormItem>
                             )}
                         />
-                        {
-                            isPlannedTask &&
+                        {isPlannedTask && (
                             <>
                                 <FormField
                                     control={form.control}
                                     name="periodicity"
                                     render={({ field }) => (
                                         <FormItem className="mt-3">
-                                            <FormLabel>{t('periodicity')}</FormLabel>
-                                            {periodicityLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                            <FormLabel>
+                                                {t('periodicity')}
+                                            </FormLabel>
+                                            {periodicityLoading && (
+                                                <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                            )}
                                             {periodicityError && (
-                                                <CustomAlert message={t('multiselect.error.periodicity')} />
+                                                <CustomAlert
+                                                    message={t(
+                                                        'multiselect.error.periodicity'
+                                                    )}
+                                                />
                                             )}
                                             {periodicitySuccess &&
                                                 periodicity?.length > 0 && (
                                                     <Select
-                                                        onValueChange={field.onChange}
-                                                        defaultValue={String(field.value)}
+                                                        onValueChange={
+                                                            field.onChange
+                                                        }
+                                                        defaultValue={String(
+                                                            field.value
+                                                        )}
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger>
                                                                 <SelectValue
                                                                     placeholder={t(
-                                                                        'multiselect.placeholder.periodicity')} />
+                                                                        'multiselect.placeholder.periodicity'
+                                                                    )}
+                                                                />
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
                                                             {periodicity.map(
                                                                 (period) => (
                                                                     <SelectItem
-                                                                        key={period.periodicity_id}
-                                                                        value={String(period.periodicity_id)}
+                                                                        key={
+                                                                            period.periodicity_id
+                                                                        }
+                                                                        value={String(
+                                                                            period.periodicity_id
+                                                                        )}
                                                                     >
-                                                                        {period.periodicity_name}
+                                                                        {
+                                                                            period.periodicity_name
+                                                                        }
                                                                     </SelectItem>
-                                                                ),
+                                                                )
                                                             )}
                                                         </SelectContent>
                                                     </Select>
@@ -520,33 +682,54 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     name="category"
                                     render={({ field }) => (
                                         <FormItem className="mt-3">
-                                            <FormLabel>{t('category')}</FormLabel>
-                                            {categoriesLoading && <Skeleton className="h-10 w-[522px] rounded-xl" />}
+                                            <FormLabel>
+                                                {t('category')}
+                                            </FormLabel>
+                                            {categoriesLoading && (
+                                                <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                            )}
                                             {categoriesError && (
-                                                <CustomAlert message={t('multiselect.error.category')} />
+                                                <CustomAlert
+                                                    message={t(
+                                                        'multiselect.error.category'
+                                                    )}
+                                                />
                                             )}
                                             {categoriesSuccess &&
                                                 categories?.length > 0 && (
                                                     <Select
-                                                        onValueChange={field.onChange}
-                                                        defaultValue={String(field.value)}
+                                                        onValueChange={
+                                                            field.onChange
+                                                        }
+                                                        defaultValue={String(
+                                                            field.value
+                                                        )}
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger>
-                                                                <SelectValue placeholder={t(
-                                                                    'multiselect.placeholder.category')} />
+                                                                <SelectValue
+                                                                    placeholder={t(
+                                                                        'multiselect.placeholder.category'
+                                                                    )}
+                                                                />
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
                                                             {categories.map(
                                                                 (category) => (
                                                                     <SelectItem
-                                                                        key={category.category_id}
-                                                                        value={String(category.category_id)}
+                                                                        key={
+                                                                            category.category_id
+                                                                        }
+                                                                        value={String(
+                                                                            category.category_id
+                                                                        )}
                                                                     >
-                                                                        {category.category_name}
+                                                                        {
+                                                                            category.category_name
+                                                                        }
                                                                     </SelectItem>
-                                                                ),
+                                                                )
                                                             )}
                                                         </SelectContent>
                                                     </Select>
@@ -556,7 +739,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                     )}
                                 />
                             </>
-                        }
+                        )}
                         <p className="mt-3 text-[#8A9099] text-sm font-medium">
                             {t('delivery.planned.date')}
                         </p>
@@ -574,17 +757,19 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
-                                                            'text-muted-foreground',
+                                                                'text-muted-foreground'
                                                         )}
                                                     >
                                                         <CalendarIcon />
                                                         {field.value ? (
                                                             formatDate(
-                                                                field.value,
+                                                                field.value
                                                             )
                                                         ) : (
                                                             <span>
-                                                                {t('multiselect.placeholder.start.date')}
+                                                                {t(
+                                                                    'multiselect.placeholder.start.date'
+                                                                )}
                                                             </span>
                                                         )}
                                                     </Button>
@@ -623,17 +808,19 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                                         className={cn(
                                                             'w-[240px] pl-3 text-left font-normal rounded-xl gap-2.5 justify-start',
                                                             !field.value &&
-                                                            'text-muted-foreground',
+                                                                'text-muted-foreground'
                                                         )}
                                                     >
                                                         <CalendarIcon />
                                                         {field.value ? (
                                                             formatDate(
-                                                                field.value,
+                                                                field.value
                                                             )
                                                         ) : (
                                                             <span>
-                                                                {t('multiselect.placeholder.end.date')}
+                                                                {t(
+                                                                    'multiselect.placeholder.end.date'
+                                                                )}
                                                             </span>
                                                         )}
                                                     </Button>
@@ -661,22 +848,28 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             />
                         </div>
                         <FormMessage />
-                        {addOrderError && <CustomAlert className="mt-3" />}
-                        {addTaskError && <CustomAlert className="mt-3" />}
                         <Button
                             className="mt-10 mr-4 rounded-xl w-[120px]"
                             type="submit"
                             disabled={isOrderAdding || isTaskAdding}
                         >
-                            {isOrderAdding || isTaskAdding ? <LoadingSpinner />
-                                : (task ? t('button.action.change') : t('button.action.next'))}
+                            {isOrderAdding || isTaskAdding ? (
+                                <LoadingSpinner />
+                            ) : task ? (
+                                t('button.action.change')
+                            ) : (
+                                t('button.action.next')
+                            )}
                         </Button>
                     </CustomForm>
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
             </TabsContent>
             <TabsContent value="files" className="h-[668px] mt-0">
-                <FilesUploadForm orderIDs={newOrdersIDS || newTaskIDS} setDialogOpen={setDialogOpen} />
+                <FilesUploadForm
+                    orderIDs={newOrdersIDS || newTaskIDS}
+                    setDialogOpen={setDialogOpen}
+                />
             </TabsContent>
         </Tabs>
     )
