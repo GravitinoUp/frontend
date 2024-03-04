@@ -2,22 +2,32 @@ import { Dispatch, SetStateAction, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import i18next from '../../i18n.ts'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useCreatePropertyMutation } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
 
 const propertySchema = z.object({
-    property_name: z.string().min(1, { message: i18next.t('validation.require.title') }),
-    property_values: z.array(z.string()).refine((value) => value.some((item) => item), {
-        message: i18next.t('validation.require.select.add'),
-    }),
+    property_name: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.title') }),
+    property_values: z
+        .array(z.string())
+        .refine((value) => value.some((item) => item), {
+            message: i18next.t('validation.require.select.add'),
+        }),
     entity_name: z.string(),
 })
 
@@ -40,12 +50,16 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
 
     const [
         createProperty,
-        { isLoading: isAdding, isError: createError, isSuccess: createSuccess },
+        { isLoading: isAdding, error: createError, isSuccess: createSuccess },
     ] = useCreatePropertyMutation()
 
-    const createSuccessMsg = useMemo(() => t('toast.success.description.create.f', {
-        entityType: t('property'),
-    }), [])
+    const createSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.create.f', {
+                entityType: t('property'),
+            }),
+        []
+    )
 
     useSuccessToast(createSuccessMsg, createSuccess, setDialogOpen)
 
@@ -79,10 +93,12 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
                                 }))}
                                 onChange={(values) => {
                                     field.onChange(
-                                        values.map(({ value }) => value),
+                                        values.map(({ value }) => value)
                                     )
                                 }}
-                                placeholder={t('multiselect.placeholder.values')}
+                                placeholder={t(
+                                    'multiselect.placeholder.values'
+                                )}
                                 options={[]}
                                 showItems={false}
                             />
@@ -91,7 +107,7 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
                     </FormItem>
                 )}
             />
-            {createError && <CustomAlert className="mt-3" />}
+            {createError && <ErrorCustomAlert error={createError} />}
             <Button
                 className="w-[100px] mt-10 mr-4"
                 type="submit"

@@ -17,6 +17,14 @@ export interface FetchDataInterface<T> {
     data: T
 }
 
+export interface ErrorInterface {
+    text: string
+    url: string
+    method: string
+    error: string
+    statusCode: number
+}
+
 export type SortOptionsType = 'ASC' | 'DESC' | null | undefined
 
 export type EntityType =

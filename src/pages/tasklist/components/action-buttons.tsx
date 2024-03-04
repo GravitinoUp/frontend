@@ -18,7 +18,7 @@ import { FormattedTaskInterface, OrderInterface } from '@/types/interface/orders
 
 export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
     const [formOpen, setFormOpen] = useState(false)
-    const [deleteOrder, { isError, isSuccess, isLoading }] =
+    const [deleteOrder, { error, isSuccess, isLoading }] =
         useDeleteOrderMutation()
     const { t } = useTranslation()
     const { personalOrdersQuery } = useContext(TasksFilterQueryContext)
@@ -42,7 +42,7 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
         deleteOrder(task.id)
     }, [task.id, deleteOrder])
 
-    useErrorToast(isError, handleOrderDelete)
+    useErrorToast(handleOrderDelete, error)
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (

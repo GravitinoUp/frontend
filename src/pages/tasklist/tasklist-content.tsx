@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import TaskFiltersForm from './components/task-filters-form.tsx'
 import { initialColumnVisibility } from './constants.ts'
 import { tasksColumns, TasksFilterColumns } from './tasks-columns.tsx'
-import { CustomAlert } from '@/components/custom-alert/custom-alert.tsx'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table.tsx'
 import FormDialog from '@/components/form-dialog/form-dialog.tsx'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
@@ -22,7 +22,7 @@ function TaskListContent() {
     const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(TasksFilterQueryContext)
     const {
         data = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
@@ -47,8 +47,8 @@ function TaskListContent() {
         )}`,
     }))
 
-    if (isError) {
-        return <CustomAlert />
+    if (error) {
+        return <ErrorCustomAlert error={error} />
     }
 
     return (
@@ -98,7 +98,7 @@ function TaskListContent() {
                                     order_status: data.order_status.map(
                                         (value) => ({
                                             order_status_name: value,
-                                        }),
+                                        })
                                     ),
                                 },
                             })
@@ -109,22 +109,22 @@ function TaskListContent() {
                         }}
                         data={{
                             branch_id:
-                            personalOrdersQuery.filter.facility?.checkpoint
-                                ?.branch?.branch_id,
+                                personalOrdersQuery.filter.facility?.checkpoint
+                                    ?.branch?.branch_id,
                             checkpoint_id:
-                            personalOrdersQuery.filter.facility?.checkpoint
-                                ?.checkpoint_id,
+                                personalOrdersQuery.filter.facility?.checkpoint
+                                    ?.checkpoint_id,
                             organization_id:
-                            personalOrdersQuery.filter.executor
-                                ?.organization_id,
+                                personalOrdersQuery.filter.executor
+                                    ?.organization_id,
                             priority_id:
-                            personalOrdersQuery.filter.priority
-                                ?.priority_id,
+                                personalOrdersQuery.filter.priority
+                                    ?.priority_id,
                             order_status: personalOrdersQuery.filter
                                 .order_status
                                 ? personalOrdersQuery.filter.order_status!.map(
-                                    (value) => `${value?.order_status_name}`,
-                                )
+                                      (value) => `${value?.order_status_name}`
+                                  )
                                 : [],
                             columns: filterColumns,
                         }}
@@ -145,7 +145,7 @@ function TaskListContent() {
                     navigate(`task`, {
                         state: {
                             order: data.data.find(
-                                (e) => e.order_id === rowData.id,
+                                (e) => e.order_id === rowData.id
                             ),
                         },
                     })

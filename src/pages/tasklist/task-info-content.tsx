@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { placeholderQuery } from './constants.ts'
 import ChangeStatusForm from './task/change-status-form.tsx'
-import { CustomAlert } from '@/components/custom-alert/custom-alert.tsx'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import FormDialog from '@/components/form-dialog/form-dialog.tsx'
 import ImageCarousel from '@/components/image-carousel/image-carousel.tsx'
 import OrderStatus from '@/components/order-status/order-status.tsx'
@@ -55,7 +55,7 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
     const {
         data: orders = [],
         isLoading: orderLoading,
-        isError: orderError,
+        error: orderError,
         isSuccess: orderSuccess,
     } = useGetOrdersQuery({
         ...placeholderQuery,
@@ -66,7 +66,7 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
     return (
         <Fragment>
             {orderLoading && <LoadingSpinner />}
-            {orderError && <CustomAlert message={t('default.error.message')} />}
+            {orderError && <ErrorCustomAlert error={orderError} />}
             {orderSuccess && (
                 <Fragment>
                     <OrderStatus

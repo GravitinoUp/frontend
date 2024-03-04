@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import UploadIcon from '@/assets/icons/upload.svg'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import {
+    CustomAlert,
+    ErrorCustomAlert,
+} from '@/components/custom-alert/custom-alert'
 import FileContainer from '@/components/file-container/file-container'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
@@ -213,7 +216,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         createUser,
         {
             isLoading: isUserAdding,
-            isError: userCreateError,
+            error: userCreateError,
             isSuccess: userCreateSuccess,
         },
     ] = useCreateUserMutation()
@@ -222,7 +225,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         updateUser,
         {
             isLoading: isUserUpdating,
-            isError: userUpdateError,
+            error: userUpdateError,
             isSuccess: userUpdateSuccess,
         },
     ] = useUpdateUserMutation()
@@ -231,7 +234,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         createOrganization,
         {
             isLoading: isOrganizationAdding,
-            isError: organizationCreateError,
+            error: organizationCreateError,
             isSuccess: organizationCreateSuccess,
         },
     ] = useCreateOrganizationUserMutation()
@@ -240,7 +243,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         updateOrganization,
         {
             isLoading: isOrganizationUpdating,
-            isError: organizationUpdateError,
+            error: organizationUpdateError,
             isSuccess: organizationUpdateSuccess,
         },
     ] = useUpdateOrganizationUserMutation()
@@ -775,11 +778,17 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         fileType="image/*"
                         uploadIcon={<UploadIcon />}
                     />
-                    {(userCreateError ||
-                        organizationCreateError ||
-                        userUpdateError ||
-                        organizationUpdateError) && (
-                        <CustomAlert className="mt-3" />
+                    {userCreateError && (
+                        <ErrorCustomAlert error={userCreateError} />
+                    )}
+                    {userUpdateError && (
+                        <ErrorCustomAlert error={userUpdateError} />
+                    )}
+                    {organizationCreateError && (
+                        <ErrorCustomAlert error={organizationCreateError} />
+                    )}
+                    {organizationUpdateError && (
+                        <ErrorCustomAlert error={organizationUpdateError} />
                     )}
                     <Button className="w-[100px] mt-10 mr-4" type="submit">
                         {isUserAdding ||
