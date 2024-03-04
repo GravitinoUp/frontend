@@ -297,7 +297,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
     const { t } = useTranslation()
     const addSuccessMsg = useMemo(
         () =>
-            t('toast.success.description.create.m', {
+            t('toast.success.description.create.f', {
                 entityType: t('order'),
             }),
         []
