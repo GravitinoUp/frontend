@@ -1,7 +1,10 @@
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import {
+    CustomAlert,
+    ErrorCustomAlert,
+} from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
@@ -51,11 +54,7 @@ const ChangeStatusForm = ({ order, setDialogOpen }: ChangeStatusFormProps) => {
 
     const [
         updateStatus,
-        {
-            isLoading: isUpdating,
-            isError: updateError,
-            isSuccess: updateSuccess,
-        },
+        { isLoading: isUpdating, error: updateError, isSuccess: updateSuccess },
     ] = useUpdateStatusMutation()
 
     function handleSubmit(data: z.infer<typeof statusSchema>) {
@@ -120,7 +119,7 @@ const ChangeStatusForm = ({ order, setDialogOpen }: ChangeStatusFormProps) => {
                     </FormItem>
                 )}
             />
-            {updateError && <CustomAlert className="mt-3" />}
+            {updateError && <ErrorCustomAlert error={updateError} />}
             <Button className="mt-8" type="submit" disabled={isUpdating}>
                 {isUpdating ? <LoadingSpinner /> : t('button.action.save')}
             </Button>

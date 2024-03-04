@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { initialColumnVisibility } from './constants'
 import TaskFiltersForm from './task-filters-form'
 import { tasksColumns, TasksFilterColumns } from './tasks-columns'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
@@ -43,7 +43,7 @@ function TaskListContent() {
 
     const {
         data = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
@@ -81,8 +81,8 @@ function TaskListContent() {
         localStorage.setItem('filterColumns', JSON.stringify(filterColumns))
     }, [filterColumns])
 
-    if (isError) {
-        return <CustomAlert />
+    if (error) {
+        return <ErrorCustomAlert error={error} />
     }
 
     return (

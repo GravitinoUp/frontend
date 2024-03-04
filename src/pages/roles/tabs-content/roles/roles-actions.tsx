@@ -17,21 +17,25 @@ import { useDeleteRoleMutation } from '@/redux/api/roles'
 import { RoleInterface } from '@/types/interface/roles'
 
 export const ActionsDropdown = ({ role }: { role: RoleInterface }) => {
-    const [deleteRole, { isError, isSuccess, isLoading }] =
+    const [deleteRole, { error, isSuccess, isLoading }] =
         useDeleteRoleMutation()
     const [formOpen, setFormOpen] = useState(false)
     const { t } = useTranslation()
 
-    const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.f', {
-        entityType: t('role'),
-        entityName: role.role_name,
-    }), [])
+    const deleteSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.delete.f', {
+                entityType: t('role'),
+                entityName: role.role_name,
+            }),
+        []
+    )
 
     const handleRoleDelete = useCallback(() => {
         deleteRole(role.role_id)
     }, [role.role_id, deleteRole])
 
-    useErrorToast(isError, handleRoleDelete)
+    useErrorToast(handleRoleDelete, error)
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
@@ -53,7 +57,9 @@ export const ActionsDropdown = ({ role }: { role: RoleInterface }) => {
                         variant="ghost"
                         className="h-8 w-8 p-0 text-[#8A9099]"
                     >
-                        <span className="sr-only">{t('action.dropdown.menu.open')}</span>
+                        <span className="sr-only">
+                            {t('action.dropdown.menu.open')}
+                        </span>
                         <MoreVertical className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
