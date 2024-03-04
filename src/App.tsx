@@ -66,6 +66,19 @@ function App() {
         }
     }, [isError])
 
+    useEffect(() => {
+        const accessToken = getCookieValue('accessToken')
+        const refreshToken = getCookieValue('refreshToken')
+
+        if (!accessToken) {
+            if (refreshToken) {
+                fetchRefreshToken({ refresh_token: refreshToken })
+            } else {
+                navigate('/signin')
+            }
+        }
+    }, [document.cookie])
+
     if (loading) return <></>
 
     return (
