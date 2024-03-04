@@ -76,8 +76,6 @@ function TaskListContent() {
     }, [personalOrdersQuery])
 
     useEffect(() => {
-        console.log(filterColumns)
-
         localStorage.setItem('filterColumns', JSON.stringify(filterColumns))
     }, [filterColumns])
 
