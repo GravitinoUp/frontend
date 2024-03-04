@@ -24,7 +24,7 @@ export const api = createApi({
                     }
 
                     const response = await fetch(
-                        'http://dev.gravitino.ru/auth/refresh',
+                        `${import.meta.env.VITE_API}/auth/refresh`,
                         requestOptions
                     )
 
