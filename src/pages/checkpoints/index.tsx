@@ -83,59 +83,52 @@ export default function CheckpointsPage() {
                     columns={checkpointsColumns}
                     hasBackground
                     getTableInfo={(pageSize, pageIndex, sorting) => {
-                        let sorts = {}
-                        sorting.forEach((value) => {
-                            const desc = value.desc ? 'DESC' : 'ASC'
+                        const sorts = sorting.reduce((acc, value) => {
+                            const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
                             switch (value.id) {
                                 case 'branch_name':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         branch: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     }
-                                    break
                                 case 'working_hours_name':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         working_hours: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     }
-                                    break
                                 case 'operating_mode_name':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         operating_mode: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     }
-                                    break
                                 case 'neighboring_state_name':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         neighboring_state: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     }
-                                    break
                                 case 'checkpoint_type_name':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         checkpoint_type: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     }
-                                    break
                                 default:
-                                    sorts = {
-                                        ...sorts,
-                                        [`${value.id}`]: desc,
+                                    return {
+                                        ...acc,
+                                        [`${value.id}`]: currentSortOrder,
                                     }
-                                    break
                             }
-                        })
+                        }, {})
 
                         setCheckpointsQuery({
                             ...checkpointsQuery,

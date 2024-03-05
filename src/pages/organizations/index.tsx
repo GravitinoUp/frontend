@@ -53,27 +53,27 @@ const OrganizationsPage = () => {
                     columns={organizationsColumns}
                     hasBackground
                     getTableInfo={(pageSize, pageIndex, sorting) => {
-                        let sorts = {}
-                        sorting.forEach((value) => {
-                            const desc = value.desc ? 'DESC' : 'ASC'
+                        const sorts = sorting.reduce((acc, value) => {
+                            const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
                             if (
                                 value.id ===
                                 'organization_type_organization_type_name'
                             ) {
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     organization_type: {
-                                        organization_type_name: desc,
+                                        organization_type_name:
+                                            currentSortOrder,
                                     },
                                 }
                             } else {
-                                sorts = {
-                                    ...sorts,
-                                    [`${value.id}`]: desc,
+                                return {
+                                    ...acc,
+                                    [`${value.id}`]: currentSortOrder,
                                 }
                             }
-                        })
+                        }, {})
 
                         setOrganizationsQuery({
                             ...organizationsQuery,

@@ -79,61 +79,55 @@ export default function UsersPage() {
                     columns={usersColumns}
                     hasBackground
                     getTableInfo={(pageSize, pageIndex, sorting) => {
-                        let sorts = {}
-                        sorting.forEach((value) => {
-                            const desc = value.desc ? 'DESC' : 'ASC'
+                        const sorts = sorting.reduce((acc, value) => {
+                            const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
                             switch (value.id) {
                                 case 'FIO':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         person: {
-                                            last_name: desc,
-                                            first_name: desc,
-                                            patronymic: desc,
+                                            last_name: currentSortOrder,
+                                            first_name: currentSortOrder,
+                                            patronymic: currentSortOrder,
                                         },
                                     }
-                                    break
                                 case 'phone':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         person: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     }
-                                    break
                                 case 'short_name':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         organization: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     }
-                                    break
                                 case 'organization_type_name':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         organization: {
                                             organization_type: {
-                                                [`${value.id}`]: desc,
+                                                [`${value.id}`]:
+                                                    currentSortOrder,
                                             },
                                         },
                                     }
-                                    break
                                 case 'role_name':
-                                    sorts = {
-                                        ...sorts,
+                                    return {
+                                        ...acc,
                                         role: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     }
-                                    break
                                 default:
-                                    sorts = {
-                                        ...sorts,
-                                        [`${value.id}`]: desc,
+                                    return {
+                                        ...acc,
+                                        [`${value.id}`]: currentSortOrder,
                                     }
-                                    break
                             }
                         })
 

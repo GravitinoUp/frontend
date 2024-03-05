@@ -142,98 +142,90 @@ function TaskListContent() {
                 columns={tasksColumns}
                 columnVisibility={filterColumns}
                 getTableInfo={(pageSize, pageIndex, sorting) => {
-                    let sorts = {}
-                    sorting.forEach((value) => {
-                        const desc = value.desc ? 'DESC' : 'ASC'
+                    const sorts = sorting.reduce((acc, value) => {
+                        const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
                         switch (value.id) {
                             case 'facility_name':
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     facility: {
-                                        [`${value.id}`]: desc,
+                                        [`${value.id}`]: currentSortOrder,
                                     },
                                 }
-                                break
                             case 'checkpoint_name':
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     facility: {
                                         checkpoint: {
-                                            [`${value.id}`]: desc,
+                                            [`${value.id}`]: currentSortOrder,
                                         },
                                     },
                                 }
-                                break
                             case 'branch_name':
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     facility: {
                                         checkpoint: {
-                                            branch: { [`${value.id}`]: desc },
+                                            branch: {
+                                                [`${value.id}`]:
+                                                    currentSortOrder,
+                                            },
                                         },
                                     },
                                 }
-                                break
                             case 'executor':
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     executor: {
-                                        short_name: desc,
+                                        short_name: currentSortOrder,
                                     },
                                 }
-                                break
                             case 'creator':
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     creator: {
                                         person: {
-                                            last_name: desc,
-                                            first_name: desc,
-                                            patronymic: desc,
+                                            last_name: currentSortOrder,
+                                            first_name: currentSortOrder,
+                                            patronymic: currentSortOrder,
                                         },
                                     },
                                 }
-                                break
                             case 'priority_name':
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     priority: {
-                                        [`${value.id}`]: desc,
+                                        [`${value.id}`]: currentSortOrder,
                                     },
                                 }
-                                break
                             case 'deliveryDate':
-                                sorts = {
-                                    ...sorts,
-                                    planned_datetime: desc,
-                                    task_end_datetime: desc,
+                                return {
+                                    ...acc,
+                                    planned_datetime: currentSortOrder,
+                                    task_end_datetime: currentSortOrder,
                                 }
-                                break
                             case 'order_status_name':
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     order_status: {
-                                        order_status_id: desc,
+                                        order_status_id: currentSortOrder,
                                     },
                                 }
-                                break
                             case 'taskType':
-                                sorts = {
-                                    ...sorts,
+                                return {
+                                    ...acc,
                                     task: {
-                                        task_id: desc,
+                                        task_id: currentSortOrder,
                                     },
                                 }
-                                break
                             default:
-                                sorts = {
-                                    ...sorts,
-                                    [`${value.id}`]: desc,
+                                return {
+                                    ...acc,
+                                    [`${value.id}`]: currentSortOrder,
                                 }
-                                break
                         }
-                    })
+                    }, {})
 
                     setPersonalOrdersQuery({
                         ...personalOrdersQuery,
