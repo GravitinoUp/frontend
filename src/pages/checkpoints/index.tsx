@@ -3,18 +3,15 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { checkpointsColumns } from './checkpoint-columns'
 import { checkpointsFormTab } from './checkpoint-form-tab'
-import { placeholderQuery } from '../tasklist/constants'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { placeholderQuery } from '../tasklist/constants.ts'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
-import {
-    CheckpointsPayloadInterface,
-    FormattedCheckpointsInterface,
-} from '@/types/interface/checkpoint'
+import { CheckpointsPayloadInterface, FormattedCheckpointsInterface } from '@/types/interface/checkpoint'
 
 export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)
@@ -28,7 +25,7 @@ export default function CheckpointsPage() {
 
     const {
         data: checkpoints = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
         refetch,
     } = useGetCheckpointsQuery(checkpointsQuery)
@@ -75,8 +72,8 @@ export default function CheckpointsPage() {
                 </div>
             }
         >
-            {isError ? (
-                <CustomAlert />
+            {error ? (
+                <ErrorCustomAlert error={error} />
             ) : (
                 <DataTable
                     data={formattedCheckpoints}

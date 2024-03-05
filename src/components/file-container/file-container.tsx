@@ -110,8 +110,8 @@ const FileContainer = ({
                 ) : (
                     <div
                         className={cn(
-                            'flex flex-col items-center pointer-events-none',
-                            dragActive && 'invisible'
+                            'flex flex-col gap-1.5 items-center pointer-events-none',
+                            dragActive && 'invisible',
                         )}
                     >
                         {uploadIcon}

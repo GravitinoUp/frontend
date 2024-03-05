@@ -1,30 +1,30 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { initialColumnVisibility, placeholderQuery } from './constants'
-import TaskFiltersForm from './task-filters-form'
-import { tasksColumns, TasksFilterColumns } from './tasks-columns'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import DataTable from '@/components/data-table/data-table'
-import FormDialog from '@/components/form-dialog/form-dialog'
-import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
-import { OrderPayloadInterface } from '@/types/interface/orders'
-import { formatDate, formatInitials } from '@/utils/helpers'
+import TaskFiltersForm from './components/task-filters-form.tsx'
+import { initialColumnVisibility } from './constants.ts'
+import { tasksColumns, TasksFilterColumns } from './tasks-columns.tsx'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
+import DataTable from '@/components/data-table/data-table.tsx'
+import FormDialog from '@/components/form-dialog/form-dialog.tsx'
+import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
+import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
+import { formatDate } from '@/utils/helpers.ts'
 
 function TaskListContent() {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderPayloadInterface>(placeholderQuery)
-
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
         initialColumnVisibility
     )
 
+    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
+        TasksFilterQueryContext
+    )
     const {
         data = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
@@ -53,8 +53,8 @@ function TaskListContent() {
         )}`,
     }))
 
-    if (isError) {
-        return <CustomAlert />
+    if (error) {
+        return <ErrorCustomAlert error={error} />
     }
 
     return (
@@ -63,7 +63,7 @@ function TaskListContent() {
                 open={formOpen}
                 setOpen={setFormOpen}
                 actionButton={<Fragment />}
-                size="md"
+                size="lg"
                 headerContent={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('choose.filters')}

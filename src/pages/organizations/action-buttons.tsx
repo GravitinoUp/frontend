@@ -21,7 +21,7 @@ export const ActionButtons = ({
 }: {
     organization: OrganizationInterface
 }) => {
-    const [deleteOrganization, { isError, isSuccess, isLoading }] =
+    const [deleteOrganization, { error, isSuccess, isLoading }] =
         useDeleteOrganizationMutation()
     const [formOpen, setFormOpen] = useState(false)
     const { t } = useTranslation()
@@ -39,7 +39,7 @@ export const ActionButtons = ({
         deleteOrganization(organization.organization_id)
     }, [organization.organization_id, deleteOrganization])
 
-    useErrorToast(isError, handleOrganizationDelete)
+    useErrorToast(handleOrganizationDelete, error)
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (

@@ -191,11 +191,11 @@ function DataTable<TData, TValue>({
                                     data-state={
                                         row.getIsSelected() && 'selected'
                                     }
-                                    onDoubleClick={
-                                        onRowClick !== undefined
-                                            ? () => onRowClick!(row.original)
-                                            : undefined
-                                    }
+                                    onDoubleClick={() => {
+                                        if (typeof onRowClick !== 'undefined') {
+                                            onRowClick(row.original)
+                                        }
+                                    }}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell

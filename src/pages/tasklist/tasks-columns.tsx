@@ -1,11 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { z } from 'zod'
-import { ActionButtons } from './action-buttons'
-import CancelStatusTooltip from './cancel-status-tooltip'
 import i18next from '../../i18n.ts'
-import { getStatusCellClass } from '@/components/data-table/get-cell-class'
+import OrderStatus from '@/components/order-status/order-status.tsx'
 import { Checkbox } from '@/components/ui/checkbox'
-import { TASK_STATUSES } from '@/constants/constants'
+import { ActionButtons } from '@/pages/tasklist/components/action-buttons.tsx'
 import { FormattedTaskInterface } from '@/types/interface/orders'
 
 export const tasksColumnsSchema = z.object({
@@ -111,19 +109,9 @@ export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
     {
         header: i18next.t('status'),
         accessorKey: 'order_status_name',
-        cell: ({ row }) => {
-            const { order_status_name: status } = row.original
-            const className = getStatusCellClass(status)
-            const isWorkNeeded =
-                status.toLowerCase() === TASK_STATUSES.NEED_WORK
-
-            return (
-                <div className="flex items-center ">
-                    {isWorkNeeded && <CancelStatusTooltip />}
-                    <span className={className}>{status}</span>
-                </div>
-            )
-        },
+        cell: ({ row }) => (
+            <OrderStatus status={row.original.order_status_name} />
+        ),
     },
     {
         id: 'actions',

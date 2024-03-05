@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { organizationFormTab } from './organization-form-tab'
 import { organizationsColumns } from './organizations-columns'
-import { placeholderQuery } from '../tasklist/constants'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { placeholderQuery } from '../tasklist/constants.ts'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
 import FormDialog from '@/components/form-dialog/form-dialog'
@@ -21,7 +21,7 @@ const OrganizationsPage = () => {
 
     const {
         data: organizations = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
         refetch,
     } = useGetAllOrganizationsQuery(organizationsQuery)
@@ -45,8 +45,8 @@ const OrganizationsPage = () => {
                 />
             }
         >
-            {isError ? (
-                <CustomAlert />
+            {error ? (
+                <ErrorCustomAlert error={error} />
             ) : (
                 <DataTable
                     data={organizations.data}
