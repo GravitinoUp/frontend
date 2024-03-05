@@ -12,7 +12,7 @@ export const getJWTtokens = () => {
 }
 
 // для форматирования даты с бэкенда в привычный формат. 2024-01-11T10:36:59.321Z ---> 11.01.2024
-export const formatDate = (date?: Date | null, includeTime?: boolean) => {
+export const formatDate = (date?: string | Date | null, includeTime?: boolean) => {
     if (!date) {
         return ''
     }
@@ -23,7 +23,7 @@ export const formatDate = (date?: Date | null, includeTime?: boolean) => {
 export const formatInitials = (
     firstName: string,
     lastName: string,
-    patronymic: string
+    patronymic: string,
 ) => {
     const str = `${lastName} ${firstName} ${patronymic}`
 
