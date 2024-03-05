@@ -22,13 +22,15 @@ import { useCreateGuestOrderMutation } from '@/redux/api/orders'
 import { GuestOrderPayloadInterface } from '@/types/interface/orders'
 
 const formSchema = z.object({
-    guest_name: z.string().email(i18next.t('validation.require.full.name')),
-    guest_email: z.string(),
-    guest_phone: z.string(),
+    guest_name: z.string().min(1, i18next.t('validation.require.full.name')),
+    guest_email: z
+        .string()
+        .email({ message: i18next.t('validation.require.email') }),
+    guest_phone: z.string().optional(),
     subject: z.string(),
-    department: z.string(),
-    description: z.string(),
-    images: z.array(z.string()),
+    department: z.string().optional(),
+    description: z.string().optional(),
+    images: z.array(z.string()).optional(),
 })
 
 export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
@@ -40,6 +42,8 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
             guest_name: '',
             guest_email: '',
             guest_phone: '',
+            subject: FEEDBACK_SUBJECTS.cleanliness,
+            department: '',
             description: '',
             images: [],
         },
@@ -59,9 +63,9 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
             const guestData: GuestOrderPayloadInterface = {
                 guest_name: data.guest_name,
                 guest_email: data.guest_email,
-                guest_phone: data.guest_phone,
+                guest_phone: `${data.guest_phone}`,
                 order_name: data.subject,
-                order_description: data.description,
+                order_description: `${data.description}`,
                 facility_id: 1, // TODO facility from QR
             }
 
