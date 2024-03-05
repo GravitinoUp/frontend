@@ -1,25 +1,15 @@
+import CircularBar from "../circular-bar/circular-bar"
+
 export default function CountField({
     title,
-    count,
-    colorClassName,
+    value,
 }: {
     title: string
-    count: number
-    colorClassName: string
+    value: number,
 }) {
     return (
         <div className="flex flex-row items-center">
-            <div
-                className={`
-                    ${colorClassName}
-                    w-6 h-6
-                    rounded-full
-                `}
-            >
-                <p className="flex h-full justify-center items-center text-xs text-white font-semibold">
-                    {count}
-                </p>
-            </div>
+            <CircularBar value={value} />
             <p className="mx-4">{title}</p>
         </div>
     )

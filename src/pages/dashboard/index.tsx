@@ -17,12 +17,52 @@ import YandexMap from "@/components/map/yandex-map";
 import RoundedButton from "@/components/rounded-button/rounded-button";
 import FormDialog from "@/components/form-dialog/form-dialog";
 import MapFiltersForm from "../map/map-filters-form";
+import ReportsContent from "./reports-content";
+import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import DashboardTabsButton from "@/components/dashboard-card/dashboard-tabs-button";
+import { BranchReportsPayloadInterface } from "@/types/interface/reports";
+import { useGetBranchReportsQuery } from "@/redux/api/reports";
+import DataTable from "@/components/data-table/data-table";
+import { dashboardReportsColumns } from "./dashboard-reports-columns";
+import { addDays } from "date-fns";
 
 export function DashboardPage() {
     const [values, setValues] = React.useState(['report', 'map']);
+    const [selectedDay, setSelectedDay] = React.useState('today');
     const [isMapExpanded, setisMapExpanded] = React.useState(false);
 
     const { t } = useTranslation()
+
+    const [branchReportsQuery, setBranchReportsQuery] =
+        useState<BranchReportsPayloadInterface>({
+            offset: {
+                count: 50,
+                page: 1,
+            },
+            filter: {},
+            sorts: {},
+            period: {
+                period_start: new Date(new Date(Date.now()).setHours(0, 0, 0, 0)).toISOString(),
+                period_end: new Date(new Date(Date.now()).setHours(23, 59, 59, 999)).toISOString(),
+            },
+        })
+
+    const {
+        data = { count: 0, data: [] },
+        isLoading: isReportsLoading,
+        isError: isReportsError,
+        refetch,
+    } = useGetBranchReportsQuery(branchReportsQuery)
+
+    const formattedReports = data.data.map((row) => ({
+        key: row.branch.branch_id,
+        id: row.branch.branch_id,
+        name: row.branch.branch_name,
+        completedPercent: row.completed_percent,
+        completedCount: row.completed_count,
+        checkedPercent: row.checked_percent,
+        checkedCount: row.checked_count,
+    }))
 
     const [checkpointsQuery, setCheckpointQuery] =
         useState<CheckpointsPayloadInterface>({
@@ -39,8 +79,8 @@ export function DashboardPage() {
     const [formOpen, setFormOpen] = useState(false)
 
     return <div className="w-full h-full">
-        {isError && <CustomAlert />}
-        {isLoading && <LoadingSpinner />}
+        {isError || isReportsError && <CustomAlert />}
+        {isLoading && isReportsLoading && <LoadingSpinner />}
         {
             isMapExpanded ?
                 <div className='w-full h-full flex flex-col border-2'>
@@ -69,7 +109,6 @@ export function DashboardPage() {
                             }} />
                         </div>
                     </div>
-
                     <YandexMap checkpoints={checkpoints} enableRounded={false} />
                 </div>
                 :
@@ -79,6 +118,26 @@ export function DashboardPage() {
                             <AccordionItem className="rounded-3xl mb-4 border" value="report">
                                 <DashboardCardHeader title={t('reports')} isCollapsed={values.includes('report')}>
                                     <div className="flex items-center gap-2">
+                                        <Tabs
+                                            defaultValue="today"
+                                            className="rounded-full border p-[2px]"
+                                            onValueChange={(value) => {
+                                                setSelectedDay(value)
+
+                                                setBranchReportsQuery({
+                                                    ...branchReportsQuery,
+                                                    period: {
+                                                        period_start: addDays(new Date(Date.now()).setHours(0, 0, 0, 0), value == 'yesterday' ? -1 : 0).toISOString(),
+                                                        period_end: addDays(new Date(Date.now()).setHours(23, 59, 59, 999), value == 'yesterday' ? -1 : 0).toISOString(),
+                                                    },
+                                                })
+                                            }}>
+                                            <TabsList className="flex items-center">
+                                                <TabsTrigger value="yesterday"><DashboardTabsButton title={"Вчера"} isSelected={selectedDay == 'yesterday'} /></TabsTrigger>
+                                                <div className="mx-1 py-3 w-[1px] bg-border"></div>
+                                                <TabsTrigger value="today"><DashboardTabsButton title={"Сегодня"} isSelected={selectedDay == 'today'} /></TabsTrigger>
+                                            </TabsList>
+                                        </Tabs>
                                         <DashboardCardButton
                                             icon={<SettingsIcon />}
                                             onClick={() => { }}
@@ -90,7 +149,22 @@ export function DashboardPage() {
                                     </div>
                                 </DashboardCardHeader>
                                 <AccordionContent>
-                                    TODO REPORTS
+                                    <DataTable
+                                        data={formattedReports}
+                                        columns={dashboardReportsColumns}
+                                        hasBackground
+                                        getPaginationInfo={(pageSize, pageIndex) => {
+                                            setBranchReportsQuery({
+                                                ...branchReportsQuery,
+                                                offset: { count: pageSize, page: pageIndex + 1 },
+                                            })
+                                        }}
+                                        paginationInfo={{
+                                            itemCount: data.count,
+                                            pageSize: branchReportsQuery.offset.count,
+                                        }}
+                                        isLoading={isLoading}
+                                    />
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem className="rounded-3xl mb-4 border" value="map">
