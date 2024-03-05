@@ -10,7 +10,10 @@ import MapPage from './pages/map'
 import MediaReportsPage from './pages/mediareports/page'
 import NotFoundPage from './pages/notfound/'
 import OrganizationsPage from './pages/organizations'
-import ReportsPage from './pages/reports/page'
+import ReportsPage from './pages/reports'
+import CheckpointReportsPage from './pages/reports/checkpoint-reports'
+import OrganizationReportsPage from './pages/reports/organization-reports'
+import SavedReportsPage from './pages/reports/saved-reports'
 import RolesPage from './pages/roles'
 import SettingsPage from './pages/settings'
 import { SignInPage } from './pages/signin/page'
@@ -74,7 +77,21 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index path="dashboard" element={<DashboardPage />} />
                     <Route path="mediareports" element={<MediaReportsPage />} />
-                    <Route path="reports" element={<ReportsPage />} />
+                    <Route>
+                        <Route path="reports" element={<ReportsPage />} />
+                        <Route
+                            path="reports/checkpoints"
+                            element={<CheckpointReportsPage />}
+                        />
+                        <Route
+                            path="reports/checkpoints/organizations"
+                            element={<OrganizationReportsPage />}
+                        />
+                        <Route
+                            path="reports/saved"
+                            element={<SavedReportsPage />}
+                        />
+                    </Route>
                     <Route path="map" element={<MapPage />} />
                     <Route path="settings" element={<SettingsPage />} />
                     <Route>

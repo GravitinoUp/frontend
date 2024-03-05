@@ -33,3 +33,8 @@ export const CHECKPOINT_TYPES = {
     PEOPLE: 7,
     LAKE: 8,
 }
+
+export const QUALITY_STATUSES = {
+    MEDIUM: 50,
+    HIGH: 80,
+}

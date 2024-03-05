@@ -49,7 +49,7 @@ export interface CheckpointInterface {
     lat: number
     lng: number
     branch: BranchInterface
-    neighboring_state?: NeighboringStateInterface | null
+    neighboring_state: NeighboringStateInterface
     district?: string | null
     region?: string | null
     checkpoint_type: CheckpointTypeInterface
