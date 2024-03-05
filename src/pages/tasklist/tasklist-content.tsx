@@ -9,7 +9,7 @@ import DataTable from '@/components/data-table/data-table.tsx'
 import FormDialog from '@/components/form-dialog/form-dialog.tsx'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
-import { formatDate } from '@/utils/helpers.ts'
+import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
 function TaskListContent() {
     const navigate = useNavigate()
