@@ -1,9 +1,9 @@
 import { useLocation } from 'react-router-dom'
 import OrderJournalContent from './order-journal-content.tsx'
-import TaskInfoContent from './task-info-content'
 import i18next from '../../../i18n.ts'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import { PageLayout } from '@/components/PageLayout'
+import TaskInfoContent from '@/pages/tasklist/task-info-content.tsx'
 import { OrderInterface } from '@/types/interface/orders'
 
 const taskPageTabs = (order_id: number) => [

@@ -34,8 +34,7 @@ export default function AccountMenu() {
 
     const { data: user } = useGetUserByIdQuery(user_id)
 
-    const [logout, { isError: isLogoutError, isSuccess: isLogoutSuccess }] =
-        useLogoutMutation()
+    const [logout, { error, isSuccess: isLogoutSuccess }] = useLogoutMutation()
 
     useEffect(() => {
         if (isLogoutSuccess) {
@@ -55,7 +54,7 @@ export default function AccountMenu() {
         }
     }
 
-    useErrorToast(isLogoutError, handleLogout)
+    useErrorToast(handleLogout, error)
 
     const icon = null
     return (

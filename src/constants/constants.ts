@@ -30,3 +30,8 @@ export const CHECKPOINT_TYPES = {
     SHIP: 3,
     PLANE: 4,
 }
+
+export const QUALITY_STATUSES = {
+    MEDIUM: 50,
+    HIGH: 80,
+}

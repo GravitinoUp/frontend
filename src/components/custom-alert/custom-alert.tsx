@@ -1,8 +1,11 @@
+import { SerializedError } from '@reduxjs/toolkit'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { AlertCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { ErrorInterface } from '@/types/interface/fetch'
 
 interface CustomAlertProps {
     message?: string
@@ -26,8 +29,8 @@ export function CustomAlert({
         <Alert
             variant={type}
             className={cn(
-                isTypeSelect ? 'h-[121px] w-[380px]' : 'h-[60px] w-[380px]',
-                className,
+                isTypeSelect ? 'h-[121px] w-[380px]' : 'h-[60px] w-full',
+                className
             )}
         >
             <div className="flex items-center gap-6 ">
@@ -41,7 +44,9 @@ export function CustomAlert({
                         isTypeSelect ? 'grid grid-rows-2' : 'grid grid-rows-1'
                     }
                 >
-                    <AlertDescription>{message || t('default.error.message')}</AlertDescription>
+                    <AlertDescription>
+                        {message || t('default.error.message')}
+                    </AlertDescription>
                     {isTypeSelect && (
                         <div className="flex justify-center gap-7">
                             <Button
@@ -62,4 +67,14 @@ export function CustomAlert({
             </div>
         </Alert>
     )
+}
+
+export const ErrorCustomAlert = ({
+    error,
+}: {
+    error?: FetchBaseQueryError | SerializedError | undefined
+}) => {
+    const errorData = error as { status: number; data: ErrorInterface }
+
+    return <CustomAlert className="mt-3" message={errorData.data.text} />
 }

@@ -1,47 +1,30 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { initialColumnVisibility } from './constants'
-import TaskFiltersForm from './task-filters-form'
-import { tasksColumns, TasksFilterColumns } from './tasks-columns'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import DataTable from '@/components/data-table/data-table'
-import FormDialog from '@/components/form-dialog/form-dialog'
-import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
-import { OrderPayloadInterface } from '@/types/interface/orders'
-import { formatDate } from '@/utils/helpers'
+import TaskFiltersForm from './components/task-filters-form.tsx'
+import { initialColumnVisibility } from './constants.ts'
+import { tasksColumns, TasksFilterColumns } from './tasks-columns.tsx'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
+import DataTable from '@/components/data-table/data-table.tsx'
+import FormDialog from '@/components/form-dialog/form-dialog.tsx'
+import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
+import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
+import { formatDate } from '@/utils/helpers.ts'
 
 function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderPayloadInterface>({
-            offset: {
-                count: 50,
-                page: 1,
-            },
-            filter: {
-                order_status: orderStatus
-                    ? [{ order_status_name: orderStatus }]
-                    : undefined,
-            },
-            sorts: {
-                order_id: 'ASC',
-            },
-            period: {
-                date_start: '2024-01-01',
-                date_end: '2025-01-26',
-            },
-        })
-
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
         initialColumnVisibility
     )
 
+    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
+        TasksFilterQueryContext
+    )
     const {
         data = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
@@ -51,7 +34,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
         key: row.order_id,
         id: row.order_id,
         facility: row.facility.facility_name,
-        checkpoint: row.facility?.checkpoint?.checkpoint_name,
+        checkpoint: row.facility.checkpoint.checkpoint_name,
         taskDescription: row.order_description || '',
         status: row.order_status?.order_status_name,
         taskName: row.order_name || '',
@@ -66,8 +49,8 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
         )}`,
     }))
 
-    if (isError) {
-        return <CustomAlert />
+    if (error) {
+        return <ErrorCustomAlert error={error} />
     }
 
     return (
@@ -76,7 +59,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 open={formOpen}
                 setOpen={setFormOpen}
                 actionButton={<Fragment />}
-                size="md"
+                size="lg"
                 headerContent={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('choose.filters')}
