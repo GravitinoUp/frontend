@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddUserForm from './add-user-form'
 import { usersColumns } from './users-columns'
+import ExportForm from '../tasklist/components/export-form.tsx'
+import ImportForm from '../tasklist/components/import-form.tsx'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
@@ -15,6 +17,8 @@ import { formatInitials } from '@/utils/helpers'
 
 export default function UsersPage() {
     const [usersQuery, setUsersQuery] = useState(placeholderQuery)
+    const [exportFormOpen, setExportFormOpen] = useState(false)
+    const [importFormOpen, setImportFormOpen] = useState(false)
 
     const {
         data: users = { count: 0, data: [] },
@@ -64,8 +68,18 @@ export default function UsersPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {}} />
-                        <ExcelButton buttonType="import" onClick={() => {}} />
+                        <FormDialog
+                            open={exportFormOpen}
+                            setOpen={setExportFormOpen}
+                            actionButton={<ExcelButton buttonType="export" />}
+                            addItemForm={<ExportForm />}
+                        />
+                        <FormDialog
+                            open={importFormOpen}
+                            setOpen={setImportFormOpen}
+                            actionButton={<ExcelButton buttonType="import" />}
+                            addItemForm={<ImportForm type="users" />}
+                        />
                     </div>
                 </div>
             }
