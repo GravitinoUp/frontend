@@ -1,4 +1,4 @@
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import TaskFiltersForm from './components/task-filters-form.tsx'
@@ -48,6 +48,17 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
             row.task_end_datetime
         )}`,
     }))
+
+    useEffect(() => {
+        setPersonalOrdersQuery({
+            ...personalOrdersQuery,
+            filter: {
+                order_status: orderStatus
+                    ? [{ order_status_name: orderStatus }]
+                    : undefined,
+            },
+        })
+    }, [])
 
     if (error) {
         return <ErrorCustomAlert error={error} />
