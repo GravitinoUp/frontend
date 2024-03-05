@@ -36,7 +36,11 @@ export const TaskFilterQueryProvider = ({
     children: ReactNode
 }) => {
     const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderPayloadInterface>(defaultQuery)
+        useState<OrderPayloadInterface>(
+            localStorage.getItem('personalOrdersQuery') !== null
+                ? JSON.parse(localStorage.getItem('personalOrdersQuery')!)
+                : defaultQuery
+        )
 
     const contextState = useMemo(
         () => ({
