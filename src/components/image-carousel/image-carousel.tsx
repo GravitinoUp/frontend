@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import ImageCarouselButton from './image-carousel-button'
 import ImageCarouselDialog from './image-carousel-dialog'
 import { Button } from '../ui/button'
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
@@ -59,14 +60,11 @@ const ImageCarousel = ({ files }: ImageCarouselProps) => {
                         ))}
                     </CarouselContent>
                     <CarouselItem className="basis-auto overflow-hidden">
-                        <Button
-                            variant="ghost"
-                            className="w-[90px] h-[90px] flex flex-col justify-center items-center rounded-xl"
+                        <ImageCarouselButton
+                            icon={<DownloadAllIcon />}
+                            label={t('download.all')}
                             onClick={() => {}}
-                        >
-                            <DownloadAllIcon />
-                            <p className="text-xs">{t('download.all')}</p>
-                        </Button>
+                        />
                     </CarouselItem>
                 </Carousel>
             </Fragment>

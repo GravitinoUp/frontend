@@ -1,6 +1,10 @@
 import { api } from './'
-import { FetchDataInterface, FetchResultInterface } from '@/types/interface/fetch'
 import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
+import {
+    GuestOrderPayloadInterface,
     NewOrderBodyInterface,
     NewTaskBodyInterface,
     OrderInterface,
@@ -18,7 +22,7 @@ const ordersApi = api.injectEndpoints({
                 body,
             }),
             transformResponse: (
-                response: FetchDataInterface<OrderInterface[]>,
+                response: FetchDataInterface<OrderInterface[]>
             ) => response.data,
             providesTags: ['Orders'],
         }),
@@ -43,7 +47,9 @@ const ordersApi = api.injectEndpoints({
                 body,
             }),
             transformResponse: (
-                response: FetchResultInterface<FetchDataInterface<OrderInterface[]>>,
+                response: FetchResultInterface<
+                    FetchDataInterface<OrderInterface[]>
+                >
             ) => response.data?.data,
             invalidatesTags: ['Orders'],
         }),
@@ -65,7 +71,9 @@ const ordersApi = api.injectEndpoints({
                 body,
             }),
             transformResponse: (
-                response: FetchResultInterface<FetchDataInterface<OrderInterface[]>>,
+                response: FetchResultInterface<
+                    FetchDataInterface<OrderInterface[]>
+                >
             ) => response.data?.data,
             invalidatesTags: ['Orders'],
         }),
@@ -87,7 +95,10 @@ const ordersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Orders', 'OrderJournal'],
         }),
-        uploadFile: builder.mutation<unknown, { orderIDs: number[], directory: string, formData: FormData }>({
+        uploadFile: builder.mutation<
+            unknown,
+            { orderIDs: number[]; directory: string; formData: FormData }
+        >({
             query: ({ orderIDs, directory, formData }) => {
                 const queryParams = orderIDs
                     .map((id) => `order_ids=${id}`)
@@ -97,9 +108,17 @@ const ordersApi = api.injectEndpoints({
                     method: 'POST',
                     body: formData,
                 }
-            }
-            ,
+            },
         }),
+        createGuestOrder: builder.mutation<unknown, GuestOrderPayloadInterface>(
+            {
+                query: (body) => ({
+                    url: `order/create-guest-order`,
+                    method: 'POST',
+                    body,
+                }),
+            }
+        ),
     }),
     overrideExisting: true,
 })
@@ -113,4 +132,5 @@ export const {
     useDeleteOrderMutation,
     useUpdateStatusMutation,
     useUploadFileMutation,
+    useCreateGuestOrderMutation,
 } = ordersApi
