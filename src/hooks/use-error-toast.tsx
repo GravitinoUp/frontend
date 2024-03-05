@@ -9,7 +9,7 @@ import { ErrorInterface } from '@/types/interface/fetch'
 const ERROR_DURATION = 3000
 
 export const useErrorToast = (
-    repeatFn: () => void,
+    repeatFn?: () => void,
     error?: FetchBaseQueryError | SerializedError | undefined
 ) => {
     const { toast } = useToast()
@@ -24,14 +24,17 @@ export const useErrorToast = (
                 title: t('toast.error.title'),
                 description: errorData.data.text,
                 duration: ERROR_DURATION,
-                action: (
-                    <ToastAction
-                        altText={t('toast.error.try.again')}
-                        onClick={repeatFn}
-                    >
-                        {t('toast.error.try.again')}
-                    </ToastAction>
-                ),
+                action:
+                    typeof repeatFn === 'undefined' ? (
+                        void 0
+                    ) : (
+                        <ToastAction
+                            altText={t('toast.error.try.again')}
+                            onClick={repeatFn}
+                        >
+                            {t('toast.error.try.again')}
+                        </ToastAction>
+                    ),
             })
         }
     }, [error, toast])
