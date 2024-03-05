@@ -14,7 +14,8 @@ const dialogVariants = cva('', {
     variants: {
         size: {
             default: 'sm:max-w-[600px] px-8 pt-0 pb-8',
-            md: 'sm:max-w-[1100px]',
+            md: 'sm:max-w-[820px]',
+            lg: 'sm:max-w-[1100px]',
         },
     },
     defaultVariants: {

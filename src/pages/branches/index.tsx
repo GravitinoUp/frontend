@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { branchesColumns } from './branches-columns'
 import { branchesFormTab } from './branches-form-tab'
-import { placeholderQuery } from '../tasklist/constants'
+import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
@@ -47,8 +47,8 @@ const BranchesPage = () => {
             }
             rightBlock={
                 <div>
-                    <div className="h-16 mb-7" />
-                    <div className="flex gap-3 mb-10">
+                    <div className="h-16" />
+                    <div className="flex gap-3 mb-3">
                         <ExcelButton buttonType="export" onClick={() => {}} />
                         <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>

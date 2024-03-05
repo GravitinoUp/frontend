@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { rolesTableColumns } from './roles-columns'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
-import { placeholderQuery } from '@/pages/tasklist/constants'
+import { placeholderQuery } from '@/pages/tasklist/constants.ts'
 import { useGetRolesQuery } from '@/redux/api/roles'
 import { RolesPayloadInterface } from '@/types/interface/roles'
 

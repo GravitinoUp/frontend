@@ -1,6 +1,6 @@
 import { getStatusCellClass } from '../data-table/get-cell-class'
 import { TASK_STATUSES } from '@/constants/constants'
-import CancelStatusTooltip from '@/pages/tasklist/cancel-status-tooltip'
+import CancelStatusTooltip from '@/pages/tasklist/components/cancel-status-tooltip.tsx'
 
 interface OrderStatusProps {
     status: string
