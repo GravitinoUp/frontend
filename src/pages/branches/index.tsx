@@ -47,8 +47,8 @@ const BranchesPage = () => {
             }
             rightBlock={
                 <div>
-                    <div className="h-16 mb-7" />
-                    <div className="flex gap-3 mb-10">
+                    <div className="h-16" />
+                    <div className="flex gap-3 mb-3">
                         <ExcelButton buttonType="export" onClick={() => {}} />
                         <ExcelButton buttonType="import" onClick={() => {}} />
                     </div>
