@@ -4,11 +4,11 @@ import { placeholderQuery } from '../tasklist/constants.ts'
 import FilterIcon from '@/assets/icons/filter_icon.svg'
 import MinimizeIcon from '@/assets/icons/minimize_icon.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import YandexMap from '@/components/map/yandex-map'
 import RoundedButton from '@/components/rounded-button/rounded-button'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { CheckpointsPayloadInterface } from '@/types/interface/checkpoint'
-import YandexMap from '@/components/map/yandex-map'
 
 export default function MapPage() {
     const { t } = useTranslation()

@@ -10,7 +10,7 @@ export default function CountField({
     return (
         <div className="flex flex-row items-center">
             <CircularBar value={value} />
-            <p className="mx-4">{title}</p>
+            <p className="mx-4">{title}, %</p>
         </div>
     )
 }

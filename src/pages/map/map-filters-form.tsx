@@ -1,26 +1,27 @@
+import { Dispatch, Fragment, SetStateAction } from "react"
+import i18next from "i18next"
+import { useTranslation } from "react-i18next"
+import { z } from 'zod'
+import CarIcon from '@/assets/icons/car_icon.svg'
+import LakeIcon from '@/assets/icons/lake_icon.svg'
+import MixedIcon from '@/assets/icons/mixed_icon.svg'
+import PeopleIcon from '@/assets/icons/people_icon.svg'
+import PlaneIcon from '@/assets/icons/plane_icon.svg'
+import RiverIcon from '@/assets/icons/river_icon.svg'
+import ShipIcon from '@/assets/icons/ship_icon.svg'
+import TrainIcon from '@/assets/icons/train_icon.svg'
+
 import CustomForm, { useForm } from "@/components/form/form"
+import { InputField } from "@/components/input-field/input-field"
+import { Button } from "@/components/ui/button"
 import { FormField } from "@/components/ui/form"
 import { CHECKPOINT_TYPES } from "@/constants/constants"
 import { cn } from "@/lib/utils"
-import { Dispatch, Fragment, SetStateAction } from "react"
-import { useTranslation } from "react-i18next"
-import CarIcon from '@/assets/icons/car_icon.svg'
-import TrainIcon from '@/assets/icons/train_icon.svg'
-import ShipIcon from '@/assets/icons/ship_icon.svg'
-import PeopleIcon from '@/assets/icons/people_icon.svg'
-import PlaneIcon from '@/assets/icons/plane_icon.svg'
-import MixedIcon from '@/assets/icons/mixed_icon.svg'
-import LakeIcon from '@/assets/icons/lake_icon.svg'
-import RiverIcon from '@/assets/icons/river_icon.svg'
-
-import { z } from 'zod'
-import { InputField } from "@/components/input-field/input-field"
-import { Button } from "@/components/ui/button"
 
 const filterSchema = z.object({
     checkpoint_types: z.array(z.object({ checkpoint_type_id: z.number(), checkpoint_type_name: z.string().optional() })),
-    minPercent: z.string().default('0').refine((value) => Number(value) >= 0 && Number(value) <= 100, 'Число должно быть от 0 до 100'),
-    maxPercent: z.string().default('100').refine((value) => Number(value) >= 0 && Number(value) <= 100, 'Число должно быть от 0 до 100'),
+    minPercent: z.string().default('0').refine((value) => Number(value) >= 0 && Number(value) <= 100, i18next.t('map.errors.invalid.percent')),
+    maxPercent: z.string().default('100').refine((value) => Number(value) >= 0 && Number(value) <= 100, i18next.t('map.errors.invalid.percent')),
 })
 
 interface MapFiltersFormProps {
@@ -110,7 +111,7 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
             <Fragment >
                 <div className="flex mt-6">
                     <h3 className="text-xl">
-                        Показывать по проценту исполненных задач
+                        {t('map.filters.completed.percent')}
                     </h3>
                     <div className="border rounded-2xl flex items-center p-2">
                         <FormField
@@ -118,7 +119,7 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                             name="minPercent"
                             render={({ field }) => (
                                 <InputField
-                                    prefixIcon={<span className="mx-2 flex items-center font-medium text-sm"><p className="font-black text-lg mr-1">%</p>от</span>}
+                                    prefixIcon={<span className="mx-2 flex items-center font-medium text-sm"><p className="font-black text-lg mr-1">%</p>{t('from')}</span>}
                                     {...field}
                                 />
                             )}
@@ -129,7 +130,7 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                             name="maxPercent"
                             render={({ field }) => (
                                 <InputField
-                                    prefixIcon={<span className="mx-2 flex items-center font-medium text-sm"><p className="font-black text-lg mr-1">%</p>до</span>}
+                                    prefixIcon={<span className="mx-2 flex items-center font-medium text-sm"><p className="font-black text-lg mr-1">%</p>{t('to')}</span>}
                                     {...field}
                                 />
                             )}

@@ -1,30 +1,29 @@
 import React, { useState } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import { addDays } from "date-fns";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { dashboardReportsColumns } from "./dashboard-reports-columns";
+import MapFiltersForm from "../map/map-filters-form";
 import { placeholderQuery } from "../tasklist/constants";
-import SettingsIcon from '@/assets/icons/settings_icon.svg'
 import FilterIcon from '@/assets/icons/filter_icon.svg'
-import MinimizeIcon from '@/assets/icons/minimize_icon.svg'
 import MaximizeIcon from '@/assets/icons/maximize_icon.svg'
+import MinimizeIcon from '@/assets/icons/minimize_icon.svg'
+import SettingsIcon from '@/assets/icons/settings_icon.svg'
 import { CustomAlert } from "@/components/custom-alert/custom-alert";
 import DashboardCardButton from "@/components/dashboard-card/dashboard-card-button";
 import DashboardCardHeader from "@/components/dashboard-card/dashboard-card-header";
+import DashboardTabsButton from "@/components/dashboard-card/dashboard-tabs-button";
+import DataTable from "@/components/data-table/data-table";
+import FormDialog from "@/components/form-dialog/form-dialog";
+import YandexMap from "@/components/map/yandex-map";
+import RoundedButton from "@/components/rounded-button/rounded-button";
 import { LoadingSpinner } from "@/components/spinner/spinner";
 import { Accordion, AccordionContent, AccordionItem } from "@/components/ui/accordion";
 import { useGetCheckpointsQuery } from "@/redux/api/checkpoints";
-import { CheckpointsPayloadInterface } from "@/types/interface/checkpoint";
-import YandexMap from "@/components/map/yandex-map";
-import RoundedButton from "@/components/rounded-button/rounded-button";
-import FormDialog from "@/components/form-dialog/form-dialog";
-import MapFiltersForm from "../map/map-filters-form";
-import ReportsContent from "./reports-content";
-import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import DashboardTabsButton from "@/components/dashboard-card/dashboard-tabs-button";
-import { BranchReportsPayloadInterface } from "@/types/interface/reports";
 import { useGetBranchReportsQuery } from "@/redux/api/reports";
-import DataTable from "@/components/data-table/data-table";
-import { dashboardReportsColumns } from "./dashboard-reports-columns";
-import { addDays } from "date-fns";
+import { CheckpointsPayloadInterface } from "@/types/interface/checkpoint";
+import { BranchReportsPayloadInterface } from "@/types/interface/reports";
 
 export function DashboardPage() {
     const [values, setValues] = React.useState(['report', 'map']);
@@ -51,7 +50,6 @@ export function DashboardPage() {
         data = { count: 0, data: [] },
         isLoading: isReportsLoading,
         isError: isReportsError,
-        refetch,
     } = useGetBranchReportsQuery(branchReportsQuery)
 
     const formattedReports = data.data.map((row) => ({
@@ -97,11 +95,29 @@ export function DashboardPage() {
                                             ...checkpointsQuery,
                                             filter: {
                                                 checkpoint_type: data.checkpoint_types,
+                                            },
+                                            report_filter: {
+                                                min_completed_percent: Number(data.minPercent),
+                                                max_completed_percent: Number(data.maxPercent),
                                             }
                                         })
 
                                         setFormOpen(false)
-                                    }} data={{ checkpoint_types: checkpointsQuery.filter?.checkpoint_type ?? [], minPercent: '0', maxPercent: '100' }} />
+                                    }}
+                                        data={{
+                                            checkpoint_types: checkpointsQuery.filter?.checkpoint_type ?? [],
+                                            minPercent: checkpointsQuery.report_filter?.min_completed_percent?.toString() ?? '0',
+                                            maxPercent: checkpointsQuery.report_filter?.max_completed_percent?.toString() ?? '100',
+                                        }}
+                                        setDialogOpen={(value) => {
+                                            setFormOpen(value)
+
+                                            setCheckpointQuery({
+                                                ...checkpointsQuery,
+                                                filter: {},
+                                                report_filter: {}
+                                            })
+                                        }} />
                                 }
                             />
                             <RoundedButton icon={<MinimizeIcon />} onClick={() => {
@@ -133,9 +149,9 @@ export function DashboardPage() {
                                                 })
                                             }}>
                                             <TabsList className="flex items-center">
-                                                <TabsTrigger value="yesterday"><DashboardTabsButton title={"Вчера"} isSelected={selectedDay == 'yesterday'} /></TabsTrigger>
+                                                <TabsTrigger value="yesterday"><DashboardTabsButton title={t('yesterday.title')} isSelected={selectedDay == 'yesterday'} /></TabsTrigger>
                                                 <div className="mx-1 py-3 w-[1px] bg-border"></div>
-                                                <TabsTrigger value="today"><DashboardTabsButton title={"Сегодня"} isSelected={selectedDay == 'today'} /></TabsTrigger>
+                                                <TabsTrigger value="today"><DashboardTabsButton title={t('today.title')} isSelected={selectedDay == 'today'} /></TabsTrigger>
                                             </TabsList>
                                         </Tabs>
                                         <DashboardCardButton

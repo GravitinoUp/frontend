@@ -1,8 +1,8 @@
-import { CheckpointInterface } from "@/types/interface/checkpoint"
-import { FetchDataInterface } from "@/types/interface/fetch"
 import React from "react"
 import ReactDOM from "react-dom"
 import MapPin from "../map-pin/map-pin"
+import { CheckpointInterface } from "@/types/interface/checkpoint"
+import { FetchDataInterface } from "@/types/interface/fetch"
 
 const ymaps3Reactify = await ymaps3.import('@yandex/ymaps3-reactify')
 const reactify = ymaps3Reactify.reactify.bindTo(React, ReactDOM)

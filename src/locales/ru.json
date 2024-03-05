@@ -111,6 +111,10 @@
     "button.action.next": "Далее",
     "button.action.back": "Назад",
     "button.action.files.upload": "Прикрепить",
+    "today.title": "Сегодня",
+    "yesterday.title": "Вчера",
+    "from": "от",
+    "to": "до",
     "tabs": {
         "common": "общее",
         "roles.and.permissions": "роли и права доступа",
@@ -221,7 +225,6 @@
         "type": "Тип пользователя",
         "type.worker": "Работник",
         "type.organization": "Подрядчик",
-        "type.organization": "Подрядчик",
         "phone": "Телефон",
         "organization": "Название организации"
     },
@@ -266,7 +269,11 @@
     "map": {
         "title": "Интерактивная карта",
         "filters": {
-            "choose.checkpoints": "Выбрать типы пунктов пропуска"
+            "choose.checkpoints": "Выбрать типы пунктов пропуска",
+            "completed.percent": "Показывать по проценту исполненных задач"
+        },
+        "errors": {
+            "invalid.percent": "Число должно быть от 0 до 100"
         }
     }
 }

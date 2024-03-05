@@ -36,5 +36,5 @@ export const CHECKPOINT_TYPES = {
 
 export const QUALITY_STATUSES = {
     MEDIUM: 50,
-    HIGH: 80,
+    HIGH: 90,
 }
