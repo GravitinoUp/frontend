@@ -60,7 +60,7 @@ export function MultiSelect({
 
                             if (
                                 !prev.some(
-                                    (v) => v.value === input.value.trim()
+                                    (v) => v.value === input.value.trim(),
                                 )
                             ) {
                                 newSelected.push({
@@ -126,7 +126,8 @@ export function MultiSelect({
             onKeyDown={handleKeyDown}
             className="overflow-visible bg-transparent"
         >
-            <div className="group border border-input rounded-xl px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring">
+            <div
+                className="group border border-input rounded-xl px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring">
                 <div className="flex gap-1 flex-wrap">
                     {selected.map((item) => (
                         <Badge key={item.value} variant="secondary">
@@ -154,7 +155,7 @@ export function MultiSelect({
                         value={inputValue}
                         onValueChange={setInputValue}
                         onBlur={() => showItems && setOpen(false)}
-                        onFocus={() => showItems && setOpen(true)}
+                        onFocus={() => selectables.length > 0 && showItems && setOpen(true)}
                         placeholder={selected.length > 0 ? void 0 : placeholder}
                         disabled={disabled}
                         className="ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1 disabled:cursor-not-allowed disabled:opacity-50"
@@ -163,7 +164,8 @@ export function MultiSelect({
             </div>
             <div className="relative mt-2">
                 {open ? (
-                    <div className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+                    <div
+                        className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
                         <CommandGroup className="h-full overflow-auto">
                             {options.length > 0 && (
                                 <CommandItem

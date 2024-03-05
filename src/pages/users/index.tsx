@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddUserForm from './add-user-form'
 import { usersColumns } from './users-columns'
-import { placeholderQuery } from '../tasklist/constants'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { placeholderQuery } from '../tasklist/constants.ts'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
@@ -18,7 +18,7 @@ export default function UsersPage() {
 
     const {
         data: users = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
         refetch,
     } = useGetUsersQuery(usersQuery)
@@ -32,10 +32,10 @@ export default function UsersPage() {
             id: row.user_id,
             FIO: isPerson
                 ? formatInitials(
-                    row.person.first_name,
-                    row.person.last_name,
-                    row.person.patronymic,
-                )
+                      row.person.first_name,
+                      row.person.last_name,
+                      row.person.patronymic
+                  )
                 : '',
             phone: isPerson ? row.person.phone : row.organization?.phone,
             email: row.email,
@@ -70,9 +70,10 @@ export default function UsersPage() {
                 </div>
             }
         >
-            {isError ?
-                <CustomAlert />
-                : <DataTable
+            {error ? (
+                <ErrorCustomAlert error={error} />
+            ) : (
+                <DataTable
                     data={formattedUsers}
                     columns={usersColumns}
                     hasBackground
@@ -88,7 +89,7 @@ export default function UsersPage() {
                     }}
                     isLoading={isLoading}
                 />
-            }
+            )}
         </PageLayout>
     )
 }
