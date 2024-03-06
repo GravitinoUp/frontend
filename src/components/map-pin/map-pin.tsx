@@ -10,7 +10,11 @@ import RiverIcon from '@/assets/icons/river_icon.svg'
 import ShipIcon from '@/assets/icons/ship_icon.svg'
 import TrainIcon from '@/assets/icons/train_icon.svg'
 import { CHECKPOINT_COMPLETED_STATUSES, CHECKPOINT_TYPES } from '@/constants/constants'
+import { checkpointsFormTab } from '@/pages/checkpoints/checkpoint-form-tab'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
+import { Fragment, useState } from 'react'
+import CustomTabs from '../custom-tabs/custom-tabs'
+import FormDialog from '../form-dialog/form-dialog'
 
 export default function MapPin({
     checkpoint,
@@ -18,6 +22,8 @@ export default function MapPin({
     checkpoint: CheckpointInterface
 }) {
     const completedPercent = checkpoint.report?.completed_percent ?? -1
+
+    const [formOpen, setFormOpen] = useState(false)
 
     return (
         <div
@@ -27,6 +33,17 @@ export default function MapPin({
                 drop-shadow-md
             "
         >
+            <FormDialog
+                open={formOpen}
+                setOpen={setFormOpen}
+                actionButton={<Fragment />}
+                addItemForm={
+                    <CustomTabs
+                        tabs={checkpointsFormTab(checkpoint)}
+                        setDialogOpen={setFormOpen}
+                    />
+                }
+            />
             <Popover>
                 <PopoverTrigger>
                     <div
@@ -57,7 +74,9 @@ export default function MapPin({
                 <PopoverContent className="w-[500px] bg-white rounded-xl p-0 border-0">
                     <MapCheckpointPopover
                         checkpoint={checkpoint}
-                        onEditClick={() => { }}
+                        onEditClick={() => {
+                            setFormOpen(true)
+                        }}
                     />
                 </PopoverContent>
             </Popover>

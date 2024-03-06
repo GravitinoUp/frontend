@@ -164,7 +164,7 @@ export function DashboardPage() {
                                         />
                                     </div>
                                 </DashboardCardHeader>
-                                <AccordionContent>
+                                <AccordionContent className="max-h-[600px] overflow-auto">
                                     <DataTable
                                         data={formattedReports}
                                         columns={dashboardReportsColumns}
