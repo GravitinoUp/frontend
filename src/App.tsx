@@ -46,7 +46,12 @@ function App() {
                 fetchRefreshToken({ refresh_token: `${refreshToken}` })
                 setLoading(true)
             } else if (!accessToken) {
-                navigate('/signin')
+                if (
+                    path.pathname !== '/feedback-guest' &&
+                    path.pathname !== '/feedback-worker'
+                ) {
+                    navigate('/signin')
+                }
                 setLoading(false)
             }
         }

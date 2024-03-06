@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import { z } from 'zod'
 import CustomForm, { useForm } from '@/components/form/form'
 import ImageCarousel from '@/components/image-carousel/image-carousel'
@@ -28,13 +29,14 @@ const formSchema = z.object({
         .email({ message: i18next.t('validation.require.email') }),
     guest_phone: z.string().optional(),
     subject: z.string(),
-    department: z.string().optional(),
+    department: z.string(),
     description: z.string().optional(),
     images: z.array(z.string()).optional(),
 })
 
 export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
     const { t } = useTranslation()
+    const location = useLocation()
 
     const form = useForm({
         schema: formSchema,
@@ -43,7 +45,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
             guest_email: '',
             guest_phone: '',
             subject: FEEDBACK_SUBJECTS.cleanliness,
-            department: '',
+            department: FEEDBACK_DEPARTMENTS.fss,
             description: '',
             images: [],
         },
@@ -59,6 +61,11 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
     ] = useCreateGuestOrderMutation()
 
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
+        const facilityId = location.search
+            .split('?')
+            .find((row) => row.startsWith(`facility=`))
+            ?.split('=')[1]
+
         if (type === 'guest') {
             const guestData: GuestOrderPayloadInterface = {
                 guest_name: data.guest_name,
@@ -66,7 +73,18 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                 guest_phone: `${data.guest_phone}`,
                 order_name: data.subject,
                 order_description: `${data.description}`,
-                facility_id: 1, // TODO facility from QR
+                facility_id: Number(facilityId),
+            }
+
+            submitGuestForm(guestData)
+        } else {
+            const guestData: GuestOrderPayloadInterface = {
+                guest_name: data.guest_name,
+                guest_email: data.guest_email,
+                guest_phone: `${data.guest_phone}`,
+                order_name: data.department,
+                order_description: `${data.description}`,
+                facility_id: Number(facilityId),
             }
 
             submitGuestForm(guestData)
