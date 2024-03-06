@@ -201,6 +201,7 @@ export interface UpdateStatusPayloadInterface {
 export interface OrderStatusInterface {
     order_status_id: number
     order_status_name: string
+    order_count: number
 }
 
 export type OrderStatusSortInterface = Partial<

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 export interface TabPage {
     value: string
     head: string
+    count?: number
     isDialog?: boolean
     content: ReactElement
 }
@@ -28,21 +29,31 @@ export default function CustomTabs({
             className="overflow-auto w-full h-full"
             onValueChange={getCurrentPage}
         >
-            <TabsList className="gap-2">
-                {tabs.map((tab, key) => (
-                    <TabsTrigger
-                        key={key}
-                        value={tab.value}
-                        className={
-                            tabs[0].isDialog
-                                ? 'data-[state=active]:text-primary uppercase'
-                                : ''
-                        }
-                    >
-                        {tab.head}
-                    </TabsTrigger>
-                ))}
-            </TabsList>
+            <ScrollArea className="w-full">
+                <TabsList className="gap-2">
+                    {tabs.map((tab, key) => (
+                        <TabsTrigger
+                            key={key}
+                            value={tab.value}
+                            className={
+                                tabs[0].isDialog
+                                    ? 'data-[state=active]:text-primary uppercase'
+                                    : ''
+                            }
+                        >
+                            {tab.head}
+                            {typeof tab.count !== 'undefined' && (
+                                <div className="ml-2 px-1 py-[2px] bg-border rounded-md">
+                                    <p className="text-body-light text-xs">
+                                        {tab.count}
+                                    </p>
+                                </div>
+                            )}
+                        </TabsTrigger>
+                    ))}
+                </TabsList>
+                <ScrollBar orientation="horizontal" />
+            </ScrollArea>
             <Separator className="w-full bg-[#E8E9EB]" decorative />
             {tabs.map((tab, key) => {
                 if (tab.isDialog) {

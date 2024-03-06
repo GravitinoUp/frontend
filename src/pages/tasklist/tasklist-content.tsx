@@ -11,7 +11,7 @@ import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
 
-function TaskListContent() {
+function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
@@ -61,6 +61,17 @@ function TaskListContent() {
     useEffect(() => {
         localStorage.setItem('filterColumns', JSON.stringify(filterColumns))
     }, [filterColumns])
+
+    useEffect(() => {
+        setPersonalOrdersQuery({
+            ...personalOrdersQuery,
+            filter: {
+                order_status: orderStatus
+                    ? [{ order_status_name: orderStatus }]
+                    : undefined,
+            },
+        })
+    }, [])
 
     if (error) {
         return <ErrorCustomAlert error={error} />
