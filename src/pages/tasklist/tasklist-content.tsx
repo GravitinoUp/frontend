@@ -17,6 +17,9 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
 
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
         initialColumnVisibility
+        localStorage.getItem('filterColumns') !== null
+            ? JSON.parse(localStorage.getItem('filterColumns')!)
+            : initialColumnVisibility
     )
 
     const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
@@ -48,6 +51,17 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
             row.task_end_datetime
         )}`,
     }))
+
+    useEffect(() => {
+        localStorage.setItem(
+            'personalOrdersQuery',
+            JSON.stringify(personalOrdersQuery)
+        )
+    }, [personalOrdersQuery])
+
+    useEffect(() => {
+        localStorage.setItem('filterColumns', JSON.stringify(filterColumns))
+    }, [filterColumns])
 
     useEffect(() => {
         setPersonalOrdersQuery({
@@ -115,7 +129,6 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                                     ),
                                 },
                             })
-
                             setFilterColumns(data.columns)
 
                             setFormOpen(false)
