@@ -38,5 +38,5 @@ jobs:
                 // Define inputs if any
               }
             });
-            console.log(response);
+            console.log(data);
 

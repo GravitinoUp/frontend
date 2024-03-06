@@ -24,18 +24,4 @@ jobs:
       - name: Build frontend
         run: npm run build:dev
       
-      - name: Trigger test workflow
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.TRIGGER }}
-          script: |
-            const { data } = await github.actions.createWorkflowDispatch({
-              owner: 'ChampionKFC',
-              repo: 'devops-gravitino',
-              workflow_id: 'test_workflow.yml',
-              ref: 'main',
-              inputs: {
-                // Define inputs if any
-              }
-            });
-            console.log(response);
+
