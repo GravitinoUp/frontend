@@ -1,21 +1,33 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { initialColumnVisibility } from '../constants.ts'
-import { tasksColumnsSchema } from '../tasks-columns.tsx'
-import { CustomAlert } from '@/components/custom-alert/custom-alert.tsx'
-import CustomForm, { useForm } from '@/components/form/form.tsx'
-import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
-import { Button } from '@/components/ui/button.tsx'
-import { Checkbox } from '@/components/ui/checkbox.tsx'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx'
-import { TASK_STATUSES } from '@/constants/constants.ts'
-import { cn } from '@/lib/utils.ts'
-import { useGetBranchesQuery } from '@/redux/api/branch.ts'
-import { useGetCheckpointsQuery } from '@/redux/api/checkpoints.ts'
-import { useGetAllOrganizationsQuery } from '@/redux/api/organizations.ts'
-import { useGetAllPriorityQuery } from '@/redux/api/priority.ts'
+import { initialColumnVisibility } from '../constants'
+import { tasksColumnsSchema } from '../tasks-columns'
+import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import CustomForm, { useForm } from '@/components/form/form'
+import { LoadingSpinner } from '@/components/spinner/spinner'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import { TASK_STATUSES } from '@/constants/constants'
+import { cn } from '@/lib/utils'
+import { useGetBranchesQuery } from '@/redux/api/branch'
+import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
+import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
+import { useGetAllPriorityQuery } from '@/redux/api/priority'
 
 const filterSchema = z.object({
     branch_id: z.number().optional(),
@@ -99,7 +111,9 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             <FilterFormTitle title={t('branch')} />
                             {branchesLoading && <LoadingSpinner />}
                             {branchesError && (
-                                <CustomAlert message={t('multiselect.error.branch')} />
+                                <CustomAlert
+                                    message={t('multiselect.error.branch')}
+                                />
                             )}
                             {branchesSuccess && branches?.length > 0 && (
                                 <FormControl>
@@ -113,7 +127,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
-                                                    : undefined,
+                                                    : undefined
                                             )
                                         }
                                     >
@@ -130,7 +144,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                                 <SelectItem
                                                     key={branch.branch_id}
                                                     value={String(
-                                                        branch.branch_id,
+                                                        branch.branch_id
                                                     )}
                                                 >
                                                     {branch.branch_name}
@@ -152,7 +166,9 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             <FilterFormTitle title={t('checkpoint')} />
                             {checkpointsLoading && <LoadingSpinner />}
                             {checkpointsError && (
-                                <CustomAlert message={t('multiselect.error.checkpoint')} />
+                                <CustomAlert
+                                    message={t('multiselect.error.checkpoint')}
+                                />
                             )}
                             {checkpointsSuccess && checkpoints?.length > 0 && (
                                 <FormControl>
@@ -166,7 +182,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
-                                                    : undefined,
+                                                    : undefined
                                             )
                                         }
                                     >
@@ -185,7 +201,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                                         checkpoint.checkpoint_id
                                                     }
                                                     value={String(
-                                                        checkpoint.checkpoint_id,
+                                                        checkpoint.checkpoint_id
                                                     )}
                                                 >
                                                     {checkpoint.checkpoint_name}
@@ -207,7 +223,11 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             <FilterFormTitle title={t('organization')} />
                             {organizationsLoading && <LoadingSpinner />}
                             {organizationsError && (
-                                <CustomAlert message={t('multiselect.error.organization')} />
+                                <CustomAlert
+                                    message={t(
+                                        'multiselect.error.organization'
+                                    )}
+                                />
                             )}
                             {organizationsSuccess &&
                                 organizations?.length > 0 && (
@@ -222,7 +242,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                                 field.onChange(
                                                     value !== 'all'
                                                         ? Number(value)
-                                                        : undefined,
+                                                        : undefined
                                                 )
                                             }
                                         >
@@ -242,14 +262,14 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                                                 organization.organization_id
                                                             }
                                                             value={String(
-                                                                organization.organization_id,
+                                                                organization.organization_id
                                                             )}
                                                         >
                                                             {
                                                                 organization.short_name
                                                             }
                                                         </SelectItem>
-                                                    ),
+                                                    )
                                                 )}
                                             </SelectContent>
                                         </Select>
@@ -267,7 +287,9 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                             <FilterFormTitle title={t('priority')} />
                             {prioritiesLoading && <LoadingSpinner />}
                             {prioritiesError && (
-                                <CustomAlert message={t('multiselect.error.priority')} />
+                                <CustomAlert
+                                    message={t('multiselect.error.priority')}
+                                />
                             )}
                             {prioritiesSuccess && priorities?.length > 0 && (
                                 <FormControl>
@@ -281,7 +303,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                             field.onChange(
                                                 value !== 'all'
                                                     ? Number(value)
-                                                    : undefined,
+                                                    : undefined
                                             )
                                         }
                                     >
@@ -298,7 +320,7 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                                 <SelectItem
                                                     key={priority.priority_id}
                                                     value={String(
-                                                        priority.priority_id,
+                                                        priority.priority_id
                                                     )}
                                                 >
                                                     {priority.priority_name}
@@ -328,16 +350,16 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                     type="button"
                                     className={cn(
                                         field.value.find(
-                                            (value) => value === status,
+                                            (value) => value === status
                                         )
                                             ? 'bg-[#3F434A] text-background'
                                             : 'bg-background text-[#3F434A]',
-                                        'py-3 px-16 rounded-xl border-2 border-[#3F434A] hover:bg-[#3F434A] hover:text-background',
+                                        'py-3 px-16 rounded-xl border-2 border-[#3F434A] hover:bg-[#3F434A] hover:text-background'
                                     )}
                                     onClick={() => {
                                         if (
                                             !field.value.find(
-                                                (value) => value === status,
+                                                (value) => value === status
                                             )
                                         ) {
                                             field.onChange([
@@ -347,8 +369,8 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                         } else {
                                             field.onChange(
                                                 field.value.filter(
-                                                    (value) => value !== status,
-                                                ),
+                                                    (value) => value !== status
+                                                )
                                             )
                                         }
                                     }}
@@ -372,83 +394,79 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                         <div className="flex border px-7 py-6 rounded-xl gap-x-20">
                             <div className="flex flex-col gap-y-5">
                                 <Checkbox
-                                    id="number"
+                                    id="order_id"
                                     label={t('num')}
                                     className="bg-[#F8F8F8] border-[#E8E9EB]"
-                                    checked={field.value.id}
+                                    checked={field.value.order_id}
                                     onCheckedChange={(checked) => {
                                         field.onChange({
                                             ...field.value,
-                                            id: checked,
+                                            order_id: checked,
                                         })
                                     }}
                                 />
                                 <Checkbox
-                                    id="checkpoint"
-                                    label={t('checkpoint')}
-                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
-                                    checked={field.value.checkpoint}
-                                    onCheckedChange={(checked) => {
-                                        field.onChange({
-                                            ...field.value,
-                                            checkpoint: checked,
-                                        })
-                                    }}
-                                />
-                            </div>
-                            <div className="flex flex-col gap-y-5">
-                                <Checkbox
-                                    id="taskDescription"
-                                    label={t('description')}
-                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
-                                    checked={field.value.taskDescription}
-                                    onCheckedChange={(checked) => {
-                                        field.onChange({
-                                            ...field.value,
-                                            taskDescription: checked,
-                                        })
-                                    }}
-                                />
-                                <Checkbox
-                                    id="status"
-                                    label={t('status')}
-                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
-                                    checked={field.value.status}
-                                    onCheckedChange={(checked) => {
-                                        field.onChange({
-                                            ...field.value,
-                                            status: checked,
-                                        })
-                                    }}
-                                />
-                            </div>
-                            <div className="flex flex-col gap-y-5">
-                                <Checkbox
-                                    id="taskName"
+                                    id="order_name"
                                     label={t('title')}
                                     className="bg-[#F8F8F8] border-[#E8E9EB]"
-                                    checked={field.value.taskName}
+                                    checked={field.value.order_name}
                                     onCheckedChange={(checked) => {
                                         field.onChange({
                                             ...field.value,
-                                            taskName: checked,
+                                            order_name: checked,
                                         })
                                     }}
                                 />
                                 <Checkbox
-                                    id="priorityStatus"
-                                    label={t('priority')}
+                                    id="facility_name"
+                                    label={t('facility')}
                                     className="bg-[#F8F8F8] border-[#E8E9EB]"
-                                    checked={field.value.priorityStatus}
+                                    checked={field.value.facility_name}
                                     onCheckedChange={(checked) => {
                                         field.onChange({
                                             ...field.value,
-                                            priorityStatus: checked,
+                                            facility_name: checked,
+                                        })
+                                    }}
+                                />
+                                <Checkbox
+                                    id="taskType"
+                                    label={t('task.type')}
+                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
+                                    checked={field.value.taskType}
+                                    onCheckedChange={(checked) => {
+                                        field.onChange({
+                                            ...field.value,
+                                            taskType: checked,
                                         })
                                     }}
                                 />
                             </div>
                             <div className="flex flex-col gap-y-5">
+                                <Checkbox
+                                    id="checkpoint_name"
+                                    label={t('checkpoint')}
+                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
+                                    checked={field.value.checkpoint_name}
+                                    onCheckedChange={(checked) => {
+                                        field.onChange({
+                                            ...field.value,
+                                            checkpoint_name: checked,
+                                        })
+                                    }}
+                                />
+                                <Checkbox
+                                    id="branch_name"
+                                    label={t('branch')}
+                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
+                                    checked={field.value.branch_name}
+                                    onCheckedChange={(checked) => {
+                                        field.onChange({
+                                            ...field.value,
+                                            branch_name: checked,
+                                        })
+                                    }}
+                                />
                                 <Checkbox
                                     id="executor"
                                     label={t('executor')}
@@ -461,29 +479,29 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                         })
                                     }}
                                 />
-                                <Checkbox
-                                    id="facility"
-                                    label={t('facility')}
-                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
-                                    checked={field.value.facility}
-                                    onCheckedChange={(checked) => {
-                                        field.onChange({
-                                            ...field.value,
-                                            facility: checked,
-                                        })
-                                    }}
-                                />
                             </div>
                             <div className="flex flex-col gap-y-5">
                                 <Checkbox
-                                    id="branch"
-                                    label={t('branch')}
+                                    id="creator"
+                                    label={t('task.creator')}
                                     className="bg-[#F8F8F8] border-[#E8E9EB]"
-                                    checked={field.value.branch}
+                                    checked={field.value.creator}
                                     onCheckedChange={(checked) => {
                                         field.onChange({
                                             ...field.value,
-                                            branch: checked,
+                                            creator: checked,
+                                        })
+                                    }}
+                                />
+                                <Checkbox
+                                    id="priority_name"
+                                    label={t('priority')}
+                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
+                                    checked={field.value.priority_name}
+                                    onCheckedChange={(checked) => {
+                                        field.onChange({
+                                            ...field.value,
+                                            priority_name: checked,
                                         })
                                     }}
                                 />
@@ -496,6 +514,44 @@ const TaskFiltersForm = ({ handleSubmit, data }: TaskFiltersFormProps) => {
                                         field.onChange({
                                             ...field.value,
                                             deliveryDate: checked,
+                                        })
+                                    }}
+                                />
+                            </div>
+                            <div className="flex flex-col gap-y-5">
+                                <Checkbox
+                                    id="ended_at_datetime"
+                                    label={t('end.date')}
+                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
+                                    checked={field.value.ended_at_datetime}
+                                    onCheckedChange={(checked) => {
+                                        field.onChange({
+                                            ...field.value,
+                                            ended_at_datetime: checked,
+                                        })
+                                    }}
+                                />
+                                <Checkbox
+                                    id="order_description"
+                                    label={t('description')}
+                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
+                                    checked={field.value.order_description}
+                                    onCheckedChange={(checked) => {
+                                        field.onChange({
+                                            ...field.value,
+                                            order_description: checked,
+                                        })
+                                    }}
+                                />
+                                <Checkbox
+                                    id="order_status_name"
+                                    label={t('status')}
+                                    className="bg-[#F8F8F8] border-[#E8E9EB]"
+                                    checked={field.value.order_status_name}
+                                    onCheckedChange={(checked) => {
+                                        field.onChange({
+                                            ...field.value,
+                                            order_status_name: checked,
                                         })
                                     }}
                                 />

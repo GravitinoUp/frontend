@@ -9,7 +9,7 @@ import DataTable from '@/components/data-table/data-table.tsx'
 import FormDialog from '@/components/form-dialog/form-dialog.tsx'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
-import { formatDate } from '@/utils/helpers.ts'
+import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
 function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     const navigate = useNavigate()
@@ -34,18 +34,22 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
 
     const formattedTasks = data.data.map((row) => ({
         key: row.order_id,
-        id: row.order_id,
-        facility: row.facility.facility_name,
-        checkpoint: row.facility.checkpoint.checkpoint_name,
-        taskDescription: row.order_description || '',
-        status: row.order_status?.order_status_name,
-        taskName: row.order_name || '',
-        priorityStatus: row.priority.priority_name,
+        order_id: row.order_id,
+        facility_name: row.facility.facility_name,
+        checkpoint_name: row.facility?.checkpoint?.checkpoint_name,
+        order_name: row.order_name || '',
+        order_description: row.order_description || '',
+        order_status_name: row.order_status?.order_status_name,
+        priority_name: row.priority.priority_name,
         executor: row.executor.short_name,
-        branch: row.facility.checkpoint.branch.branch_name,
-        taskCreator: `${row.creator?.person.last_name} ${row.creator?.person.first_name} ${row.creator?.person.patronymic}`,
+        branch_name: row.facility.checkpoint.branch.branch_name,
+        creator: formatInitials(
+            row.creator?.person.first_name,
+            row.creator?.person.last_name,
+            row.creator?.person.patronymic
+        ),
         taskType: row.task.task_id,
-        closeDate: formatDate(row.ended_at_datetime) || '',
+        ended_at_datetime: formatDate(row.ended_at_datetime) || '',
         deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
             row.task_end_datetime
         )}`,
@@ -160,9 +164,95 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 data={formattedTasks}
                 columns={tasksColumns}
                 columnVisibility={filterColumns}
-                getPaginationInfo={(pageSize, pageIndex) => {
+                getTableInfo={(pageSize, pageIndex, sorting) => {
+                    const sorts = sorting.reduce((acc, value) => {
+                        const currentSortOrder = value.desc ? 'DESC' : 'ASC'
+
+                        switch (value.id) {
+                            case 'facility_name':
+                                return {
+                                    ...acc,
+                                    facility: {
+                                        [`${value.id}`]: currentSortOrder,
+                                    },
+                                }
+                            case 'checkpoint_name':
+                                return {
+                                    ...acc,
+                                    facility: {
+                                        checkpoint: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    },
+                                }
+                            case 'branch_name':
+                                return {
+                                    ...acc,
+                                    facility: {
+                                        checkpoint: {
+                                            branch: {
+                                                [`${value.id}`]:
+                                                    currentSortOrder,
+                                            },
+                                        },
+                                    },
+                                }
+                            case 'executor':
+                                return {
+                                    ...acc,
+                                    executor: {
+                                        short_name: currentSortOrder,
+                                    },
+                                }
+                            case 'creator':
+                                return {
+                                    ...acc,
+                                    creator: {
+                                        person: {
+                                            last_name: currentSortOrder,
+                                            first_name: currentSortOrder,
+                                            patronymic: currentSortOrder,
+                                        },
+                                    },
+                                }
+                            case 'priority_name':
+                                return {
+                                    ...acc,
+                                    priority: {
+                                        [`${value.id}`]: currentSortOrder,
+                                    },
+                                }
+                            case 'deliveryDate':
+                                return {
+                                    ...acc,
+                                    planned_datetime: currentSortOrder,
+                                    task_end_datetime: currentSortOrder,
+                                }
+                            case 'order_status_name':
+                                return {
+                                    ...acc,
+                                    order_status: {
+                                        order_status_id: currentSortOrder,
+                                    },
+                                }
+                            case 'taskType':
+                                return {
+                                    ...acc,
+                                    task: {
+                                        task_id: currentSortOrder,
+                                    },
+                                }
+                            default:
+                                return {
+                                    ...acc,
+                                    [`${value.id}`]: currentSortOrder,
+                                }
+                        }
+                    }, {})
+
                     setPersonalOrdersQuery({
                         ...personalOrdersQuery,
+                        sorts,
                         offset: { count: pageSize, page: pageIndex + 1 },
                     })
                 }}
@@ -170,7 +260,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                     navigate(`task`, {
                         state: {
                             order: data.data.find(
-                                (e) => e.order_id === rowData.id
+                                (e) => e.order_id === rowData.order_id
                             ),
                         },
                     })

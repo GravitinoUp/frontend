@@ -33,14 +33,15 @@ export default function CheckpointsPage() {
     const formattedCheckpoints: FormattedCheckpointsInterface[] =
         checkpoints.data.map((row) => ({
             checkpoint: row,
-            id: row.checkpoint_id,
+            checkpoint_id: row.checkpoint_id,
             key: row.checkpoint_id,
             checkpoint_name: row.checkpoint_name,
             address: row.address,
             branch_name: row.branch.branch_name,
-            working_hours: row.working_hours?.working_hours_name,
-            neighboring_state: row.neighboring_state?.neighboring_state_name,
-            operating_mode: row.operating_mode?.operating_mode_name,
+            working_hours_name: row.working_hours?.working_hours_name,
+            neighboring_state_name:
+                row.neighboring_state?.neighboring_state_name,
+            operating_mode_name: row.operating_mode?.operating_mode_name,
             region: row.region,
             checkpoint_type_name: row.checkpoint_type.checkpoint_type_name,
         }))
@@ -78,9 +79,57 @@ export default function CheckpointsPage() {
                     data={formattedCheckpoints}
                     columns={checkpointsColumns}
                     hasBackground
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                        const sorts = sorting.reduce((acc, value) => {
+                            const currentSortOrder = value.desc ? 'DESC' : 'ASC'
+
+                            switch (value.id) {
+                                case 'branch_name':
+                                    return {
+                                        ...acc,
+                                        branch: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                                case 'working_hours_name':
+                                    return {
+                                        ...acc,
+                                        working_hours: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                                case 'operating_mode_name':
+                                    return {
+                                        ...acc,
+                                        operating_mode: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                                case 'neighboring_state_name':
+                                    return {
+                                        ...acc,
+                                        neighboring_state: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                                case 'checkpoint_type_name':
+                                    return {
+                                        ...acc,
+                                        checkpoint_type: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                                default:
+                                    return {
+                                        ...acc,
+                                        [`${value.id}`]: currentSortOrder,
+                                    }
+                            }
+                        }, {})
+
                         setCheckpointsQuery({
                             ...checkpointsQuery,
+                            sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

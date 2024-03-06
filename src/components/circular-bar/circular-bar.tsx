@@ -23,7 +23,7 @@ const CircularBar = ({ value }: CircularBarProps) => {
 
     useEffect(() => {
         setPercent(value)
-    }, [])
+    }, [value])
 
     return (
         <div className="w-10 h-10">

@@ -55,10 +55,10 @@ export default function CheckpointReportsPage() {
         key: row.checkpoint.checkpoint_id,
         id: row.checkpoint.checkpoint_id,
         name: row.checkpoint.checkpoint_name,
-        completedPercent: row.completed_percent,
-        completedCount: row.completed_count,
-        checkedPercent: row.checked_percent,
-        checkedCount: row.checked_count,
+        completed_percent: row.completed_percent,
+        completed_count: row.completed_count,
+        checked_percent: row.checked_percent,
+        checked_count: row.checked_count,
     }))
 
     if (isError) {
@@ -140,9 +140,38 @@ export default function CheckpointReportsPage() {
                     columns={reportsColumns}
                     hasBackground
                     searchSuffixIconClick={() => setFilterFormOpen(true)}
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                        const sorts = sorting.reduce((acc, value) => {
+                            const currentSortOrder = value.desc ? 'DESC' : 'ASC'
+
+                            switch (value.id) {
+                                case 'id':
+                                    return {
+                                        ...acc,
+                                        checkpoint: {
+                                            checkpoint_id: currentSortOrder,
+                                        },
+                                    }
+                                case 'name':
+                                    return {
+                                        ...acc,
+                                        checkpoint: {
+                                            checkpoint_name: currentSortOrder,
+                                        },
+                                    }
+                                default:
+                                    return {
+                                        ...acc,
+                                        report: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                            }
+                        }, {})
+
                         setCheckpointReportsQuery({
                             ...checkpointReportsQuery,
+                            sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}
