@@ -85,7 +85,7 @@ const ordersApi = api.injectEndpoints({
                 method: 'PATCH',
                 body,
             }),
-            invalidatesTags: ['Orders', 'OrderJournal'],
+            invalidatesTags: ['Orders', 'OrderJournal', 'OrderStatuses'],
         }),
         uploadFile: builder.mutation<unknown, { orderIDs: number[], directory: string, formData: FormData }>({
             query: ({ orderIDs, directory, formData }) => {

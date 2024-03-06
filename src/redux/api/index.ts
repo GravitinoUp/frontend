@@ -57,6 +57,7 @@ export const api = createApi({
         'OperatingMode',
         'OrderJournal',
         'Reports',
+        'OrderStatuses',
     ],
     endpoints: () => ({}),
 })
