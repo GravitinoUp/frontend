@@ -29,7 +29,7 @@ jobs:
         with:
           github-token: ${{ secrets.TRIGGER }}
           script: |
-            const {data}  = await github.actions.createWorkflowDispatch({
+            await github.rest.actions.createWorkflowDispatch({
               owner: 'ChampionKFC',
               repo: 'devops-gravitino',
               workflow_id: 'test_workflow.yml',
@@ -38,5 +38,5 @@ jobs:
                 // Define inputs if any
               }
             });
-            console.log(data);
+            
 
