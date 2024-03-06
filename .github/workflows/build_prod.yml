@@ -24,12 +24,19 @@ jobs:
       - name: Build frontend
         run: npm run build:prod
       
-      - name: FTP Upload
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Trigger test workflow
+        uses: actions/github-script@v5
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: /prod/	
-          log-level: verbose
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.actions.createWorkflowDispatch({
+              owner: 'ChampionKFC',
+              repo: 'devops-gravitino',
+              workflow_id: 'test_workflow.yml',
+              ref: 'main',
+              inputs: {
+                // Define inputs if any
+              }
+            });
+            console.log(response);
+
