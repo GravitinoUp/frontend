@@ -22,7 +22,7 @@ export const useErrorToast = (
             toast({
                 variant: 'destructive',
                 title: t('toast.error.title'),
-                description: errorData.data.text,
+                description: errorData.data ? errorData.data.text : '',
                 duration: ERROR_DURATION,
                 action:
                     typeof repeatFn === 'undefined' ? (
