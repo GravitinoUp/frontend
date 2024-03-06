@@ -16,7 +16,6 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     const { t } = useTranslation()
 
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
-        initialColumnVisibility
         localStorage.getItem('filterColumns') !== null
             ? JSON.parse(localStorage.getItem('filterColumns')!)
             : initialColumnVisibility
