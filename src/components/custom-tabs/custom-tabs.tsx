@@ -42,7 +42,7 @@ export default function CustomTabs({
                             }
                         >
                             {tab.head}
-                            {tab.count !== undefined && (
+                            {typeof tab.count !== 'undefined' && (
                                 <div className="ml-2 px-1 py-[2px] bg-border rounded-md">
                                     <p className="text-body-light text-xs">
                                         {tab.count}
