@@ -1,4 +1,4 @@
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import TaskFiltersForm from './components/task-filters-form.tsx'
@@ -16,10 +16,14 @@ function TaskListContent() {
     const { t } = useTranslation()
 
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
-        initialColumnVisibility,
+        localStorage.getItem('filterColumns') !== null
+            ? JSON.parse(localStorage.getItem('filterColumns')!)
+            : initialColumnVisibility
     )
 
-    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(TasksFilterQueryContext)
+    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
+        TasksFilterQueryContext
+    )
     const {
         data = { count: 0, data: [] },
         error,
@@ -43,9 +47,20 @@ function TaskListContent() {
         taskType: row.task.task_id,
         closeDate: formatDate(row.ended_at_datetime) || '',
         deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
-            row.task_end_datetime,
+            row.task_end_datetime
         )}`,
     }))
+
+    useEffect(() => {
+        localStorage.setItem(
+            'personalOrdersQuery',
+            JSON.stringify(personalOrdersQuery)
+        )
+    }, [personalOrdersQuery])
+
+    useEffect(() => {
+        localStorage.setItem('filterColumns', JSON.stringify(filterColumns))
+    }, [filterColumns])
 
     if (error) {
         return <ErrorCustomAlert error={error} />
@@ -102,7 +117,6 @@ function TaskListContent() {
                                     ),
                                 },
                             })
-
                             setFilterColumns(data.columns)
 
                             setFormOpen(false)
