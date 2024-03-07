@@ -41,18 +41,20 @@ export default function ManagePropertiesPage() {
             rightBlock={
                 <div>
                     <div className="h-16 " />
-                    <FormDialog
-                        open={exportFormOpen}
-                        setOpen={setExportFormOpen}
-                        actionButton={<ExcelButton buttonType="export" />}
-                        addItemForm={<ExportForm />}
-                    />
-                    <FormDialog
-                        open={importFormOpen}
-                        setOpen={setImportFormOpen}
-                        actionButton={<ExcelButton buttonType="import" />}
-                        addItemForm={<ImportForm type="properties" />}
-                    />
+                    <div className="flex gap-3 mb-3">
+                        <FormDialog
+                            open={exportFormOpen}
+                            setOpen={setExportFormOpen}
+                            actionButton={<ExcelButton buttonType="export" />}
+                            addItemForm={<ExportForm />}
+                        />
+                        <FormDialog
+                            open={importFormOpen}
+                            setOpen={setImportFormOpen}
+                            actionButton={<ExcelButton buttonType="import" />}
+                            addItemForm={<ImportForm type="properties" />}
+                        />
+                    </div>
                 </div>
             }
         >
