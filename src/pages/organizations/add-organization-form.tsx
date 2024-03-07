@@ -30,7 +30,6 @@ import {
     useUpdateOrganizationMutation,
 } from '@/redux/api/organizations'
 import {
-    CreateOrganizationPayloadInterface,
     OrganizationInterface,
     OrganizationTypePayloadInterface,
 } from '@/types/interface/organizations'
@@ -42,13 +41,9 @@ const formSchema = z.object({
     short_name: z
         .string()
         .min(1, { message: i18next.t('validation.require.short.name') }),
-    register_number: z.string().refine((value) => /^\d+$/.test(value), {
-        message: i18next.t('validation.require.reg.number'),
-    }),
     phone: z.string().refine((value) => /^\d{11}$/.test(value), {
         message: i18next.t('validation.require.phone'),
     }),
-    email: z.string().nullable(),
     organization_type_id: z.string({
         required_error: i18next.t('validation.require.organization.type'),
     }),
@@ -85,16 +80,12 @@ const AddOrganizationForm = ({
             ? {
                   full_name: '',
                   short_name: '',
-                  register_number: '',
                   phone: '',
-                  email: '',
               }
             : {
                   full_name: organization.full_name,
                   short_name: organization.short_name,
-                  register_number: organization.register_number,
                   phone: organization.phone,
-                  email: organization.email,
                   organization_type_id: `${organization.organization_type.organization_type_id}`,
               },
     })
@@ -109,9 +100,7 @@ const AddOrganizationForm = ({
         { isLoading: isUpdating, error: updateError, isSuccess: updateSuccess },
     ] = useUpdateOrganizationMutation()
 
-    const handleSubmit = (
-        data: Partial<CreateOrganizationPayloadInterface>
-    ) => {
+    const handleSubmit = (data: z.infer<typeof formSchema>) => {
         if (organization) {
             updateOrganization({
                 organization_id: organization.organization_id,
@@ -163,97 +152,69 @@ const AddOrganizationForm = ({
                     />
                 )}
             />
-            <div className="flex">
-                <FormField
-                    control={form.control}
-                    name="register_number"
-                    render={({ field }) => (
-                        <InputField
-                            className="w-full mr-5 mt-3"
-                            label={t('registration.number')}
-                            {...field}
-                        />
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="organization_type_id"
-                    render={({ field }) => (
-                        <FormItem className="w-full mt-3">
-                            <FormLabel>{t('organization.type')}</FormLabel>
-                            {organizationTypesLoading && <LoadingSpinner />}
-                            {organizationTypesError && (
-                                <CustomAlert
-                                    message={t(
-                                        'multiselect.error.organization.types'
-                                    )}
-                                />
-                            )}
-                            {organizationTypesSuccess &&
-                                organizationTypes?.length > 0 && (
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={String(field.value)}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue
-                                                    placeholder={t(
-                                                        'multiselect.placeholder.organization.type'
-                                                    )}
-                                                />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {organizationTypes.map(
-                                                (organizationType) => (
-                                                    <SelectItem
-                                                        key={
-                                                            organizationType.organization_type_id
-                                                        }
-                                                        value={String(
-                                                            organizationType.organization_type_id
-                                                        )}
-                                                    >
-                                                        {
-                                                            organizationType.organization_type_name
-                                                        }
-                                                    </SelectItem>
-                                                )
-                                            )}
-                                        </SelectContent>
-                                    </Select>
+            <FormField
+                control={form.control}
+                name="organization_type_id"
+                render={({ field }) => (
+                    <FormItem className="w-full mt-3">
+                        <FormLabel>{t('organization.type')}</FormLabel>
+                        {organizationTypesLoading && <LoadingSpinner />}
+                        {organizationTypesError && (
+                            <CustomAlert
+                                message={t(
+                                    'multiselect.error.organization.types'
                                 )}
-                        </FormItem>
-                    )}
-                />
-            </div>
-            <div className="flex">
-                <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                        <InputField
-                            className="w-full mr-5 mt-3"
-                            label={t('phone')}
-                            {...field}
-                        />
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <InputField
-                            className="w-full mt-3"
-                            label="Email"
-                            {...field}
-                            value={`${field.value}`}
-                            onChange={field.onChange}
-                        />
-                    )}
-                />
-            </div>
+                            />
+                        )}
+                        {organizationTypesSuccess &&
+                            organizationTypes?.length > 0 && (
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={String(field.value)}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue
+                                                placeholder={t(
+                                                    'multiselect.placeholder.organization.type'
+                                                )}
+                                            />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {organizationTypes.map(
+                                            (organizationType) => (
+                                                <SelectItem
+                                                    key={
+                                                        organizationType.organization_type_id
+                                                    }
+                                                    value={String(
+                                                        organizationType.organization_type_id
+                                                    )}
+                                                >
+                                                    {
+                                                        organizationType.organization_type_name
+                                                    }
+                                                </SelectItem>
+                                            )
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                    </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                    <InputField
+                        className="w-full mr-5 mt-3"
+                        label={t('phone')}
+                        {...field}
+                    />
+                )}
+            />
             {createError && <ErrorCustomAlert error={createError} />}
             {updateError && <ErrorCustomAlert error={createError} />}
             <Fragment>

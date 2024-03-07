@@ -1,10 +1,21 @@
-import { Dispatch, FormEvent, SetStateAction, useMemo, useState } from 'react'
+import {
+    Dispatch,
+    FormEvent,
+    SetStateAction,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@/assets/icons/delete.svg'
-import { FileData, MultiFileInput } from '@/components/file-container/multi-file-input.tsx'
+import {
+    FileData,
+    MultiFileInput,
+} from '@/components/file-container/multi-file-input.tsx'
 import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { ScrollArea } from '@/components/ui/scroll-area.tsx'
+import { useToast } from '@/components/ui/use-toast.ts'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useUploadFileMutation } from '@/redux/api/orders.ts'
@@ -14,14 +25,18 @@ interface FilesUploadFormProps {
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-export const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProps) => {
+export const FilesUploadForm = ({
+    orderIDs,
+    setDialogOpen,
+}: FilesUploadFormProps) => {
     const { t } = useTranslation()
     const [selectedFiles, setSelectedFiles] = useState<FileData[]>([])
-    const [uploadFiles, { isLoading, isError, isSuccess }] = useUploadFileMutation()
-    const [error, setError] = useState(false)
+    const [uploadFiles, { isLoading, error, isSuccess }] =
+        useUploadFileMutation()
+    const [isError, setIsError] = useState(false)
 
     const handleFileUpload = (e: FormEvent) => {
-        setError(false)
+        setIsError(false)
         e.preventDefault()
         const formData = new FormData()
         selectedFiles.forEach(({ id, fileimage }) => {
@@ -35,7 +50,7 @@ export const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProp
                 directory: 'orders',
             })
         } else {
-            setError(true)
+            setIsError(true)
         }
     }
 
@@ -44,41 +59,78 @@ export const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProp
         setSelectedFiles(result)
     }
 
-    const uploadSuccessMsg = useMemo(() => t('toast.success.description.create.multiple', {
-        entityType: t('files'),
-    }), [])
+    const uploadSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.create.multiple', {
+                entityType: t('files'),
+            }),
+        []
+    )
 
     useSuccessToast(uploadSuccessMsg, isSuccess, setDialogOpen)
-    useErrorToast(isError || error)
+    useErrorToast(void 0, error)
+    const { toast } = useToast()
+
+    useEffect(() => {
+        if (isError) {
+            toast({
+                variant: 'destructive',
+                title: t('toast.error.title'),
+                duration: 1500,
+            })
+        }
+    }, [error, toast])
 
     return (
         <form onSubmit={handleFileUpload}>
-            <MultiFileInput setSelectedFiles={setSelectedFiles} disabled={isLoading} />
-            {selectedFiles.length > 0 &&
+            <MultiFileInput
+                setSelectedFiles={setSelectedFiles}
+                disabled={isLoading}
+            />
+            {selectedFiles.length > 0 && (
                 <ScrollArea className="w-full pr-3 h-[390px]  mt-16 ">
                     <div className="flex flex-col gap-16">
                         <ul className="flex flex-col gap-3">
-                            {selectedFiles.map(({ id, filename, fileimage }) => (
-                                <li key={id}
-                                    className="h-[90px] border rounded-xl flex justify-between items-center px-3">
-                                    <div className="flex gap-2 items-center">
-                                        <img src={fileimage} className="h-[72px] w-[72px] rounded-xl"
-                                             alt="" />
-                                        <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">{filename}</p>
-                                    </div>
-                                    <Button variant="ghost" onClick={() => handleFileDelete(id)}>
-                                        <DeleteIcon />
-                                    </Button>
-                                </li>
-                            ))}
+                            {selectedFiles.map(
+                                ({ id, filename, fileimage }) => (
+                                    <li
+                                        key={id}
+                                        className="h-[90px] border rounded-xl flex justify-between items-center px-3"
+                                    >
+                                        <div className="flex gap-2 items-center">
+                                            <img
+                                                src={fileimage}
+                                                className="h-[72px] w-[72px] rounded-xl"
+                                                alt=""
+                                            />
+                                            <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">
+                                                {filename}
+                                            </p>
+                                        </div>
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => handleFileDelete(id)}
+                                        >
+                                            <DeleteIcon />
+                                        </Button>
+                                    </li>
+                                )
+                            )}
                         </ul>
                     </div>
                 </ScrollArea>
-            }
+            )}
             <div className="flex gap-4 absolute bottom-8">
-                <Button type="submit" className="rounded-xl w-[120px]"
-                        disabled={selectedFiles.length === 0 || isLoading}>
-                    {isLoading ? <LoadingSpinner /> : t('button.action.files.upload')}
+                <Button
+                    type="submit"
+                    className="rounded-xl w-[120px]"
+                    disabled={selectedFiles.length === 0 || isLoading}
+                >
+                    {isLoading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        t('button.action.files.upload')
+                    )}
                 </Button>
             </div>
         </form>

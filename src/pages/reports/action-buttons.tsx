@@ -8,13 +8,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { FormattedReportInterface } from '@/types/interface/report'
 
-export const ActionButtons = ({
-    report,
-}: {
-    report: FormattedReportInterface
-}) => {
+export const ActionButtons = () => {
     const { t } = useTranslation()
 
     return (
