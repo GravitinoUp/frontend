@@ -11,12 +11,12 @@ import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { BranchesPayloadInterface } from '@/types/interface/branch'
+import { getColumnSorts } from '@/utils/helpers'
 
 const BranchesPage = () => {
     const [branchesQuery, setBranchesQuery] =
         useState<BranchesPayloadInterface>({
             ...placeholderQuery,
-            sorts: { branch_id: 'ASC' },
         })
 
     const {
@@ -62,9 +62,12 @@ const BranchesPage = () => {
                     data={branches.data}
                     columns={branchesColumns}
                     hasBackground
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                        const sorts = getColumnSorts(sorting)
+
                         setBranchesQuery({
                             ...branchesQuery,
+                            sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}
