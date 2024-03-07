@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export default function Controls({ className, onPlusClick, onMinusClick }: { className?: string, onPlusClick: () => void, onMinusClick: () => void }) {
     return (
-        <div className={cn("absolute bg-white rounded-xl z-10 border", className)}>
+        <div className={cn("absolute bg-white rounded-2xl z-10 border", className)}>
             <ControlsButton onClick={onPlusClick}>
                 <PlusIcon />
             </ControlsButton>
