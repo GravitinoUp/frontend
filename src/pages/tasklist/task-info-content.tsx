@@ -12,7 +12,7 @@ import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
-import { useGetOrdersQuery } from '@/redux/api/orders.ts'
+import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
 
 interface TaskInfoFieldProps {
@@ -55,15 +55,19 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
     const [statusFormOpen, setStatusFormOpen] = useState(false)
 
     const {
-        data: orders = [],
+        data: orders = { count: 0, data: [] },
         isLoading: orderLoading,
         error: orderError,
         isSuccess: orderSuccess,
-    } = useGetOrdersQuery({
+    } = useGetPersonalOrdersQuery({
         ...placeholderQuery,
         filter: { order_id: order_id },
     })
-    const order = orders[0]
+    const order = orders.data[0]
+    const formattedFiles = order.files.map((value, index) => ({
+        id: String(index),
+        fileimage: value,
+    }))
 
     return (
         <Fragment>
@@ -130,7 +134,7 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                         </div>
                     </div>
                     <ImageCarousel
-                        files={order.files}
+                        files={formattedFiles}
                         suffixButton={
                             <ImageCarouselButton
                                 icon={<DownloadAllIcon />}

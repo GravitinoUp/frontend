@@ -101,7 +101,7 @@ const ordersApi = api.injectEndpoints({
         >({
             query: ({ orderIDs, directory, formData }) => {
                 const queryParams = orderIDs
-                    .map((id) => `order_ids=${id}`)
+                    .map((id) => `order_ids[]=${id}`)
                     .join('&')
                 return {
                     url: `files/upload-images?${queryParams}&directory=${directory}`,
