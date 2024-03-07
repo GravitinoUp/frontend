@@ -40,8 +40,12 @@ const ImageCarouselDialog = ({
                             className="flex justify-center"
                         >
                             <img
-                                src={value.fileimage}
-                                className="object-none align-middle"
+                                src={
+                                    value.file
+                                        ? URL.createObjectURL(value.file)
+                                        : value.fileURL
+                                }
+                                className="object-contain align-middle"
                             />
                         </CarouselItem>
                     ))}

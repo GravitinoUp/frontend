@@ -64,10 +64,6 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
         filter: { order_id: order_id },
     })
     const order = orders.data[0]
-    const formattedFiles = order.files.map((value, index) => ({
-        id: String(index),
-        fileimage: value,
-    }))
 
     return (
         <Fragment>
@@ -134,7 +130,10 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                         </div>
                     </div>
                     <ImageCarousel
-                        files={formattedFiles}
+                        files={orders.data[0].files.map((value, index) => ({
+                            id: String(index),
+                            fileURL: value,
+                        }))}
                         suffixButton={
                             <ImageCarouselButton
                                 icon={<DownloadAllIcon />}

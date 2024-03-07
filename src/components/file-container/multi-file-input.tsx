@@ -12,9 +12,8 @@ import { cn } from '@/lib/utils.ts'
 
 export interface FileData {
     id: string
-    filename?: string
-    filetype?: string
-    fileimage: string
+    fileURL?: string
+    file?: File
 }
 
 interface MultiFileInputProps {
@@ -31,21 +30,16 @@ export const MultiFileInput = ({
     const [dragActive, setDragActive] = useState<boolean>(false)
 
     const readUploadedFiles = (files: File[]) => {
+        const newFiles: FileData[] = []
+
         files.forEach((file) => {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                setSelectedFiles((prevFiles) => [
-                    ...prevFiles,
-                    {
-                        id: crypto.randomUUID(),
-                        filename: file.name,
-                        filetype: file.type,
-                        fileimage: reader.result as string,
-                    },
-                ])
-            }
-            reader.readAsDataURL(file)
+            newFiles.push({
+                id: crypto.randomUUID(),
+                file: file,
+            })
         })
+
+        setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles])
     }
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {

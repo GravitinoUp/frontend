@@ -103,21 +103,16 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
 
     const inputRef = useRef<HTMLInputElement>(null)
     const readUploadedFiles = (files: File[]) => {
+        const newFiles: FileData[] = []
+
         files.forEach((file) => {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                setSelectedFiles((prevFiles) => [
-                    ...prevFiles,
-                    {
-                        id: crypto.randomUUID(),
-                        filename: file.name,
-                        filetype: file.type,
-                        fileimage: reader.result as string,
-                    },
-                ])
-            }
-            reader.readAsDataURL(file)
+            newFiles.push({
+                id: crypto.randomUUID(),
+                file: file,
+            })
         })
+
+        setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles])
     }
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -125,6 +120,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
             readUploadedFiles(files)
         }
     }
+
     const handleAddClick = () => {
         inputRef.current?.click()
     }
@@ -132,8 +128,8 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
     useEffect(() => {
         if (isGuestSubmitSuccess) {
             const formData = new FormData()
-            selectedFiles.forEach(({ id, fileimage }) => {
-                formData.append(id, fileimage)
+            selectedFiles.forEach((value) => {
+                formData.append('files', value.file!)
             })
 
             uploadFiles({
