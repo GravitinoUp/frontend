@@ -5,3 +5,4 @@ export type TemplateType =
     | 'organizations'
     | 'roles'
     | 'users'
+    | 'properties'
