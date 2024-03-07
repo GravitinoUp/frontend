@@ -1,18 +1,8 @@
 import { useEffect, useState } from 'react'
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar'
-import { QUALITY_STATUSES } from '@/constants/constants'
+import getQualityColor from './get-quality-color'
 import { cn } from '@/lib/utils'
 import 'react-circular-progressbar/dist/styles.css'
-
-function getQualityColor(percent: number, light: boolean) {
-    if (percent >= QUALITY_STATUSES.HIGH) {
-        return light ? '#DBF2E2' : '#49C96D'
-    } else if (percent >= QUALITY_STATUSES.MEDIUM) {
-        return light ? '#FFF4D0' : '#FFD240'
-    } else {
-        return light ? '#FFEAEA' : '#FF6B6B'
-    }
-}
 
 interface CircularBarProps {
     value: number
