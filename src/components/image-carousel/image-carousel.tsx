@@ -47,27 +47,29 @@ const ImageCarousel = ({
                                 <RemoveIcon />
                             </div>
                             <div className="relative rounded-xl overflow-hidden group">
-                                <div className="absolute w-full h-full flex justify-center items-center bg-black bg-opacity-50 invisible group-hover:visible">
-                                    <Button
-                                        variant="ghost"
-                                        type="button"
-                                        className="p-2 hover:bg-white hover:bg-opacity-10"
-                                        onClick={() => {
-                                            setDialogStartIndex(index)
-                                            setOpen(true)
-                                        }}
-                                    >
-                                        <ViewIcon />
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        type="button"
-                                        className="p-2 hover:bg-white hover:bg-opacity-10"
-                                        onClick={() => {}}
-                                    >
-                                        <DownloadIcon />
-                                    </Button>
-                                </div>
+                                {!setSelectedFiles && (
+                                    <div className="absolute w-full h-full flex justify-center items-center bg-black bg-opacity-50 invisible group-hover:visible">
+                                        <Button
+                                            variant="ghost"
+                                            type="button"
+                                            className="p-2 hover:bg-white hover:bg-opacity-10"
+                                            onClick={() => {
+                                                setDialogStartIndex(index)
+                                                setOpen(true)
+                                            }}
+                                        >
+                                            <ViewIcon />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            type="button"
+                                            className="p-2 hover:bg-white hover:bg-opacity-10"
+                                            onClick={() => {}}
+                                        >
+                                            <DownloadIcon />
+                                        </Button>
+                                    </div>
+                                )}
                                 <img
                                     src={value.fileimage}
                                     className="w-[90px] h-[90px] object-cover"

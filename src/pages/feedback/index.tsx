@@ -38,7 +38,6 @@ const formSchema = z.object({
     subject: z.string(),
     department: z.string(),
     description: z.string().optional(),
-    images: z.array(z.string()).optional(),
 })
 
 export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
@@ -58,7 +57,6 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
             subject: FEEDBACK_SUBJECTS.cleanliness,
             department: FEEDBACK_DEPARTMENTS.fss,
             description: '',
-            images: [],
         },
     })
 
@@ -211,7 +209,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                                     <FormLabel>
                                         {t('feedback.subject.title')}
                                     </FormLabel>
-                                    <div className="flex flex-col min-[600px]:flex-row gap-5">
+                                    <div className="flex flex-col min-[464px]:flex-row gap-5">
                                         {Object.values(FEEDBACK_SUBJECTS).map(
                                             (subject) => (
                                                 <Button
@@ -245,7 +243,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                                     <FormLabel>
                                         {t('feedback.department.title')}
                                     </FormLabel>
-                                    <div className="flex flex-col min-[600px]:flex-row gap-5">
+                                    <div className="flex flex-col min-[464px]:flex-row gap-5">
                                         {Object.values(
                                             FEEDBACK_DEPARTMENTS
                                         ).map((department) => (
@@ -287,7 +285,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                             </FormItem>
                         )}
                     />
-                    <FormItem className="mt-5">
+                    <FormItem className="mt-5 min-[464px]:w-[400px]">
                         <FormLabel>
                             {t('feedback.attach.images')},
                             <span className="text-xs text-[#C4C4C4]">
