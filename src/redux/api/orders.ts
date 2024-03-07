@@ -110,15 +110,16 @@ const ordersApi = api.injectEndpoints({
                 }
             },
         }),
-        createGuestOrder: builder.mutation<unknown, GuestOrderPayloadInterface>(
-            {
-                query: (body) => ({
-                    url: `order/create-guest-order`,
-                    method: 'POST',
-                    body,
-                }),
-            }
-        ),
+        createGuestOrder: builder.mutation<
+            { order_id: number },
+            GuestOrderPayloadInterface
+        >({
+            query: (body) => ({
+                url: `order/create-guest-order`,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
     overrideExisting: true,
 })

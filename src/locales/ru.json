@@ -114,6 +114,7 @@
     "button.action.back": "Назад",
     "button.action.files.upload": "Прикрепить",
     "button.action.send": "Отправить",
+    "button.action.upload": "Загрузить",
     "tabs": {
         "common": "общее",
         "roles.and.permissions": "роли и права доступа",

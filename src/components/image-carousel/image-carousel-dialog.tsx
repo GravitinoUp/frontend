@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
+import { FileData } from '../file-container/multi-file-input'
 import {
     Carousel,
     CarouselContent,
@@ -10,7 +11,7 @@ import { Dialog, DialogContent } from '../ui/dialog'
 import CloseRounded from '@/assets/icons/close_rounded.svg'
 
 interface ImageCarouselDialogProps {
-    files: string[]
+    files: FileData[]
     startIndex: number
     open: boolean
     setOpen: Dispatch<SetStateAction<boolean>>
@@ -35,11 +36,11 @@ const ImageCarouselDialog = ({
                 <CarouselContent className="h-full">
                     {files.map((value) => (
                         <CarouselItem
-                            key={value}
+                            key={value.id}
                             className="flex justify-center"
                         >
                             <img
-                                src={value}
+                                src={value.fileimage}
                                 className="object-none align-middle"
                             />
                         </CarouselItem>

@@ -1,10 +1,13 @@
-import { useEffect } from 'react'
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { z } from 'zod'
+import ImageIcon from '@/assets/icons/image.svg'
+import { FileData } from '@/components/file-container/multi-file-input'
 import CustomForm, { useForm } from '@/components/form/form'
 import ImageCarousel from '@/components/image-carousel/image-carousel'
+import ImageCarouselButton from '@/components/image-carousel/image-carousel-button'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
@@ -18,8 +21,12 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { FEEDBACK_DEPARTMENTS, FEEDBACK_SUBJECTS } from '@/constants/constants'
 import { useErrorToast } from '@/hooks/use-error-toast'
+import { useSuccessToast } from '@/hooks/use-success-toast'
 import { cn } from '@/lib/utils'
-import { useCreateGuestOrderMutation } from '@/redux/api/orders'
+import {
+    useCreateGuestOrderMutation,
+    useUploadFileMutation,
+} from '@/redux/api/orders'
 import { GuestOrderPayloadInterface } from '@/types/interface/orders'
 
 const formSchema = z.object({
@@ -38,6 +45,10 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
     const { t } = useTranslation()
     const location = useLocation()
 
+    const [selectedFiles, setSelectedFiles] = useState<FileData[]>([])
+    const [uploadFiles, { isLoading, error, isSuccess }] =
+        useUploadFileMutation()
+
     const form = useForm({
         schema: formSchema,
         defaultValues: {
@@ -54,6 +65,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
     const [
         submitGuestForm,
         {
+            data,
             error: guestSubmitError,
             isLoading: isGuestSubmitLoading,
             isSuccess: isGuestSubmitSuccess,
@@ -91,11 +103,53 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
         }
     }
 
+    const inputRef = useRef<HTMLInputElement>(null)
+    const readUploadedFiles = (files: File[]) => {
+        files.forEach((file) => {
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setSelectedFiles((prevFiles) => [
+                    ...prevFiles,
+                    {
+                        id: crypto.randomUUID(),
+                        filename: file.name,
+                        filetype: file.type,
+                        fileimage: reader.result as string,
+                    },
+                ])
+            }
+            reader.readAsDataURL(file)
+        })
+    }
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const files = Array.from(e.target.files)
+            readUploadedFiles(files)
+        }
+    }
+    const handleAddClick = () => {
+        inputRef.current?.click()
+    }
+
     useEffect(() => {
-        // TODO Success
+        if (isGuestSubmitSuccess) {
+            const formData = new FormData()
+            selectedFiles.forEach(({ id, fileimage }) => {
+                formData.append(id, fileimage)
+            })
+
+            uploadFiles({
+                formData,
+                orderIDs: [data!.order_id],
+                directory: 'orders',
+            })
+        }
     }, [isGuestSubmitSuccess])
 
+    useSuccessToast('SUCCESS', isSuccess)
+
     useErrorToast(() => handleSubmit(form.getValues()), guestSubmitError)
+    useErrorToast(undefined, error)
 
     return (
         <div className="bg-gradient-to-b from-[#BDD5F226] to-[#FFFFFF] h-full select-none flex items-center justify-center">
@@ -132,6 +186,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                             <InputField
                                 label="Email"
                                 className="mt-5"
+                                isRequired
                                 {...field}
                             />
                         )}
@@ -232,28 +287,43 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="images"
-                        render={({ field }) => (
-                            <FormItem className="mt-5">
-                                <FormLabel>
-                                    {t('feedback.attach.images')},
-                                    <span className="text-xs text-[#C4C4C4]">
-                                        {' '}
-                                        {t('feedback.attach.images.limit')}
-                                    </span>
-                                </FormLabel>
-                                <ImageCarousel files={[]} />
-                            </FormItem>
-                        )}
-                    />
+                    <FormItem className="mt-5">
+                        <FormLabel>
+                            {t('feedback.attach.images')},
+                            <span className="text-xs text-[#C4C4C4]">
+                                {' '}
+                                {t('feedback.attach.images.limit')}
+                            </span>
+                        </FormLabel>
+                        <ImageCarousel
+                            files={selectedFiles}
+                            setSelectedFiles={setSelectedFiles}
+                            suffixButton={
+                                <Fragment>
+                                    <input
+                                        className="hidden"
+                                        ref={inputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handleFileChange}
+                                        disabled={selectedFiles.length > 9}
+                                    />
+                                    <ImageCarouselButton
+                                        icon={<ImageIcon />}
+                                        label={t('button.action.upload')}
+                                        onClick={handleAddClick}
+                                    />
+                                </Fragment>
+                            }
+                        />
+                    </FormItem>
                     <Button
                         className="w-full mt-10 rounded-xl"
                         type="submit"
-                        disabled={isGuestSubmitLoading}
+                        disabled={isGuestSubmitLoading || isLoading}
                     >
-                        {isGuestSubmitLoading ? (
+                        {isGuestSubmitLoading || isLoading ? (
                             <LoadingSpinner />
                         ) : (
                             t('button.action.send')
