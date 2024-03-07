@@ -9,7 +9,6 @@ import { placeholderQuery } from "../tasklist/constants";
 import FilterIcon from '@/assets/icons/filter_icon.svg'
 import MaximizeIcon from '@/assets/icons/maximize_icon.svg'
 import MinimizeIcon from '@/assets/icons/minimize_icon.svg'
-import SettingsIcon from '@/assets/icons/settings_icon.svg'
 import { CustomAlert } from "@/components/custom-alert/custom-alert";
 import DashboardCardButton from "@/components/dashboard-card/dashboard-card-button";
 import DashboardCardHeader from "@/components/dashboard-card/dashboard-card-header";
@@ -154,10 +153,6 @@ export function DashboardPage() {
                                                 <TabsTrigger value="today"><DashboardTabsButton title={t('today.title')} isSelected={selectedDay == 'today'} /></TabsTrigger>
                                             </TabsList>
                                         </Tabs>
-                                        <DashboardCardButton
-                                            icon={<SettingsIcon />}
-                                            onClick={() => { }}
-                                        />
                                         <DashboardCardButton
                                             icon={values.includes('report') ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
                                             onClick={() => { values.includes('report') ? setValues(values.filter((value) => value != 'report')) : setValues([...values, 'report']) }}

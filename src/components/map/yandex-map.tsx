@@ -1,10 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
+import { YMap as YMap3 } from "@yandex/ymaps3-types"
 import ReactDOM from "react-dom"
+import Controls from "./controls"
 import MapPin from "../map-pin/map-pin"
 import { CheckpointInterface } from "@/types/interface/checkpoint"
 import { FetchDataInterface } from "@/types/interface/fetch"
-import Controls from "./controls"
-import { YMap as YMap3 } from "@yandex/ymaps3-types"
 
 const ymaps3Reactify = await ymaps3.import('@yandex/ymaps3-reactify')
 const reactify = ymaps3Reactify.reactify.bindTo(React, ReactDOM)
@@ -19,17 +19,17 @@ export default function YandexMap({ checkpoints, enableRounded = true }: {
     checkpoints: FetchDataInterface<CheckpointInterface[]>,
     enableRounded?: boolean,
 }) {
-    let map: YMap3 | null = null
+    const [map, setMap] = useState<YMap3 | null>(null)
 
     return (
         <div className='w-full h-full overflow-hidden relative'>
             <YMap
                 className={` ${enableRounded ? 'rounded-b-3xl' : ''}`}
-                location={{ center: [37.61556, 55.75222], zoom: 4, duration: 200 }}
+                location={{ center: [37.61556, 55.75222], zoom: 4 }}
                 zoomStrategy="zoomToPointer"
                 mode="vector"
-                ref={(ref) => {
-                    map = ref
+                ref={(ymapRef) => {
+                    setMap(ymapRef)
                 }}
             >
                 <YMapDefaultSchemeLayer />

@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import MapFiltersForm from './map-filters-form.tsx'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import FilterIcon from '@/assets/icons/filter_icon.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import FormDialog from '@/components/form-dialog/form-dialog.tsx'
 import YandexMap from '@/components/map/yandex-map'
 import RoundedButton from '@/components/rounded-button/rounded-button'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { CheckpointsPayloadInterface } from '@/types/interface/checkpoint'
-import FormDialog from '@/components/form-dialog/form-dialog.tsx'
-import MapFiltersForm from './map-filters-form.tsx'
 
 export default function MapPage() {
     const [formOpen, setFormOpen] = useState(false)
@@ -28,7 +28,7 @@ export default function MapPage() {
     } = useGetCheckpointsQuery(checkpointsQuery)
 
     return (
-        <div className="w-full h-full flex flex-col border-2">
+        <div className="w-full h-full flex flex-col border-2 relative">
             <div className="border-b-2 bg-white flex justify-between items-center px-6">
                 <h2 className="text-2xl font-medium py-6">{t('map.title')}</h2>
                 <div className="flex flex-row gap-4">
@@ -69,7 +69,7 @@ export default function MapPage() {
                     />
                 </div>
             </div>
-            {isLoading && <LoadingSpinner />}
+            {isLoading && <div className='absolute left-1/2 top-1/2'><LoadingSpinner /></div>}
             {isError && <CustomAlert />}
 
             <YandexMap checkpoints={checkpoints} enableRounded={false} />

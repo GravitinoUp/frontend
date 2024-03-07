@@ -1,3 +1,6 @@
+import { Fragment, useState } from 'react'
+import CustomTabs from '../custom-tabs/custom-tabs'
+import FormDialog from '../form-dialog/form-dialog'
 import MapCheckpointPopover from '../map-checkpoint-popover/map-checkpoint-popover'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import CarIcon from '@/assets/icons/car_icon.svg'
@@ -12,9 +15,6 @@ import TrainIcon from '@/assets/icons/train_icon.svg'
 import { CHECKPOINT_COMPLETED_STATUSES, CHECKPOINT_TYPES } from '@/constants/constants'
 import { checkpointsFormTab } from '@/pages/checkpoints/checkpoint-form-tab'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
-import { Fragment, useState } from 'react'
-import CustomTabs from '../custom-tabs/custom-tabs'
-import FormDialog from '../form-dialog/form-dialog'
 
 export default function MapPin({
     checkpoint,
