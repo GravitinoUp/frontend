@@ -7,7 +7,6 @@ import ExportForm from '../tasklist/components/export-form'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
-import CalendarForm from '@/components/calendar-form/calendar-form'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
@@ -65,7 +64,8 @@ export default function ReportsPage() {
                 onRefreshClick={refetch}
                 rightBlock={
                     <div>
-                        <CalendarForm open={false} />
+                        {/* TODO: добавить контекст для фильтров */}
+                        {/* <DateRangeFilter /> */}
                         <div className="flex gap-3">
                             <Button
                                 className="bg-white hover:bg-accent rounded-xl"
