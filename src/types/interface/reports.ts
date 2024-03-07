@@ -67,7 +67,7 @@ type ReportSortInterface = Partial<
     Record<keyof ReportInterface, SortOptionsType>
 >
 
-interface ReportInterface {
+export interface ReportInterface {
     all_count: number
     completed_count: number
     completed_percent: number
