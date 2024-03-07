@@ -58,7 +58,7 @@ jobs:
               workflow_id: 'test_workflow.yml',
               ref: 'main',
               inputs: {
-                imageTag: "${{ github.ref_name }}:${{ github.sha }}"
+                imageTag: "${{ github.sha }}"
               }
             });
             
