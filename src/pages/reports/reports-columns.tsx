@@ -42,29 +42,29 @@ export const reportsColumns: ColumnDef<FormattedReportInterface>[] = [
     },
     {
         header: `${i18next.t('completed.task.count')}, %`,
-        accessorKey: 'completedPercent',
+        accessorKey: 'completed_percent',
         cell: ({ row }) => {
-            const { completedPercent } = row.original
+            const { completed_percent } = row.original
 
-            return <CircularBar value={completedPercent} />
+            return <CircularBar value={completed_percent} />
         },
     },
     {
         header: i18next.t('completed.task.count'),
-        accessorKey: 'completedCount',
+        accessorKey: 'completed_count',
     },
     {
         header: `${i18next.t('checked.task.count')}, %`,
-        accessorKey: 'checkedPercent',
+        accessorKey: 'checked_percent',
         cell: ({ row }) => {
-            const { checkedPercent } = row.original
+            const { checked_percent } = row.original
 
-            return <CircularBar value={checkedPercent} />
+            return <CircularBar value={checked_percent} />
         },
     },
     {
         header: i18next.t('checked.task.count'),
-        accessorKey: 'checkedCount',
+        accessorKey: 'checked_count',
     },
     {
         id: 'actions',

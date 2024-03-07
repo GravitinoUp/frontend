@@ -23,7 +23,7 @@ import TaskPage from './pages/tasklist/task'
 import UsersPage from './pages/users'
 import { useRefreshTokenMutation } from './redux/api/auth'
 import { setAccessToken } from './redux/reducers/authSlice'
-import { getCookieValue } from './utils/helpers'
+import { getJWTtokens } from './utils/helpers'
 
 function App() {
     const [loading, setLoading] = useState<boolean | null>(null)
@@ -39,8 +39,7 @@ function App() {
 
     useEffect(() => {
         if (loading === null) {
-            const accessToken = getCookieValue('accessToken')
-            const refreshToken = getCookieValue('refreshToken')
+            const { accessToken, refreshToken } = getJWTtokens()
 
             if (refreshToken) {
                 fetchRefreshToken({ refresh_token: `${refreshToken}` })
@@ -74,6 +73,14 @@ function App() {
             setLoading(false)
         }
     }, [isError])
+
+    useEffect(() => {
+        const { accessToken, refreshToken } = getJWTtokens()
+
+        if (!accessToken && !refreshToken) {
+            navigate('/signin')
+        }
+    }, [document.cookie])
 
     if (loading) return <></>
 

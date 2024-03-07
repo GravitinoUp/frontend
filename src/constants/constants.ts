@@ -1,13 +1,14 @@
 import i18next from '../i18n.ts'
 
 export const TASK_STATUSES = {
+    CREATED: i18next.t('task.status.created').toLowerCase(),
+    APPOINTED: i18next.t('task.status.appointed').toLowerCase(),
     IN_PROGRESS: i18next.t('task.status.in-progress').toLowerCase(),
+    ON_VERIFICATION: i18next.t('task.status.verification').toLowerCase(),
     CLOSED: i18next.t('task.status.closed').toLowerCase(),
     CANCELED: i18next.t('task.status.canceled').toLowerCase(),
-    APPOINTED: i18next.t('task.status.appointed').toLowerCase(),
     DEADLINE_CLOSED: i18next.t('task.status.deadline').toLowerCase(),
     NEED_WORK: i18next.t('task.status.need-work').toLowerCase(),
-    ON_VERIFICATION: i18next.t('task.status.verification').toLowerCase(),
 }
 
 export const FILE_SIZE_UNITS = {

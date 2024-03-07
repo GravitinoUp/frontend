@@ -34,7 +34,7 @@ export const usersColumns: ColumnDef<FormattedUsersInterface>[] = [
     },
     {
         header: i18next.t('number'),
-        accessorKey: 'id',
+        accessorKey: 'user_id',
     },
     {
         header: i18next.t('full.name'),
@@ -50,15 +50,15 @@ export const usersColumns: ColumnDef<FormattedUsersInterface>[] = [
     },
     {
         header: i18next.t('company'),
-        accessorKey: 'company',
+        accessorKey: 'short_name',
     },
     {
         header: i18next.t('type'),
-        accessorKey: 'type',
+        accessorKey: 'organization_type_name',
     },
     {
         header: i18next.t('role'),
-        accessorKey: 'role',
+        accessorKey: 'role_name',
     },
     {
         header: i18next.t('status'),

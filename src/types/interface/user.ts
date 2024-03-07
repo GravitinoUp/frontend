@@ -14,12 +14,13 @@ export interface UsersPayloadInterface extends IQuery {
 export interface FormattedUsersInterface {
     user: UserInterface
     key: number
-    id: number
+    user_id: number
     FIO: string
     phone?: string
-    company?: string
-    type?: string
-    role: string
+    email?: string
+    organization_name?: string
+    organization_type_name?: string
+    role_name: string
     is_active: boolean
 }
 

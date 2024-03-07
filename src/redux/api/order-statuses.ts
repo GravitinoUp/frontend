@@ -9,6 +9,7 @@ const orderStatusesApi = api.injectEndpoints({
             transformResponse: (
                 response: FetchDataInterface<OrderStatusInterface[]>
             ) => response.data,
+            providesTags: ['OrderStatuses'],
         }),
     }),
     overrideExisting: true,

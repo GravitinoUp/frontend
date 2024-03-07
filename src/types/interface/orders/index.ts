@@ -11,17 +11,18 @@ import { RecursivePartial } from '@/utils/recursive-partial'
 
 export interface FormattedTaskInterface {
     key: number
-    id: number
-    facility?: string
-    checkpoint?: string
-    taskDescription?: string | null
-    status: string
-    taskName: string
-    priorityStatus?: string
+    order_id: number
+    facility_name?: string
+    checkpoint_name?: string
+    order_name: string
+    order_description?: string | null
+    order_status_name: string
+    priority_name?: string
     executor?: string
-    branch?: string
+    branch_name?: string
     deliveryDate?: string
-    taskCreator?: string
+    ended_at_datetime?: string
+    creator?: string
     taskType?: number | null
 }
 
@@ -204,6 +205,7 @@ export interface UpdateStatusPayloadInterface {
 export interface OrderStatusInterface {
     order_status_id: number
     order_status_name: string
+    order_count: number
 }
 
 export type OrderStatusSortInterface = Partial<

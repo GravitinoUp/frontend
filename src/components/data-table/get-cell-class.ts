@@ -3,7 +3,7 @@ import { TASK_STATUSES_STYLES } from '@/constants/style-constants'
 export const getCellTextColor = (columnId: string) => {
     switch (columnId) {
         case 'id':
-            return 'text-[#8A9099]'
+            return 'text-body-light'
         default:
             return 'text-base'
     }
