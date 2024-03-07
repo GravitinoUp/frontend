@@ -1,3 +1,4 @@
+import { SortingState } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { FILE_SIZE_UNITS } from '@/constants/constants.ts'
 
@@ -46,6 +47,15 @@ export const formatFileSize = (sizeInBytes: number) => {
 
     return `${formattedSize.toFixed(i !== 0 ? 2 : 0)} ${byteUnits[i]}`
 }
+
+export const getColumnSorts = (sorting: SortingState) =>
+    sorting.reduce(
+        (acc, value) => ({
+            ...acc,
+            [`${value.id}`]: value.desc ? 'DESC' : 'ASC',
+        }),
+        {}
+    )
 
 export const getCookieValue = (key: string) => {
     const cookieValue = document.cookie

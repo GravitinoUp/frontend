@@ -2,10 +2,10 @@ export interface FormattedReportInterface {
     key: number
     id: number
     name: string
-    completedPercent: number
-    completedCount: number
-    checkedPercent: number
-    checkedCount: number
+    completed_percent: number
+    completed_count: number
+    checked_percent: number
+    checked_count: number
 }
 
 export interface FormattedSavedReportInterface {

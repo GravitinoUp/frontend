@@ -6,6 +6,7 @@ import DataTable from '@/components/data-table/data-table'
 import { useGetPropertiesQuery } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
 import { PropertyPayloadInterface } from '@/types/interface/properties'
+import { getColumnSorts } from '@/utils/helpers'
 
 interface ManagePropertiesContentProps {
     entity: EntityType
@@ -29,9 +30,12 @@ function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
         <DataTable
             data={properties.data}
             columns={managePropertiesColumns}
-            getPaginationInfo={(pageSize, pageIndex) => {
+            getTableInfo={(pageSize, pageIndex, sorting) => {
+                const sorts = getColumnSorts(sorting)
+
                 setPropertiesQuery({
                     ...propertiesQuery,
+                    sorts,
                     offset: { count: pageSize, page: pageIndex + 1 },
                 })
             }}

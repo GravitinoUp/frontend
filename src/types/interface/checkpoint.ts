@@ -18,7 +18,7 @@ export interface CheckpointTypesPayloadInterface extends IQuery {
 export interface FormattedCheckpointsInterface {
     checkpoint: CheckpointInterface
     key: number
-    id: number
+    checkpoint_id: number
     checkpoint_name: string
     address: string
     branch_name: string

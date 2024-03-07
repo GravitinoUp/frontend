@@ -43,7 +43,7 @@ function OrderJournalContent({ order_id }: OrderJournalContentProps) {
         <DataTable
             data={formattedTasks}
             columns={orderJournalColumns}
-            getPaginationInfo={(pageSize, pageIndex) => {
+            getTableInfo={(pageSize, pageIndex) => {
                 setOrderJournalQuery({
                     ...orderJournalQuery,
                     offset: { count: pageSize, page: pageIndex + 1 },
