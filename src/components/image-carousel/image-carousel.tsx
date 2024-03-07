@@ -26,7 +26,10 @@ const ImageCarousel = ({ files }: ImageCarouselProps) => {
                     setOpen={setOpen}
                 />
 
-                <Carousel className="flex w-fit border rounded-xl mt-10 p-3 select-none">
+                <Carousel
+                    className="flex w-fit border rounded-xl mt-10 p-3 select-none"
+                    opts={{ skipSnaps: true }}
+                >
                     <CarouselContent>
                         {files.map((value, index) => (
                             <CarouselItem key={value} className="basis-auto">
