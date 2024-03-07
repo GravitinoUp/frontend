@@ -17,7 +17,10 @@ export const useErrorToast = (
 
     useEffect(() => {
         if (error) {
-            const errorData = error as { status: number; data: ErrorInterface }
+            const errorData = error as {
+                status: number
+                data: ErrorInterface | undefined
+            }
 
             toast({
                 variant: 'destructive',

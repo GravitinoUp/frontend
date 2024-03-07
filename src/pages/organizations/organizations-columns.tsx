@@ -32,6 +32,10 @@ export const organizationsColumns: ColumnDef<OrganizationInterface>[] = [
         enableHiding: false,
     },
     {
+        accessorKey: 'organization_id',
+        header: i18next.t('number'),
+    },
+    {
         accessorKey: 'short_name',
         header: i18next.t('title'),
     },
@@ -40,16 +44,8 @@ export const organizationsColumns: ColumnDef<OrganizationInterface>[] = [
         header: i18next.t('title.full'),
     },
     {
-        accessorKey: 'register_number',
-        header: i18next.t('registration.number'),
-    },
-    {
         accessorKey: 'phone',
         header: i18next.t('phone'),
-    },
-    {
-        accessorKey: 'email',
-        header: 'email',
     },
     {
         accessorKey: 'organization_type.organization_type_name',

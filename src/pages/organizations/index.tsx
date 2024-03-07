@@ -12,10 +12,11 @@ import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
 import { OrganizationsPayloadInterface } from '@/types/interface/organizations'
 
 const OrganizationsPage = () => {
+    const { t } = useTranslation()
+
     const [organizationsQuery, setOrganizationsQuery] =
         useState<OrganizationsPayloadInterface>({
             ...placeholderQuery,
-            sorts: { organization_id: 'ASC' },
         })
 
     const {
@@ -24,8 +25,8 @@ const OrganizationsPage = () => {
         isLoading,
         refetch,
     } = useGetAllOrganizationsQuery(organizationsQuery)
+
     const [formOpen, setFormOpen] = useState(false)
-    const { t } = useTranslation()
 
     return (
         <PageLayout
@@ -51,9 +52,32 @@ const OrganizationsPage = () => {
                     data={organizations.data}
                     columns={organizationsColumns}
                     hasBackground
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                        const sorts = sorting.reduce((acc, value) => {
+                            const currentSortOrder = value.desc ? 'DESC' : 'ASC'
+
+                            if (
+                                value.id ===
+                                'organization_type_organization_type_name'
+                            ) {
+                                return {
+                                    ...acc,
+                                    organization_type: {
+                                        organization_type_name:
+                                            currentSortOrder,
+                                    },
+                                }
+                            } else {
+                                return {
+                                    ...acc,
+                                    [`${value.id}`]: currentSortOrder,
+                                }
+                            }
+                        }, {})
+
                         setOrganizationsQuery({
                             ...organizationsQuery,
+                            sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

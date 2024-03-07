@@ -33,7 +33,7 @@ export default function UsersPage() {
         return {
             user: row,
             key: row.user_id,
-            id: row.user_id,
+            user_id: row.user_id,
             FIO: isPerson
                 ? formatInitials(
                       row.person.first_name,
@@ -43,9 +43,10 @@ export default function UsersPage() {
                 : '',
             phone: isPerson ? row.person.phone : row.organization?.phone,
             email: row.email,
-            company: row.organization?.short_name,
-            type: row.organization?.organization_type.organization_type_name,
-            role: row.role.role_name,
+            organization_name: row.organization?.short_name,
+            organization_type_name:
+                row.organization?.organization_type.organization_type_name,
+            role_name: row.role.role_name,
             is_active: row.is_active,
         }
     })
@@ -91,9 +92,62 @@ export default function UsersPage() {
                     data={formattedUsers}
                     columns={usersColumns}
                     hasBackground
-                    getPaginationInfo={(pageSize, pageIndex) => {
+                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                        const sorts = sorting.reduce((acc, value) => {
+                            const currentSortOrder = value.desc ? 'DESC' : 'ASC'
+
+                            switch (value.id) {
+                                case 'FIO':
+                                    return {
+                                        ...acc,
+                                        person: {
+                                            last_name: currentSortOrder,
+                                            first_name: currentSortOrder,
+                                            patronymic: currentSortOrder,
+                                        },
+                                    }
+                                case 'phone':
+                                    return {
+                                        ...acc,
+                                        person: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                                case 'short_name':
+                                    return {
+                                        ...acc,
+                                        organization: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                                case 'organization_type_name':
+                                    return {
+                                        ...acc,
+                                        organization: {
+                                            organization_type: {
+                                                [`${value.id}`]:
+                                                    currentSortOrder,
+                                            },
+                                        },
+                                    }
+                                case 'role_name':
+                                    return {
+                                        ...acc,
+                                        role: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    }
+                                default:
+                                    return {
+                                        ...acc,
+                                        [`${value.id}`]: currentSortOrder,
+                                    }
+                            }
+                        }, {})
+
                         setUsersQuery({
                             ...usersQuery,
+                            sorts,
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}
