@@ -52,7 +52,7 @@ const OrganizationsPage = () => {
                     data={organizations.data}
                     columns={organizationsColumns}
                     hasBackground
-                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                    getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                         const sorts = sorting.reduce((acc, value) => {
                             const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -78,6 +78,10 @@ const OrganizationsPage = () => {
                         setOrganizationsQuery({
                             ...organizationsQuery,
                             sorts,
+                            filter: {
+                                ...organizationsQuery.filter,
+                                full_name: filter,
+                            },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

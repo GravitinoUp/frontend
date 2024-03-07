@@ -11,7 +11,10 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
-import { CheckpointsPayloadInterface, FormattedCheckpointsInterface } from '@/types/interface/checkpoint'
+import {
+    CheckpointsPayloadInterface,
+    FormattedCheckpointsInterface,
+} from '@/types/interface/checkpoint'
 
 export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)
@@ -79,7 +82,7 @@ export default function CheckpointsPage() {
                     data={formattedCheckpoints}
                     columns={checkpointsColumns}
                     hasBackground
-                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                    getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                         const sorts = sorting.reduce((acc, value) => {
                             const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -130,6 +133,10 @@ export default function CheckpointsPage() {
                         setCheckpointsQuery({
                             ...checkpointsQuery,
                             sorts,
+                            filter: {
+                                ...checkpointsQuery.filter,
+                                checkpoint_name: filter,
+                            },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

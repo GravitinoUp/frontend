@@ -10,11 +10,15 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetUsersQuery } from '@/redux/api/users'
-import { FormattedUsersInterface } from '@/types/interface/user'
+import {
+    FormattedUsersInterface,
+    UsersPayloadInterface,
+} from '@/types/interface/user'
 import { formatInitials } from '@/utils/helpers'
 
 export default function UsersPage() {
-    const [usersQuery, setUsersQuery] = useState(placeholderQuery)
+    const [usersQuery, setUsersQuery] =
+        useState<UsersPayloadInterface>(placeholderQuery)
 
     const {
         data: users = { count: 0, data: [] },
@@ -78,7 +82,7 @@ export default function UsersPage() {
                     data={formattedUsers}
                     columns={usersColumns}
                     hasBackground
-                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                    getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                         const sorts = sorting.reduce((acc, value) => {
                             const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -134,6 +138,10 @@ export default function UsersPage() {
                         setUsersQuery({
                             ...usersQuery,
                             sorts,
+                            filter: {
+                                ...usersQuery.filter,
+                                person: { last_name: filter },
+                            },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

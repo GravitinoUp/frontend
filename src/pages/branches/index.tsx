@@ -62,12 +62,16 @@ const BranchesPage = () => {
                     data={branches.data}
                     columns={branchesColumns}
                     hasBackground
-                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                    getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                         const sorts = getColumnSorts(sorting)
 
                         setBranchesQuery({
                             ...branchesQuery,
                             sorts,
+                            filter: {
+                                ...branchesQuery.filter,
+                                branch_name: filter,
+                            },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

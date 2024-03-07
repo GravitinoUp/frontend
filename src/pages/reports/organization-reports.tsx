@@ -94,7 +94,7 @@ export default function OrganizationReportsPage() {
                 data={formattedReports}
                 columns={reportsColumns}
                 hasBackground
-                getTableInfo={(pageSize, pageIndex, sorting) => {
+                getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                     const sorts = sorting.reduce((acc, value) => {
                         const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -126,6 +126,10 @@ export default function OrganizationReportsPage() {
                     setOrganizationReportsQuery({
                         ...organizationReportsQuery,
                         sorts,
+                        filter: {
+                            ...organizationReportsQuery.filter,
+                            organization: { full_name: filter },
+                        },
                         offset: { count: pageSize, page: pageIndex + 1 },
                     })
                 }}

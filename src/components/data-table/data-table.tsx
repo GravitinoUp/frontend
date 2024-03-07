@@ -41,7 +41,8 @@ interface DataTableProps<TData, TValue> {
     getTableInfo?: (
         pageSize: number,
         pageIndex: number,
-        sorting: SortingState
+        sorting: SortingState,
+        filter: string
     ) => void
     paginationInfo: { itemCount: number; pageSize: number }
     isLoading?: boolean
@@ -98,16 +99,17 @@ function DataTable<TData, TValue>({
         state: {
             columnFilters,
             columnVisibility,
-            globalFilter,
+            //globalFilter,
             rowSelection,
         },
         manualPagination: true,
         manualSorting: true,
+        manualFiltering: true,
         pageCount: Math.ceil(
             paginationInfo.itemCount / paginationInfo.pageSize
         ),
         onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
+        //onGlobalFilterChange: setGlobalFilter,
         onRowSelectionChange: setRowSelection,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -118,12 +120,14 @@ function DataTable<TData, TValue>({
         getTableInfo(
             table.getState().pagination.pageSize,
             table.getState().pagination.pageIndex,
-            table.getState().sorting
+            table.getState().sorting,
+            globalFilter
         )
     }, [
         table.getState().pagination.pageSize,
         table.getState().pagination.pageIndex,
         table.getState().sorting,
+        globalFilter,
     ])
 
     return (

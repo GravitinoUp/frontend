@@ -140,7 +140,7 @@ export default function CheckpointReportsPage() {
                     columns={reportsColumns}
                     hasBackground
                     searchSuffixIconClick={() => setFilterFormOpen(true)}
-                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                    getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                         const sorts = sorting.reduce((acc, value) => {
                             const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -172,6 +172,10 @@ export default function CheckpointReportsPage() {
                         setCheckpointReportsQuery({
                             ...checkpointReportsQuery,
                             sorts,
+                            filter: {
+                                ...checkpointReportsQuery.filter,
+                                checkpoint: { checkpoint_name: filter },
+                            },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}
