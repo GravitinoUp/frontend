@@ -39,7 +39,13 @@ export const InputField = forwardRef<HTMLInputElement, InputProps>(
                         type={type}
                         ref={ref}
                         {...props}
-                        prefixIcon={prefixIcon}
+                        prefixIcon={
+                            prefixIcon && (
+                                <div className="flex items-center justify-center pl-3">
+                                    {prefixIcon}
+                                </div>
+                            )
+                        }
                         suffixIcon={suffixIcon}
                     />
                 </FormControl>

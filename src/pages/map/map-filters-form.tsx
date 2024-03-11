@@ -1,6 +1,6 @@
-import { Dispatch, Fragment, SetStateAction } from "react"
-import i18next from "i18next"
-import { useTranslation } from "react-i18next"
+import { Dispatch, Fragment, SetStateAction } from 'react'
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import CarIcon from '@/assets/icons/car_icon.svg'
 import LakeIcon from '@/assets/icons/lake_icon.svg'
@@ -11,26 +11,47 @@ import RiverIcon from '@/assets/icons/river_icon.svg'
 import ShipIcon from '@/assets/icons/ship_icon.svg'
 import TrainIcon from '@/assets/icons/train_icon.svg'
 
-import CustomForm, { useForm } from "@/components/form/form"
-import { InputField } from "@/components/input-field/input-field"
-import { Button } from "@/components/ui/button"
-import { FormField } from "@/components/ui/form"
-import { CHECKPOINT_TYPES } from "@/constants/constants"
-import { cn } from "@/lib/utils"
+import CustomForm, { useForm } from '@/components/form/form'
+import { InputField } from '@/components/input-field/input-field'
+import { Button } from '@/components/ui/button'
+import { FormField } from '@/components/ui/form'
+import { CHECKPOINT_TYPES } from '@/constants/constants'
+import { cn } from '@/lib/utils'
 
 const filterSchema = z.object({
-    checkpoint_types: z.array(z.object({ checkpoint_type_id: z.number(), checkpoint_type_name: z.string().optional() })),
-    minPercent: z.string().default('0').refine((value) => Number(value) >= 0 && Number(value) <= 100, i18next.t('map.errors.invalid.percent')),
-    maxPercent: z.string().default('100').refine((value) => Number(value) >= 0 && Number(value) <= 100, i18next.t('map.errors.invalid.percent')),
+    checkpoint_types: z.array(
+        z.object({
+            checkpoint_type_id: z.number(),
+            checkpoint_type_name: z.string().optional(),
+        })
+    ),
+    minPercent: z
+        .string()
+        .default('0')
+        .refine(
+            (value) => Number(value) >= 0 && Number(value) <= 100,
+            i18next.t('map.errors.invalid.percent')
+        ),
+    maxPercent: z
+        .string()
+        .default('100')
+        .refine(
+            (value) => Number(value) >= 0 && Number(value) <= 100,
+            i18next.t('map.errors.invalid.percent')
+        ),
 })
 
 interface MapFiltersFormProps {
-    handleSubmit: (values: z.infer<typeof filterSchema>) => void,
+    handleSubmit: (values: z.infer<typeof filterSchema>) => void
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
     data?: z.infer<typeof filterSchema>
 }
 
-const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormProps) => {
+const MapFiltersForm = ({
+    handleSubmit,
+    setDialogOpen,
+    data,
+}: MapFiltersFormProps) => {
     const form = useForm({
         schema: filterSchema,
         defaultValues: data,
@@ -55,18 +76,20 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                                     key={type}
                                     className={cn(
                                         field.value.find(
-                                            (value) => value.checkpoint_type_id === type,
+                                            (value) =>
+                                                value.checkpoint_type_id ===
+                                                type
                                         )
                                             ? 'bg-[#3F434A]'
                                             : 'bg-muted',
-                                        'p-2 rounded-full hover:bg-[#3F434A] group',
+                                        'p-2 rounded-full hover:bg-[#3F434A] group'
                                     )}
                                     onClick={() => {
-                                        console.log(type);
-
                                         if (
                                             !field.value.find(
-                                                (value) => value.checkpoint_type_id === type,
+                                                (value) =>
+                                                    value.checkpoint_type_id ===
+                                                    type
                                             )
                                         ) {
                                             field.onChange([
@@ -76,30 +99,54 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                                         } else {
                                             field.onChange(
                                                 field.value.filter(
-                                                    (value) => value.checkpoint_type_id !== type,
-                                                ),
+                                                    (value) =>
+                                                        value.checkpoint_type_id !==
+                                                        type
+                                                )
                                             )
                                         }
                                     }}
                                 >
-                                    <div className={`
+                                    <div
+                                        className={`
                                             w-6 h-6
                                             flex items-center justify-center
-                                            ${field.value.find(
-                                        (value) => value.checkpoint_type_id === type,
-                                    )
-                                            ? 'fill-muted'
-                                            : 'fill-[#3F434A]'}
+                                            ${
+                                                field.value.find(
+                                                    (value) =>
+                                                        value.checkpoint_type_id ===
+                                                        type
+                                                )
+                                                    ? 'fill-muted'
+                                                    : 'fill-[#3F434A]'
+                                            }
                                                 group-hover:fill-muted
-                                        `}>
-                                        {type == CHECKPOINT_TYPES.CAR && <CarIcon />}
-                                        {type == CHECKPOINT_TYPES.TRAIN && <TrainIcon />}
-                                        {type == CHECKPOINT_TYPES.SHIP && <ShipIcon />}
-                                        {type == CHECKPOINT_TYPES.PLANE && <PlaneIcon />}
-                                        {type == CHECKPOINT_TYPES.RIVER && <RiverIcon />}
-                                        {type == CHECKPOINT_TYPES.MIXED && <MixedIcon />}
-                                        {type == CHECKPOINT_TYPES.PEOPLE && <PeopleIcon />}
-                                        {type == CHECKPOINT_TYPES.LAKE && <LakeIcon />}
+                                        `}
+                                    >
+                                        {type == CHECKPOINT_TYPES.CAR && (
+                                            <CarIcon />
+                                        )}
+                                        {type == CHECKPOINT_TYPES.TRAIN && (
+                                            <TrainIcon />
+                                        )}
+                                        {type == CHECKPOINT_TYPES.SHIP && (
+                                            <ShipIcon />
+                                        )}
+                                        {type == CHECKPOINT_TYPES.PLANE && (
+                                            <PlaneIcon />
+                                        )}
+                                        {type == CHECKPOINT_TYPES.RIVER && (
+                                            <RiverIcon />
+                                        )}
+                                        {type == CHECKPOINT_TYPES.MIXED && (
+                                            <MixedIcon />
+                                        )}
+                                        {type == CHECKPOINT_TYPES.PEOPLE && (
+                                            <PeopleIcon />
+                                        )}
+                                        {type == CHECKPOINT_TYPES.LAKE && (
+                                            <LakeIcon />
+                                        )}
                                     </div>
                                 </div>
                             ))}
@@ -108,7 +155,7 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                 )}
             />
 
-            <Fragment >
+            <Fragment>
                 <div className="flex mt-6">
                     <h3 className="text-xl">
                         {t('map.filters.completed.percent')}
@@ -119,7 +166,14 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                             name="minPercent"
                             render={({ field }) => (
                                 <InputField
-                                    prefixIcon={<span className="mx-2 flex items-center font-medium text-sm"><p className="font-black text-lg mr-1">%</p>{t('from')}</span>}
+                                    prefixIcon={
+                                        <span className="flex items-center font-medium text-sm">
+                                            <p className="font-black text-lg mr-2">
+                                                %
+                                            </p>
+                                            {t('from')}
+                                        </span>
+                                    }
                                     {...field}
                                 />
                             )}
@@ -130,7 +184,14 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                             name="maxPercent"
                             render={({ field }) => (
                                 <InputField
-                                    prefixIcon={<span className="mx-2 flex items-center font-medium text-sm"><p className="font-black text-lg mr-1">%</p>{t('to')}</span>}
+                                    prefixIcon={
+                                        <span className="flex items-center font-medium text-sm">
+                                            <p className="font-black text-lg mr-2">
+                                                %
+                                            </p>
+                                            {t('to')}
+                                        </span>
+                                    }
                                     {...field}
                                 />
                             )}
@@ -139,10 +200,7 @@ const MapFiltersForm = ({ handleSubmit, setDialogOpen, data }: MapFiltersFormPro
                 </div>
             </Fragment>
             <div className="flex items-center">
-                <Button
-                    className="mt-10 mr-4 px-10"
-                    type="submit"
-                >
+                <Button className="mt-10 mr-4 px-10" type="submit">
                     {t('button.action.apply')}
                 </Button>
                 <Button
