@@ -8,14 +8,24 @@ export const dashboardReportsColumns: ColumnDef<FormattedReportInterface>[] = [
     {
         id: 'select',
         cell: ({ row }) => {
-            const { completedPercent } = row.original
+            const { completed_percent } = row.original
 
-            return <div className={`
+            return (
+                <div
+                    className={`
                 w-[3px]
                 rounded-full
                 h-12
-                ${completedPercent >= QUALITY_STATUSES.HIGH ? 'bg-[#49C96D]' : completedPercent >= QUALITY_STATUSES.MEDIUM ? 'bg-[#FFD240]' : 'bg-[#FF6B6B]'}
-            `} />
+                ${
+                    completed_percent >= QUALITY_STATUSES.HIGH
+                        ? 'bg-[#49C96D]'
+                        : completed_percent >= QUALITY_STATUSES.MEDIUM
+                        ? 'bg-[#FFD240]'
+                        : 'bg-[#FF6B6B]'
+                }
+            `}
+                />
+            )
         },
         enableSorting: false,
         enableHiding: false,
@@ -26,28 +36,28 @@ export const dashboardReportsColumns: ColumnDef<FormattedReportInterface>[] = [
     },
     {
         header: `${i18next.t('completed.task.count')}, % `,
-        accessorKey: 'completedPercent',
+        accessorKey: 'completed_percent',
         cell: ({ row }) => {
-            const { completedPercent } = row.original
+            const { completed_percent } = row.original
 
-            return <CircularBar value={completedPercent} />
+            return <CircularBar value={completed_percent} />
         },
     },
     {
         header: i18next.t('completed.task.count'),
-        accessorKey: 'completedCount',
+        accessorKey: 'completed_count',
     },
     {
         header: `${i18next.t('checked.task.count')}, % `,
-        accessorKey: 'checkedPercent',
+        accessorKey: 'checked_percent',
         cell: ({ row }) => {
-            const { checkedPercent } = row.original
+            const { checked_percent } = row.original
 
-            return <CircularBar value={checkedPercent} />
+            return <CircularBar value={checked_percent} />
         },
     },
     {
         header: i18next.t('checked.task.count'),
-        accessorKey: 'checkedCount',
+        accessorKey: 'checked_count',
     },
 ]

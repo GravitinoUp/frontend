@@ -39,3 +39,13 @@ export const QUALITY_STATUSES = {
     MEDIUM: 50,
     HIGH: 90,
 }
+
+export const FEEDBACK_SUBJECTS = {
+    cleanliness: i18next.t('feedback.subject.cleanliness'),
+    breakdown: i18next.t('feedback.subject.breakdown'),
+}
+
+export const FEEDBACK_DEPARTMENTS = {
+    fss: i18next.t('feedback.department.fss'),
+    customs: i18next.t('feedback.department.customs'),
+}
