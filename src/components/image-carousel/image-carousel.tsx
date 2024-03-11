@@ -36,14 +36,23 @@ const ImageCarousel = ({
                 setOpen={setOpen}
             />
 
-                <Carousel
-                    className="flex w-fit border rounded-xl mt-10 p-3 select-none"
-                    opts={{ skipSnaps: true }}
-                >
-                    <CarouselContent>
-                        {files.map((value, index) => (
-                            <CarouselItem key={value} className="basis-auto">
-                                <div className="relative rounded-xl overflow-hidden group">
+            <Carousel
+                className="flex w-fit border rounded-xl mt-10 p-3 select-none"
+                opts={{ skipSnaps: true }}
+            >
+                <CarouselContent>
+                    {files.map((value, index) => (
+                        <CarouselItem key={value.id} className="basis-auto">
+                            {setSelectedFiles && (
+                                <div
+                                    className="flex justify-center absolute w-[90px] z-10"
+                                    onClick={() => handleFileDelete(value.id)}
+                                >
+                                    <RemoveIcon />
+                                </div>
+                            )}
+                            <div className="relative rounded-xl overflow-hidden group">
+                                {!setSelectedFiles && (
                                     <div className="absolute w-full h-full flex justify-center items-center bg-black bg-opacity-50 invisible group-hover:visible">
                                         <Button
                                             variant="ghost"
