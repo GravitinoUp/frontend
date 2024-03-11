@@ -68,7 +68,7 @@ export default function TaskListPage() {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             actionButton={<ExcelButton buttonType="import" />}
-                            addItemForm={<ImportForm />}
+                            addItemForm={<ImportForm type="orders" />}
                         />
                     </div>
                 </div>
