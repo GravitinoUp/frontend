@@ -85,8 +85,6 @@ const MapFiltersForm = ({
                                         'p-2 rounded-full hover:bg-[#3F434A] group'
                                     )}
                                     onClick={() => {
-                                        console.log(type)
-
                                         if (
                                             !field.value.find(
                                                 (value) =>
