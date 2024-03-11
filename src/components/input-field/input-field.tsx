@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 interface InputProps extends ComponentPropsWithoutRef<'input'> {
     label?: string
     type?: string
+    prefixIcon?: React.ReactNode
     suffixIcon?: React.ReactNode
     isRequired?: boolean
     className?: string
@@ -16,6 +17,7 @@ export const InputField = forwardRef<HTMLInputElement, InputProps>(
         {
             type = 'text',
             label,
+            prefixIcon,
             suffixIcon,
             isRequired = false,
             className,
@@ -37,6 +39,7 @@ export const InputField = forwardRef<HTMLInputElement, InputProps>(
                         type={type}
                         ref={ref}
                         {...props}
+                        prefixIcon={prefixIcon}
                         suffixIcon={suffixIcon}
                     />
                 </FormControl>

@@ -1,9 +1,13 @@
 import { BranchInterface, BranchSortInterface } from './branch'
 import { IQuery, SortOptionsType } from './fetch'
+import { ReportFilterInterface } from './report'
+import { ReportInterface } from './reports'
+import { RecursivePartial } from '@/utils/recursive-partial'
 
 export interface CheckpointsPayloadInterface extends IQuery {
     sorts: CheckpointSortInterface
-    filter: Partial<CheckpointInterface>
+    filter: RecursivePartial<CheckpointFilterInterface>
+    report_filter?: RecursivePartial<ReportFilterInterface>
 }
 
 export interface CheckpointTypesPayloadInterface extends IQuery {
@@ -56,6 +60,11 @@ export interface CheckpointInterface {
     createdAt: Date
     updatedAt: Date
     property_values?: number[] | null
+    report?: ReportInterface
+}
+
+export type CheckpointFilterInterface = Omit<CheckpointInterface, 'checkpoint_type'> & {
+    checkpoint_type?: CheckpointTypeFilterInterface[]
 }
 
 export interface CheckpointSortInterface {
@@ -76,6 +85,9 @@ export interface CheckpointSortInterface {
 export interface CheckpointTypeInterface {
     checkpoint_type_id: number
     checkpoint_type_name: string
+}
+export type CheckpointTypeFilterInterface = Omit<CheckpointTypeInterface, 'checkpoint_type_name'> & {
+    checkpoint_type_name?: string
 }
 
 export type CheckpointTypeSortInterface = Partial<

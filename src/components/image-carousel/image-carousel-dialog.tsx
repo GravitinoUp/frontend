@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Button } from '../ui/button'
 import { FileData } from '../file-container/multi-file-input'
 import {
     Carousel,
@@ -22,39 +23,70 @@ const ImageCarouselDialog = ({
     startIndex,
     open,
     setOpen,
-}: ImageCarouselDialogProps) => (
-    <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent
-            className="bg-transparent border-none rounded-none w-full max-w-full h-screen shadow-none"
-            onOpenAutoFocus={(e) => e.preventDefault}
-            closeIcon={<CloseRounded />}
-        >
-            <Carousel
-                className="border-none rounded-xl mt-10 p-3 select-none"
-                opts={{ startIndex }}
-            >
-                <CarouselContent className="h-full">
-                    {files.map((value) => (
-                        <CarouselItem
-                            key={value.id}
-                            className="flex justify-center"
+}: ImageCarouselDialogProps) => {
+    const [rotation, setRotation] = useState(0)
+
+    useEffect(() => {
+        console.log(rotation)
+    }, [rotation])
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent
+                className="bg-transparent border-none rounded-none w-full max-w-full h-screen shadow-none"
+                onOpenAutoFocus={(e) => e.preventDefault}
+                header={
+                    <div className="absolute pt-4 pl-4">
+                        <Button
+                            variant="ghost"
+                            onClick={() => setRotation(rotation - 90)}
                         >
-                            <img
-                                src={
-                                    value.file
-                                        ? URL.createObjectURL(value.file)
-                                        : value.fileURL
-                                }
-                                className="object-contain align-middle"
-                            />
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-0" />
-                <CarouselNext className="right-0" />
-            </Carousel>
-        </DialogContent>
-    </Dialog>
-)
+                            Повернуть на 90 влево
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            onClick={() => setRotation(rotation + 90)}
+                        >
+                            Повернуть на 90 вправо
+                        </Button>
+                    </div>
+                }
+                closeIcon={<CloseRounded />}
+            >
+                <Carousel
+                    className="border-none rounded-xl mt-10 p-3 select-none"
+                    opts={{ startIndex }}
+                >
+                    <CarouselContent className="h-full">
+                        {files.map((value) => (
+                            <CarouselItem
+                                key={value.id}
+                                className="flex justify-center"
+                            >
+                                <img
+                                    src={
+                                        value.file
+                                            ? URL.createObjectURL(value.file)
+                                            : value.fileURL
+                                    }
+                                    className="object-contain"
+                                    style={{
+                                        transform: `rotate(${rotation}deg)`,
+                                        scale:
+                                            (rotation / 90) % 2 !== 0
+                                                ? '0.7'
+                                                : undefined,
+                                    }}
+                                />
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-0" />
+                    <CarouselNext className="right-0" />
+                </Carousel>
+            </DialogContent>
+        </Dialog>
+    )
+}
 
 export default ImageCarouselDialog
