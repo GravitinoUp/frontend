@@ -3,7 +3,10 @@ import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { z } from 'zod'
+import EmailIcon from '@/assets/icons/email.svg'
 import ImageIcon from '@/assets/icons/image.svg'
+import PhoneIcon from '@/assets/icons/phone.svg'
+import UserIcon from '@/assets/icons/user.svg'
 import { FileData } from '@/components/file-container/multi-file-input'
 import CustomForm, { useForm } from '@/components/form/form'
 import ImageCarousel from '@/components/image-carousel/image-carousel'
@@ -169,6 +172,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                                 label={t('full.name')}
                                 className="mt-10"
                                 isRequired
+                                prefixIcon={<UserIcon />}
                                 {...field}
                             />
                         )}
@@ -181,6 +185,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                                 label="Email"
                                 className="mt-5"
                                 isRequired
+                                prefixIcon={<EmailIcon />}
                                 {...field}
                             />
                         )}
@@ -192,6 +197,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                             <InputField
                                 label={t('phone')}
                                 className="mt-5"
+                                prefixIcon={<PhoneIcon />}
                                 {...field}
                             />
                         )}
