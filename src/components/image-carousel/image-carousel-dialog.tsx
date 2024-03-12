@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { EmblaCarouselType } from 'embla-carousel'
 import { FileData } from '../file-container/multi-file-input'
 import {
@@ -32,10 +32,6 @@ const ImageCarouselDialog = ({
         EmblaCarouselType | undefined
     >()
     const [slidesInView, setSlidesInView] = useState<number[]>([])
-
-    useEffect(() => {
-        console.log(rotation)
-    }, [rotation])
 
     const handleSlidesInView = (api: EmblaCarouselType) => {
         setSlidesInView(api.slidesInView())
@@ -78,7 +74,7 @@ const ImageCarouselDialog = ({
                                             ? URL.createObjectURL(value.file)
                                             : value.fileURL
                                     }
-                                    className={'object-scale-down'}
+                                    className="object-scale-down"
                                     style={{
                                         transform: `rotate(${rotation}deg)`,
                                         scale:
