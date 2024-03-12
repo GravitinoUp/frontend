@@ -17,12 +17,13 @@ import DataTable from '@/components/data-table/data-table'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import YandexMap from '@/components/map/yandex-map'
 import RoundedButton from '@/components/rounded-button/rounded-button'
-import { LoadingSpinner } from '@/components/spinner/spinner'
+import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
 } from '@/components/ui/accordion'
+import { ScrollArea } from '@/components/ui/scroll-area.tsx'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { useGetBranchReportsQuery } from '@/redux/api/reports'
 import { CheckpointsPayloadInterface } from '@/types/interface/checkpoint'
@@ -55,7 +56,7 @@ export function DashboardPage() {
 
     const {
         data = { count: 0, data: [] },
-        isLoading: isReportsLoading,
+        isFetching: isReportsFetching,
         isError: isReportsError,
     } = useGetBranchReportsQuery(branchReportsQuery)
 
@@ -86,7 +87,6 @@ export function DashboardPage() {
     return (
         <div className="w-full h-full">
             {isError || (isReportsError && <CustomAlert />)}
-            {isLoading && isReportsLoading && <LoadingSpinner />}
             {isMapExpanded ? (
                 <div className="w-full h-full flex flex-col border-2">
                     <div className="border-b-2 bg-white flex justify-between items-center px-6">
@@ -153,10 +153,16 @@ export function DashboardPage() {
                             />
                         </div>
                     </div>
-                    <YandexMap
-                        checkpoints={checkpoints}
-                        enableRounded={false}
-                    />
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-[100%]">
+                            <LoadingSpinner className="w-16 h-16 text-primary" />
+                        </div>
+                    ) : (
+                        <YandexMap
+                            checkpoints={checkpoints}
+                            enableRounded={false}
+                        />
+                    )}
                 </div>
             ) : (
                 <div className="w-full h-full p-7">
@@ -263,27 +269,33 @@ export function DashboardPage() {
                                         />
                                     </div>
                                 </DashboardCardHeader>
-                                <AccordionContent className="max-h-[600px] overflow-auto">
-                                    <DataTable
-                                        data={formattedReports}
-                                        columns={dashboardReportsColumns}
-                                        hasBackground
-                                        getTableInfo={(pageSize, pageIndex) => {
-                                            setBranchReportsQuery({
-                                                ...branchReportsQuery,
-                                                offset: {
-                                                    count: pageSize,
-                                                    page: pageIndex + 1,
-                                                },
-                                            })
-                                        }}
-                                        paginationInfo={{
-                                            itemCount: data.count,
-                                            pageSize:
-                                                branchReportsQuery.offset.count,
-                                        }}
-                                        isLoading={isLoading}
-                                    />
+                                <AccordionContent className="overflow-auto">
+                                    <ScrollArea className="w-full h-[600px]">
+                                        <DataTable
+                                            data={formattedReports}
+                                            columns={dashboardReportsColumns}
+                                            hasBackground
+                                            getTableInfo={(
+                                                pageSize,
+                                                pageIndex
+                                            ) => {
+                                                setBranchReportsQuery({
+                                                    ...branchReportsQuery,
+                                                    offset: {
+                                                        count: pageSize,
+                                                        page: pageIndex + 1,
+                                                    },
+                                                })
+                                            }}
+                                            paginationInfo={{
+                                                itemCount: data.count,
+                                                pageSize:
+                                                    branchReportsQuery.offset
+                                                        .count,
+                                            }}
+                                            isLoading={isReportsFetching}
+                                        />
+                                    </ScrollArea>
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem
@@ -326,7 +338,13 @@ export function DashboardPage() {
                                     </div>
                                 </DashboardCardHeader>
                                 <AccordionContent className="w-full h-[600px]">
-                                    <YandexMap checkpoints={checkpoints} />
+                                    {isLoading ? (
+                                        <div className="flex justify-center items-center h-[100%]">
+                                            <LoadingSpinner className="w-16 h-16 text-primary" />
+                                        </div>
+                                    ) : (
+                                        <YandexMap checkpoints={checkpoints} />
+                                    )}
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>

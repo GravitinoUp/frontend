@@ -33,7 +33,7 @@ export default function CheckpointsPage() {
     const {
         data: checkpoints = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
         refetch,
     } = useGetCheckpointsQuery(checkpointsQuery)
 
@@ -154,7 +154,7 @@ export default function CheckpointsPage() {
                         itemCount: checkpoints.count,
                         pageSize: checkpointsQuery.offset.count,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             )}
         </PageLayout>

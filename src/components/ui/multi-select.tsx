@@ -28,7 +28,7 @@ export function MultiSelect({
     const inputRef = React.useRef<HTMLInputElement>(null)
     const [open, setOpen] = React.useState(false)
     const [selected, setSelected] = React.useState<Option[]>(
-        defaultOptions ?? [],
+        defaultOptions ?? []
     )
     const [inputValue, setInputValue] = React.useState('')
     const [allSelected, setAllSelected] = React.useState(false)
@@ -60,7 +60,7 @@ export function MultiSelect({
 
                             if (
                                 !prev.some(
-                                    (v) => v.value === input.value.trim(),
+                                    (v) => v.value === input.value.trim()
                                 )
                             ) {
                                 newSelected.push({
@@ -91,14 +91,14 @@ export function MultiSelect({
                 }
             }
         },
-        [],
+        []
     )
 
     const selectables = options.filter(
         (option) =>
             !selected.some(
-                (item) => JSON.stringify(option) === JSON.stringify(item),
-            ),
+                (item) => JSON.stringify(option) === JSON.stringify(item)
+            )
     )
 
     React.useEffect(() => {
@@ -126,14 +126,13 @@ export function MultiSelect({
             onKeyDown={handleKeyDown}
             className="overflow-visible bg-transparent"
         >
-            <div
-                className="group border border-input rounded-xl px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring">
+            <div className="group border border-input rounded-xl px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-[#0784D1]">
                 <div className="flex gap-1 flex-wrap">
                     {selected.map((item) => (
                         <Badge key={item.value} variant="secondary">
                             {item.label}
                             <button
-                                className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus-within:ring-[#0784D1] focus:ring-offset-2"
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         handleUnselect(item)
@@ -155,7 +154,9 @@ export function MultiSelect({
                         value={inputValue}
                         onValueChange={setInputValue}
                         onBlur={() => showItems && setOpen(false)}
-                        onFocus={() => selectables.length > 0 && showItems && setOpen(true)}
+                        onFocus={() =>
+                            selectables.length > 0 && showItems && setOpen(true)
+                        }
                         placeholder={selected.length > 0 ? void 0 : placeholder}
                         disabled={disabled}
                         className="ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1 disabled:cursor-not-allowed disabled:opacity-50"
@@ -164,8 +165,7 @@ export function MultiSelect({
             </div>
             <div className="relative mt-2">
                 {open ? (
-                    <div
-                        className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+                    <div className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
                         <CommandGroup className="h-full overflow-auto">
                             {options.length > 0 && (
                                 <CommandItem

@@ -27,7 +27,7 @@ const BranchesPage = () => {
     const {
         data: branches = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
         refetch,
     } = useGetBranchesQuery(branchesQuery)
 
@@ -90,7 +90,7 @@ const BranchesPage = () => {
                         itemCount: branches.count,
                         pageSize: branchesQuery.offset.count,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             )}
         </PageLayout>
