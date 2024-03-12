@@ -98,8 +98,14 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
             facility: String(task.facility.facility_id),
             executor: String(task.executor.organization_id),
             priority: String(task.priority.priority_id),
-            startDate: parseISO(task.planned_datetime),
-            endDate: parseISO(task.task_end_datetime),
+            startDate:
+                task.planned_datetime && task.planned_datetime !== null
+                    ? parseISO(task.planned_datetime)
+                    : undefined,
+            endDate:
+                task.task_end_datetime && task.task_end_datetime !== null
+                    ? parseISO(task.task_end_datetime)
+                    : undefined,
         },
     })
     const taskType = useMemo(
