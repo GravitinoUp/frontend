@@ -4,13 +4,17 @@ import { Layout } from './components/Layout'
 import { useAppDispatch } from './hooks/reduxHooks'
 import BranchesPage from './pages/branches'
 import CheckpointsPage from './pages/checkpoints'
-import { DashboardPage } from './pages/dashboard/page'
+import { DashboardPage } from './pages/dashboard'
+import { FeedbackPage } from './pages/feedback'
 import ManagePropertiesPage from './pages/manage-properties'
 import MapPage from './pages/map'
 import MediaReportsPage from './pages/mediareports/page'
 import NotFoundPage from './pages/notfound/'
 import OrganizationsPage from './pages/organizations'
-import ReportsPage from './pages/reports/page'
+import ReportsPage from './pages/reports'
+import CheckpointReportsPage from './pages/reports/checkpoint-reports'
+import OrganizationReportsPage from './pages/reports/organization-reports'
+import SavedReportsPage from './pages/reports/saved-reports'
 import RolesPage from './pages/roles'
 import SettingsPage from './pages/settings'
 import { SignInPage } from './pages/signin/page'
@@ -19,7 +23,7 @@ import TaskPage from './pages/tasklist/task'
 import UsersPage from './pages/users'
 import { useRefreshTokenMutation } from './redux/api/auth'
 import { setAccessToken } from './redux/reducers/authSlice'
-import { getCookieValue } from './utils/helpers'
+import { getJWTtokens } from './utils/helpers'
 
 function App() {
     const [loading, setLoading] = useState<boolean | null>(null)
@@ -35,14 +39,18 @@ function App() {
 
     useEffect(() => {
         if (loading === null) {
-            const accessToken = getCookieValue('accessToken')
-            const refreshToken = getCookieValue('refreshToken')
+            const { accessToken, refreshToken } = getJWTtokens()
 
             if (refreshToken) {
                 fetchRefreshToken({ refresh_token: `${refreshToken}` })
                 setLoading(true)
             } else if (!accessToken) {
-                navigate('/signin')
+                if (
+                    path.pathname !== '/feedback-guest' &&
+                    path.pathname !== '/feedback-worker'
+                ) {
+                    navigate('/signin')
+                }
                 setLoading(false)
             }
         }
@@ -66,6 +74,14 @@ function App() {
         }
     }, [isError])
 
+    useEffect(() => {
+        const { accessToken, refreshToken } = getJWTtokens()
+
+        if (!accessToken && !refreshToken) {
+            navigate('/signin')
+        }
+    }, [document.cookie])
+
     if (loading) return <></>
 
     return (
@@ -74,7 +90,21 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index path="dashboard" element={<DashboardPage />} />
                     <Route path="mediareports" element={<MediaReportsPage />} />
-                    <Route path="reports" element={<ReportsPage />} />
+                    <Route>
+                        <Route path="reports" element={<ReportsPage />} />
+                        <Route
+                            path="reports/checkpoints"
+                            element={<CheckpointReportsPage />}
+                        />
+                        <Route
+                            path="reports/checkpoints/organizations"
+                            element={<OrganizationReportsPage />}
+                        />
+                        <Route
+                            path="reports/saved"
+                            element={<SavedReportsPage />}
+                        />
+                    </Route>
                     <Route path="map" element={<MapPage />} />
                     <Route path="settings" element={<SettingsPage />} />
                     <Route>
@@ -97,6 +127,14 @@ function App() {
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/signin" element={<SignInPage />} />
+                <Route
+                    path="/feedback-guest"
+                    element={<FeedbackPage type={'guest'} />}
+                />
+                <Route
+                    path="/feedback-worker"
+                    element={<FeedbackPage type={'worker'} />}
+                />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>

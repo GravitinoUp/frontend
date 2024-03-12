@@ -1,3 +1,4 @@
+import { SortingState } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { FILE_SIZE_UNITS } from '@/constants/constants.ts'
 
@@ -12,7 +13,7 @@ export const getJWTtokens = () => {
 }
 
 // для форматирования даты с бэкенда в привычный формат. 2024-01-11T10:36:59.321Z ---> 11.01.2024
-export const formatDate = (date?: Date | null, includeTime?: boolean) => {
+export const formatDate = (date?: string | Date | null, includeTime?: boolean) => {
     if (!date) {
         return ''
     }
@@ -23,7 +24,7 @@ export const formatDate = (date?: Date | null, includeTime?: boolean) => {
 export const formatInitials = (
     firstName: string,
     lastName: string,
-    patronymic: string
+    patronymic: string,
 ) => {
     const str = `${lastName} ${firstName} ${patronymic}`
 
@@ -46,6 +47,15 @@ export const formatFileSize = (sizeInBytes: number) => {
 
     return `${formattedSize.toFixed(i !== 0 ? 2 : 0)} ${byteUnits[i]}`
 }
+
+export const getColumnSorts = (sorting: SortingState) =>
+    sorting.reduce(
+        (acc, value) => ({
+            ...acc,
+            [`${value.id}`]: value.desc ? 'DESC' : 'ASC',
+        }),
+        {}
+    )
 
 export const getCookieValue = (key: string) => {
     const cookieValue = document.cookie

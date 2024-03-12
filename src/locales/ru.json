@@ -1,5 +1,6 @@
 {
-    "gravitino.full.name": "ГРАВИТИНО АСУ УПР",
+    "gravitino.full.name": "ГРАВИТИНО АСУП",
+    "gravitino": "Гравитино",
     "authorization": "Авторизация",
     "authorization.title": "Войдите в свой аккаунт",
     "authorization.remember": "Запомнить меня",
@@ -11,9 +12,11 @@
     "tasks.list": "Список задач",
     "order": "Задача",
     "reports": "Отчеты",
+    "saved.reports": "Сохраненные отчеты",
     "maps": "Карты",
     "users": "Пользователи",
     "organizations": "Организации",
+    "executors": "Подрядчики",
     "organization": "Организация",
     "checkpoints": "Пункты пропуска",
     "checkpoint": "Пункт пропуска",
@@ -44,23 +47,30 @@
     "to.signin": "На страницу входа",
     "export": "Экспорт",
     "import": "Импорт",
+    "saved": "Сохраненные",
+    "size": "Размер",
     "files": "Файлы",
     "file.import.drag": "Перетащите файл или ",
+    "files.import.drag": "Перетащите файлы или ",
     "file.import.click": "Нажмите",
     "file.import": "чтобы Импортировать",
+    "file.download": "чтобы Загрузить",
     "file.example.download": "Скачать пример таблицы",
     "download.all": "Скачать все",
     "placeholder.search": "Искать...",
+    "placeholder.textarea": "Напишите что-нибудь",
     "action.dropdown.menu.open": "Открыть меню",
     "action.dropdown.edit": "Редактировать",
     "action.dropdown.delete": "Удалить",
+    "action.dropdown.download": "Скачать",
+    "action.dropdown.download.data": "Выгрузить данные",
     "number": "номер №.",
     "num": "Номер",
     "title": "Название",
     "title.full": "Полное наименование",
     "description": "Описание",
     "full.name": "ФИО",
-    "phone": "телефон",
+    "phone": "Телефон",
     "address": "адрес",
     "company": "компания",
     "registration.number": "Номер регистрации",
@@ -74,6 +84,8 @@
     "select.status": "Выберите статус задачи",
     "executor": "Исполнитель",
     "priority": "Приоритет",
+    "periodicity": "Периодичность",
+    "category": "Категория",
     "date": "Дата",
     "date.and.time": "Дата и время",
     "creation.date": "Дата создания",
@@ -88,6 +100,8 @@
     "choose.filters": "Подобрать фильтры",
     "visible.table.columns": "Отображение полей в таблице",
     "not.finished": "Не завершено",
+    "completed.task.count": "Исполненных задач",
+    "checked.task.count": "Проверенных задач",
     "button.action.enter": "Войти",
     "button.action.apply": "Применить",
     "button.action.reset": "Сбросить",
@@ -98,6 +112,13 @@
     "button.action.change.status": "Задать статус",
     "button.action.next": "Далее",
     "button.action.back": "Назад",
+    "button.action.files.upload": "Прикрепить",
+    "button.action.send": "Отправить",
+    "button.action.upload": "Загрузить",
+    "today.title": "Сегодня",
+    "yesterday.title": "Вчера",
+    "from": "от",
+    "to": "до",
     "tabs": {
         "common": "общее",
         "roles.and.permissions": "роли и права доступа",
@@ -120,6 +141,8 @@
             "organization": "Список организаций не загрузился. Попробуйте позднее.",
             "organization.types": "Типы организаций не загрузились. Попробуйте позднее.",
             "priority": "Список приоритетов не загрузился. Попробуйте позднее.",
+            "periodicity": "Список периодов не загрузился. Попробуйте позднее.",
+            "category": "Список категорий не загрузился. Попробуйте позднее.",
             "facility": "Список объектов обслуживания не загрузился. Попробуйте позднее.",
             "permissions": "Список прав не загрузился. Попробуйте позднее.",
             "status": "Список статусов не загрузился. Попробуйте позднее.",
@@ -136,6 +159,8 @@
             "facility": "Выберите объект обслуживания",
             "executor": "Выберите исполнителя",
             "priority": "Установите приоритет",
+            "periodicity": "Установите периодичность",
+            "category": "Выберите категорию",
             "start.date": "Выберите дату начала",
             "end.date": "Выберите дату окончания",
             "organization.type": "Выберите тип организации",
@@ -164,6 +189,8 @@
             "select": "Надо выбрать хотя бы один элемент из списка",
             "select.add": "Нужно добавить хотя бы одно значение",
             "task.priority": "Установите приоритет задачи",
+            "task.periodicity": "Установите периодичность задачи",
+            "task.category": "Выберите категорию",
             "task.type": "Выберите тип задачи",
             "start.date": "Укажите дату начала",
             "end.date": "Укажите дату окончания",
@@ -178,12 +205,20 @@
     },
     "task": {
         "status": {
-            "in-progress": "в работе",
-            "closed": "закрыта",
-            "canceled": "отменена",
-            "appointed": "назначена",
-            "deadline": "закрыта с нарушением дедлайна",
-            "need-work": "необходима доработка",
+            "header": {
+                "created": "Создано",
+                "appointed": "Назначено",
+                "closed": "Закрыто",
+                "canceled": "Отменено",
+                "deadline": "Закрыто с нарушением дедлайна"
+            },
+            "created": "Создана",
+            "in-progress": "В работе",
+            "closed": "Закрыта",
+            "canceled": "Отменена",
+            "appointed": "Назначена",
+            "deadline": "Закрыта с нарушением дедлайна",
+            "need-work": "Необходима доработка",
             "verification": "На проверке"
         },
         "title": "Название задачи",
@@ -219,7 +254,8 @@
                 },
                 "create": {
                     "m": "{{entityType}} успешно добавлен",
-                    "f": "{{entityType}} успешно добавлена"
+                    "f": "{{entityType}} успешно добавлена",
+                    "multiple": "{{entityType}} успешно добавлены"
                 },
                 "update": {
                     "m": "{{entityType}} успешно изменен",
@@ -243,6 +279,34 @@
         "gb": "Гб"
     },
     "map": {
-        "title": "Интерактивная карта"
-    }
+        "title": "Интерактивная карта",
+        "filters": {
+            "choose.checkpoints": "Выбрать типы пунктов пропуска",
+            "completed.percent": "Показывать по проценту исполненных задач"
+        },
+        "errors": {
+            "invalid.percent": "Число должно быть от 0 до 100"
+        }
+    },
+    "feedback": {
+        "title": "Оставить обратную связь",
+        "description": "Пожалуйста, внимательно заполните все поля ниже.",
+        "text": "Текст обращения",
+        "attach.images": "Прикрепить изображения",
+        "attach.images.limit": "не более 10 шт",
+        "agree": "Отправляя данную форму вы соглашаетесь с",
+        "agree.terms": "Политикой конфиденциальности",
+        "made.in": "Сделано в",
+        "subject": {
+            "title": "Тема обращения",
+            "cleanliness": "Жалоба на чистоту",
+            "breakdown": "Жалоба на поломку"
+        },
+        "department": {
+            "title": "Выбрать подразделение",
+            "fss": "Пограничная служба ФСБ",
+            "customs": "Таможня"
+        }
+    },
+    "date.picker.range.description": "Укажите диапозон дат"
 }

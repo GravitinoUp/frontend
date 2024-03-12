@@ -1,43 +1,32 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { initialColumnVisibility } from './constants'
-import TaskFiltersForm from './task-filters-form'
-import { tasksColumns, TasksFilterColumns } from './tasks-columns'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import DataTable from '@/components/data-table/data-table'
-import FormDialog from '@/components/form-dialog/form-dialog'
-import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
-import { OrderPayloadInterface } from '@/types/interface/orders'
-import { formatDate } from '@/utils/helpers'
+import TaskFiltersForm from './components/task-filters-form.tsx'
+import { initialColumnVisibility } from './constants.ts'
+import { tasksColumns, TasksFilterColumns } from './tasks-columns.tsx'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
+import DataTable from '@/components/data-table/data-table.tsx'
+import FormDialog from '@/components/form-dialog/form-dialog.tsx'
+import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
+import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
+import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
-function TaskListContent() {
+function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderPayloadInterface>({
-            offset: {
-                count: 50,
-                page: 1,
-            },
-            filter: {},
-            sorts: {
-                order_id: 'ASC',
-            },
-            period: {
-                date_start: '2024-01-01',
-                date_end: '2025-01-26',
-            },
-        })
-
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
-        initialColumnVisibility
+        localStorage.getItem('filterColumns') !== null
+            ? JSON.parse(localStorage.getItem('filterColumns')!)
+            : initialColumnVisibility
     )
 
+    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
+        TasksFilterQueryContext
+    )
     const {
         data = { count: 0, data: [] },
-        isError,
+        error,
         isLoading,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
@@ -45,25 +34,51 @@ function TaskListContent() {
 
     const formattedTasks = data.data.map((row) => ({
         key: row.order_id,
-        id: row.order_id,
-        facility: row.facility.facility_name,
-        checkpoint: row.facility?.checkpoint?.checkpoint_name,
-        taskDescription: row.order_description || '',
-        status: row.order_status?.order_status_name,
-        taskName: row.order_name || '',
-        priorityStatus: row.priority.priority_name,
+        order_id: row.order_id,
+        facility_name: row.facility.facility_name,
+        checkpoint_name: row.facility?.checkpoint?.checkpoint_name,
+        order_name: row.order_name || '',
+        order_description: row.order_description || '',
+        order_status_name: row.order_status?.order_status_name,
+        priority_name: row.priority.priority_name,
         executor: row.executor.short_name,
-        branch: row.facility.checkpoint.branch.branch_name,
-        taskCreator: `${row.creator?.person.last_name} ${row.creator?.person.first_name} ${row.creator?.person.patronymic}`,
+        branch_name: row.facility.checkpoint.branch.branch_name,
+        creator: formatInitials(
+            row.creator?.person.first_name,
+            row.creator?.person.last_name,
+            row.creator?.person.patronymic
+        ),
         taskType: row.task.task_id,
-        closeDate: formatDate(row.ended_at_datetime) || '',
+        ended_at_datetime: formatDate(row.ended_at_datetime) || '',
         deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
             row.task_end_datetime
         )}`,
     }))
 
-    if (isError) {
-        return <CustomAlert />
+    useEffect(() => {
+        localStorage.setItem(
+            'personalOrdersQuery',
+            JSON.stringify(personalOrdersQuery)
+        )
+    }, [personalOrdersQuery])
+
+    useEffect(() => {
+        localStorage.setItem('filterColumns', JSON.stringify(filterColumns))
+    }, [filterColumns])
+
+    useEffect(() => {
+        setPersonalOrdersQuery({
+            ...personalOrdersQuery,
+            filter: {
+                order_status: orderStatus
+                    ? [{ order_status_name: orderStatus }]
+                    : undefined,
+            },
+        })
+    }, [])
+
+    if (error) {
+        return <ErrorCustomAlert error={error} />
     }
 
     return (
@@ -72,7 +87,7 @@ function TaskListContent() {
                 open={formOpen}
                 setOpen={setFormOpen}
                 actionButton={<Fragment />}
-                size="md"
+                size="lg"
                 headerContent={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('choose.filters')}
@@ -117,7 +132,6 @@ function TaskListContent() {
                                     ),
                                 },
                             })
-
                             setFilterColumns(data.columns)
 
                             setFormOpen(false)
@@ -150,9 +164,95 @@ function TaskListContent() {
                 data={formattedTasks}
                 columns={tasksColumns}
                 columnVisibility={filterColumns}
-                getPaginationInfo={(pageSize, pageIndex) => {
+                getTableInfo={(pageSize, pageIndex, sorting) => {
+                    const sorts = sorting.reduce((acc, value) => {
+                        const currentSortOrder = value.desc ? 'DESC' : 'ASC'
+
+                        switch (value.id) {
+                            case 'facility_name':
+                                return {
+                                    ...acc,
+                                    facility: {
+                                        [`${value.id}`]: currentSortOrder,
+                                    },
+                                }
+                            case 'checkpoint_name':
+                                return {
+                                    ...acc,
+                                    facility: {
+                                        checkpoint: {
+                                            [`${value.id}`]: currentSortOrder,
+                                        },
+                                    },
+                                }
+                            case 'branch_name':
+                                return {
+                                    ...acc,
+                                    facility: {
+                                        checkpoint: {
+                                            branch: {
+                                                [`${value.id}`]:
+                                                    currentSortOrder,
+                                            },
+                                        },
+                                    },
+                                }
+                            case 'executor':
+                                return {
+                                    ...acc,
+                                    executor: {
+                                        short_name: currentSortOrder,
+                                    },
+                                }
+                            case 'creator':
+                                return {
+                                    ...acc,
+                                    creator: {
+                                        person: {
+                                            last_name: currentSortOrder,
+                                            first_name: currentSortOrder,
+                                            patronymic: currentSortOrder,
+                                        },
+                                    },
+                                }
+                            case 'priority_name':
+                                return {
+                                    ...acc,
+                                    priority: {
+                                        [`${value.id}`]: currentSortOrder,
+                                    },
+                                }
+                            case 'deliveryDate':
+                                return {
+                                    ...acc,
+                                    planned_datetime: currentSortOrder,
+                                    task_end_datetime: currentSortOrder,
+                                }
+                            case 'order_status_name':
+                                return {
+                                    ...acc,
+                                    order_status: {
+                                        order_status_id: currentSortOrder,
+                                    },
+                                }
+                            case 'taskType':
+                                return {
+                                    ...acc,
+                                    task: {
+                                        task_id: currentSortOrder,
+                                    },
+                                }
+                            default:
+                                return {
+                                    ...acc,
+                                    [`${value.id}`]: currentSortOrder,
+                                }
+                        }
+                    }, {})
+
                     setPersonalOrdersQuery({
                         ...personalOrdersQuery,
+                        sorts,
                         offset: { count: pageSize, page: pageIndex + 1 },
                     })
                 }}
@@ -160,7 +260,7 @@ function TaskListContent() {
                     navigate(`task`, {
                         state: {
                             order: data.data.find(
-                                (e) => e.order_id === rowData.id
+                                (e) => e.order_id === rowData.order_id
                             ),
                         },
                     })
