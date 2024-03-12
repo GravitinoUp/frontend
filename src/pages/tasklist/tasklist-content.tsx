@@ -1,6 +1,7 @@
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { EditTaskForm } from './components/edit-task-form.tsx'
 import TaskFiltersForm from './components/task-filters-form.tsx'
 import { initialColumnVisibility } from './constants.ts'
 import { tasksColumns, TasksFilterColumns } from './tasks-columns.tsx'
@@ -9,6 +10,7 @@ import DataTable from '@/components/data-table/data-table.tsx'
 import FormDialog from '@/components/form-dialog/form-dialog.tsx'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
+import { OrderInterface } from '@/types/interface/orders/index.ts'
 import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
 function TaskListContent({ orderStatus }: { orderStatus?: string }) {
@@ -31,6 +33,11 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
     const [formOpen, setFormOpen] = useState(false)
+    const [editFormOpen, setEditFormOpen] = useState(false)
+
+    const [selectedOrder, setSelectedOrder] = useState<
+        OrderInterface | undefined
+    >()
 
     const formattedTasks = data.data.map((row) => ({
         key: row.order_id,
@@ -83,6 +90,12 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
 
     return (
         <Fragment>
+            <FormDialog
+                open={editFormOpen}
+                setOpen={setEditFormOpen}
+                actionButton={<Fragment />}
+                addItemForm={<EditTaskForm task={selectedOrder!} />}
+            />
             <FormDialog
                 open={formOpen}
                 setOpen={setFormOpen}
@@ -256,15 +269,21 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                         offset: { count: pageSize, page: pageIndex + 1 },
                     })
                 }}
-                onRowClick={(rowData) =>
-                    navigate(`task`, {
-                        state: {
-                            order: data.data.find(
-                                (e) => e.order_id === rowData.order_id
-                            ),
-                        },
-                    })
-                }
+                onRowClick={(rowData) => {
+                    const orderData = data.data.find(
+                        (e) => e.order_id === rowData.order_id
+                    )
+                    if (orderData?.order_status.order_status_id !== 9) {
+                        navigate(`task`, {
+                            state: {
+                                order: orderData,
+                            },
+                        })
+                    } else {
+                        setSelectedOrder(orderData)
+                        setEditFormOpen(true)
+                    }
+                }}
                 searchSuffixIconClick={() => setFormOpen(true)}
                 paginationInfo={{
                     itemCount: data.count,

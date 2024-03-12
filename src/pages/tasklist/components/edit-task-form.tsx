@@ -204,7 +204,10 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                     label={t('task.title')}
                                     className="mt-3"
                                     {...field}
-                                    disabled={isOrderUpdating}
+                                    disabled={
+                                        isOrderUpdating ||
+                                        task.order_status.order_status_id === 9
+                                    }
                                 />
                             )}
                         />
@@ -220,6 +223,11 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                         <Textarea
                                             placeholder={t('task.description')}
                                             {...field}
+                                            disabled={
+                                                isOrderUpdating ||
+                                                task.order_status
+                                                    .order_status_id === 9
+                                            }
                                         />
                                     </FormControl>
                                     <FormMessage />
