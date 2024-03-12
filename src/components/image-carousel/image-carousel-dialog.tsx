@@ -12,7 +12,9 @@ import { Dialog, DialogContent } from '../ui/dialog'
 import CloseRounded from '@/assets/icons/close_rounded.svg'
 import DownloadRounded from '@/assets/icons/download_rounded.svg'
 import RotateIcon from '@/assets/icons/rotate.svg'
+import { useErrorToast } from '@/hooks/use-error-toast'
 import { cn } from '@/lib/utils'
+import { useGetFileFromUrlMutation } from '@/redux/api/files'
 
 interface ImageCarouselDialogProps {
     files: FileData[]
@@ -39,6 +41,10 @@ const ImageCarouselDialog = ({
 
     carouselApi?.on('slidesInView', handleSlidesInView)
 
+    const [getFileFromUrl, { error, isLoading }] = useGetFileFromUrlMutation()
+
+    useErrorToast(undefined, error)
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent
@@ -49,7 +55,12 @@ const ImageCarouselDialog = ({
                         <div onClick={() => setRotation(rotation + 90)}>
                             <RotateIcon />
                         </div>
-                        <div onClick={() => {}}>
+                        <div
+                            onClick={() =>
+                                !isLoading &&
+                                getFileFromUrl(files[slidesInView[0]].fileURL!)
+                            }
+                        >
                             <DownloadRounded />
                         </div>
                     </div>
