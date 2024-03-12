@@ -31,9 +31,6 @@ export const filesApi = api.injectEndpoints({
             query: (url) => ({
                 url: url,
                 method: 'GET',
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                },
                 responseHandler: async (response) => {
                     if (response.ok) {
                         const fileBlob = await response.blob()
@@ -45,7 +42,7 @@ export const filesApi = api.injectEndpoints({
                         link.href = url
                         link.setAttribute(
                             'download',
-                            `${response.url.split('/').pop()}.xlsx`
+                            `${response.url.split('/').pop()}`
                         )
                         document.body.appendChild(link)
                         link.click()
