@@ -63,9 +63,11 @@ const baseFieldsSchema = z.object({
         .min(1, { message: i18next.t('validation.require.title') }),
     taskDescription: z
         .string()
-        .min(5, { message: i18next.t('validation.require.description') }),
+        .min(1, { message: i18next.t('validation.require.description') }),
     facility: z.string().optional(),
-    executor: z.string(),
+    executor: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.task.executor') }),
     priority: z.string(),
 })
 
@@ -93,7 +95,10 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
             taskName: task.order_name || '',
             taskDescription: task.order_description || '',
             facility: String(task.facility.facility_id),
-            executor: String(task.executor.organization_id),
+            executor:
+                task.executor.organization_id !== null
+                    ? String(task.executor.organization_id)
+                    : undefined,
             priority: String(task.priority.priority_id),
             startDate:
                 task.planned_datetime && task.planned_datetime !== null
@@ -204,8 +209,8 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                     label={t('task.title')}
                                     className="mt-3"
                                     {...field}
-                                    disabled={
-                                        isOrderUpdating ||
+                                    disabled={isOrderUpdating}
+                                    readOnly={
                                         task.order_status.order_status_id === 9
                                     }
                                 />
@@ -223,8 +228,8 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                         <Textarea
                                             placeholder={t('task.description')}
                                             {...field}
-                                            disabled={
-                                                isOrderUpdating ||
+                                            disabled={isOrderUpdating}
+                                            readOnly={
                                                 task.order_status
                                                     .order_status_id === 9
                                             }
@@ -303,6 +308,74 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             value={task.facility.checkpoint.checkpoint_name}
                             readOnly
                         />
+                        {task.order_status.order_status_id !== 9 ? (
+                            <FormField
+                                control={form.control}
+                                name="priority"
+                                render={({ field }) => (
+                                    <FormItem className="mt-3">
+                                        <FormLabel>{t('priority')}</FormLabel>
+                                        {prioritiesLoading && (
+                                            <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                        )}
+                                        {prioritiesError && (
+                                            <CustomAlert
+                                                message={t(
+                                                    'multiselect.error.priority'
+                                                )}
+                                            />
+                                        )}
+                                        {prioritiesSuccess &&
+                                            priorities?.length > 0 && (
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                    defaultValue={String(
+                                                        field.value
+                                                    )}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue
+                                                                placeholder={t(
+                                                                    'multiselect.placeholder.priority'
+                                                                )}
+                                                            />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {priorities.map(
+                                                            (priority) => (
+                                                                <SelectItem
+                                                                    key={
+                                                                        priority.priority_id
+                                                                    }
+                                                                    value={String(
+                                                                        priority.priority_id
+                                                                    )}
+                                                                >
+                                                                    {
+                                                                        priority.priority_name
+                                                                    }
+                                                                </SelectItem>
+                                                            )
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        ) : (
+                            <InputField
+                                label={t('priority')}
+                                className="mt-3"
+                                value={task.priority.priority_name}
+                                readOnly
+                            />
+                        )}
                         <FormField
                             control={form.control}
                             name="executor"
@@ -349,63 +422,6 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                                             >
                                                                 {
                                                                     organization.short_name
-                                                                }
-                                                            </SelectItem>
-                                                        )
-                                                    )}
-                                                </SelectContent>
-                                            </Select>
-                                        )}
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="priority"
-                            render={({ field }) => (
-                                <FormItem className="mt-3">
-                                    <FormLabel>{t('priority')}</FormLabel>
-                                    {prioritiesLoading && (
-                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
-                                    )}
-                                    {prioritiesError && (
-                                        <CustomAlert
-                                            message={t(
-                                                'multiselect.error.priority'
-                                            )}
-                                        />
-                                    )}
-                                    {prioritiesSuccess &&
-                                        priorities?.length > 0 && (
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={String(
-                                                    field.value
-                                                )}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue
-                                                            placeholder={t(
-                                                                'multiselect.placeholder.priority'
-                                                            )}
-                                                        />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {priorities.map(
-                                                        (priority) => (
-                                                            <SelectItem
-                                                                key={
-                                                                    priority.priority_id
-                                                                }
-                                                                value={String(
-                                                                    priority.priority_id
-                                                                )}
-                                                            >
-                                                                {
-                                                                    priority.priority_name
                                                                 }
                                                             </SelectItem>
                                                         )
