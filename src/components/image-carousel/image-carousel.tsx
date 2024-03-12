@@ -6,8 +6,8 @@ import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel'
 import DownloadIcon from '@/assets/icons/download.svg'
 import RemoveIcon from '@/assets/icons/remove.svg'
 import ViewIcon from '@/assets/icons/view.svg'
-import { useDownload } from '@/hooks/use-download'
-import { useTranslation } from 'react-i18next'
+import { useErrorToast } from '@/hooks/use-error-toast'
+import { useGetFileFromUrlMutation } from '@/redux/api/files'
 
 interface ImageCarouselProps {
     files: FileData[]
@@ -28,6 +28,10 @@ const ImageCarousel = ({
         const result = files.filter((data) => data.id !== id)
         setSelectedFiles!(result)
     }
+
+    const [getFileFromUrl, { error, isLoading }] = useGetFileFromUrlMutation()
+
+    useErrorToast(undefined, error)
 
     return files.length > 0 ? (
         <Fragment>
@@ -67,14 +71,21 @@ const ImageCarousel = ({
                                         >
                                             <ViewIcon />
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            type="button"
-                                            className="p-2 hover:bg-white hover:bg-opacity-10"
-                                            onClick={() => {}}
-                                        >
-                                            <DownloadIcon />
-                                        </Button>
+                                        {value.fileURL && (
+                                            <Button
+                                                variant="ghost"
+                                                type="button"
+                                                className="p-2 hover:bg-white hover:bg-opacity-10"
+                                                disabled={isLoading}
+                                                onClick={() =>
+                                                    getFileFromUrl(
+                                                        value.fileURL!
+                                                    )
+                                                }
+                                            >
+                                                <DownloadIcon />
+                                            </Button>
+                                        )}
                                     </div>
                                 )}
                                 <img
