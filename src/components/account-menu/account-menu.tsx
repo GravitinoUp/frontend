@@ -16,6 +16,7 @@ import {
 import { useErrorToast } from '@/hooks/use-error-toast'
 import { useLogoutMutation } from '@/redux/api/auth'
 import { useGetUserByIdQuery } from '@/redux/api/users'
+import { SETTINGS, SIGN_IN } from '@/routes.ts'
 import { JWT } from '@/types/interface/auth'
 import {
     getCookieValue,
@@ -40,7 +41,7 @@ export default function AccountMenu() {
         if (isLogoutSuccess) {
             removeCookieValue('accessToken')
             removeCookieValue('refreshToken')
-            navigate('/signin')
+            navigate(SIGN_IN)
         }
     }, [isLogoutSuccess])
 
@@ -50,7 +51,7 @@ export default function AccountMenu() {
         if (refreshToken) {
             logout({ refresh_token: refreshToken! })
         } else {
-            navigate('/signin')
+            navigate(SIGN_IN)
         }
     }
 
@@ -89,7 +90,7 @@ export default function AccountMenu() {
                 >
                     <DropdownMenuItem>
                         <Button
-                            onClick={() => navigate('/settings')}
+                            onClick={() => navigate(SETTINGS)}
                             variant="ghost"
                             className=" h-5 w-20 justify-start p-0"
                             size="sm"

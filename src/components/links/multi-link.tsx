@@ -72,7 +72,7 @@ function MultiLink({
                                         isPathLinks()
                                             ? 'font-[600]'
                                             : 'font-[400]' +
-                                            'font-pop text-[15px] font-normal text-[#3F434A]'
+                                              'font-pop text-[15px] font-normal text-[#3F434A]'
                                     }
                                 >
                                     {title}
@@ -108,7 +108,6 @@ function MultiLink({
                             <li key={key}>
                                 <SidebarLink
                                     path={item.path}
-                                    count={item.count}
                                     open={open}
                                     title={item.title}
                                 >

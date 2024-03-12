@@ -16,7 +16,7 @@ const RolesTab = () => {
     const {
         data: roles = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
     } = useGetRolesQuery(rolesQuery)
 
     if (error) {
@@ -40,7 +40,7 @@ const RolesTab = () => {
                 itemCount: roles.count,
                 pageSize: rolesQuery.offset.count,
             }}
-            isLoading={isLoading}
+            isLoading={isFetching}
         />
     )
 }

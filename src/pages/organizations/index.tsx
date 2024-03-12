@@ -22,7 +22,7 @@ const OrganizationsPage = () => {
     const {
         data: organizations = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
         refetch,
     } = useGetAllOrganizationsQuery(organizationsQuery)
 
@@ -85,7 +85,7 @@ const OrganizationsPage = () => {
                         itemCount: organizations.count,
                         pageSize: organizationsQuery.offset.count,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             )}
         </PageLayout>
