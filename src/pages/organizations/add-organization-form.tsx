@@ -23,6 +23,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useGetAllOrganizationTypesQuery } from '@/redux/api/organization-types'
 import {
@@ -44,9 +45,9 @@ const formSchema = z.object({
     phone: z.string().refine((value) => /^\d{11}$/.test(value), {
         message: i18next.t('validation.require.phone'),
     }),
-    organization_type_id: z.string({
-        required_error: i18next.t('validation.require.organization.type'),
-    }),
+    organization_type_id: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.organization.type') }),
 })
 
 interface AddOrganizationFormProps {
@@ -158,7 +159,9 @@ const AddOrganizationForm = ({
                 render={({ field }) => (
                     <FormItem className="w-full mt-3">
                         <FormLabel>{t('organization.type')}</FormLabel>
-                        {organizationTypesLoading && <LoadingSpinner />}
+                        {organizationTypesLoading && (
+                            <Skeleton className="h-10 w-[533px] rounded-xl" />
+                        )}
                         {organizationTypesError && (
                             <CustomAlert
                                 message={t(

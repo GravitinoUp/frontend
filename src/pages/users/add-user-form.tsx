@@ -1,22 +1,43 @@
-import { Dispatch, Fragment, SetStateAction, useMemo, useState } from 'react'
-import i18next from 'i18next'
+import {
+    Dispatch,
+    Fragment,
+    lazy,
+    SetStateAction,
+    Suspense,
+    useMemo,
+    useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
+import i18next from '../../i18n.ts'
 import { placeholderQuery } from '../tasklist/constants.ts'
+import ArrowRight from '@/assets/icons/arrow_right.svg'
 import UploadIcon from '@/assets/icons/upload.svg'
 import {
     CustomAlert,
     ErrorCustomAlert,
 } from '@/components/custom-alert/custom-alert'
-import FileContainer from '@/components/file-container/file-container'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSuccessToast } from '@/hooks/use-success-toast'
 import { useGetGroupsQuery } from '@/redux/api/groups'
@@ -28,7 +49,15 @@ import {
     useUpdateOrganizationUserMutation,
     useUpdateUserMutation,
 } from '@/redux/api/users'
-import { OrganizationUserPayloadInterface, UserInterface, UserPayloadInterface } from '@/types/interface/user'
+import {
+    OrganizationUserPayloadInterface,
+    UserInterface,
+    UserPayloadInterface,
+} from '@/types/interface/user'
+
+const FileContainer = lazy(
+    () => import('@/components/file-container/file-container')
+)
 
 const userFormSchema = z
     .object({
@@ -53,7 +82,7 @@ const userFormSchema = z
         {
             message: i18next.t('validation.require.password'),
             path: ['password'],
-        },
+        }
     )
     .refine((data) => data.password === data.repeat_password, {
         message: i18next.t('validation.require.password.mismatch'),
@@ -85,7 +114,7 @@ const organizationFormSchema = z
         {
             message: i18next.t('validation.require.password'),
             path: ['password'],
-        },
+        }
     )
     .refine((data) => data.password === data.repeat_password, {
         message: i18next.t('validation.require.password.mismatch'),
@@ -110,71 +139,77 @@ interface AddUserFormProps {
 
 const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
     const { t } = useTranslation()
+    const [tabValue, setTabValue] = useState('user')
+    const [tabUserTypeValue, setTabUserTypeValue] = useState(
+        !user || user.organization?.organization_id === null
+            ? 'user'
+            : 'organization'
+    )
 
     const userForm = useForm({
         schema: userFormSchema,
         defaultValues: user
             ? {
-                ...user,
-                user_id: user.user_id,
-                last_name: user.person.last_name,
-                first_name: user.person.first_name,
-                patronymic: user.person.patronymic,
-                phone: user.person.phone,
-                password: '',
-                repeat_password: '',
-            }
+                  ...user,
+                  user_id: user.user_id,
+                  last_name: user.person.last_name,
+                  first_name: user.person.first_name,
+                  patronymic: user.person.patronymic,
+                  phone: user.person.phone,
+                  password: '',
+                  repeat_password: '',
+              }
             : {
-                last_name: '',
-                first_name: '',
-                patronymic: '',
-                email: '',
-                phone: '',
-                password: '',
-                repeat_password: '',
-            },
+                  last_name: '',
+                  first_name: '',
+                  patronymic: '',
+                  email: '',
+                  phone: '',
+                  password: '',
+                  repeat_password: '',
+              },
     })
 
     const organizationForm = useForm({
         schema: organizationFormSchema,
         defaultValues: user
             ? {
-                ...user,
-                user_id: user.user_id,
-                full_name: user.organization?.full_name,
-                short_name: user.organization?.short_name,
-                phone: user.organization?.phone,
-                organization_type_id: String(
-                    user.organization?.organization_type.organization_type_id,
-                ),
-                password: '',
-                repeat_password: '',
-            }
+                  ...user,
+                  user_id: user.user_id,
+                  full_name: user.organization?.full_name,
+                  short_name: user.organization?.short_name,
+                  phone: user.organization?.phone,
+                  organization_type_id: String(
+                      user.organization?.organization_type.organization_type_id
+                  ),
+                  password: '',
+                  repeat_password: '',
+              }
             : {
-                full_name: '',
-                short_name: '',
-                email: '',
-                phone: '',
-                organization_type_id: '',
-                password: '',
-                repeat_password: '',
-            },
+                  full_name: '',
+                  short_name: '',
+                  email: '',
+                  phone: '',
+                  organization_type_id: '',
+                  password: '',
+                  repeat_password: '',
+              },
     })
 
     const roleForm = useForm({
         schema: roleFormSchema,
         defaultValues: user
             ? {
-                role_id: String(user.role.role_id),
-                group_id:
-                    user.group?.group_id !== null
-                        ? String(user.group?.group_id)
-                        : null,
-            }
+                  role_id: String(user.role.role_id),
+                  group_id:
+                      user.group?.group_id !== null
+                          ? String(user.group?.group_id)
+                          : null,
+              }
             : {
-                role_id: '',
-                group_id: '',
-            },
+                  role_id: '',
+                  group_id: '',
+              },
     })
 
     const imageForm = useForm({
@@ -192,6 +227,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         isSuccess: rolesSuccess,
     } = useGetRolesQuery(placeholderQuery, {
         selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+        skip: tabValue !== 'role',
     })
 
     const {
@@ -199,8 +235,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         isLoading: groupsLoading,
         isError: groupsError,
         isSuccess: groupsSuccess,
-    } = useGetGroupsQuery(undefined, {
+    } = useGetGroupsQuery(void 0, {
         selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+        skip: tabValue !== 'role',
     })
 
     // ORGANIZATIONS
@@ -248,13 +285,6 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         },
     ] = useUpdateOrganizationUserMutation()
 
-    const [tabValue, setTabValue] = useState('user')
-    const [tabUserTypeValue, setTabUserTypeValue] = useState(
-        !user || user.organization?.organization_id === null
-            ? 'user'
-            : 'organization',
-    )
-
     function handleUserSubmit() {
         setTabValue('role')
     }
@@ -294,7 +324,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             const userPayload: OrganizationUserPayloadInterface = {
                 user_id: user?.user_id,
                 organization_type_id:
-                organizationFormValue.organization_type_id,
+                    organizationFormValue.organization_type_id,
                 full_name: organizationFormValue.full_name,
                 short_name: organizationFormValue.short_name,
                 phone: organizationFormValue.phone,
@@ -319,25 +349,25 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             t('toast.success.description.create.m', {
                 entityType: t('user.title'),
             }),
-        [],
+        []
     )
     const updateSuccessMsg = useMemo(
         () =>
             t('toast.success.description.update.m', {
                 entityType: t('user.title'),
             }),
-        [],
+        []
     )
 
     useSuccessToast(
         createSuccessMsg,
         userCreateSuccess || organizationCreateSuccess,
-        setDialogOpen,
+        setDialogOpen
     )
     useSuccessToast(
         updateSuccessMsg,
         userUpdateSuccess || organizationUpdateSuccess,
-        setDialogOpen,
+        setDialogOpen
     )
 
     return (
@@ -348,13 +378,19 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     className="data-[state=active]:text-primary uppercase"
                 >
                     {t('tabs.common')}
-                </TabsTrigger>
+                </TabsTrigger>{' '}
+                <span className="pb-4">
+                    <ArrowRight />
+                </span>
                 <TabsTrigger
                     value="role"
                     className="data-[state=active]:text-primary uppercase"
                 >
                     {t('tabs.roles.and.permissions')}
                 </TabsTrigger>
+                <span className="pb-4">
+                    <ArrowRight />
+                </span>
                 <TabsTrigger
                     value="image"
                     className="data-[state=active]:text-primary uppercase"
@@ -364,7 +400,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             </TabsList>
             <Separator className="w-full bg-[#E8E9EB]" decorative />
             <TabsContent value="user" className="w-full">
-                <ScrollArea className="w-full h-[600px] pr-3">
+                <ScrollArea className="w-full h-[690px] pr-10">
                     <Tabs
                         value={tabUserTypeValue}
                         onValueChange={(value) => {
@@ -575,26 +611,26 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             {organizationsTypesError && (
                                                 <CustomAlert
                                                     message={t(
-                                                        'multiselect.error.organization.types',
+                                                        'multiselect.error.organization.types'
                                                     )}
                                                 />
                                             )}
                                             {organizationsTypesSuccess &&
                                                 organizationsTypes?.length >
-                                                0 && (
+                                                    0 && (
                                                     <Select
                                                         onValueChange={
                                                             field.onChange
                                                         }
                                                         defaultValue={String(
-                                                            field.value,
+                                                            field.value
                                                         )}
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger>
                                                                 <SelectValue
                                                                     placeholder={t(
-                                                                        'multiselect.placeholder.organization.type',
+                                                                        'multiselect.placeholder.organization.type'
                                                                     )}
                                                                 />
                                                             </SelectTrigger>
@@ -602,21 +638,21 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                                         <SelectContent>
                                                             {organizationsTypes.map(
                                                                 (
-                                                                    organizationsType,
+                                                                    organizationsType
                                                                 ) => (
                                                                     <SelectItem
                                                                         key={
                                                                             organizationsType.organization_type_id
                                                                         }
                                                                         value={String(
-                                                                            organizationsType.organization_type_id,
+                                                                            organizationsType.organization_type_id
                                                                         )}
                                                                     >
                                                                         {
                                                                             organizationsType.organization_type_name
                                                                         }
                                                                     </SelectItem>
-                                                                ),
+                                                                )
                                                             )}
                                                         </SelectContent>
                                                     </Select>
@@ -671,7 +707,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
             </TabsContent>
-            <TabsContent value="role" className="w-full">
+            <TabsContent value="role" className="w-full h-[690px]">
                 <CustomForm form={roleForm} onSubmit={handleRoleSubmit}>
                     <FormField
                         control={roleForm.control}
@@ -679,7 +715,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
                                 <FormLabel>{t('role')}</FormLabel>
-                                {rolesLoading && <LoadingSpinner />}
+                                {rolesLoading && (
+                                    <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                )}
                                 {rolesError && (
                                     <CustomAlert
                                         message={t('multiselect.error.roles')}
@@ -694,7 +732,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             <SelectTrigger>
                                                 <SelectValue
                                                     placeholder={t(
-                                                        'multiselect.placeholder.role',
+                                                        'multiselect.placeholder.role'
                                                     )}
                                                 />
                                             </SelectTrigger>
@@ -721,7 +759,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
                                 <FormLabel>{t('group')}</FormLabel>
-                                {groupsLoading && <LoadingSpinner />}
+                                {groupsLoading && (
+                                    <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                )}
                                 {groupsError && (
                                     <CustomAlert
                                         message={t('multiselect.error.groups')}
@@ -736,7 +776,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             <SelectTrigger>
                                                 <SelectValue
                                                     placeholder={t(
-                                                        'multiselect.placeholder.group',
+                                                        'multiselect.placeholder.group'
                                                     )}
                                                 />
                                             </SelectTrigger>
@@ -746,7 +786,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                                 <SelectItem
                                                     key={group.group_id}
                                                     value={String(
-                                                        group.group_id,
+                                                        group.group_id
                                                     )}
                                                 >
                                                     {group.group_name}
@@ -758,26 +798,34 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                             </FormItem>
                         )}
                     />
-                    <Button className="w-[100px] mt-10 mr-4" type="submit">
-                        {t('button.action.next')}
-                    </Button>
-                    <Button
-                        className="w-[100px] mt-10"
-                        type="button"
-                        variant={'outline'}
-                        onClick={() => setTabValue('user')}
-                    >
-                        {t('button.action.back')}
-                    </Button>
+                    <div className="flex gap-4 absolute bottom-8">
+                        <Button className="w-[100px] mt-10 mr-4" type="submit">
+                            {t('button.action.next')}
+                        </Button>
+                        <Button
+                            className="w-[100px] mt-10"
+                            type="button"
+                            variant={'outline'}
+                            onClick={() => setTabValue('user')}
+                        >
+                            {t('button.action.back')}
+                        </Button>
+                    </div>
                 </CustomForm>
             </TabsContent>
-            <TabsContent value="image" className="w-full">
+            <TabsContent value="image" className="w-full h-[690px]">
                 <CustomForm form={imageForm} onSubmit={handleSubmit}>
-                    <FileContainer
-                        onSubmit={(file) => console.log(file)}
-                        fileType="image/*"
-                        uploadIcon={<UploadIcon />}
-                    />
+                    <Suspense
+                        fallback={
+                            <LoadingSpinner className="w-16 h-16 text-primary" />
+                        }
+                    >
+                        <FileContainer
+                            onSubmit={(file) => console.log(file)}
+                            fileType="image/*"
+                            uploadIcon={<UploadIcon />}
+                        />
+                    </Suspense>
                     {userCreateError && (
                         <ErrorCustomAlert error={userCreateError} />
                     )}
@@ -790,26 +838,28 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     {organizationUpdateError && (
                         <ErrorCustomAlert error={organizationUpdateError} />
                     )}
-                    <Button className="w-[100px] mt-10 mr-4" type="submit">
-                        {isUserAdding ||
-                        isOrganizationAdding ||
-                        isUserUpdating ||
-                        isOrganizationUpdating ? (
-                            <LoadingSpinner />
-                        ) : !user ? (
-                            t('button.action.create')
-                        ) : (
-                            t('button.action.save')
-                        )}
-                    </Button>
-                    <Button
-                        className="w-[100px] mt-10"
-                        type="button"
-                        variant={'outline'}
-                        onClick={() => setTabValue('role')}
-                    >
-                        {t('button.action.back')}
-                    </Button>
+                    <div className="flex gap-4 absolute bottom-8">
+                        <Button className="w-[100px] mt-10 mr-4" type="submit">
+                            {isUserAdding ||
+                            isOrganizationAdding ||
+                            isUserUpdating ||
+                            isOrganizationUpdating ? (
+                                <LoadingSpinner />
+                            ) : !user ? (
+                                t('button.action.create')
+                            ) : (
+                                t('button.action.save')
+                            )}
+                        </Button>
+                        <Button
+                            className="w-[100px] mt-10"
+                            type="button"
+                            variant={'outline'}
+                            onClick={() => setTabValue('role')}
+                        >
+                            {t('button.action.back')}
+                        </Button>
+                    </div>
                 </CustomForm>
             </TabsContent>
         </Tabs>

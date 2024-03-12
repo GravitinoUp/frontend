@@ -25,10 +25,7 @@ interface FilesUploadFormProps {
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-export const FilesUploadForm = ({
-    orderIDs,
-    setDialogOpen,
-}: FilesUploadFormProps) => {
+const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProps) => {
     const { t } = useTranslation()
     const [selectedFiles, setSelectedFiles] = useState<FileData[]>([])
     const [uploadFiles, { isLoading, error, isSuccess }] =
@@ -165,3 +162,5 @@ export const FilesUploadForm = ({
         </form>
     )
 }
+
+export default FilesUploadForm

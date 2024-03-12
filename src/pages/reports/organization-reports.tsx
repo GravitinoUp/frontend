@@ -14,6 +14,7 @@ import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { useGetOrganizationReportsQuery } from '@/redux/api/reports'
+import { REPORTS_SAVED } from '@/routes.ts'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
 import { OrganizationReportsPayloadInterface } from '@/types/interface/reports'
 
@@ -71,7 +72,7 @@ export default function OrganizationReportsPage() {
                     <div className="flex gap-3">
                         <Button
                             className="bg-white hover:bg-accent rounded-xl"
-                            onClick={() => navigate('/reports/saved')}
+                            onClick={() => navigate(REPORTS_SAVED)}
                         >
                             <SavedIcon />
                             <p className="mx-[8px] text-base font-normal">

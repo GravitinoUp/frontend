@@ -35,26 +35,43 @@ export default function MapPage() {
                     <FormDialog
                         open={formOpen}
                         setOpen={setFormOpen}
-                        actionButton={<RoundedButton icon={<FilterIcon />} onClick={() => { }} />}
+                        actionButton={
+                            <RoundedButton
+                                icon={<FilterIcon />}
+                                onClick={() => {}}
+                            />
+                        }
                         addItemForm={
-                            <MapFiltersForm handleSubmit={(data) => {
-                                setCheckpointQuery({
-                                    ...checkpointsQuery,
-                                    filter: {
-                                        checkpoint_type: data.checkpoint_types,
-                                    },
-                                    report_filter: {
-                                        min_completed_percent: Number(data.minPercent),
-                                        max_completed_percent: Number(data.maxPercent),
-                                    }
-                                })
+                            <MapFiltersForm
+                                handleSubmit={(data) => {
+                                    setCheckpointQuery({
+                                        ...checkpointsQuery,
+                                        filter: {
+                                            checkpoint_type:
+                                                data.checkpoint_types,
+                                        },
+                                        report_filter: {
+                                            min_completed_percent: Number(
+                                                data.minPercent
+                                            ),
+                                            max_completed_percent: Number(
+                                                data.maxPercent
+                                            ),
+                                        },
+                                    })
 
-                                setFormOpen(false)
-                            }}
+                                    setFormOpen(false)
+                                }}
                                 data={{
-                                    checkpoint_types: checkpointsQuery.filter?.checkpoint_type ?? [],
-                                    minPercent: checkpointsQuery.report_filter?.min_completed_percent?.toString() ?? '0',
-                                    maxPercent: checkpointsQuery.report_filter?.max_completed_percent?.toString() ?? '100',
+                                    checkpoint_types:
+                                        checkpointsQuery.filter
+                                            ?.checkpoint_type ?? [],
+                                    minPercent:
+                                        checkpointsQuery.report_filter?.min_completed_percent?.toString() ??
+                                        '0',
+                                    maxPercent:
+                                        checkpointsQuery.report_filter?.max_completed_percent?.toString() ??
+                                        '100',
                                 }}
                                 setDialogOpen={(value) => {
                                     setFormOpen(value)
@@ -62,14 +79,19 @@ export default function MapPage() {
                                     setCheckpointQuery({
                                         ...checkpointsQuery,
                                         filter: {},
-                                        report_filter: {}
+                                        report_filter: {},
                                     })
-                                }} />
+                                }}
+                            />
                         }
                     />
                 </div>
             </div>
-            {isLoading && <div className='absolute left-1/2 top-1/2'><LoadingSpinner /></div>}
+            {isLoading && (
+                <div className="absolute left-1/2 top-1/2">
+                    <LoadingSpinner className="w-16 h-16 text-primary" />
+                </div>
+            )}
             {isError && <CustomAlert />}
 
             <YandexMap checkpoints={checkpoints} enableRounded={false} />

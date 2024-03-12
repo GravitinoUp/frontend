@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { useAppSelector } from '../../hooks/reduxHooks'
+import { useAppSelector } from '@/hooks/reduxHooks.ts'
+import { DASHBOARD, SIGN_IN } from '@/routes.ts'
 
 export default function NotFoundPage() {
     const { isLogin } = useAppSelector((state) => state.auth)
@@ -19,11 +20,11 @@ export default function NotFoundPage() {
 
             <div className="row-3">
                 {isLogin ? (
-                    <Link className="underline" to="/dashboard">
+                    <Link className="underline" to={DASHBOARD}>
                         {t('to.dashboard')}
                     </Link>
                 ) : (
-                    <Link className="underline" to="/signin">
+                    <Link className="underline" to={SIGN_IN}>
                         {t('to.signin')}
                     </Link>
                 )}
