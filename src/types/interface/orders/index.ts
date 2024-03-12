@@ -30,8 +30,8 @@ export interface OrderPayloadInterface extends IQuery {
     sorts: OrderSortInterface
     filter: RecursivePartial<OrderFilterInterface>
     period: {
-        date_start: string
-        date_end: string
+        date_start?: string
+        date_end?: string
     }
 }
 

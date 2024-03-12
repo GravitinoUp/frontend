@@ -1,4 +1,11 @@
-import { Dispatch, FormEvent, SetStateAction, useMemo, useState } from 'react'
+import {
+    Dispatch,
+    FormEvent,
+    SetStateAction,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@/assets/icons/delete.svg'
 import {
@@ -8,6 +15,7 @@ import {
 import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { ScrollArea } from '@/components/ui/scroll-area.tsx'
+import { useToast } from '@/components/ui/use-toast.ts'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useUploadFileMutation } from '@/redux/api/orders.ts'
@@ -25,10 +33,10 @@ export const FilesUploadForm = ({
     const [selectedFiles, setSelectedFiles] = useState<FileData[]>([])
     const [uploadFiles, { isLoading, error, isSuccess }] =
         useUploadFileMutation()
-    //const [error, setError] = useState(false)
+    const [isError, setIsError] = useState(false)
 
     const handleFileUpload = (e: FormEvent) => {
-        //setError(false)
+        setIsError(false)
         e.preventDefault()
         const formData = new FormData()
         selectedFiles.forEach((value) => {
@@ -42,7 +50,7 @@ export const FilesUploadForm = ({
                 directory: 'orders',
             })
         } else {
-            //setError(true)
+            setIsError(true)
         }
     }
 
@@ -60,7 +68,18 @@ export const FilesUploadForm = ({
     )
 
     useSuccessToast(uploadSuccessMsg, isSuccess, setDialogOpen)
-    useErrorToast(undefined, error)
+    useErrorToast(void 0, error)
+    const { toast } = useToast()
+
+    useEffect(() => {
+        if (isError) {
+            toast({
+                variant: 'destructive',
+                title: t('toast.error.title'),
+                duration: 1500,
+            })
+        }
+    }, [error, toast])
 
     return (
         <form onSubmit={handleFileUpload}>
@@ -72,6 +91,33 @@ export const FilesUploadForm = ({
                 <ScrollArea className="w-full pr-3 h-[390px]  mt-16 ">
                     <div className="flex flex-col gap-16">
                         <ul className="flex flex-col gap-3">
+                            {selectedFiles.map(({ id, file, fileURL }) => (
+                                <li
+                                    key={id}
+                                    className="h-[90px] border rounded-xl flex justify-between items-center px-3"
+                                >
+                                    <div className="flex gap-2 items-center">
+                                        <img
+                                            src={
+                                                file
+                                                    ? URL.createObjectURL(file)
+                                                    : fileURL
+                                            }
+                                            className="h-[72px] w-[72px] rounded-xl"
+                                            alt=""
+                                        />
+                                        <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">
+                                            {file?.name}
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => handleFileDelete(id)}
+                                    >
+                                        <DeleteIcon />
+                                    </Button>
+                                </li>
+                            ))}
                             {selectedFiles.map(({ id, file, fileURL }) => (
                                 <li
                                     key={id}
