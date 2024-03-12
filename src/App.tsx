@@ -4,7 +4,8 @@ import { Layout } from './components/Layout'
 import { useAppDispatch } from './hooks/reduxHooks'
 import BranchesPage from './pages/branches'
 import CheckpointsPage from './pages/checkpoints'
-import { DashboardPage } from './pages/dashboard/page'
+import { DashboardPage } from './pages/dashboard'
+import { FeedbackPage } from './pages/feedback'
 import ManagePropertiesPage from './pages/manage-properties'
 import MapPage from './pages/map'
 import MediaReportsPage from './pages/mediareports/page'
@@ -44,7 +45,12 @@ function App() {
                 fetchRefreshToken({ refresh_token: `${refreshToken}` })
                 setLoading(true)
             } else if (!accessToken) {
-                navigate('/signin')
+                if (
+                    path.pathname !== '/feedback-guest' &&
+                    path.pathname !== '/feedback-worker'
+                ) {
+                    navigate('/signin')
+                }
                 setLoading(false)
             }
         }
@@ -121,6 +127,14 @@ function App() {
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/signin" element={<SignInPage />} />
+                <Route
+                    path="/feedback-guest"
+                    element={<FeedbackPage type={'guest'} />}
+                />
+                <Route
+                    path="/feedback-worker"
+                    element={<FeedbackPage type={'worker'} />}
+                />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>

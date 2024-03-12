@@ -1,5 +1,6 @@
 {
     "gravitino.full.name": "ГРАВИТИНО АСУП",
+    "gravitino": "Гравитино",
     "authorization": "Авторизация",
     "authorization.title": "Войдите в свой аккаунт",
     "authorization.remember": "Запомнить меня",
@@ -57,6 +58,7 @@
     "file.example.download": "Скачать пример таблицы",
     "download.all": "Скачать все",
     "placeholder.search": "Искать...",
+    "placeholder.textarea": "Напишите что-нибудь",
     "action.dropdown.menu.open": "Открыть меню",
     "action.dropdown.edit": "Редактировать",
     "action.dropdown.delete": "Удалить",
@@ -68,7 +70,7 @@
     "title.full": "Полное наименование",
     "description": "Описание",
     "full.name": "ФИО",
-    "phone": "телефон",
+    "phone": "Телефон",
     "address": "адрес",
     "company": "компания",
     "registration.number": "Номер регистрации",
@@ -111,6 +113,12 @@
     "button.action.next": "Далее",
     "button.action.back": "Назад",
     "button.action.files.upload": "Прикрепить",
+    "button.action.send": "Отправить",
+    "button.action.upload": "Загрузить",
+    "today.title": "Сегодня",
+    "yesterday.title": "Вчера",
+    "from": "от",
+    "to": "до",
     "tabs": {
         "common": "общее",
         "roles.and.permissions": "роли и права доступа",
@@ -271,7 +279,34 @@
         "gb": "Гб"
     },
     "map": {
-        "title": "Интерактивная карта"
+        "title": "Интерактивная карта",
+        "filters": {
+            "choose.checkpoints": "Выбрать типы пунктов пропуска",
+            "completed.percent": "Показывать по проценту исполненных задач"
+        },
+        "errors": {
+            "invalid.percent": "Число должно быть от 0 до 100"
+        }
+    },
+    "feedback": {
+        "title": "Оставить обратную связь",
+        "description": "Пожалуйста, внимательно заполните все поля ниже.",
+        "text": "Текст обращения",
+        "attach.images": "Прикрепить изображения",
+        "attach.images.limit": "не более 10 шт",
+        "agree": "Отправляя данную форму вы соглашаетесь с",
+        "agree.terms": "Политикой конфиденциальности",
+        "made.in": "Сделано в",
+        "subject": {
+            "title": "Тема обращения",
+            "cleanliness": "Жалоба на чистоту",
+            "breakdown": "Жалоба на поломку"
+        },
+        "department": {
+            "title": "Выбрать подразделение",
+            "fss": "Пограничная служба ФСБ",
+            "customs": "Таможня"
+        }
     },
     "date.picker.range.description": "Укажите диапозон дат"
 }

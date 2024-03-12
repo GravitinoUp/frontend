@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { branchesColumns } from './branches-columns'
 import { branchesFormTab } from './branches-form-tab'
+import ExportForm from '../tasklist/components/export-form.tsx'
+import ImportForm from '../tasklist/components/import-form.tsx'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
@@ -14,6 +16,9 @@ import { BranchesPayloadInterface } from '@/types/interface/branch'
 import { getColumnSorts } from '@/utils/helpers'
 
 const BranchesPage = () => {
+    const [exportFormOpen, setExportFormOpen] = useState(false)
+    const [importFormOpen, setImportFormOpen] = useState(false)
+
     const [branchesQuery, setBranchesQuery] =
         useState<BranchesPayloadInterface>({
             ...placeholderQuery,
@@ -49,8 +54,18 @@ const BranchesPage = () => {
                 <div>
                     <div className="h-16" />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {}} />
-                        <ExcelButton buttonType="import" onClick={() => {}} />
+                        <FormDialog
+                            open={exportFormOpen}
+                            setOpen={setExportFormOpen}
+                            actionButton={<ExcelButton buttonType="export" />}
+                            addItemForm={<ExportForm />}
+                        />
+                        <FormDialog
+                            open={importFormOpen}
+                            setOpen={setImportFormOpen}
+                            actionButton={<ExcelButton buttonType="import" />}
+                            addItemForm={<ImportForm type="branches" />}
+                        />
                     </div>
                 </div>
             }

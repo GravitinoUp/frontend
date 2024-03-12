@@ -222,3 +222,14 @@ export interface PriorityInterface {
 export type PrioritySortInterface = Partial<
     Record<keyof PriorityInterface, SortOptionsType>
 >
+
+// Guest Order
+
+export interface GuestOrderPayloadInterface {
+    guest_name: string
+    guest_email: string
+    guest_phone: string
+    order_name: string
+    order_description: string
+    facility_id: number
+}

@@ -1,9 +1,19 @@
-import { PlaneIcon, ShipIcon, TrainFrontIcon } from 'lucide-react'
+import { Fragment, useState } from 'react'
+import CustomTabs from '../custom-tabs/custom-tabs'
+import FormDialog from '../form-dialog/form-dialog'
 import MapCheckpointPopover from '../map-checkpoint-popover/map-checkpoint-popover'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import CarIcon from '@/assets/icons/car_icon.svg'
+import LakeIcon from '@/assets/icons/lake_icon.svg'
 import MapPinIcon from '@/assets/icons/map_pin_icon.svg'
+import MixedIcon from '@/assets/icons/mixed_icon.svg'
+import PeopleIcon from '@/assets/icons/people_icon.svg'
+import PlaneIcon from '@/assets/icons/plane_icon.svg'
+import RiverIcon from '@/assets/icons/river_icon.svg'
+import ShipIcon from '@/assets/icons/ship_icon.svg'
+import TrainIcon from '@/assets/icons/train_icon.svg'
 import { CHECKPOINT_COMPLETED_STATUSES, CHECKPOINT_TYPES } from '@/constants/constants'
+import { checkpointsFormTab } from '@/pages/checkpoints/checkpoint-form-tab'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
 
 export default function MapPin({
@@ -11,8 +21,10 @@ export default function MapPin({
 }: {
     checkpoint: CheckpointInterface
 }) {
-    const completedCount = checkpoint.checkpoint_id == 1 ? 7 : checkpoint.checkpoint_id == 4 ? 14 : 25
-    const checkpointTypeId = checkpoint.checkpoint_type.checkpoint_type_id
+    const completedPercent = checkpoint.report?.completed_percent ?? -1
+
+    const [formOpen, setFormOpen] = useState(false)
+
     return (
         <div
             className="
@@ -21,23 +33,39 @@ export default function MapPin({
                 drop-shadow-md
             "
         >
+            <FormDialog
+                open={formOpen}
+                setOpen={setFormOpen}
+                actionButton={<Fragment />}
+                addItemForm={
+                    <CustomTabs
+                        tabs={checkpointsFormTab(checkpoint)}
+                        setDialogOpen={setFormOpen}
+                    />
+                }
+            />
             <Popover>
                 <PopoverTrigger>
                     <div
                         className={`
                             absolute
-                            ${completedCount < CHECKPOINT_COMPLETED_STATUSES.MIN ? 'bg-map-completed-red' : completedCount < CHECKPOINT_COMPLETED_STATUSES.MEDIUM ? 'bg-map-completed-yellow' : 'bg-map-closed'}
+                            ${completedPercent >= CHECKPOINT_COMPLETED_STATUSES.MAX ? 'bg-map-closed' : completedPercent >= CHECKPOINT_COMPLETED_STATUSES.MEDIUM ? 'bg-map-completed-yellow' : 'bg-map-completed-red'}
                             rounded-full
                             flex justify-center items-center
                             top-0
-                            m-1
+                            mx-[4px]
+                            mt-[4px]
                         `}
                     >
-                        <div className="p-2">
-                            {checkpointTypeId == CHECKPOINT_TYPES.CAR && <CarIcon />}
-                            {checkpointTypeId == CHECKPOINT_TYPES.TRAIN && <TrainFrontIcon size={20} color='white' />}
-                            {checkpointTypeId == CHECKPOINT_TYPES.SHIP && <ShipIcon size={20} color='white' />}
-                            {checkpointTypeId == CHECKPOINT_TYPES.PLANE && <PlaneIcon size={20} color='white' />}
+                        <div className="w-[34px] h-[34px] flex justify-center items-center fill-white">
+                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.CAR && <CarIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.TRAIN && <TrainIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.SHIP && <ShipIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.PLANE && <PlaneIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.RIVER && <RiverIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.MIXED && <MixedIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.PEOPLE && <PeopleIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.LAKE && <LakeIcon />}
                         </div>
                     </div>
 
@@ -46,7 +74,9 @@ export default function MapPin({
                 <PopoverContent className="w-[500px] bg-white rounded-xl p-0 border-0">
                     <MapCheckpointPopover
                         checkpoint={checkpoint}
-                        onEditClick={() => { }}
+                        onEditClick={() => {
+                            setFormOpen(true)
+                        }}
                     />
                 </PopoverContent>
             </Popover>

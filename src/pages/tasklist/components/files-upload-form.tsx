@@ -39,8 +39,8 @@ export const FilesUploadForm = ({
         setIsError(false)
         e.preventDefault()
         const formData = new FormData()
-        selectedFiles.forEach(({ id, fileimage }) => {
-            formData.append(id, fileimage)
+        selectedFiles.forEach((value) => {
+            formData.append('files', value.file!)
         })
 
         if (typeof orderIDs !== 'undefined' && orderIDs.length > 0) {
@@ -91,31 +91,60 @@ export const FilesUploadForm = ({
                 <ScrollArea className="w-full pr-3 h-[390px]  mt-16 ">
                     <div className="flex flex-col gap-16">
                         <ul className="flex flex-col gap-3">
-                            {selectedFiles.map(
-                                ({ id, filename, fileimage }) => (
-                                    <li
-                                        key={id}
-                                        className="h-[90px] border rounded-xl flex justify-between items-center px-3"
+                            {selectedFiles.map(({ id, file, fileURL }) => (
+                                <li
+                                    key={id}
+                                    className="h-[90px] border rounded-xl flex justify-between items-center px-3"
+                                >
+                                    <div className="flex gap-2 items-center">
+                                        <img
+                                            src={
+                                                file
+                                                    ? URL.createObjectURL(file)
+                                                    : fileURL
+                                            }
+                                            className="h-[72px] w-[72px] rounded-xl"
+                                            alt=""
+                                        />
+                                        <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">
+                                            {file?.name}
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => handleFileDelete(id)}
                                     >
-                                        <div className="flex gap-2 items-center">
-                                            <img
-                                                src={fileimage}
-                                                className="h-[72px] w-[72px] rounded-xl"
-                                                alt=""
-                                            />
-                                            <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">
-                                                {filename}
-                                            </p>
-                                        </div>
-                                        <Button
-                                            variant="ghost"
-                                            onClick={() => handleFileDelete(id)}
-                                        >
-                                            <DeleteIcon />
-                                        </Button>
-                                    </li>
-                                )
-                            )}
+                                        <DeleteIcon />
+                                    </Button>
+                                </li>
+                            ))}
+                            {selectedFiles.map(({ id, file, fileURL }) => (
+                                <li
+                                    key={id}
+                                    className="h-[90px] border rounded-xl flex justify-between items-center px-3"
+                                >
+                                    <div className="flex gap-2 items-center">
+                                        <img
+                                            src={
+                                                file
+                                                    ? URL.createObjectURL(file)
+                                                    : fileURL
+                                            }
+                                            className="h-[72px] w-[72px] rounded-xl"
+                                            alt=""
+                                        />
+                                        <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">
+                                            {file?.name}
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => handleFileDelete(id)}
+                                    >
+                                        <DeleteIcon />
+                                    </Button>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </ScrollArea>

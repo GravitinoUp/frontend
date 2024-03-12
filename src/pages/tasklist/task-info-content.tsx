@@ -2,15 +2,17 @@ import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { placeholderQuery } from './constants.ts'
 import ChangeStatusForm from './task/change-status-form.tsx'
+import DownloadAllIcon from '@/assets/icons/download_all.svg'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import FormDialog from '@/components/form-dialog/form-dialog.tsx'
+import ImageCarouselButton from '@/components/image-carousel/image-carousel-button.tsx'
 import ImageCarousel from '@/components/image-carousel/image-carousel.tsx'
 import OrderStatus from '@/components/order-status/order-status.tsx'
 import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
-import { useGetOrdersQuery } from '@/redux/api/orders.ts'
+import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
 
 interface TaskInfoFieldProps {
@@ -53,15 +55,15 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
     const [statusFormOpen, setStatusFormOpen] = useState(false)
 
     const {
-        data: orders = [],
+        data: orders = { count: 0, data: [] },
         isLoading: orderLoading,
         error: orderError,
         isSuccess: orderSuccess,
-    } = useGetOrdersQuery({
+    } = useGetPersonalOrdersQuery({
         ...placeholderQuery,
         filter: { order_id: order_id },
     })
-    const order = orders[0]
+    const order = orders.data[0]
 
     return (
         <Fragment>
@@ -127,7 +129,19 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                             />
                         </div>
                     </div>
-                    <ImageCarousel files={order.files} />
+                    <ImageCarousel
+                        files={orders.data[0].files.map((value, index) => ({
+                            id: String(index),
+                            fileURL: value,
+                        }))}
+                        suffixButton={
+                            <ImageCarouselButton
+                                icon={<DownloadAllIcon />}
+                                label={t('download.all')}
+                                onClick={() => {}}
+                            />
+                        }
+                    />
                     <FormDialog
                         open={statusFormOpen}
                         setOpen={setStatusFormOpen}

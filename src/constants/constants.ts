@@ -19,9 +19,9 @@ export const FILE_SIZE_UNITS = {
 }
 
 export const CHECKPOINT_COMPLETED_STATUSES = {
-    MIN: 10,
-    MEDIUM: 15,
-    MAX: 20,
+    MIN: 0,
+    MEDIUM: 50,
+    MAX: 90,
 }
 
 export const CHECKPOINT_TYPES = {
@@ -29,9 +29,23 @@ export const CHECKPOINT_TYPES = {
     TRAIN: 2,
     SHIP: 3,
     PLANE: 4,
+    RIVER: 5,
+    MIXED: 6,
+    PEOPLE: 7,
+    LAKE: 8,
 }
 
 export const QUALITY_STATUSES = {
     MEDIUM: 50,
-    HIGH: 80,
+    HIGH: 90,
+}
+
+export const FEEDBACK_SUBJECTS = {
+    cleanliness: i18next.t('feedback.subject.cleanliness'),
+    breakdown: i18next.t('feedback.subject.breakdown'),
+}
+
+export const FEEDBACK_DEPARTMENTS = {
+    fss: i18next.t('feedback.department.fss'),
+    customs: i18next.t('feedback.department.customs'),
 }
