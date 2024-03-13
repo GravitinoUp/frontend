@@ -1,11 +1,22 @@
-import { Dispatch, Fragment, SetStateAction, useMemo, useState } from 'react'
-import i18next from 'i18next'
+import {
+    Dispatch,
+    Fragment,
+    lazy,
+    SetStateAction,
+    Suspense,
+    useMemo,
+    useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { placeholderQuery } from '../tasklist/constants'
+import i18next from '../../i18n.ts'
+import { placeholderQuery } from '../tasklist/constants.ts'
+import ArrowRight from '@/assets/icons/arrow_right.svg'
 import UploadIcon from '@/assets/icons/upload.svg'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
-import FileContainer from '@/components/file-container/file-container'
+import {
+    CustomAlert,
+    ErrorCustomAlert,
+} from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
@@ -26,6 +37,7 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSuccessToast } from '@/hooks/use-success-toast'
 import { useGetGroupsQuery } from '@/redux/api/groups'
@@ -42,6 +54,10 @@ import {
     UserInterface,
     UserPayloadInterface,
 } from '@/types/interface/user'
+
+const FileContainer = lazy(
+    () => import('@/components/file-container/file-container')
+)
 
 const userFormSchema = z
     .object({
@@ -123,6 +139,12 @@ interface AddUserFormProps {
 
 const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
     const { t } = useTranslation()
+    const [tabValue, setTabValue] = useState('user')
+    const [tabUserTypeValue, setTabUserTypeValue] = useState(
+        !user || user.organization?.organization_id === null
+            ? 'user'
+            : 'organization'
+    )
 
     const userForm = useForm({
         schema: userFormSchema,
@@ -205,6 +227,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         isSuccess: rolesSuccess,
     } = useGetRolesQuery(placeholderQuery, {
         selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+        skip: tabValue !== 'role',
     })
 
     const {
@@ -212,8 +235,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         isLoading: groupsLoading,
         isError: groupsError,
         isSuccess: groupsSuccess,
-    } = useGetGroupsQuery(undefined, {
+    } = useGetGroupsQuery(void 0, {
         selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+        skip: tabValue !== 'role',
     })
 
     // ORGANIZATIONS
@@ -229,7 +253,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         createUser,
         {
             isLoading: isUserAdding,
-            isError: userCreateError,
+            error: userCreateError,
             isSuccess: userCreateSuccess,
         },
     ] = useCreateUserMutation()
@@ -238,7 +262,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         updateUser,
         {
             isLoading: isUserUpdating,
-            isError: userUpdateError,
+            error: userUpdateError,
             isSuccess: userUpdateSuccess,
         },
     ] = useUpdateUserMutation()
@@ -247,7 +271,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         createOrganization,
         {
             isLoading: isOrganizationAdding,
-            isError: organizationCreateError,
+            error: organizationCreateError,
             isSuccess: organizationCreateSuccess,
         },
     ] = useCreateOrganizationUserMutation()
@@ -256,17 +280,10 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
         updateOrganization,
         {
             isLoading: isOrganizationUpdating,
-            isError: organizationUpdateError,
+            error: organizationUpdateError,
             isSuccess: organizationUpdateSuccess,
         },
     ] = useUpdateOrganizationUserMutation()
-
-    const [tabValue, setTabValue] = useState('user')
-    const [tabUserTypeValue, setTabUserTypeValue] = useState(
-        !user || user.organization?.organization_id === null
-            ? 'user'
-            : 'organization'
-    )
 
     function handleUserSubmit() {
         setTabValue('role')
@@ -361,13 +378,19 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     className="data-[state=active]:text-primary uppercase"
                 >
                     {t('tabs.common')}
-                </TabsTrigger>
+                </TabsTrigger>{' '}
+                <span className="pb-4">
+                    <ArrowRight />
+                </span>
                 <TabsTrigger
                     value="role"
                     className="data-[state=active]:text-primary uppercase"
                 >
                     {t('tabs.roles.and.permissions')}
                 </TabsTrigger>
+                <span className="pb-4">
+                    <ArrowRight />
+                </span>
                 <TabsTrigger
                     value="image"
                     className="data-[state=active]:text-primary uppercase"
@@ -377,7 +400,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
             </TabsList>
             <Separator className="w-full bg-[#E8E9EB]" decorative />
             <TabsContent value="user" className="w-full">
-                <ScrollArea className="w-full h-[600px] pr-3">
+                <ScrollArea className="w-full h-[690px] pr-10">
                     <Tabs
                         value={tabUserTypeValue}
                         onValueChange={(value) => {
@@ -684,7 +707,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
             </TabsContent>
-            <TabsContent value="role" className="w-full">
+            <TabsContent value="role" className="w-full h-[690px]">
                 <CustomForm form={roleForm} onSubmit={handleRoleSubmit}>
                     <FormField
                         control={roleForm.control}
@@ -692,7 +715,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
                                 <FormLabel>{t('role')}</FormLabel>
-                                {rolesLoading && <LoadingSpinner />}
+                                {rolesLoading && (
+                                    <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                )}
                                 {rolesError && (
                                     <CustomAlert
                                         message={t('multiselect.error.roles')}
@@ -734,7 +759,9 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
                                 <FormLabel>{t('group')}</FormLabel>
-                                {groupsLoading && <LoadingSpinner />}
+                                {groupsLoading && (
+                                    <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                )}
                                 {groupsError && (
                                     <CustomAlert
                                         message={t('multiselect.error.groups')}
@@ -771,52 +798,68 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                             </FormItem>
                         )}
                     />
-                    <Button className="w-[100px] mt-10 mr-4" type="submit">
-                        {t('button.action.next')}
-                    </Button>
-                    <Button
-                        className="w-[100px] mt-10"
-                        type="button"
-                        variant={'outline'}
-                        onClick={() => setTabValue('user')}
-                    >
-                        {t('button.action.back')}
-                    </Button>
+                    <div className="flex gap-4 absolute bottom-8">
+                        <Button className="w-[100px] mt-10 mr-4" type="submit">
+                            {t('button.action.next')}
+                        </Button>
+                        <Button
+                            className="w-[100px] mt-10"
+                            type="button"
+                            variant={'outline'}
+                            onClick={() => setTabValue('user')}
+                        >
+                            {t('button.action.back')}
+                        </Button>
+                    </div>
                 </CustomForm>
             </TabsContent>
-            <TabsContent value="image" className="w-full">
+            <TabsContent value="image" className="w-full h-[690px]">
                 <CustomForm form={imageForm} onSubmit={handleSubmit}>
-                    <FileContainer
-                        onSubmit={(file) => console.log(file)}
-                        fileType="image/*"
-                        uploadIcon={<UploadIcon />}
-                    />
-                    {(userCreateError ||
-                        organizationCreateError ||
-                        userUpdateError ||
-                        organizationUpdateError) && (
-                        <CustomAlert className="mt-3" />
-                    )}
-                    <Button className="w-[100px] mt-10 mr-4" type="submit">
-                        {isUserAdding ||
-                        isOrganizationAdding ||
-                        isUserUpdating ||
-                        isOrganizationUpdating ? (
-                            <LoadingSpinner />
-                        ) : !user ? (
-                            t('button.action.create')
-                        ) : (
-                            t('button.action.save')
-                        )}
-                    </Button>
-                    <Button
-                        className="w-[100px] mt-10"
-                        type="button"
-                        variant={'outline'}
-                        onClick={() => setTabValue('role')}
+                    <Suspense
+                        fallback={
+                            <LoadingSpinner className="w-16 h-16 text-primary" />
+                        }
                     >
-                        {t('button.action.back')}
-                    </Button>
+                        <FileContainer
+                            onSubmit={(file) => console.log(file)}
+                            fileType="image/*"
+                            uploadIcon={<UploadIcon />}
+                        />
+                    </Suspense>
+                    {userCreateError && (
+                        <ErrorCustomAlert error={userCreateError} />
+                    )}
+                    {userUpdateError && (
+                        <ErrorCustomAlert error={userUpdateError} />
+                    )}
+                    {organizationCreateError && (
+                        <ErrorCustomAlert error={organizationCreateError} />
+                    )}
+                    {organizationUpdateError && (
+                        <ErrorCustomAlert error={organizationUpdateError} />
+                    )}
+                    <div className="flex gap-4 absolute bottom-8">
+                        <Button className="w-[100px] mt-10 mr-4" type="submit">
+                            {isUserAdding ||
+                            isOrganizationAdding ||
+                            isUserUpdating ||
+                            isOrganizationUpdating ? (
+                                <LoadingSpinner />
+                            ) : !user ? (
+                                t('button.action.create')
+                            ) : (
+                                t('button.action.save')
+                            )}
+                        </Button>
+                        <Button
+                            className="w-[100px] mt-10"
+                            type="button"
+                            variant={'outline'}
+                            onClick={() => setTabValue('role')}
+                        >
+                            {t('button.action.back')}
+                        </Button>
+                    </div>
                 </CustomForm>
             </TabsContent>
         </Tabs>

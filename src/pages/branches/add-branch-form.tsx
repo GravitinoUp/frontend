@@ -2,19 +2,26 @@ import { Dispatch, Fragment, SetStateAction, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import i18next from '../../i18n.ts'
-import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
 import { FormField } from '@/components/ui/form'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
-import { useCreateBranchMutation, useUpdateBranchMutation } from '@/redux/api/branch'
+import {
+    useCreateBranchMutation,
+    useUpdateBranchMutation,
+} from '@/redux/api/branch'
 import { BranchInterface } from '@/types/interface/branch'
 
 const branchSchema = z.object({
-    branch_name: z.string().min(1, { message: i18next.t('validation.require.title') }),
-    branch_address: z.string().min(1, { message: i18next.t('validation.require.address') }),
+    branch_name: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.title') }),
+    branch_address: z
+        .string()
+        .min(1, { message: i18next.t('validation.require.address') }),
 })
 
 interface AddBranchFormProps {
@@ -29,36 +36,40 @@ const AddBranchForm = ({ branch, setDialogOpen }: AddBranchFormProps) => {
         schema: branchSchema,
         defaultValues: !branch
             ? {
-                branch_name: '',
-                branch_address: '',
-            }
+                  branch_name: '',
+                  branch_address: '',
+              }
             : {
-                branch_name: branch.branch_name,
-                branch_address: branch.branch_address,
-            },
+                  branch_name: branch.branch_name,
+                  branch_address: branch.branch_address,
+              },
     })
 
     const [
         createBranch,
-        { isLoading: isAdding, isError: createError, isSuccess: createSuccess },
+        { isLoading: isAdding, error: createError, isSuccess: createSuccess },
     ] = useCreateBranchMutation()
 
     const [
         updateBranch,
-        {
-            isLoading: isUpdating,
-            isError: updateError,
-            isSuccess: updateSuccess,
-        },
+        { isLoading: isUpdating, error: updateError, isSuccess: updateSuccess },
     ] = useUpdateBranchMutation()
 
-    const createSuccessMsg = useMemo(() => t('toast.success.description.create.m', {
-        entityType: t('branch'),
-    }), [])
+    const createSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.create.m', {
+                entityType: t('branch'),
+            }),
+        []
+    )
 
-    const updateSuccessMsg = useMemo(() => t('toast.success.description.update.m', {
-        entityType: t('branch'),
-    }), [])
+    const updateSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.update.m', {
+                entityType: t('branch'),
+            }),
+        []
+    )
 
     useSuccessToast(createSuccessMsg, createSuccess, setDialogOpen)
     useSuccessToast(updateSuccessMsg, updateSuccess, setDialogOpen)
@@ -84,10 +95,15 @@ const AddBranchForm = ({ branch, setDialogOpen }: AddBranchFormProps) => {
                 control={form.control}
                 name="branch_address"
                 render={({ field }) => (
-                    <InputField className="mt-3" label={t('address')} {...field} />
+                    <InputField
+                        className="mt-3"
+                        label={t('address')}
+                        {...field}
+                    />
                 )}
             />
-            {(createError || updateError) && <CustomAlert className="mt-3" />}
+            {createError && <ErrorCustomAlert error={createError} />}
+            {updateError && <ErrorCustomAlert error={updateError} />}
             <div className="h-48" />
             <Fragment>
                 <Button

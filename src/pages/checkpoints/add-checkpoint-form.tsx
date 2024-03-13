@@ -2,7 +2,7 @@ import { Dispatch, Fragment, SetStateAction, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import i18next from '../../i18n.ts'
-import { placeholderQuery } from '../tasklist/constants.tsx'
+import { placeholderQuery } from '../tasklist/constants.ts'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
@@ -23,6 +23,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select.tsx'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useGetBranchesQuery } from '@/redux/api/branch.ts'
 import { useGetAllCheckpointTypesQuery } from '@/redux/api/checkpoint-types.ts'
@@ -218,7 +219,9 @@ const AddCheckpointForm = ({
                         render={({ field }) => (
                             <FormItem className="w-full mr-5 mt-3">
                                 <FormLabel>{t('neighboring.state')}</FormLabel>
-                                {neighboringStatesLoading && <LoadingSpinner />}
+                                {neighboringStatesLoading && (
+                                    <Skeleton className="h-10 w-[251px] rounded-xl" />
+                                )}
                                 {neighboringStatesError && (
                                     <CustomAlert
                                         message={t(
@@ -271,7 +274,9 @@ const AddCheckpointForm = ({
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
                                 <FormLabel>{t('branch')}</FormLabel>
-                                {branchesLoading && <LoadingSpinner />}
+                                {branchesLoading && (
+                                    <Skeleton className="h-10 w-[251px] rounded-xl" />
+                                )}
                                 {branchesError && (
                                     <CustomAlert
                                         message={t('multiselect.error.branch')}
@@ -329,7 +334,9 @@ const AddCheckpointForm = ({
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
                                 <FormLabel>{t('type')}</FormLabel>
-                                {checkpointTypesLoading && <LoadingSpinner />}
+                                {checkpointTypesLoading && (
+                                    <Skeleton className="h-10 w-[251px] rounded-xl" />
+                                )}
                                 {checkpointTypesError && (
                                     <CustomAlert
                                         message={t(
@@ -383,7 +390,9 @@ const AddCheckpointForm = ({
                     render={({ field }) => (
                         <FormItem className="w-full mt-3">
                             <FormLabel>{t('working.hours')}</FormLabel>
-                            {workingHoursLoading && <LoadingSpinner />}
+                            {workingHoursLoading && (
+                                <Skeleton className="h-10 w-[522px] rounded-xl" />
+                            )}
                             {workingHoursError && (
                                 <CustomAlert
                                     message={t(
@@ -433,7 +442,9 @@ const AddCheckpointForm = ({
                     render={({ field }) => (
                         <FormItem className="w-full mt-3">
                             <FormLabel>{t('operating.mode')}</FormLabel>
-                            {operatingModesLoading && <LoadingSpinner />}
+                            {operatingModesLoading && (
+                                <Skeleton className="h-10 w-[522px] rounded-xl" />
+                            )}
                             {operatingModesError && (
                                 <CustomAlert
                                     message={t(

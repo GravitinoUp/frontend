@@ -35,9 +35,27 @@ const facilityApi = api.injectEndpoints({
                 response: FetchDataInterface<FacilityInterface[]>
             ) => response.data,
         }),
+        getFacilitiesByBranch: builder.query<
+            FacilityInterface[],
+            { body: FacilityPayloadInterface; branchIDS: number[] }
+        >({
+            query: ({ body, branchIDS }) => {
+                const queryParams = branchIDS
+                    .map((id) => `branch_ids=${id}`)
+                    .join('&')
+                return {
+                    url: `facility/all-by-branch?${queryParams}`,
+                    method: 'POST',
+                    body,
+                }
+            },
+            transformResponse: (
+                response: FetchDataInterface<FacilityInterface[]>
+            ) => response.data,
+        }),
     }),
     overrideExisting: true,
 })
 
-export const { useGetFacilitiesQuery, useGetFacilitiesByCheckpointQuery } =
+export const { useGetFacilitiesQuery, useGetFacilitiesByCheckpointQuery, useGetFacilitiesByBranchQuery } =
     facilityApi

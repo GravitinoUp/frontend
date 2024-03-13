@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import i18next from 'i18next'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+import i18next from '../../i18n.ts'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useErrorToast } from '@/hooks/use-error-toast'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
+import { DASHBOARD } from '@/routes.ts'
 
 const formSchema = z.object({
     email: z.string().email(i18next.t('validation.require.email')),
@@ -36,10 +37,8 @@ export function SignInPage() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const [
-        authUser,
-        { data: authData, isSuccess: isSuccess, isError: isError },
-    ] = useAuthMutation()
+    const [authUser, { data: authData, isSuccess: isSuccess, error }] =
+        useAuthMutation()
 
     useEffect(() => {
         if (isSuccess) {
@@ -48,7 +47,7 @@ export function SignInPage() {
                 dispatch(setRefreshToken(authData?.refreshToken))
             }
 
-            navigate('/dashboard')
+            navigate(DASHBOARD)
         }
     }, [isSuccess])
 
@@ -56,11 +55,11 @@ export function SignInPage() {
         authUser(data)
     }
 
-    useErrorToast(isError, () => handleSubmit(form.getValues()))
-
     useEffect(() => {
         document.title = t('authorization')
     }, [])
+
+    useErrorToast(() => handleSubmit(form.getValues()), error)
 
     return (
         <div className="bg-[#F8F8F8] h-screen w-screen select-none  flex items-center justify-center">

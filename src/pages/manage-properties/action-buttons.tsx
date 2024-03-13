@@ -12,28 +12,29 @@ export const ActionButtons = ({
 }: {
     property: PropertyInterface
 }) => {
-    const [deletePropertyName, { isError, isSuccess }] =
+    const [deletePropertyName, { error, isSuccess }] =
         useDeletePropertyNameMutation()
 
     const { t } = useTranslation()
 
-    const deleteSuccessMsg = useMemo(() => t('toast.success.description.delete.f', {
-        entityType: t('property'),
-        entityName: property.property_name,
-    }), [])
+    const deleteSuccessMsg = useMemo(
+        () =>
+            t('toast.success.description.delete.f', {
+                entityType: t('property'),
+                entityName: property.property_name,
+            }),
+        []
+    )
 
     const handlePropertyDelete = useCallback(() => {
         deletePropertyName(property.property_name_id)
     }, [property.property_name_id, deletePropertyName])
 
-    useErrorToast(isError, handlePropertyDelete)
+    useErrorToast(handlePropertyDelete, error)
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
-        <Button
-            variant="ghost"
-            onClick={handlePropertyDelete}
-        >
+        <Button variant="ghost" onClick={handlePropertyDelete}>
             <DeleteIcon />
         </Button>
     )

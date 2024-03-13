@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import MultiLink from './links/multi-link.tsx'
 import SidebarLink from './links/nav-link.tsx'
 import i18next from '../i18n.ts'
+import * as routes from '../routes.ts'
 import ChartIcon from '@/assets/icons/Chart_alt.svg'
 import CompassIcon from '@/assets/icons/Compass.svg'
 import DashboardIcon from '@/assets/icons/darhboard_alt.svg'
@@ -20,7 +21,6 @@ export interface SingleLink {
     type: string
     path: string
     title: string
-    count: number | null
     children: React.ReactNode
 }
 
@@ -34,79 +34,68 @@ export interface MultiLink {
 const links: (SingleLink | MultiLink)[] = [
     {
         type: 'single',
-        path: '/dashboard',
+        path: routes.DASHBOARD,
         title: i18next.t('dashboard'),
-        count: null,
         children: <DashboardIcon />,
     },
     {
         type: 'single',
-        path: '/tasklist',
+        path: routes.TASK_LIST,
         title: i18next.t('tasks'),
-        count: null,
         children: <TaskListIcon />,
     },
     {
         type: 'single',
-        path: '/reports',
+        path: routes.REPORTS,
         title: i18next.t('reports'),
-        count: 9,
         children: <ChartIcon />,
     },
     {
         type: 'single',
-        path: '/map',
+        path: routes.MAP,
         title: i18next.t('maps'),
-        count: null,
         children: <CompassIcon />,
     },
     {
         type: 'single',
-        path: '/users',
+        path: routes.USERS,
         title: i18next.t('users'),
-        count: null,
         children: <GroupIcon />,
     },
     {
         type: 'single',
-        path: '/organizations',
+        path: routes.ORGANIZATIONS,
         title: i18next.t('organizations'),
-        count: null,
         children: <HomeIcon />,
     },
     {
         type: 'single',
-        path: '/checkpoints',
+        path: routes.CHECKPOINTS,
         title: i18next.t('checkpoints'),
-        count: null,
         children: <RoadFinishIcon />,
     },
     {
         type: 'single',
-        path: '/branches',
+        path: routes.BRANCHES,
         title: i18next.t('branches'),
-        count: null,
         children: <FoldersGroupIcon />,
     },
     {
         type: 'single',
-        path: '/roles',
+        path: routes.ROLES,
         title: i18next.t('roles'),
-        count: null,
         children: <VectorIcon />,
     },
     {
         type: 'single',
-        path: '/manage-properties',
+        path: routes.MANAGE_PROPERTIES,
         title: i18next.t('manage.properties'),
-        count: null,
         children: <ParametersIcon />,
     },
     {
         type: 'single',
-        path: '/administration',
+        path: routes.SETTINGS,
         title: i18next.t('administration'),
-        count: null,
         children: <FilterIcon />,
     },
 ]
@@ -120,7 +109,7 @@ export function Navbar({ open, setOpen }: NavbarProps) {
     const { t } = useTranslation()
 
     return (
-        <div className="bg-white flex flex-col border-solid h-screen">
+        <nav className="bg-white flex flex-col border-solid h-screen">
             <div
                 className={cn(
                     'h-[64px] text-[#0784D1] text-nowrap items-center font-pop font-bold text-[18px] flex justify-center',
@@ -129,7 +118,6 @@ export function Navbar({ open, setOpen }: NavbarProps) {
             >
                 {t('gravitino.full.name')}
             </div>
-
             <ul>
                 {links.map((item, key) => {
                     if (item.type === 'single') {
@@ -139,7 +127,6 @@ export function Navbar({ open, setOpen }: NavbarProps) {
                             <li key={key}>
                                 <SidebarLink
                                     open={open}
-                                    count={link.count}
                                     path={link.path}
                                     title={link.title}
                                 >
@@ -168,6 +155,6 @@ export function Navbar({ open, setOpen }: NavbarProps) {
                     return void 0
                 })}
             </ul>
-        </div>
+        </nav>
     )
 }

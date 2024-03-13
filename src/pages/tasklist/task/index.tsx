@@ -1,8 +1,9 @@
 import { useLocation } from 'react-router-dom'
-import TaskInfoContent from './task-info-content'
+import OrderJournalContent from './order-journal-content.tsx'
 import i18next from '../../../i18n.ts'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import { PageLayout } from '@/components/PageLayout'
+import TaskInfoContent from '@/pages/tasklist/task-info-content.tsx'
 import { OrderInterface } from '@/types/interface/orders'
 
 const taskPageTabs = (order_id: number) => [
@@ -14,7 +15,7 @@ const taskPageTabs = (order_id: number) => [
     {
         value: 'taskHistory',
         head: i18next.t('tabs.task.history'),
-        content: <p>PLACEHOLDER</p>,
+        content: <OrderJournalContent order_id={order_id} />,
     },
 ]
 

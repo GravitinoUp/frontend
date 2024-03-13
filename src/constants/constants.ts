@@ -1,13 +1,14 @@
 import i18next from '../i18n.ts'
 
 export const TASK_STATUSES = {
+    CREATED: i18next.t('task.status.created').toLowerCase(),
+    APPOINTED: i18next.t('task.status.appointed').toLowerCase(),
     IN_PROGRESS: i18next.t('task.status.in-progress').toLowerCase(),
+    ON_VERIFICATION: i18next.t('task.status.verification').toLowerCase(),
     CLOSED: i18next.t('task.status.closed').toLowerCase(),
     CANCELED: i18next.t('task.status.canceled').toLowerCase(),
-    APPOINTED: i18next.t('task.status.appointed').toLowerCase(),
     DEADLINE_CLOSED: i18next.t('task.status.deadline').toLowerCase(),
     NEED_WORK: i18next.t('task.status.need-work').toLowerCase(),
-    ON_VERIFICATION: i18next.t('task.status.verification').toLowerCase(),
 }
 
 export const FILE_SIZE_UNITS = {
@@ -18,9 +19,9 @@ export const FILE_SIZE_UNITS = {
 }
 
 export const CHECKPOINT_COMPLETED_STATUSES = {
-    MIN: 10,
-    MEDIUM: 15,
-    MAX: 20,
+    MIN: 0,
+    MEDIUM: 50,
+    MAX: 90,
 }
 
 export const CHECKPOINT_TYPES = {
@@ -28,4 +29,23 @@ export const CHECKPOINT_TYPES = {
     TRAIN: 2,
     SHIP: 3,
     PLANE: 4,
+    RIVER: 5,
+    MIXED: 6,
+    PEOPLE: 7,
+    LAKE: 8,
+}
+
+export const QUALITY_STATUSES = {
+    MEDIUM: 50,
+    HIGH: 90,
+}
+
+export const FEEDBACK_SUBJECTS = {
+    cleanliness: i18next.t('feedback.subject.cleanliness'),
+    breakdown: i18next.t('feedback.subject.breakdown'),
+}
+
+export const FEEDBACK_DEPARTMENTS = {
+    fss: i18next.t('feedback.department.fss'),
+    customs: i18next.t('feedback.department.customs'),
 }

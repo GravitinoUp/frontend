@@ -32,6 +32,10 @@ export const branchesColumns: ColumnDef<BranchInterface>[] = [
         enableHiding: false,
     },
     {
+        header: i18next.t('number'),
+        accessorKey: 'branch_id',
+    },
+    {
         accessorKey: 'branch_name',
         header: i18next.t('title'),
     },
