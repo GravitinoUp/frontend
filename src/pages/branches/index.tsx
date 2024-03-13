@@ -27,7 +27,7 @@ const BranchesPage = () => {
     const {
         data: branches = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
         refetch,
     } = useGetBranchesQuery(branchesQuery)
 
@@ -38,6 +38,7 @@ const BranchesPage = () => {
         <PageLayout
             title={t('branches')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}
@@ -90,7 +91,7 @@ const BranchesPage = () => {
                         itemCount: branches.count,
                         pageSize: branchesQuery.offset.count,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             )}
         </PageLayout>

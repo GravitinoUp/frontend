@@ -6,13 +6,11 @@ import { cn } from '@/lib/utils'
 function SidebarLink({
     open,
     path,
-    count,
     title,
     children,
 }: {
     open: boolean
     path: string
-    count: number | null
     title: string
     children: React.ReactNode
 }) {
@@ -53,17 +51,6 @@ function SidebarLink({
                             </div>
                         )}
                     </div>
-                    {count && (
-                        <div className=" absolute right-2 items-center justify-center">
-                            {count !== 0 && (
-                                <div className="w-[20px] h-[20px] rounded-full bg-[#0784D1] flex justify-center items-center">
-                                    <p className="text-white text-[12px]">
-                                        {count < 10 ? `${count}` : '+9'}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
                 </div>
             </Button>
         </NavLink>

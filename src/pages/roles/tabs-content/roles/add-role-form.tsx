@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
+import i18next from '../../../../i18n.ts'
 import {
     CustomAlert,
     ErrorCustomAlert,
@@ -18,13 +19,14 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useGetAllPermissionsQuery } from '@/redux/api/permissions'
 import { useAddRoleMutation, useUpdateRoleMutation } from '@/redux/api/roles'
 import { RoleInterface } from '@/types/interface/roles'
 
 const formSchema = z.object({
-    role_name: z.string(),
+    role_name: z.string().min(1, i18next.t('validation.require.title')),
     permissions: z.array(z.number()),
 })
 
@@ -100,7 +102,6 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                         label={t('title')}
                         {...field}
                         disabled={isAdding || isUpdating}
-                        required
                     />
                 )}
             />
@@ -110,24 +111,34 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                 render={() => (
                     <FormItem className="mt-4">
                         <FormLabel>{t('permissions')}</FormLabel>
-                        {permissionsLoading && <LoadingSpinner />}
-                        {permissionsError && (
-                            <CustomAlert
-                                message={t('multiselect.error.permissions')}
+                        <ScrollArea className="h-[445px] w-full rounded-md border px-4 py-4">
+                            <InputField
+                                className="mb-5"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder={t('placeholder.search')}
+                                disabled={
+                                    permissionsLoading ||
+                                    permissionsError ||
+                                    isAdding ||
+                                    isUpdating
+                                }
                             />
-                        )}
-                        {permissionsSuccess && permissions.length > 0 && (
-                            <ScrollArea className="h-[445px] w-full rounded-md border px-4 py-4">
-                                <InputField
-                                    className="mb-5"
-                                    value={searchQuery}
-                                    onChange={(e) =>
-                                        setSearchQuery(e.target.value)
-                                    }
-                                    placeholder={t('placeholder.search')}
-                                    disabled={isAdding || isUpdating}
+                            {permissionsError && (
+                                <CustomAlert
+                                    message={t('multiselect.error.permissions')}
                                 />
-                                {filteredPermissions.map(
+                            )}
+                            {permissionsLoading && (
+                                <div className="flex flex-col gap-1">
+                                    <Skeleton className="h-5 w-[228px] rounded-xl" />
+                                    <Skeleton className="h-5 w-[228px] rounded-xl" />
+                                    <Skeleton className="h-5 w-[228px] rounded-xl" />
+                                </div>
+                            )}
+                            {permissionsSuccess &&
+                                permissions.length > 0 &&
+                                filteredPermissions.map(
                                     ({
                                         permission_id: id,
                                         permission_name: label,
@@ -182,8 +193,7 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                                         />
                                     )
                                 )}
-                            </ScrollArea>
-                        )}
+                        </ScrollArea>
                         <FormMessage />
                     </FormItem>
                 )}

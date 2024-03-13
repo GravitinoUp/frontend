@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ActionsDropdown } from './roles-actions'
+import { ActionsDropdown } from './action-buttons.tsx'
 import i18next from '../../../../i18n.ts'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RoleInterface } from '@/types/interface/roles'

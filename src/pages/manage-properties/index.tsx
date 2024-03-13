@@ -19,13 +19,14 @@ export default function ManagePropertiesPage() {
     const [exportFormOpen, setExportFormOpen] = useState(false)
     const [importFormOpen, setImportFormOpen] = useState(false)
 
-    const { refetch } = useGetPropertiesQuery(currentTab)
+    const { refetch, isFetching } = useGetPropertiesQuery(currentTab)
     const { t } = useTranslation()
 
     return (
         <PageLayout
             title={t('manage.properties')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}

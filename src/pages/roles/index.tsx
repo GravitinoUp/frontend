@@ -28,7 +28,7 @@ const rolesPageTabs = [
 ]
 
 const RolesPage = () => {
-    const { refetch } = useGetRolesQuery(placeholderQuery)
+    const { refetch, isFetching } = useGetRolesQuery(placeholderQuery)
     const [formOpen, setFormOpen] = useState(false)
     const { t } = useTranslation()
 
@@ -36,6 +36,7 @@ const RolesPage = () => {
         <PageLayout
             title={t('roles')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}

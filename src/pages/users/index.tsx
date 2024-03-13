@@ -23,7 +23,7 @@ export default function UsersPage() {
     const {
         data: users = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
         refetch,
     } = useGetUsersQuery(usersQuery)
 
@@ -58,6 +58,7 @@ export default function UsersPage() {
         <PageLayout
             title={t('users')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}
@@ -155,7 +156,7 @@ export default function UsersPage() {
                         itemCount: users.count,
                         pageSize: usersQuery.offset.count,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             )}
         </PageLayout>

@@ -43,7 +43,7 @@ const usersApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Users'],
+            invalidatesTags: ['Users', 'Organizations'],
         }),
         updateUser: builder.mutation<
             UserInterface,
@@ -65,14 +65,14 @@ const usersApi = api.injectEndpoints({
                 method: 'PATCH',
                 body,
             }),
-            invalidatesTags: ['Users'],
+            invalidatesTags: ['Users', 'Organizations'],
         }),
         deleteUser: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
                 url: `users/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Users'],
+            invalidatesTags: ['Users', 'Organizations'],
         }),
         changeUserStatus: builder.mutation<
             FetchResultInterface,

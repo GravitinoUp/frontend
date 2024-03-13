@@ -8,13 +8,29 @@ import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area.tsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select.tsx'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useGetBranchesQuery } from '@/redux/api/branch.ts'
 import { useGetAllCheckpointTypesQuery } from '@/redux/api/checkpoint-types.ts'
-import { useCreateCheckpointMutation, useUpdateCheckpointMutation } from '@/redux/api/checkpoints.ts'
+import {
+    useCreateCheckpointMutation,
+    useUpdateCheckpointMutation,
+} from '@/redux/api/checkpoints.ts'
 import { useGetNeighboringStatesQuery } from '@/redux/api/neighboring-states.ts'
 import { useGetOperatingModesQuery } from '@/redux/api/operating-modes.ts'
 import { useGetAllWorkingHoursQueryQuery } from '@/redux/api/working-hours.ts'
@@ -61,26 +77,26 @@ const AddCheckpointForm = ({
         schema: checkpointSchema,
         defaultValues: !checkpoint
             ? {
-                checkpoint_name: '',
-                address: '',
-                branch_id: '',
-                neighboring_state_id: '',
-                district: '',
-                region: '',
-                checkpoint_type_id: '',
-                operating_mode_id: '',
-                working_hours_id: '',
-            }
+                  checkpoint_name: '',
+                  address: '',
+                  branch_id: '',
+                  neighboring_state_id: '',
+                  district: '',
+                  region: '',
+                  checkpoint_type_id: '',
+                  operating_mode_id: '',
+                  working_hours_id: '',
+              }
             : {
-                ...checkpoint,
-                branch_id: `${checkpoint.branch.branch_id}`,
-                neighboring_state_id: `${checkpoint.neighboring_state?.neighboring_state_id}`,
-                checkpoint_type_id: `${checkpoint.checkpoint_type.checkpoint_type_id}`,
-                working_hours_id: `${checkpoint.working_hours?.working_hours_id}`,
-                district: `${checkpoint.district}`,
-                region: `${checkpoint.region}`,
-                operating_mode_id: `${checkpoint.operating_mode?.operating_mode_id}`,
-            },
+                  ...checkpoint,
+                  branch_id: `${checkpoint.branch.branch_id}`,
+                  neighboring_state_id: `${checkpoint.neighboring_state?.neighboring_state_id}`,
+                  checkpoint_type_id: `${checkpoint.checkpoint_type.checkpoint_type_id}`,
+                  working_hours_id: `${checkpoint.working_hours?.working_hours_id}`,
+                  district: `${checkpoint.district}`,
+                  region: `${checkpoint.region}`,
+                  operating_mode_id: `${checkpoint.operating_mode?.operating_mode_id}`,
+              },
     })
 
     const {
@@ -139,7 +155,7 @@ const AddCheckpointForm = ({
             t('toast.success.description.create.m', {
                 entityType: t('checkpoint'),
             }),
-        [],
+        []
     )
 
     const updateSuccessMsg = useMemo(
@@ -147,7 +163,7 @@ const AddCheckpointForm = ({
             t('toast.success.description.update.m', {
                 entityType: t('checkpoint'),
             }),
-        [],
+        []
     )
 
     useSuccessToast(createSuccessMsg, createSuccess, setDialogOpen)
@@ -203,11 +219,13 @@ const AddCheckpointForm = ({
                         render={({ field }) => (
                             <FormItem className="w-full mr-5 mt-3">
                                 <FormLabel>{t('neighboring.state')}</FormLabel>
-                                {neighboringStatesLoading && <LoadingSpinner />}
+                                {neighboringStatesLoading && (
+                                    <Skeleton className="h-10 w-[251px] rounded-xl" />
+                                )}
                                 {neighboringStatesError && (
                                     <CustomAlert
                                         message={t(
-                                            'multiselect.error.neighboring.states',
+                                            'multiselect.error.neighboring.states'
                                         )}
                                     />
                                 )}
@@ -221,7 +239,7 @@ const AddCheckpointForm = ({
                                                 <SelectTrigger>
                                                     <SelectValue
                                                         placeholder={t(
-                                                            'multiselect.placeholder.neighboring.states',
+                                                            'multiselect.placeholder.neighboring.states'
                                                         )}
                                                     />
                                                 </SelectTrigger>
@@ -234,14 +252,14 @@ const AddCheckpointForm = ({
                                                                 neighboringState.neighboring_state_id
                                                             }
                                                             value={String(
-                                                                neighboringState.neighboring_state_id,
+                                                                neighboringState.neighboring_state_id
                                                             )}
                                                         >
                                                             {
                                                                 neighboringState.neighboring_state_name
                                                             }
                                                         </SelectItem>
-                                                    ),
+                                                    )
                                                 )}
                                             </SelectContent>
                                         </Select>
@@ -256,7 +274,9 @@ const AddCheckpointForm = ({
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
                                 <FormLabel>{t('branch')}</FormLabel>
-                                {branchesLoading && <LoadingSpinner />}
+                                {branchesLoading && (
+                                    <Skeleton className="h-10 w-[251px] rounded-xl" />
+                                )}
                                 {branchesError && (
                                     <CustomAlert
                                         message={t('multiselect.error.branch')}
@@ -271,7 +291,7 @@ const AddCheckpointForm = ({
                                             <SelectTrigger>
                                                 <SelectValue
                                                     placeholder={t(
-                                                        'multiselect.placeholder.branch',
+                                                        'multiselect.placeholder.branch'
                                                     )}
                                                 />
                                             </SelectTrigger>
@@ -281,7 +301,7 @@ const AddCheckpointForm = ({
                                                 <SelectItem
                                                     key={branch.branch_id}
                                                     value={String(
-                                                        branch.branch_id,
+                                                        branch.branch_id
                                                     )}
                                                 >
                                                     {branch.branch_name}
@@ -314,11 +334,13 @@ const AddCheckpointForm = ({
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
                                 <FormLabel>{t('type')}</FormLabel>
-                                {checkpointTypesLoading && <LoadingSpinner />}
+                                {checkpointTypesLoading && (
+                                    <Skeleton className="h-10 w-[251px] rounded-xl" />
+                                )}
                                 {checkpointTypesError && (
                                     <CustomAlert
                                         message={t(
-                                            'multiselect.error.checkpoint.type',
+                                            'multiselect.error.checkpoint.type'
                                         )}
                                     />
                                 )}
@@ -332,7 +354,7 @@ const AddCheckpointForm = ({
                                                 <SelectTrigger>
                                                     <SelectValue
                                                         placeholder={t(
-                                                            'multiselect.placeholder.checkpoint.type',
+                                                            'multiselect.placeholder.checkpoint.type'
                                                         )}
                                                     />
                                                 </SelectTrigger>
@@ -345,14 +367,14 @@ const AddCheckpointForm = ({
                                                                 checkpointType.checkpoint_type_id
                                                             }
                                                             value={String(
-                                                                checkpointType.checkpoint_type_id,
+                                                                checkpointType.checkpoint_type_id
                                                             )}
                                                         >
                                                             {
                                                                 checkpointType.checkpoint_type_name
                                                             }
                                                         </SelectItem>
-                                                    ),
+                                                    )
                                                 )}
                                             </SelectContent>
                                         </Select>
@@ -368,11 +390,13 @@ const AddCheckpointForm = ({
                     render={({ field }) => (
                         <FormItem className="w-full mt-3">
                             <FormLabel>{t('working.hours')}</FormLabel>
-                            {workingHoursLoading && <LoadingSpinner />}
+                            {workingHoursLoading && (
+                                <Skeleton className="h-10 w-[522px] rounded-xl" />
+                            )}
                             {workingHoursError && (
                                 <CustomAlert
                                     message={t(
-                                        'multiselect.error.working.hours',
+                                        'multiselect.error.working.hours'
                                     )}
                                 />
                             )}
@@ -386,7 +410,7 @@ const AddCheckpointForm = ({
                                             <SelectTrigger>
                                                 <SelectValue
                                                     placeholder={t(
-                                                        'multiselect.placeholder.working.hours',
+                                                        'multiselect.placeholder.working.hours'
                                                     )}
                                                 />
                                             </SelectTrigger>
@@ -398,7 +422,7 @@ const AddCheckpointForm = ({
                                                         workingHour.working_hours_id
                                                     }
                                                     value={String(
-                                                        workingHour.working_hours_id,
+                                                        workingHour.working_hours_id
                                                     )}
                                                 >
                                                     {
@@ -418,11 +442,13 @@ const AddCheckpointForm = ({
                     render={({ field }) => (
                         <FormItem className="w-full mt-3">
                             <FormLabel>{t('operating.mode')}</FormLabel>
-                            {operatingModesLoading && <LoadingSpinner />}
+                            {operatingModesLoading && (
+                                <Skeleton className="h-10 w-[522px] rounded-xl" />
+                            )}
                             {operatingModesError && (
                                 <CustomAlert
                                     message={t(
-                                        'multiselect.error.operating.mode',
+                                        'multiselect.error.operating.mode'
                                     )}
                                 />
                             )}
@@ -436,7 +462,7 @@ const AddCheckpointForm = ({
                                             <SelectTrigger>
                                                 <SelectValue
                                                     placeholder={t(
-                                                        'multiselect.placeholder.operating.mode',
+                                                        'multiselect.placeholder.operating.mode'
                                                     )}
                                                 />
                                             </SelectTrigger>
@@ -449,14 +475,14 @@ const AddCheckpointForm = ({
                                                             operatingMode.operating_mode_id
                                                         }
                                                         value={String(
-                                                            operatingMode.operating_mode_id,
+                                                            operatingMode.operating_mode_id
                                                         )}
                                                     >
                                                         {
                                                             operatingMode.operating_mode_name
                                                         }
                                                     </SelectItem>
-                                                ),
+                                                )
                                             )}
                                         </SelectContent>
                                     </Select>

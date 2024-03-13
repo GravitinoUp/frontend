@@ -8,10 +8,10 @@ import FormDialog from '@/components/form-dialog/form-dialog.tsx'
 import ImageCarouselButton from '@/components/image-carousel/image-carousel-button.tsx'
 import ImageCarousel from '@/components/image-carousel/image-carousel.tsx'
 import OrderStatus from '@/components/order-status/order-status.tsx'
-import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
+import { TaskInfoSkeleton } from '@/pages/tasklist/task/task-info-skeleton.tsx'
 import { useDownload } from '@/hooks/use-download.ts'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
@@ -67,9 +67,12 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
     })
     const order = orders.data[0]
 
+    if (orderLoading) {
+        return <TaskInfoSkeleton />
+    }
+
     return (
         <Fragment>
-            {orderLoading && <LoadingSpinner />}
             {orderError && <ErrorCustomAlert error={orderError} />}
             {orderSuccess && (
                 <Fragment>
