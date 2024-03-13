@@ -76,7 +76,7 @@ const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProps) => {
                 duration: 1500,
             })
         }
-    }, [error, toast])
+    }, [isError, toast])
 
     return (
         <form onSubmit={handleFileUpload}>
@@ -88,33 +88,6 @@ const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProps) => {
                 <ScrollArea className="w-full pr-3 h-[390px]  mt-16 ">
                     <div className="flex flex-col gap-16">
                         <ul className="flex flex-col gap-3">
-                            {selectedFiles.map(({ id, file, fileURL }) => (
-                                <li
-                                    key={id}
-                                    className="h-[90px] border rounded-xl flex justify-between items-center px-3"
-                                >
-                                    <div className="flex gap-2 items-center">
-                                        <img
-                                            src={
-                                                file
-                                                    ? URL.createObjectURL(file)
-                                                    : fileURL
-                                            }
-                                            className="h-[72px] w-[72px] rounded-xl"
-                                            alt=""
-                                        />
-                                        <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">
-                                            {file?.name}
-                                        </p>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => handleFileDelete(id)}
-                                    >
-                                        <DeleteIcon />
-                                    </Button>
-                                </li>
-                            ))}
                             {selectedFiles.map(({ id, file, fileURL }) => (
                                 <li
                                     key={id}

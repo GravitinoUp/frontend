@@ -27,7 +27,32 @@ export const filesApi = api.injectEndpoints({
                 },
             }),
         }),
+        getFileFromUrl: builder.mutation<void, string>({
+            query: (url) => ({
+                url: url,
+                method: 'GET',
+                responseHandler: async (response) => {
+                    if (response.ok) {
+                        const fileBlob = await response.blob()
+
+                        const url = window.URL.createObjectURL(
+                            new Blob([fileBlob])
+                        )
+                        const link = document.createElement('a')
+                        link.href = url
+                        link.setAttribute(
+                            'download',
+                            `${response.url.split('/').pop()}`
+                        )
+                        document.body.appendChild(link)
+                        link.click()
+                        document.body.removeChild(link)
+                    }
+                },
+            }),
+        }),
     }),
 })
 
-export const { useGetEntityTemplateMutation } = filesApi
+export const { useGetEntityTemplateMutation, useGetFileFromUrlMutation } =
+    filesApi
