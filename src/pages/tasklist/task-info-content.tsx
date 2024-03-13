@@ -11,6 +11,7 @@ import OrderStatus from '@/components/order-status/order-status.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
+import { useDownload } from '@/hooks/use-download.ts'
 import { TaskInfoSkeleton } from '@/pages/tasklist/task/task-info-skeleton.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
@@ -52,6 +53,7 @@ interface TaskInfoContentProps {
 
 const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
     const { t } = useTranslation()
+    const { handleZip } = useDownload()
     const [statusFormOpen, setStatusFormOpen] = useState(false)
 
     const {
@@ -141,7 +143,14 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                             <ImageCarouselButton
                                 icon={<DownloadAllIcon />}
                                 label={t('download.all')}
-                                onClick={() => {}}
+                                onClick={() =>
+                                    handleZip(
+                                        `${orders.data[0].order_name}`,
+                                        orders.data[0].files.map(
+                                            (value) => value
+                                        )
+                                    )
+                                }
                             />
                         }
                     />
