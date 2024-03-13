@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import { useTranslation } from 'react-i18next'
 import MultiLink from './links/multi-link.tsx'
 import SidebarLink from './links/nav-link.tsx'
+import Watermark from './watermark/watermark.tsx'
 import i18next from '../i18n.ts'
 import * as routes from '../routes.ts'
 import ChartIcon from '@/assets/icons/Chart_alt.svg'
@@ -13,6 +13,8 @@ import GroupIcon from '@/assets/icons/Group_add.svg'
 import HomeIcon from '@/assets/icons/Home.svg'
 import ParametersIcon from '@/assets/icons/Parameters.svg'
 import RoadFinishIcon from '@/assets/icons/Road_finish.svg'
+import Logo from '@/assets/icons/rosgranstroy_logo.svg'
+import LogoMain from '@/assets/icons/rosgranstroy_logo_main.svg'
 import TaskListIcon from '@/assets/icons/Status_list.svg'
 import VectorIcon from '@/assets/icons/Vector.svg'
 import { cn } from '@/lib/utils'
@@ -106,18 +108,21 @@ export interface NavbarProps {
 }
 
 export function Navbar({ open, setOpen }: NavbarProps) {
-    const { t } = useTranslation()
-
     return (
         <nav className="bg-white flex flex-col border-solid h-screen">
-            <div
-                className={cn(
-                    'h-[64px] text-[#0784D1] text-nowrap items-center font-pop font-bold text-[18px] flex justify-center',
-                    !open && 'invisible'
-                )}
-            >
-                {t('gravitino.full.name')}
-            </div>
+            {open ? (
+                <div
+                    className={cn(
+                        'h-[64px] w-[270px] py-2 flex justify-center'
+                    )}
+                >
+                    <LogoMain />
+                </div>
+            ) : (
+                <div className="h-[64px] w-[75px] p-2 flex justify-center">
+                    <Logo />
+                </div>
+            )}
             <ul>
                 {links.map((item, key) => {
                     if (item.type === 'single') {
@@ -155,6 +160,14 @@ export function Navbar({ open, setOpen }: NavbarProps) {
                     return void 0
                 })}
             </ul>
+            <div
+                className={cn(
+                    'absolute w-full flex justify-center bottom-0 text-nowrap',
+                    !open && 'invisible'
+                )}
+            >
+                <Watermark />
+            </div>
         </nav>
     )
 }

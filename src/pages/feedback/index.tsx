@@ -22,6 +22,7 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
+import Watermark from '@/components/watermark/watermark'
 import { FEEDBACK_DEPARTMENTS, FEEDBACK_SUBJECTS } from '@/constants/constants'
 import { useErrorToast } from '@/hooks/use-error-toast'
 import { useSuccessToast } from '@/hooks/use-success-toast'
@@ -337,10 +338,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                                 {t('feedback.agree.terms')}
                             </a>
                         </p>
-                        <p className="my-6 text-[#A9A9A9] text-lg">
-                            {t('feedback.made.in')}
-                            <span className="font-bold"> {t('gravitino')}</span>
-                        </p>
+                        <Watermark />
                     </div>
                 </div>
             </CustomForm>
