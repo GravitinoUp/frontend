@@ -229,9 +229,10 @@
         "type": "Тип пользователя",
         "type.worker": "Работник",
         "type.organization": "Подрядчик",
-        "type.organization": "Подрядчик",
         "phone": "Телефон",
-        "organization": "Название организации"
+        "organization": "Название организации",
+        "active": "Активный",
+        "inactive": "Неактивный"
     },
     "toast": {
         "error": {
@@ -273,5 +274,9 @@
     },
     "map": {
         "title": "Интерактивная карта"
-    }
+    },
+    "search": {
+        "last.name": "Искать по фамилии..."
+    },
+    "extended.search": "Расширенный поиск"
 }

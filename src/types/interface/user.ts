@@ -56,7 +56,7 @@ export interface UserInterface {
     is_active: boolean
     email: string
     role: RoleInterface
-    organization?: OrganizationInterface | null
+    organization: OrganizationInterface
     person: PersonInterface
     group: GroupInterface | null
 }

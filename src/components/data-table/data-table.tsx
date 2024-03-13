@@ -37,6 +37,7 @@ interface DataTableProps<TData, TValue> {
     hasBackground?: boolean
     onRowClick?: (rowData: TData) => void
     searchSuffixIconClick?: () => void
+    searchPlaceholder?: string
     columnVisibility?: VisibilityState
     getTableInfo?: (
         pageSize: number,
@@ -54,6 +55,7 @@ function DataTable<TData, TValue>({
     hasBackground,
     onRowClick,
     searchSuffixIconClick,
+    searchPlaceholder,
     columnVisibility = {},
     getTableInfo: getTableInfo = () => {},
     paginationInfo,
@@ -99,7 +101,6 @@ function DataTable<TData, TValue>({
         state: {
             columnFilters,
             columnVisibility,
-            //globalFilter,
             rowSelection,
         },
         manualPagination: true,
@@ -109,7 +110,6 @@ function DataTable<TData, TValue>({
             paginationInfo.itemCount / paginationInfo.pageSize
         ),
         onColumnFiltersChange: setColumnFilters,
-        //onGlobalFilterChange: setGlobalFilter,
         onRowSelectionChange: setRowSelection,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -140,6 +140,7 @@ function DataTable<TData, TValue>({
         >
             <DebouncedInput
                 value={globalFilter ?? ''}
+                placeholder={searchPlaceholder}
                 onChange={(value) => setGlobalFilter(String(value))}
                 suffixIconClick={searchSuffixIconClick}
             />

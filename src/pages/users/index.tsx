@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 import { useTranslation } from 'react-i18next'
 import AddUserForm from './add-user-form'
+import UserFiltersForm from './user-filters-form.tsx'
 import { usersColumns } from './users-columns'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
@@ -14,7 +15,7 @@ import {
     FormattedUsersInterface,
     UsersPayloadInterface,
 } from '@/types/interface/user'
-import { formatInitials } from '@/utils/helpers'
+import { formatInitials, formatStringFilter } from '@/utils/helpers'
 
 export default function UsersPage() {
     const [usersQuery, setUsersQuery] =
@@ -52,32 +53,109 @@ export default function UsersPage() {
     })
 
     const [formOpen, setFormOpen] = useState(false)
+    const [filterFormOpen, setFilterFormOpen] = useState(false)
+
     const { t } = useTranslation()
 
+    if (error) {
+        return <ErrorCustomAlert error={error} />
+    }
+
     return (
-        <PageLayout
-            title={t('users')}
-            onRefreshClick={refetch}
-            actionButton={
-                <FormDialog
-                    open={formOpen}
-                    setOpen={setFormOpen}
-                    addItemForm={<AddUserForm setDialogOpen={setFormOpen} />}
-                />
-            }
-            rightBlock={
-                <div>
-                    <div className="h-16 " />
-                    <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {}} />
-                        <ExcelButton buttonType="import" onClick={() => {}} />
+        <Fragment>
+            <FormDialog
+                open={filterFormOpen}
+                setOpen={setFilterFormOpen}
+                actionButton={<Fragment />}
+                size="lg"
+                headerContent={
+                    <h2 className="text-3xl font-semibold text-black">
+                        {t('extended.search')}
+                    </h2>
+                }
+                addItemForm={
+                    <UserFiltersForm
+                        handleSubmit={(data) => {
+                            setUsersQuery({
+                                ...usersQuery,
+                                filter: {
+                                    ...usersQuery.filter,
+                                    person: {
+                                        last_name: formatStringFilter(
+                                            data.last_name
+                                        ),
+                                        first_name: formatStringFilter(
+                                            data.first_name
+                                        ),
+                                        patronymic: formatStringFilter(
+                                            data.patronymic
+                                        ),
+                                        phone: formatStringFilter(data.phone),
+                                    },
+                                    email: formatStringFilter(data.email),
+                                    organization: {
+                                        organization_id:
+                                            data.organization_id !== 0
+                                                ? data.organization_id
+                                                : undefined,
+                                    },
+                                    role: {
+                                        role_id:
+                                            data.role_id !== 0
+                                                ? data.role_id
+                                                : undefined,
+                                    },
+                                    is_active:
+                                        data.status !== null
+                                            ? data.status
+                                            : undefined,
+                                },
+                            })
+
+                            setFilterFormOpen(false)
+                        }}
+                        data={{
+                            last_name: usersQuery.filter.person?.last_name,
+                            first_name: usersQuery.filter.person?.first_name,
+                            patronymic: usersQuery.filter.person?.patronymic,
+                            organization_id:
+                                usersQuery.filter.organization?.organization_id,
+                            role_id: usersQuery.filter.role?.role_id,
+                            email: usersQuery.filter.email,
+                            phone: usersQuery.filter.person?.phone,
+                            status: usersQuery.filter.is_active,
+                        }}
+                    />
+                }
+            />
+            <PageLayout
+                title={t('users')}
+                onRefreshClick={refetch}
+                actionButton={
+                    <FormDialog
+                        open={formOpen}
+                        setOpen={setFormOpen}
+                        addItemForm={
+                            <AddUserForm setDialogOpen={setFormOpen} />
+                        }
+                    />
+                }
+                rightBlock={
+                    <div>
+                        <div className="h-16 " />
+                        <div className="flex gap-3 mb-3">
+                            <ExcelButton
+                                buttonType="export"
+                                onClick={() => {}}
+                            />
+                            <ExcelButton
+                                buttonType="import"
+                                onClick={() => {}}
+                            />
+                        </div>
                     </div>
-                </div>
-            }
-        >
-            {error ? (
-                <ErrorCustomAlert error={error} />
-            ) : (
+                }
+            >
                 <DataTable
                     data={formattedUsers}
                     columns={usersColumns}
@@ -145,13 +223,15 @@ export default function UsersPage() {
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}
+                    searchSuffixIconClick={() => setFilterFormOpen(true)}
+                    searchPlaceholder={t('search.last.name')}
                     paginationInfo={{
                         itemCount: users.count,
                         pageSize: usersQuery.offset.count,
                     }}
                     isLoading={isLoading}
                 />
-            )}
-        </PageLayout>
+            </PageLayout>
+        </Fragment>
     )
 }
