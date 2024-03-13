@@ -50,11 +50,14 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
         priority_name: row.priority.priority_name,
         executor: row.executor.short_name,
         branch_name: row.facility.checkpoint.branch.branch_name,
-        creator: formatInitials(
-            row.creator?.person.first_name,
-            row.creator?.person.last_name,
-            row.creator?.person.patronymic
-        ),
+        creator:
+            row.creator.user_id !== null
+                ? formatInitials(
+                      row.creator?.person.first_name,
+                      row.creator?.person.last_name,
+                      row.creator?.person.patronymic
+                  )
+                : t('user.guest'),
         taskType: row.task.task_id,
         ended_at_datetime: formatDate(row.ended_at_datetime) || '',
         deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
@@ -94,7 +97,12 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 open={editFormOpen}
                 setOpen={setEditFormOpen}
                 actionButton={<Fragment />}
-                addItemForm={<EditTaskForm task={selectedOrder!} />}
+                addItemForm={
+                    <EditTaskForm
+                        task={selectedOrder!}
+                        setDialogOpen={setEditFormOpen}
+                    />
+                }
             />
             <FormDialog
                 open={formOpen}

@@ -71,7 +71,7 @@
     "description": "Описание",
     "full.name": "ФИО",
     "phone": "Телефон",
-    "address": "адрес",
+    "address": "Адрес",
     "company": "компания",
     "registration.number": "Номер регистрации",
     "working.hours": "Часы работы",
@@ -232,6 +232,7 @@
     },
     "user": {
         "title": "Пользователь",
+        "guest": "Гость",
         "last.name": "Фамилия",
         "first.name": "Имя",
         "patronymic": "Отчество",

@@ -209,8 +209,8 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                     label={t('task.title')}
                                     className="mt-3"
                                     {...field}
-                                    disabled={isOrderUpdating}
-                                    readOnly={
+                                    disabled={
+                                        isOrderUpdating ||
                                         task.order_status.order_status_id === 9
                                     }
                                 />
@@ -228,8 +228,8 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                         <Textarea
                                             placeholder={t('task.description')}
                                             {...field}
-                                            disabled={isOrderUpdating}
-                                            readOnly={
+                                            disabled={
+                                                isOrderUpdating ||
                                                 task.order_status
                                                     .order_status_id === 9
                                             }
@@ -243,70 +243,81 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             label={t('branch')}
                             className="mt-3"
                             value={task.facility.checkpoint.branch.branch_name}
-                            readOnly
+                            disabled
                         />
-                        <FormField
-                            control={form.control}
-                            name="facility"
-                            render={({ field }) => (
-                                <FormItem className="mt-3">
-                                    <FormLabel>{t('facility')}</FormLabel>
-                                    {facilitiesLoading && (
-                                        <Skeleton className="h-10 w-[522px] rounded-xl" />
-                                    )}
-                                    {facilitiesError && (
-                                        <CustomAlert
-                                            message={t(
-                                                'multiselect.error.facility'
-                                            )}
-                                        />
-                                    )}
-                                    {facilitiesSuccess &&
-                                        facilities?.length > 0 && (
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={String(
-                                                    field.value
-                                                )}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue
-                                                            placeholder={t(
-                                                                'multiselect.placeholder.facility'
-                                                            )}
-                                                        />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {facilities.map(
-                                                        (facility) => (
-                                                            <SelectItem
-                                                                key={
-                                                                    facility.facility_id
-                                                                }
-                                                                value={String(
-                                                                    facility.facility_id
-                                                                )}
-                                                            >
-                                                                {
-                                                                    facility.facility_name
-                                                                }
-                                                            </SelectItem>
-                                                        )
-                                                    )}
-                                                </SelectContent>
-                                            </Select>
+                        {task.order_status.order_status_id !== 9 ? (
+                            <FormField
+                                control={form.control}
+                                name="facility"
+                                render={({ field }) => (
+                                    <FormItem className="mt-3">
+                                        <FormLabel>{t('facility')}</FormLabel>
+                                        {facilitiesLoading && (
+                                            <Skeleton className="h-10 w-[522px] rounded-xl" />
                                         )}
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                        {facilitiesError && (
+                                            <CustomAlert
+                                                message={t(
+                                                    'multiselect.error.facility'
+                                                )}
+                                            />
+                                        )}
+                                        {facilitiesSuccess &&
+                                            facilities?.length > 0 && (
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                    defaultValue={String(
+                                                        field.value
+                                                    )}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue
+                                                                placeholder={t(
+                                                                    'multiselect.placeholder.facility'
+                                                                )}
+                                                            />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {facilities.map(
+                                                            (facility) => (
+                                                                <SelectItem
+                                                                    key={
+                                                                        facility.facility_id
+                                                                    }
+                                                                    value={String(
+                                                                        facility.facility_id
+                                                                    )}
+                                                                >
+                                                                    {
+                                                                        facility.facility_name
+                                                                    }
+                                                                </SelectItem>
+                                                            )
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        ) : (
+                            <InputField
+                                label={t('facility')}
+                                className="mt-3"
+                                value={task.facility.facility_name}
+                                disabled
+                            />
+                        )}
                         <InputField
                             label={t('checkpoint')}
                             className="mt-3"
                             value={task.facility.checkpoint.checkpoint_name}
-                            readOnly
+                            disabled
                         />
                         {task.order_status.order_status_id !== 9 ? (
                             <FormField
@@ -373,7 +384,7 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                 label={t('priority')}
                                 className="mt-3"
                                 value={task.priority.priority_name}
-                                readOnly
+                                disabled
                             />
                         )}
                         <FormField
