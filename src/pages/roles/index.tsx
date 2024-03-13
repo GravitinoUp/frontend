@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { roleFormTab } from './tabs-content/roles/role-form-tab'
 import RolesTab from './tabs-content/roles/roles-tab'
 import i18next from '../../i18n.ts'
-import { placeholderQuery } from '../tasklist/constants'
+import { placeholderQuery } from '../tasklist/constants.ts'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
@@ -28,7 +28,7 @@ const rolesPageTabs = [
 ]
 
 const RolesPage = () => {
-    const { refetch } = useGetRolesQuery(placeholderQuery)
+    const { refetch, isFetching } = useGetRolesQuery(placeholderQuery)
     const [formOpen, setFormOpen] = useState(false)
     const { t } = useTranslation()
 
@@ -36,6 +36,7 @@ const RolesPage = () => {
         <PageLayout
             title={t('roles')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}

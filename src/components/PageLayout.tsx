@@ -10,6 +10,7 @@ interface PageLayoutProps {
     actionButton?: React.ReactNode
     rightBlock?: React.ReactNode
     onRefreshClick?: () => void
+    isLoading?: boolean
     children?: React.ReactNode
 }
 
@@ -19,13 +20,14 @@ export const PageLayout = ({
     actionButton,
     rightBlock,
     onRefreshClick,
+    isLoading,
     children,
 }: PageLayoutProps) => {
     const navigate = useNavigate()
 
     return (
-        <div className="flex flex-col p-7 gap-20 w-full">
-            <div className="flex justify-between items-start">
+        <div className="flex flex-col p-7 w-full">
+            <div className="flex justify-between items-start mb-10">
                 <div className="flex items-center justify-start font-[700] font-pop text-[28px] gap-3">
                     {backButtonEnabled && (
                         <Button
@@ -39,7 +41,10 @@ export const PageLayout = ({
                     <p>{title}</p>
                     {actionButton}
                     {typeof onRefreshClick !== 'undefined' && (
-                        <RefreshButton onClick={onRefreshClick} />
+                        <RefreshButton
+                            onClick={onRefreshClick}
+                            isLoading={isLoading}
+                        />
                     )}
                 </div>
                 {rightBlock}
