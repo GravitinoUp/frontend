@@ -10,6 +10,7 @@ interface PageLayoutProps {
     actionButton?: React.ReactNode
     rightBlock?: React.ReactNode
     onRefreshClick?: () => void
+    isLoading?: boolean
     children?: React.ReactNode
 }
 
@@ -19,6 +20,7 @@ export const PageLayout = ({
     actionButton,
     rightBlock,
     onRefreshClick,
+    isLoading,
     children,
 }: PageLayoutProps) => {
     const navigate = useNavigate()
@@ -39,7 +41,10 @@ export const PageLayout = ({
                     <p>{title}</p>
                     {actionButton}
                     {typeof onRefreshClick !== 'undefined' && (
-                        <RefreshButton onClick={onRefreshClick} />
+                        <RefreshButton
+                            onClick={onRefreshClick}
+                            isLoading={isLoading}
+                        />
                     )}
                 </div>
                 {rightBlock}
