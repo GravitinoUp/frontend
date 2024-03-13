@@ -22,8 +22,11 @@ export default function TaskListPage() {
 
     const { data: orderStatuses = [] } = useGetAllOrderStatusesQuery()
 
-    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(TasksFilterQueryContext)
-    const { refetch } = useGetPersonalOrdersQuery(personalOrdersQuery)
+    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
+        TasksFilterQueryContext
+    )
+    const { refetch, isFetching } =
+        useGetPersonalOrdersQuery(personalOrdersQuery)
 
     const tasksPageTabs = orderStatuses.map((value) => ({
         value: `${value.order_status_id}`,
@@ -47,6 +50,7 @@ export default function TaskListPage() {
         <PageLayout
             title={t('tasks.list')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}

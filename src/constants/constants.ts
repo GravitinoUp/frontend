@@ -24,15 +24,15 @@ export const CHECKPOINT_COMPLETED_STATUSES = {
     MAX: 90,
 }
 
-export enum CHECKPOINT_TYPES {
-    CAR = 1,
-    TRAIN,
-    SHIP,
-    PLANE,
-    RIVER,
-    MIXED,
-    PEOPLE,
-    LAKE,
+export const CHECKPOINT_TYPES = {
+    CAR: 1,
+    TRAIN: 2,
+    SHIP: 3,
+    PLANE: 4,
+    RIVER: 5,
+    MIXED: 6,
+    PEOPLE: 7,
+    LAKE: 8,
 }
 
 export const QUALITY_STATUSES = {

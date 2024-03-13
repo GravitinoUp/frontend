@@ -38,6 +38,7 @@ const BranchesPage = () => {
         <PageLayout
             title={t('branches')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}

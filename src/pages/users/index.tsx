@@ -58,6 +58,7 @@ export default function UsersPage() {
         <PageLayout
             title={t('users')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}

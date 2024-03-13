@@ -63,6 +63,7 @@ export default function ReportsPage() {
             <PageLayout
                 title={t('reports')}
                 onRefreshClick={refetch}
+                isLoading={isFetching}
                 rightBlock={
                     <div>
                         {/* TODO: добавить контекст для фильтров */}

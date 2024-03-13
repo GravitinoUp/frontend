@@ -57,6 +57,7 @@ export default function CheckpointsPage() {
         <PageLayout
             title={t('checkpoints')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}
