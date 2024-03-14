@@ -1,5 +1,5 @@
 {
-    "gravitino.full.name": "ГРАВИТИНО АСУП",
+    "gravitino.full.name": "ГРАВИТИНО АСУР",
     "gravitino": "Гравитино",
     "authorization": "Авторизация",
     "authorization.title": "Войдите в свой аккаунт",
@@ -70,7 +70,7 @@
     "title.full": "Полное наименование",
     "description": "Описание",
     "full.name": "ФИО",
-  "job.title": "Должность",
+    "job.title": "Должность",
     "phone": "Телефон",
     "address": "Адрес",
     "company": "компания",
