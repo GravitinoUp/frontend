@@ -74,7 +74,17 @@ export const ErrorCustomAlert = ({
 }: {
     error?: FetchBaseQueryError | SerializedError | undefined
 }) => {
+    const { t } = useTranslation()
     const errorData = error as { status: number; data: ErrorInterface }
 
-    return <CustomAlert className="mt-3" message={errorData.data.text} />
+    return (
+        <CustomAlert
+            className="mt-3"
+            message={
+                errorData.data
+                    ? errorData.data.text
+                    : t('default.error.message')
+            }
+        />
+    )
 }
