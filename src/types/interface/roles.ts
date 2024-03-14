@@ -25,3 +25,20 @@ export interface PermissionsInterface {
     permission_description: string
     entity_name: string
 }
+
+// PERMISSION
+
+export interface RolePermissionInterface {
+    role_permission_id: number
+    role_id: number | null
+    user_id: number | null
+    permission: PermissionsInterface
+    rights: boolean
+}
+
+export interface FormattedPermissionInterface {
+    permission_name: string
+    permission_description: string
+    permission_sku: string
+    rights: boolean
+}

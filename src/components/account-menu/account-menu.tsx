@@ -1,5 +1,4 @@
 import { Fragment, useEffect } from 'react'
-import { jwtDecode } from 'jwt-decode'
 import { User } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
@@ -13,29 +12,49 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { ADMIN_ROLE_ID } from '@/constants/constants'
 import { useErrorToast } from '@/hooks/use-error-toast'
 import { useLogoutMutation } from '@/redux/api/auth'
-import { useGetUserByIdQuery } from '@/redux/api/users'
+import { useGetPersonalPermissionsQuery } from '@/redux/api/permissions'
+import { useGetMyUserQuery } from '@/redux/api/users'
 import { SETTINGS, SIGN_IN } from '@/routes.ts'
-import { JWT } from '@/types/interface/auth'
-import {
-    getCookieValue,
-    getJWTtokens,
-    removeCookieValue,
-} from '@/utils/helpers'
+import { FormattedPermissionInterface } from '@/types/interface/roles'
+import { getJWTtokens, removeCookieValue } from '@/utils/helpers'
 
 export default function AccountMenu() {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const accessToken = getCookieValue('accessToken')
-    const { user_id }: JWT = accessToken
-        ? jwtDecode(accessToken)
-        : { user_id: -1, email: '' }
-
-    const { data: user } = useGetUserByIdQuery(user_id)
+    const { data: user, isSuccess: isUserSuccess } = useGetMyUserQuery()
+    const { data: permissions, isSuccess: isPermissionsSuccess } =
+        useGetPersonalPermissionsQuery()
 
     const [logout, { error, isSuccess: isLogoutSuccess }] = useLogoutMutation()
+
+    useEffect(() => {
+        if (isPermissionsSuccess && isUserSuccess) {
+            const formattedPermissions: FormattedPermissionInterface[] =
+                permissions.map((value) => ({
+                    permission_name: value.permission.permission_name,
+                    permission_description:
+                        value.permission.permission_description,
+                    permission_sku: value.permission.permission_sku,
+                    rights: value.rights,
+                }))
+
+            formattedPermissions.unshift({
+                permission_name: 'ADMIN',
+                permission_description: '',
+                permission_sku: 'admin',
+                rights: user.role.role_id === ADMIN_ROLE_ID,
+            })
+
+            localStorage.setItem(
+                'permissions',
+                JSON.stringify(formattedPermissions)
+            )
+        }
+    }, [isPermissionsSuccess, isUserSuccess])
 
     useEffect(() => {
         if (isLogoutSuccess) {

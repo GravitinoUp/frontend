@@ -1,6 +1,7 @@
 import { SortingState } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { FILE_SIZE_UNITS } from '@/constants/constants.ts'
+import { FormattedPermissionInterface } from '@/types/interface/roles'
 
 export const getJWTtokens = () => {
     const accessToken = getCookieValue('accessToken')
@@ -72,5 +73,26 @@ export const getCookieValue = (key: string) => {
 export const removeCookieValue = (key: string) => {
     document.cookie = `${key}=; Max-Age=-1`
 }
+
 export const formatStringFilter = (value?: string) =>
     value?.trim() !== '' ? value : undefined
+
+export const getPermissionValue = (permission_sku_list: string[]) => {
+    const jsonPermissions = localStorage.getItem('permissions')
+
+    if (jsonPermissions) {
+        const permissions: FormattedPermissionInterface[] = JSON.parse(
+            localStorage.getItem('permissions')!
+        )
+
+        const permissionValue = permissions.find(
+            (p) =>
+                (p.permission_sku === 'admin' && p.rights) ||
+                (permission_sku_list.includes(p.permission_sku) && p.rights)
+        )
+
+        return permissionValue ? true : false
+    } else {
+        return false
+    }
+}

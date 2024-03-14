@@ -49,3 +49,5 @@ export const FEEDBACK_DEPARTMENTS = {
     fss: i18next.t('feedback.department.fss'),
     customs: i18next.t('feedback.department.customs'),
 }
+
+export const ADMIN_ROLE_ID = 5
