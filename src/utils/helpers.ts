@@ -13,7 +13,10 @@ export const getJWTtokens = () => {
 }
 
 // для форматирования даты с бэкенда в привычный формат. 2024-01-11T10:36:59.321Z ---> 11.01.2024
-export const formatDate = (date?: string | Date | null, includeTime?: boolean) => {
+export const formatDate = (
+    date?: string | Date | null,
+    includeTime?: boolean
+) => {
     if (!date) {
         return ''
     }
@@ -24,7 +27,7 @@ export const formatDate = (date?: string | Date | null, includeTime?: boolean) =
 export const formatInitials = (
     firstName: string,
     lastName: string,
-    patronymic: string,
+    patronymic: string
 ) => {
     const str = `${lastName} ${firstName} ${patronymic}`
 
@@ -69,3 +72,5 @@ export const getCookieValue = (key: string) => {
 export const removeCookieValue = (key: string) => {
     document.cookie = `${key}=; Max-Age=-1`
 }
+export const formatStringFilter = (value?: string) =>
+    value?.trim() !== '' ? value : undefined

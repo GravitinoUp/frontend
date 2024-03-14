@@ -5,10 +5,11 @@ import {
     OrganizationSortInterface,
 } from './organizations'
 import { RoleInterface, RoleSortInterface } from './roles'
+import { RecursivePartial } from '@/utils/recursive-partial'
 
 export interface UsersPayloadInterface extends IQuery {
     sorts: UserSortInterface
-    filter: Partial<UserInterface>
+    filter: RecursivePartial<UserInterface>
 }
 
 export interface FormattedUsersInterface {
@@ -55,7 +56,7 @@ export interface UserInterface {
     is_active: boolean
     email: string
     role: RoleInterface
-    organization?: OrganizationInterface | null
+    organization: OrganizationInterface
     person: PersonInterface
     group: GroupInterface | null
 }

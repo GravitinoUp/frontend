@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { initialColumnVisibility } from '../constants'
 import { tasksColumnsSchema } from '../tasks-columns'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
+import FilterFormTitle from '@/components/form/filter-title'
 import CustomForm, { useForm } from '@/components/form/form'
 import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
@@ -12,7 +13,6 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from '@/components/ui/form'
 import {
@@ -46,12 +46,6 @@ const placeholderQuery = {
     filter: {},
     sorts: {},
 }
-
-const FilterFormTitle = ({ title }: { title: string }) => (
-    <FormLabel className="inline-block mb-3 font-medium text-xl text-[#3F434A]">
-        {title}
-    </FormLabel>
-)
 
 interface TaskFiltersFormProps {
     handleSubmit: (values: z.infer<typeof filterSchema>) => void

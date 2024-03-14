@@ -97,7 +97,7 @@ export default function CheckpointsPage() {
                     data={formattedCheckpoints}
                     columns={checkpointsColumns}
                     hasBackground
-                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                    getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                         const sorts = sorting.reduce((acc, value) => {
                             const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -148,6 +148,10 @@ export default function CheckpointsPage() {
                         setCheckpointsQuery({
                             ...checkpointsQuery,
                             sorts,
+                            filter: {
+                                ...checkpointsQuery.filter,
+                                checkpoint_name: filter,
+                            },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}

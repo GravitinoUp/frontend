@@ -27,12 +27,16 @@ const RolesTab = () => {
         <DataTable
             data={roles.data}
             columns={rolesTableColumns}
-            getTableInfo={(pageSize, pageIndex, sorting) => {
+            getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                 const sorts = getColumnSorts(sorting)
 
                 setRolesQuery({
                     ...rolesQuery,
                     sorts,
+                    filter: {
+                        ...rolesQuery.filter,
+                        role_name: filter,
+                    },
                     offset: { count: pageSize, page: pageIndex + 1 },
                 })
             }}

@@ -99,6 +99,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                             setPersonalOrdersQuery({
                                 ...personalOrdersQuery,
                                 filter: {
+                                    ...personalOrdersQuery.filter,
                                     facility: {
                                         checkpoint: {
                                             checkpoint_id:
@@ -164,7 +165,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 data={formattedTasks}
                 columns={tasksColumns}
                 columnVisibility={filterColumns}
-                getTableInfo={(pageSize, pageIndex, sorting) => {
+                getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                     const sorts = sorting.reduce((acc, value) => {
                         const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -253,6 +254,10 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                     setPersonalOrdersQuery({
                         ...personalOrdersQuery,
                         sorts,
+                        filter: {
+                            ...personalOrdersQuery.filter,
+                            order_name: filter,
+                        },
                         offset: { count: pageSize, page: pageIndex + 1 },
                     })
                 }}

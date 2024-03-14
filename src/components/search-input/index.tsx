@@ -1,11 +1,12 @@
 import React from 'react'
+import i18next from 'i18next'
 import { Search } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import { Button } from '../ui/button'
 import FilterIcon from '@/assets/icons/filter_icon.svg'
 
 type Props = {
     value: string | number
+    placeholder?: string
     onChange: (value: string | number) => void
     debounce?: number
     suffixIconClick?: () => void
@@ -13,13 +14,13 @@ type Props = {
 
 export const DebouncedInput: React.FC<Props> = ({
     value: initialValue,
+    placeholder = i18next.t('placeholder.search'),
     onChange,
     debounce = 500,
     suffixIconClick,
     ...props
 }) => {
     const [value, setValue] = React.useState<number | string>(initialValue)
-    const { t } = useTranslation()
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
         setValue(event.target.value)
@@ -47,7 +48,7 @@ export const DebouncedInput: React.FC<Props> = ({
                     {...props}
                     value={value}
                     onChange={handleInputChange}
-                    placeholder={t('placeholder.search')}
+                    placeholder={placeholder}
                 />
             </div>
             {suffixIconClick && (

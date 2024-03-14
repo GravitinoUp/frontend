@@ -7,7 +7,7 @@ import { RecursivePartial } from '@/utils/recursive-partial'
 // Branch
 
 export interface BranchReportsPayloadInterface extends IQuery {
-    filter: Partial<BranchReportInterface>
+    filter: RecursivePartial<BranchReportInterface>
     sorts: BranchSortInterface
     period: {
         period_start: string
