@@ -45,7 +45,7 @@ function MultiLink({
                     <div
                         className={
                             isPathLinks()
-                                ? 'h-[100%] absolute border-solid border-l-4 border-[#0784D1] '
+                                ? 'h-[100%] absolute border-solid border-l-4 border-primary'
                                 : 'absolute'
                         }
                     >

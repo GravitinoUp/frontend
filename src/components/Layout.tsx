@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Header } from './Header'
 import { Navbar } from './Navbar'
 import useEscape from '../hooks/use-escape.ts'
 
-export function Layout() {
+export function Layout({ children }: { children?: ReactNode }) {
     const [open, setOpen] = useState(false)
     useEscape(() => setOpen(false))
 
@@ -29,6 +29,7 @@ export function Layout() {
 
                 <div className="bg-[#F8F8F8] items-start flex place-items-start justify-start row-2 overflow-visible overflow-y-auto">
                     <Outlet />
+                    {children}
                 </div>
             </div>
         </main>

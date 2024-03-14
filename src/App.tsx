@@ -22,8 +22,8 @@ import UsersPage from './pages/users'
 import { useRefreshTokenMutation } from './redux/api/auth'
 import { setAccessToken } from './redux/reducers/authSlice'
 import * as routes from './routes.ts'
-import { getJWTtokens } from './utils/helpers'
-import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
+import { getCurrentColorScheme, getJWTtokens } from './utils/helpers'
+import MapSkeleton from '@/pages/map/map-skeleton.tsx'
 
 const MapPage = lazy(() => import('./pages/map'))
 
@@ -87,17 +87,16 @@ function App() {
         }
     }, [document.cookie])
 
-    if (loading) return <></>
+    useEffect(() => {
+        const colorScheme = getCurrentColorScheme()
+        document
+            .querySelector('html')
+            ?.setAttribute('data-color-scheme', colorScheme)
+    }, [])
 
     return (
         <div>
-            <Suspense
-                fallback={
-                    <div className="flex justify-center items-center h-screen">
-                        <LoadingSpinner className="w-16 h-16 text-primary" />
-                    </div>
-                }
-            >
+            <Suspense fallback={<MapSkeleton />}>
                 <Routes>
                     <Route path={routes.MAIN_PAGE} element={<Layout />}>
                         <Route
@@ -157,7 +156,6 @@ function App() {
                             path={routes.MANAGE_PROPERTIES}
                             element={<ManagePropertiesPage />}
                         />
-                        <Route path="*" element={<NotFoundPage />} />
                     </Route>
                     <Route path={routes.SIGN_IN} element={<SignInPage />} />
                     <Route

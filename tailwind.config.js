@@ -25,7 +25,7 @@ module.exports = {
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
                 primary: {
-                    DEFAULT: '#0784D1',
+                    DEFAULT: 'var(--primary)',
                     foreground: 'hsl(var(--primary-foreground))',
                 },
                 secondary: {
@@ -67,6 +67,10 @@ module.exports = {
                     'completed-yellow': '#FFD240',
                     'completed-red': '#FF6B6B',
                 },
+                ringColor: {
+                    primary: 'var(--primary)',
+                },
+                pagination: 'var(--pagination)',
             },
             borderRadius: {
                 lg: 'var(--radius)',

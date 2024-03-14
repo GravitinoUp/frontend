@@ -1,5 +1,4 @@
 import { Fragment, useEffect } from 'react'
-import { jwtDecode } from 'jwt-decode'
 import { User } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
@@ -17,23 +16,15 @@ import { useErrorToast } from '@/hooks/use-error-toast'
 import { useLogoutMutation } from '@/redux/api/auth'
 import { useGetUserByIdQuery } from '@/redux/api/users'
 import { SETTINGS, SIGN_IN } from '@/routes.ts'
-import { JWT } from '@/types/interface/auth'
-import {
-    getCookieValue,
-    getJWTtokens,
-    removeCookieValue,
-} from '@/utils/helpers'
+import { getJWTtokens, getUserId, removeCookieValue } from '@/utils/helpers'
+
+const userId = getUserId()
 
 export default function AccountMenu() {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const accessToken = getCookieValue('accessToken')
-    const { user_id }: JWT = accessToken
-        ? jwtDecode(accessToken)
-        : { user_id: -1, email: '' }
-
-    const { data: user } = useGetUserByIdQuery(user_id)
+    const { data: user } = useGetUserByIdQuery(userId)
 
     const [logout, { error, isSuccess: isLogoutSuccess }] = useLogoutMutation()
 
@@ -51,6 +42,7 @@ export default function AccountMenu() {
         if (refreshToken) {
             logout({ refresh_token: refreshToken! })
         } else {
+            removeCookieValue('accessToken')
             navigate(SIGN_IN)
         }
     }
