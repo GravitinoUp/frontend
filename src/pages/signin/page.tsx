@@ -70,7 +70,7 @@ export function SignInPage() {
             >
                 <div>
                     <div className="flex flex-col gap-16 mt-28">
-                        <p className="text-[#0784D1] uppercase items-center font-pop font-bold text-[28px] flex justify-center">
+                        <p className="text-primary uppercase items-center font-pop font-bold text-[28px] flex justify-center">
                             {t('gravitino.full.name')}
                         </p>
                         <p className="text-[#3F434A] font-pop text-[28px] flex items-center  justify-center  ">
@@ -141,14 +141,14 @@ export function SignInPage() {
                                 />
                             </div>
                             <Link to="/123">
-                                <p className="text-[#0784D1] font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
+                                <p className="text-primary font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
                                     {t('authorization.password.forgot')}
                                 </p>
                             </Link>
                         </div>
                         <Button
                             type="submit"
-                            className="rounded-xl h-[40px] w-[400px] bg-[#0784D1] mt-6"
+                            className="rounded-xl h-[40px] w-[400px] bg-primary mt-6"
                             variant="default"
                         >
                             {t('button.action.enter')}
