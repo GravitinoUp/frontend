@@ -1,6 +1,8 @@
 import { SortingState } from '@tanstack/react-table'
 import { format } from 'date-fns'
+import { jwtDecode } from 'jwt-decode'
 import { FILE_SIZE_UNITS } from '@/constants/constants.ts'
+import { JWT } from '@/types/interface/auth.ts'
 
 export const getJWTtokens = () => {
     const accessToken = getCookieValue('accessToken')
@@ -13,7 +15,10 @@ export const getJWTtokens = () => {
 }
 
 // для форматирования даты с бэкенда в привычный формат. 2024-01-11T10:36:59.321Z ---> 11.01.2024
-export const formatDate = (date?: string | Date | null, includeTime?: boolean) => {
+export const formatDate = (
+    date?: string | Date | null,
+    includeTime?: boolean
+) => {
     if (!date) {
         return ''
     }
@@ -24,7 +29,7 @@ export const formatDate = (date?: string | Date | null, includeTime?: boolean) =
 export const formatInitials = (
     firstName: string,
     lastName: string,
-    patronymic: string,
+    patronymic: string
 ) => {
     const str = `${lastName} ${firstName} ${patronymic}`
 
@@ -69,3 +74,16 @@ export const getCookieValue = (key: string) => {
 export const removeCookieValue = (key: string) => {
     document.cookie = `${key}=; Max-Age=-1`
 }
+
+export const getUserId = () => {
+    const accessToken = getCookieValue('accessToken')
+    const { user_id }: JWT = accessToken
+        ? jwtDecode(accessToken)
+        : { user_id: -1, email: '' }
+
+    return user_id
+}
+export const capitalizeFirstLetter = (string: string) =>
+    string.charAt(0).toUpperCase() + string.slice(1)
+
+export const getCurrentColorScheme = () => localStorage.getItem('colorScheme') || 'option-1'

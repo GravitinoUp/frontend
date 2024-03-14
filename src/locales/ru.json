@@ -70,6 +70,7 @@
   "title.full": "Полное наименование",
   "description": "Описание",
   "full.name": "ФИО",
+  "job.title": "Должность",
   "phone": "Телефон",
   "address": "адрес",
   "company": "компания",
@@ -307,5 +308,8 @@
       "customs": "Таможня"
     }
   },
-  "date.picker.range.description": "Укажите диапозон дат"
+  "date.picker.range.description": "Укажите диапозон дат",
+  "settings.personalization.avatar": "Изображение профиля",
+  "settings.personalization.color.scheme": "Цветовая схема",
+  "by.default": "По умолчанию"
 }

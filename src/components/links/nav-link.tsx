@@ -26,7 +26,7 @@ function SidebarLink({
             to={path}
             className={({ isActive }) =>
                 'flex bg-transparent' +
-                (isActive ? 'border-solid border-l-4 border-[#0784D1]' : '')
+                (isActive ? 'border-solid border-l-4 border-primary' : '')
             }
         >
             <Button

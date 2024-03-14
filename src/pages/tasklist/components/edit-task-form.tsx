@@ -233,7 +233,7 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             label={t('branch')}
                             className="mt-3"
                             value={task.facility.checkpoint.branch.branch_name}
-                            readOnly
+                            disabled
                         />
                         <FormField
                             control={form.control}
@@ -296,7 +296,7 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                             label={t('checkpoint')}
                             className="mt-3"
                             value={task.facility.checkpoint.checkpoint_name}
-                            readOnly
+                            disabled
                         />
                         <FormField
                             control={form.control}

@@ -13,7 +13,7 @@
         --popover: 0 0% 100%;
         --popover-foreground: 222.2 84% 4.9%;
 
-        --primary: 222.2 47.4% 11.2%;
+        --primary: #0784D1;
         --primary-foreground: 210 40% 98%;
 
         --secondary: 210 40% 96.1%;
@@ -33,6 +33,26 @@
         --ring: 222.2 84% 4.9%;
 
         --radius: 0.5rem;
+    }
+
+    :root[data-color-scheme="option-1"] {
+        --primary: #0784D1;
+    }
+
+    :root[data-color-scheme="option-2"] {
+        --primary: #FD7972;
+    }
+
+    :root[data-color-scheme="option-3"] {
+        --primary: #FF965D;
+    }
+
+    :root[data-color-scheme="option-4"] {
+        --primary: #FFD240;
+    }
+
+    :root[data-color-scheme="option-5"] {
+        --primary: #49C96D;
     }
 
     .dark {
@@ -86,9 +106,4 @@ html {
 .ymaps3x0--marker {
     width: 0px;
     height: 0px;
-}
-
-.input-outline:focus-within {
-    outline: 2px solid #0784d1;
-    outline-offset: -2px;
 }

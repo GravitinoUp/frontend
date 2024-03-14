@@ -25,7 +25,7 @@ module.exports = {
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
                 primary: {
-                    DEFAULT: '#0784D1',
+                    DEFAULT: 'var(--primary)',
                     foreground: 'hsl(var(--primary-foreground))',
                 },
                 secondary: {
@@ -72,6 +72,9 @@ module.exports = {
                 lg: 'var(--radius)',
                 md: 'calc(var(--radius) - 2px)',
                 sm: 'calc(var(--radius) - 4px)',
+            },
+            ringColor: {
+                primary: 'var(--primary)',
             },
             keyframes: {
                 'accordion-down': {

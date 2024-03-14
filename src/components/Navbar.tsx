@@ -112,7 +112,7 @@ export function Navbar({ open, setOpen }: NavbarProps) {
         <nav className="bg-white flex flex-col border-solid h-screen">
             <div
                 className={cn(
-                    'h-[64px] text-[#0784D1] text-nowrap items-center font-pop font-bold text-[18px] flex justify-center',
+                    'h-[64px] text-primary text-nowrap items-center font-pop font-bold text-[18px] flex justify-center',
                     !open && 'invisible'
                 )}
             >
