@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
@@ -32,10 +32,7 @@ export function SignInPage() {
         },
     })
 
-    const image = useMemo(
-        () => LOGIN_IMAGES[Math.floor(1 + Math.random() * 9)],
-        []
-    )
+    const image = LOGIN_IMAGES[Math.floor(1 + Math.random() * 9)]
 
     const [shown, setShown] = useState(false)
     const { t } = useTranslation()
