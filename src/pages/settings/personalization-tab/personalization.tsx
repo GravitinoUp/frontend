@@ -30,7 +30,9 @@ const colorSchemeVariants = [
 
 const Personalization = () => {
     const { t } = useTranslation()
-    const [colorScheme, setColorScheme] = useState(() => getCurrentColorScheme())
+    const [colorScheme, setColorScheme] = useState(() =>
+        getCurrentColorScheme()
+    )
 
     const handleColorSchemeChange = (variant: string) => {
         document
@@ -60,7 +62,8 @@ const Personalization = () => {
                         <Button
                             key={name}
                             variant="ghost"
-                            className={`bg-[${color}] w-6 h-6 rounded-full p-0`}
+                            className="w-6 h-6 rounded-full p-0 hover:opacity-70"
+                            style={{ backgroundColor: color }}
                             onClick={() => handleColorSchemeChange(name)}
                         >
                             {colorScheme === name && (

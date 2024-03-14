@@ -67,14 +67,15 @@ module.exports = {
                     'completed-yellow': '#FFD240',
                     'completed-red': '#FF6B6B',
                 },
+                ringColor: {
+                    primary: 'var(--primary)',
+                },
+                pagination: 'var(--pagination)',
             },
             borderRadius: {
                 lg: 'var(--radius)',
                 md: 'calc(var(--radius) - 2px)',
                 sm: 'calc(var(--radius) - 4px)',
-            },
-            ringColor: {
-                primary: 'var(--primary)',
             },
             keyframes: {
                 'accordion-down': {

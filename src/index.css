@@ -37,22 +37,27 @@
 
     :root[data-color-scheme="option-1"] {
         --primary: #0784D1;
+        --pagination: rgba(231, 243, 250, 1);
     }
 
     :root[data-color-scheme="option-2"] {
         --primary: #FD7972;
+        --pagination: rgba(253, 121, 114, 0.1);
     }
 
     :root[data-color-scheme="option-3"] {
         --primary: #FF965D;
+        --pagination: rgba(255, 150, 93, 0.1);
     }
 
     :root[data-color-scheme="option-4"] {
         --primary: #FFD240;
+        --pagination: rgba(255, 210, 64, 0.1);
     }
 
     :root[data-color-scheme="option-5"] {
         --primary: #49C96D;
+        --pagination: rgba(73, 201, 109, 0.1);
     }
 
     .dark {
