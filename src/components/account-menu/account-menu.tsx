@@ -51,6 +51,7 @@ export default function AccountMenu() {
         if (refreshToken) {
             logout({ refresh_token: refreshToken! })
         } else {
+            removeCookieValue('accessToken')
             navigate(SIGN_IN)
         }
     }
