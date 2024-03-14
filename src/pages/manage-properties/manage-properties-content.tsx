@@ -30,12 +30,16 @@ function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
         <DataTable
             data={properties.data}
             columns={managePropertiesColumns}
-            getTableInfo={(pageSize, pageIndex, sorting) => {
+            getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                 const sorts = getColumnSorts(sorting)
 
                 setPropertiesQuery({
                     ...propertiesQuery,
                     sorts,
+                    filter: {
+                        ...propertiesQuery.filter,
+                        property_name: filter,
+                    },
                     offset: { count: pageSize, page: pageIndex + 1 },
                 })
             }}

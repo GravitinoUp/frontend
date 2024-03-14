@@ -1,6 +1,7 @@
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { EditTaskForm } from './components/edit-task-form.tsx'
 import TaskFiltersForm from './components/task-filters-form.tsx'
 import { initialColumnVisibility } from './constants.ts'
 import { tasksColumns, TasksFilterColumns } from './tasks-columns.tsx'
@@ -9,6 +10,7 @@ import DataTable from '@/components/data-table/data-table.tsx'
 import FormDialog from '@/components/form-dialog/form-dialog.tsx'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
+import { OrderInterface } from '@/types/interface/orders/index.ts'
 import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
 function TaskListContent({ orderStatus }: { orderStatus?: string }) {
@@ -31,6 +33,11 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
     const [formOpen, setFormOpen] = useState(false)
+    const [editFormOpen, setEditFormOpen] = useState(false)
+
+    const [selectedOrder, setSelectedOrder] = useState<
+        OrderInterface | undefined
+    >()
 
     const formattedTasks = data.data.map((row) => ({
         key: row.order_id,
@@ -43,11 +50,14 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
         priority_name: row.priority.priority_name,
         executor: row.executor.short_name,
         branch_name: row.facility.checkpoint.branch.branch_name,
-        creator: formatInitials(
-            row.creator?.person.first_name,
-            row.creator?.person.last_name,
-            row.creator?.person.patronymic
-        ),
+        creator:
+            row.creator.user_id !== null
+                ? formatInitials(
+                      row.creator?.person.first_name,
+                      row.creator?.person.last_name,
+                      row.creator?.person.patronymic
+                  )
+                : t('user.guest'),
         taskType: row.task.task_id,
         ended_at_datetime: formatDate(row.ended_at_datetime) || '',
         deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
@@ -84,6 +94,17 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     return (
         <Fragment>
             <FormDialog
+                open={editFormOpen}
+                setOpen={setEditFormOpen}
+                actionButton={<Fragment />}
+                addItemForm={
+                    <EditTaskForm
+                        task={selectedOrder!}
+                        setDialogOpen={setEditFormOpen}
+                    />
+                }
+            />
+            <FormDialog
                 open={formOpen}
                 setOpen={setFormOpen}
                 actionButton={<Fragment />}
@@ -99,6 +120,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                             setPersonalOrdersQuery({
                                 ...personalOrdersQuery,
                                 filter: {
+                                    ...personalOrdersQuery.filter,
                                     facility: {
                                         checkpoint: {
                                             checkpoint_id:
@@ -164,7 +186,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 data={formattedTasks}
                 columns={tasksColumns}
                 columnVisibility={filterColumns}
-                getTableInfo={(pageSize, pageIndex, sorting) => {
+                getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                     const sorts = sorting.reduce((acc, value) => {
                         const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -253,18 +275,28 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                     setPersonalOrdersQuery({
                         ...personalOrdersQuery,
                         sorts,
+                        filter: {
+                            ...personalOrdersQuery.filter,
+                            order_name: filter,
+                        },
                         offset: { count: pageSize, page: pageIndex + 1 },
                     })
                 }}
-                onRowClick={(rowData) =>
-                    navigate(`task`, {
-                        state: {
-                            order: data.data.find(
-                                (e) => e.order_id === rowData.order_id
-                            ),
-                        },
-                    })
-                }
+                onRowClick={(rowData) => {
+                    const orderData = data.data.find(
+                        (e) => e.order_id === rowData.order_id
+                    )
+                    if (orderData?.order_status.order_status_id !== 9) {
+                        navigate(`task`, {
+                            state: {
+                                order: orderData,
+                            },
+                        })
+                    } else {
+                        setSelectedOrder(orderData)
+                        setEditFormOpen(true)
+                    }
+                }}
                 searchSuffixIconClick={() => setFormOpen(true)}
                 paginationInfo={{
                     itemCount: data.count,

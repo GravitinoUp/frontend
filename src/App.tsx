@@ -156,7 +156,6 @@ function App() {
                             path={routes.MANAGE_PROPERTIES}
                             element={<ManagePropertiesPage />}
                         />
-                        <Route path="*" element={<NotFoundPage />} />
                     </Route>
                     <Route path={routes.SIGN_IN} element={<SignInPage />} />
                     <Route

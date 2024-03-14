@@ -96,7 +96,7 @@ export default function ReportsPage() {
                     data={formattedReports}
                     columns={reportsColumns}
                     hasBackground
-                    getTableInfo={(pageSize, pageIndex, sorting) => {
+                    getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                         const sorts = sorting.reduce((acc, value) => {
                             const currentSortOrder = value.desc ? 'DESC' : 'ASC'
 
@@ -128,6 +128,10 @@ export default function ReportsPage() {
                         setBranchReportsQuery({
                             ...branchReportsQuery,
                             sorts,
+                            filter: {
+                                ...branchReportsQuery.filter,
+                                branch: { branch_name: filter },
+                            },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
                     }}
