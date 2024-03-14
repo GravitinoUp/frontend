@@ -32,7 +32,7 @@ export function SignInPage() {
         },
     })
 
-    const image = LOGIN_IMAGES[Math.floor(1 + Math.random() * 9)]
+    const [image, setImage] = useState('')
 
     const [shown, setShown] = useState(false)
     const { t } = useTranslation()
@@ -42,6 +42,10 @@ export function SignInPage() {
 
     const [authUser, { data: authData, isSuccess: isSuccess, error }] =
         useAuthMutation()
+
+    useEffect(() => {
+        setImage(LOGIN_IMAGES[Math.floor(1 + Math.random() * 9)])
+    }, [])
 
     useEffect(() => {
         if (isSuccess) {
