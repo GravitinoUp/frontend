@@ -132,6 +132,13 @@ export interface OrderUpdateInterface {
     property_values: []
 }
 
+export interface OrderExecutorUpdateInterface {
+    order_id: number
+    executor_id: number
+    planned_datetime: string
+    task_end_datetime: string
+}
+
 // TASK
 export interface TaskInterface {
     task_id: number

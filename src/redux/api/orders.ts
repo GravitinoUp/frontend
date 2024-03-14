@@ -7,6 +7,7 @@ import {
     GuestOrderPayloadInterface,
     NewOrderBodyInterface,
     NewTaskBodyInterface,
+    OrderExecutorUpdateInterface,
     OrderInterface,
     OrderPayloadInterface,
     OrderUpdateInterface,
@@ -120,6 +121,18 @@ const ordersApi = api.injectEndpoints({
                 body,
             }),
         }),
+
+        updateOrderExecutor: builder.mutation<
+            FetchResultInterface,
+            OrderExecutorUpdateInterface
+        >({
+            query: (body) => ({
+                url: 'order/change-executor',
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['Orders'],
+        }),
     }),
     overrideExisting: true,
 })
@@ -134,4 +147,5 @@ export const {
     useUpdateStatusMutation,
     useUploadFileMutation,
     useCreateGuestOrderMutation,
+    useUpdateOrderExecutorMutation,
 } = ordersApi

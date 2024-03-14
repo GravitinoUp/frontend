@@ -46,10 +46,17 @@ import { cn } from '@/lib/utils.ts'
 import { FilesUploadForm } from '@/pages/tasklist/components/files-upload-form.tsx'
 import { placeholderQuery } from '@/pages/tasklist/constants.ts'
 import { useGetFacilitiesQuery } from '@/redux/api/facility.ts'
-import { useUpdateOrderMutation } from '@/redux/api/orders.ts'
+import {
+    useUpdateOrderExecutorMutation,
+    useUpdateOrderMutation,
+} from '@/redux/api/orders.ts'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations.ts'
 import { useGetAllPriorityQuery } from '@/redux/api/priority.ts'
-import { OrderInterface, OrderUpdateInterface } from '@/types/interface/orders'
+import {
+    OrderExecutorUpdateInterface,
+    OrderInterface,
+    OrderUpdateInterface,
+} from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers.ts'
 
 interface EditTaskFormProps {
@@ -124,6 +131,15 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
         },
     ] = useUpdateOrderMutation()
 
+    const [
+        updateOrderExecutor,
+        {
+            isLoading: isOrderExecutorUpdating,
+            error: updateOrderExecutorError,
+            isSuccess: updateOrderExecutorSuccess,
+        },
+    ] = useUpdateOrderExecutorMutation()
+
     const {
         data: facilities = [],
         isLoading: facilitiesLoading,
@@ -148,20 +164,31 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
     } = useGetAllPriorityQuery()
 
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
-        const updatedOrderData: OrderUpdateInterface = {
-            order_id: task.order_id,
-            task_id: task.task.task_id,
-            order_name: data.taskName,
-            order_description: data.taskDescription,
-            facility_id: Number(data.facility),
-            executor_id: Number(data.executor),
-            planned_datetime: data.startDate.toISOString(),
-            task_end_datetime: data.endDate.toISOString(),
-            priority_id: Number(data.priority),
-            property_values: [],
-        }
+        if (task.order_status.order_status_id !== 9) {
+            const updatedOrderData: OrderUpdateInterface = {
+                order_id: task.order_id,
+                task_id: task.task.task_id,
+                order_name: data.taskName,
+                order_description: data.taskDescription,
+                facility_id: Number(data.facility),
+                executor_id: Number(data.executor),
+                planned_datetime: data.startDate.toISOString(),
+                task_end_datetime: data.endDate.toISOString(),
+                priority_id: Number(data.priority),
+                property_values: [],
+            }
 
-        updateOrder(updatedOrderData)
+            updateOrder(updatedOrderData)
+        } else {
+            const updatedOrderData: OrderExecutorUpdateInterface = {
+                order_id: task.order_id,
+                executor_id: Number(data.executor),
+                planned_datetime: data.startDate.toISOString(),
+                task_end_datetime: data.endDate.toISOString(),
+            }
+
+            updateOrderExecutor(updatedOrderData)
+        }
     }
 
     const updateSuccessMsg = useMemo(
@@ -172,8 +199,12 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
         []
     )
 
-    useSuccessToast(updateSuccessMsg, updateOrderSuccess, setDialogOpen)
-    useErrorToast(void 0, updateOrderError)
+    useSuccessToast(
+        updateSuccessMsg,
+        updateOrderSuccess || updateOrderExecutorSuccess,
+        setDialogOpen
+    )
+    useErrorToast(void 0, updateOrderError || updateOrderExecutorError)
 
     return (
         <Tabs defaultValue="task" className="w-full h-full">
@@ -555,9 +586,11 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                         <Button
                             className="mt-10 mr-4 rounded-xl w-[120px]"
                             type="submit"
-                            disabled={isOrderUpdating}
+                            disabled={
+                                isOrderUpdating || isOrderExecutorUpdating
+                            }
                         >
-                            {isOrderUpdating ? (
+                            {isOrderUpdating || isOrderExecutorUpdating ? (
                                 <LoadingSpinner />
                             ) : (
                                 t('button.action.change')
