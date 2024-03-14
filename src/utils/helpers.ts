@@ -72,6 +72,5 @@ export const getCookieValue = (key: string) => {
 export const removeCookieValue = (key: string) => {
     document.cookie = `${key}=; Max-Age=-1`
 }
-
 export const formatStringFilter = (value?: string) =>
     value?.trim() !== '' ? value : undefined

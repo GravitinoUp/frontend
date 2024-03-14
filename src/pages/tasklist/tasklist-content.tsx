@@ -27,7 +27,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     const {
         data = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
     const [formOpen, setFormOpen] = useState(false)
@@ -275,7 +275,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                     itemCount: data.count,
                     pageSize: personalOrdersQuery.offset.count,
                 }}
-                isLoading={isLoading}
+                isLoading={isFetching}
             />
         </Fragment>
     )

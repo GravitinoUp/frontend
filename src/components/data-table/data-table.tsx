@@ -196,8 +196,14 @@ function DataTable<TData, TValue>({
                                     data-state={
                                         row.getIsSelected() && 'selected'
                                     }
-                                    onDoubleClick={() => {
-                                        if (typeof onRowClick !== 'undefined') {
+                                    onClick={(e) => {
+                                        const clickedColumnId = (
+                                            e.target as HTMLTableRowElement
+                                        ).getAttribute('data-column-id')
+                                        if (
+                                            typeof onRowClick !== 'undefined' &&
+                                            clickedColumnId !== null
+                                        ) {
                                             onRowClick(row.original)
                                         }
                                     }}
@@ -210,6 +216,7 @@ function DataTable<TData, TValue>({
                                             )} ${getCellAlignment(
                                                 cell.column.id
                                             )}`}
+                                            data-column-id={cell.column.id}
                                         >
                                             {flexRender(
                                                 cell.column.columnDef.cell,

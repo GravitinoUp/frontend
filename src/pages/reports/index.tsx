@@ -7,7 +7,6 @@ import ExportForm from '../tasklist/components/export-form'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
-import CalendarForm from '@/components/calendar-form/calendar-form'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
@@ -15,6 +14,7 @@ import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { useGetBranchReportsQuery } from '@/redux/api/reports'
+import { REPORTS_SAVED } from '@/routes.ts'
 import { BranchReportsPayloadInterface } from '@/types/interface/reports'
 
 export default function ReportsPage() {
@@ -40,7 +40,7 @@ export default function ReportsPage() {
     const {
         data = { count: 0, data: [] },
         isError,
-        isLoading,
+        isFetching,
         refetch,
     } = useGetBranchReportsQuery(branchReportsQuery)
 
@@ -63,13 +63,15 @@ export default function ReportsPage() {
             <PageLayout
                 title={t('reports')}
                 onRefreshClick={refetch}
+                isLoading={isFetching}
                 rightBlock={
                     <div>
-                        <CalendarForm open={false} />
+                        {/* TODO: добавить контекст для фильтров */}
+                        {/* <DateRangeFilter /> */}
                         <div className="flex gap-3">
                             <Button
                                 className="bg-white hover:bg-accent rounded-xl"
-                                onClick={() => navigate('/reports/saved')}
+                                onClick={() => navigate(REPORTS_SAVED)}
                             >
                                 <SavedIcon />
                                 <p className="mx-[8px] text-base font-normal">
@@ -146,7 +148,7 @@ export default function ReportsPage() {
                         itemCount: data.count,
                         pageSize: branchReportsQuery.offset.count,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             </PageLayout>
         </Fragment>

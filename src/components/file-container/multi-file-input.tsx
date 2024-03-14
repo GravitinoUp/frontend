@@ -1,13 +1,19 @@
-import React, { ChangeEvent, Dispatch, Fragment, SetStateAction, useRef, useState } from 'react'
+import React, {
+    ChangeEvent,
+    Dispatch,
+    Fragment,
+    SetStateAction,
+    useRef,
+    useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import UploadIcon from '@/assets/icons/upload.svg'
 import { cn } from '@/lib/utils.ts'
 
 export interface FileData {
     id: string
-    filename?: string
-    filetype?: string
-    fileimage: string
+    fileURL?: string
+    file?: File
 }
 
 interface MultiFileInputProps {
@@ -15,27 +21,25 @@ interface MultiFileInputProps {
     disabled?: boolean
 }
 
-export const MultiFileInput = ({ setSelectedFiles, disabled }: MultiFileInputProps) => {
+export const MultiFileInput = ({
+    setSelectedFiles,
+    disabled,
+}: MultiFileInputProps) => {
     const { t } = useTranslation()
     const inputRef = useRef<HTMLInputElement>(null)
     const [dragActive, setDragActive] = useState<boolean>(false)
 
     const readUploadedFiles = (files: File[]) => {
-        files.forEach(file => {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                setSelectedFiles(prevFiles => [
-                    ...prevFiles,
-                    {
-                        id: crypto.randomUUID(),
-                        filename: file.name,
-                        filetype: file.type,
-                        fileimage: reader.result as string,
-                    },
-                ])
-            }
-            reader.readAsDataURL(file)
+        const newFiles: FileData[] = []
+
+        files.forEach((file) => {
+            newFiles.push({
+                id: crypto.randomUUID(),
+                file: file,
+            })
         })
+
+        setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles])
     }
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -69,8 +73,9 @@ export const MultiFileInput = ({ setSelectedFiles, disabled }: MultiFileInputPro
         <Fragment>
             <div
                 className={cn(
-                    'flex flex-col items-center mt-8 justify-center bg-muted border-[#C6C9CC] border-[1.5px] border-dashed rounded-xl select-none h-[120px]',
-                    disabled ? 'cursor-default opacity-45' : 'cursor-pointer')}
+                    'flex flex-col items-center mt-8 px-2 justify-center bg-muted border-[#C6C9CC] border-[1.5px] border-dashed rounded-xl select-none h-[120px]',
+                    disabled ? 'cursor-default opacity-45' : 'cursor-pointer'
+                )}
                 onClick={handleAddClick}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -87,16 +92,16 @@ export const MultiFileInput = ({ setSelectedFiles, disabled }: MultiFileInputPro
                 />
                 <div
                     className={cn(
-                        'flex flex-col gap-1.5 items-center pointer-events-none',
-                        dragActive && 'invisible',
+                        'flex flex-col gap-1.5 items-center pointer-events-none text-center',
+                        dragActive && 'invisible'
                     )}
                 >
                     <UploadIcon />
                     <p>
                         {t('files.import.drag')}
                         <span className="text-primary underline font-semibold">
-                                {t('file.import.click')}
-                            </span>{' '}
+                            {t('file.import.click')}
+                        </span>{' '}
                         {t('file.download')}
                     </p>
                 </div>

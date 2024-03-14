@@ -1,9 +1,6 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import { MoreVertical } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { organizationFormTab } from './organization-form-tab'
-import CustomTabs from '@/components/custom-tabs/custom-tabs'
-import FormDialog from '@/components/form-dialog/form-dialog'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -13,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
-import { useDeleteOrganizationMutation } from '@/redux/api/organizations'
+import { useDeleteUserMutation } from '@/redux/api/users.ts'
 import { OrganizationInterface } from '@/types/interface/organizations'
 
 export const ActionButtons = ({
@@ -22,8 +19,7 @@ export const ActionButtons = ({
     organization: OrganizationInterface
 }) => {
     const [deleteOrganization, { error, isSuccess, isLoading }] =
-        useDeleteOrganizationMutation()
-    const [formOpen, setFormOpen] = useState(false)
+        useDeleteUserMutation()
     const { t } = useTranslation()
 
     const deleteSuccessMsg = useMemo(
@@ -44,17 +40,6 @@ export const ActionButtons = ({
 
     return (
         <Fragment>
-            <FormDialog
-                open={formOpen}
-                setOpen={setFormOpen}
-                actionButton={<Fragment />}
-                addItemForm={
-                    <CustomTabs
-                        tabs={organizationFormTab(organization)}
-                        setDialogOpen={setFormOpen}
-                    />
-                }
-            />
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                     <Button
@@ -68,13 +53,6 @@ export const ActionButtons = ({
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                        onClick={() => {
-                            setFormOpen(true)
-                        }}
-                    >
-                        {t('action.dropdown.edit')}
-                    </DropdownMenuItem>
                     <DropdownMenuItem
                         className="text-[#FF6B6B]"
                         onClick={handleOrganizationDelete}

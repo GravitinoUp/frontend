@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { checkpointsColumns } from './checkpoint-columns'
 import { checkpointsFormTab } from './checkpoint-form-tab'
+import ExportForm from '../tasklist/components/export-form.tsx'
+import ImportForm from '../tasklist/components/import-form.tsx'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
@@ -19,6 +21,8 @@ import {
 export default function CheckpointsPage() {
     const [formOpen, setFormOpen] = useState(false)
     const { t } = useTranslation()
+    const [exportFormOpen, setExportFormOpen] = useState(false)
+    const [importFormOpen, setImportFormOpen] = useState(false)
 
     const [checkpointsQuery, setCheckpointsQuery] =
         useState<CheckpointsPayloadInterface>({
@@ -29,7 +33,7 @@ export default function CheckpointsPage() {
     const {
         data: checkpoints = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
         refetch,
     } = useGetCheckpointsQuery(checkpointsQuery)
 
@@ -53,6 +57,7 @@ export default function CheckpointsPage() {
         <PageLayout
             title={t('checkpoints')}
             onRefreshClick={refetch}
+            isLoading={isFetching}
             actionButton={
                 <FormDialog
                     open={formOpen}
@@ -69,8 +74,18 @@ export default function CheckpointsPage() {
                 <div>
                     <div className="h-16 " />
                     <div className="flex gap-3 mb-3">
-                        <ExcelButton buttonType="export" onClick={() => {}} />
-                        <ExcelButton buttonType="import" onClick={() => {}} />
+                        <FormDialog
+                            open={exportFormOpen}
+                            setOpen={setExportFormOpen}
+                            actionButton={<ExcelButton buttonType="export" />}
+                            addItemForm={<ExportForm />}
+                        />
+                        <FormDialog
+                            open={importFormOpen}
+                            setOpen={setImportFormOpen}
+                            actionButton={<ExcelButton buttonType="import" />}
+                            addItemForm={<ImportForm type="checkpoints" />}
+                        />
                     </div>
                 </div>
             }
@@ -144,7 +159,7 @@ export default function CheckpointsPage() {
                         itemCount: checkpoints.count,
                         pageSize: checkpointsQuery.offset.count,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             )}
         </PageLayout>

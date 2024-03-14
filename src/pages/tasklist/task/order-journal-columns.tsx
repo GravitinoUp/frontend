@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import i18next from 'i18next'
+import i18next from '../../../i18n.ts'
 import OrderStatus from '@/components/order-status/order-status'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormattedOrderJournalInterface } from '@/types/interface/order-journal'

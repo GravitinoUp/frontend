@@ -25,6 +25,6 @@ export const savedReportsColumns: ColumnDef<FormattedSavedReportInterface>[] = [
     },
     {
         id: 'actions',
-        cell: ({ row }) => <ActionButtons savedReport={row.original} />,
+        cell: () => <ActionButtons />,
     },
 ]

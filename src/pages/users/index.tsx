@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import AddUserForm from './add-user-form'
 import UserFiltersForm from './user-filters-form.tsx'
 import { usersColumns } from './users-columns'
+import ExportForm from '../tasklist/components/export-form.tsx'
+import ImportForm from '../tasklist/components/import-form.tsx'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
@@ -20,11 +22,13 @@ import { formatInitials, formatStringFilter } from '@/utils/helpers'
 export default function UsersPage() {
     const [usersQuery, setUsersQuery] =
         useState<UsersPayloadInterface>(placeholderQuery)
+    const [exportFormOpen, setExportFormOpen] = useState(false)
+    const [importFormOpen, setImportFormOpen] = useState(false)
 
     const {
         data: users = { count: 0, data: [] },
         error,
-        isLoading,
+        isFetching,
         refetch,
     } = useGetUsersQuery(usersQuery)
 
@@ -131,6 +135,7 @@ export default function UsersPage() {
             <PageLayout
                 title={t('users')}
                 onRefreshClick={refetch}
+                isLoading={isFetching}
                 actionButton={
                     <FormDialog
                         open={formOpen}
@@ -144,13 +149,21 @@ export default function UsersPage() {
                     <div>
                         <div className="h-16 " />
                         <div className="flex gap-3 mb-3">
-                            <ExcelButton
-                                buttonType="export"
-                                onClick={() => {}}
+                            <FormDialog
+                                open={exportFormOpen}
+                                setOpen={setExportFormOpen}
+                                actionButton={
+                                    <ExcelButton buttonType="export" />
+                                }
+                                addItemForm={<ExportForm />}
                             />
-                            <ExcelButton
-                                buttonType="import"
-                                onClick={() => {}}
+                            <FormDialog
+                                open={importFormOpen}
+                                setOpen={setImportFormOpen}
+                                actionButton={
+                                    <ExcelButton buttonType="import" />
+                                }
+                                addItemForm={<ImportForm type="users" />}
                             />
                         </div>
                     </div>
@@ -229,7 +242,7 @@ export default function UsersPage() {
                         itemCount: users.count,
                         pageSize: usersQuery.offset.count,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             </PageLayout>
         </Fragment>

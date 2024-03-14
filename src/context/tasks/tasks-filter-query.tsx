@@ -18,8 +18,8 @@ const defaultQuery = {
     filter: {},
     sorts: {},
     period: {
-        date_start: '2024-01-01',
-        date_end: '2024-01-26',
+        date_start: new Date().toISOString(),
+        date_end: new Date().toISOString(),
     },
 }
 

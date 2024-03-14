@@ -68,6 +68,6 @@ export const reportsColumns: ColumnDef<FormattedReportInterface>[] = [
     },
     {
         id: 'actions',
-        cell: ({ row }) => <ActionButtons report={row.original} />,
+        cell: () => <ActionButtons />,
     },
 ]

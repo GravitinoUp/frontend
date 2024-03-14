@@ -1,8 +1,17 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import {
+    Dispatch,
+    lazy,
+    SetStateAction,
+    Suspense,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import i18next from '../../../i18n.ts'
 import { placeholderQuery } from '../constants.ts'
+import ArrowRight from '@/assets/icons/arrow_right.svg'
 import CalendarIcon from '@/assets/icons/Calendar.svg'
 import { CustomAlert } from '@/components/custom-alert/custom-alert.tsx'
 import CustomForm, { useForm } from '@/components/form/form.tsx'
@@ -44,7 +53,6 @@ import { Textarea } from '@/components/ui/textarea.tsx'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { cn } from '@/lib/utils.ts'
-import { FilesUploadForm } from '@/pages/tasklist/components/files-upload-form.tsx'
 import { useGetBranchesQuery } from '@/redux/api/branch.ts'
 import { useGetCategoriesQuery } from '@/redux/api/categories.ts'
 import { useGetCheckpointsByBranchQuery } from '@/redux/api/checkpoints.ts'
@@ -59,6 +67,10 @@ import {
     OrderInterface,
 } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers.ts'
+
+const FilesUploadForm = lazy(
+    () => import('@/pages/tasklist/components/files-upload-form.tsx')
+)
 
 const baseSchema = z
     .object({
@@ -326,6 +338,9 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                 >
                     {t('order')}
                 </TabsTrigger>
+                <span className="pb-4">
+                    <ArrowRight />
+                </span>
                 <TabsTrigger
                     value="files"
                     className="data-[state=active]:text-primary uppercase"
@@ -335,7 +350,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
             </TabsList>
             <Separator className="w-full bg-[#E8E9EB]" decorative />
             <TabsContent value="task" className="w-full">
-                <ScrollArea className="w-full h-[691px] pr-3">
+                <ScrollArea className="w-full h-[690px] pr-10">
                     <CustomForm form={form} onSubmit={handleSubmit}>
                         <FormField
                             control={form.control}
@@ -365,6 +380,66 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                                 </FormItem>
                             )}
                         />
+                        {isPlannedTask && (
+                            <FormField
+                                control={form.control}
+                                name="periodicity"
+                                render={({ field }) => (
+                                    <FormItem className="mt-5">
+                                        {periodicityLoading && (
+                                            <Skeleton className="h-10 w-[522px] rounded-xl" />
+                                        )}
+                                        {periodicityError && (
+                                            <CustomAlert
+                                                message={t(
+                                                    'multiselect.error.periodicity'
+                                                )}
+                                            />
+                                        )}
+                                        {periodicitySuccess &&
+                                            periodicity?.length > 0 && (
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                    defaultValue={String(
+                                                        field.value
+                                                    )}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue
+                                                                placeholder={t(
+                                                                    'multiselect.placeholder.periodicity'
+                                                                )}
+                                                            />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {periodicity.map(
+                                                            (period) => (
+                                                                <SelectItem
+                                                                    key={
+                                                                        period.periodicity_id
+                                                                    }
+                                                                    value={String(
+                                                                        period.periodicity_id
+                                                                    )}
+                                                                >
+                                                                    {
+                                                                        period.periodicity_name
+                                                                    }
+                                                                </SelectItem>
+                                                            )
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                         <FormField
                             control={form.control}
                             name="taskName"
@@ -618,67 +693,6 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                             <>
                                 <FormField
                                     control={form.control}
-                                    name="periodicity"
-                                    render={({ field }) => (
-                                        <FormItem className="mt-3">
-                                            <FormLabel>
-                                                {t('periodicity')}
-                                            </FormLabel>
-                                            {periodicityLoading && (
-                                                <Skeleton className="h-10 w-[522px] rounded-xl" />
-                                            )}
-                                            {periodicityError && (
-                                                <CustomAlert
-                                                    message={t(
-                                                        'multiselect.error.periodicity'
-                                                    )}
-                                                />
-                                            )}
-                                            {periodicitySuccess &&
-                                                periodicity?.length > 0 && (
-                                                    <Select
-                                                        onValueChange={
-                                                            field.onChange
-                                                        }
-                                                        defaultValue={String(
-                                                            field.value
-                                                        )}
-                                                    >
-                                                        <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue
-                                                                    placeholder={t(
-                                                                        'multiselect.placeholder.periodicity'
-                                                                    )}
-                                                                />
-                                                            </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                            {periodicity.map(
-                                                                (period) => (
-                                                                    <SelectItem
-                                                                        key={
-                                                                            period.periodicity_id
-                                                                        }
-                                                                        value={String(
-                                                                            period.periodicity_id
-                                                                        )}
-                                                                    >
-                                                                        {
-                                                                            period.periodicity_name
-                                                                        }
-                                                                    </SelectItem>
-                                                                )
-                                                            )}
-                                                        </SelectContent>
-                                                    </Select>
-                                                )}
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
                                     name="category"
                                     render={({ field }) => (
                                         <FormItem className="mt-3">
@@ -866,10 +880,18 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                 </ScrollArea>
             </TabsContent>
             <TabsContent value="files" className="h-[668px] mt-0">
-                <FilesUploadForm
-                    orderIDs={newOrdersIDS || newTaskIDS}
-                    setDialogOpen={setDialogOpen}
-                />
+                {(addOrderSuccess || addTaskSuccess) && (
+                    <Suspense
+                        fallback={
+                            <LoadingSpinner className="w-16 h-16 text-primary" />
+                        }
+                    >
+                        <FilesUploadForm
+                            orderIDs={newOrdersIDS || newTaskIDS}
+                            setDialogOpen={setDialogOpen}
+                        />
+                    </Suspense>
+                )}
             </TabsContent>
         </Tabs>
     )

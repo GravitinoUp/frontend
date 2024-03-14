@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo } from 'react'
+import { Dispatch, lazy, SetStateAction, Suspense, useMemo } from 'react'
 import { parseISO } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -43,7 +43,6 @@ import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import i18next from '@/i18n.ts'
 import { cn } from '@/lib/utils.ts'
-import { FilesUploadForm } from '@/pages/tasklist/components/files-upload-form.tsx'
 import { placeholderQuery } from '@/pages/tasklist/constants.ts'
 import { useGetFacilitiesQuery } from '@/redux/api/facility.ts'
 import { useUpdateOrderMutation } from '@/redux/api/orders.ts'
@@ -51,6 +50,10 @@ import { useGetAllOrganizationsQuery } from '@/redux/api/organizations.ts'
 import { useGetAllPriorityQuery } from '@/redux/api/priority.ts'
 import { OrderInterface, OrderUpdateInterface } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers.ts'
+
+const FilesUploadForm = lazy(
+    () => import('@/pages/tasklist/components/files-upload-form.tsx')
+)
 
 interface EditTaskFormProps {
     setDialogOpen?: Dispatch<SetStateAction<boolean>>
@@ -95,8 +98,14 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
             facility: String(task.facility.facility_id),
             executor: String(task.executor.organization_id),
             priority: String(task.priority.priority_id),
-            startDate: parseISO(task.planned_datetime),
-            endDate: parseISO(task.task_end_datetime),
+            startDate:
+                task.planned_datetime && task.planned_datetime !== null
+                    ? parseISO(task.planned_datetime)
+                    : undefined,
+            endDate:
+                task.task_end_datetime && task.task_end_datetime !== null
+                    ? parseISO(task.task_end_datetime)
+                    : undefined,
         },
     })
     const taskType = useMemo(
@@ -182,7 +191,7 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
             </TabsList>
             <Separator className="w-full bg-[#E8E9EB]" decorative />
             <TabsContent value="task" className="w-full">
-                <ScrollArea className="w-full h-[691px] pr-3">
+                <ScrollArea className="w-full h-[691px] pr-10">
                     <CustomForm form={form} onSubmit={handleSubmit}>
                         <RadioField
                             selectedValue={taskType}
@@ -527,10 +536,18 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                 </ScrollArea>
             </TabsContent>
             <TabsContent value="files" className="h-[668px] mt-0">
-                <FilesUploadForm
-                    orderIDs={[task.order_id]}
-                    setDialogOpen={setDialogOpen}
-                />
+                {updateOrderSuccess && (
+                    <Suspense
+                        fallback={
+                            <LoadingSpinner className="w-16 h-16 text-primary" />
+                        }
+                    >
+                        <FilesUploadForm
+                            orderIDs={[task.order_id]}
+                            setDialogOpen={setDialogOpen}
+                        />
+                    </Suspense>
+                )}
             </TabsContent>
         </Tabs>
     )

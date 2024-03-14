@@ -1,7 +1,10 @@
 import { FacilityInterface, FacilitySortInterface } from '../facility'
 import { IQuery, SortOptionsType } from '../fetch'
 import { GroupInterface, GroupSortInterface } from '../group'
-import { OrganizationInterface, OrganizationSortInterface } from '../organizations'
+import {
+    OrganizationInterface,
+    OrganizationSortInterface,
+} from '../organizations'
 import { RoleInterface, RoleSortInterface } from '../roles'
 import { UserInterface } from '../user'
 import { RecursivePartial } from '@/utils/recursive-partial'
@@ -27,8 +30,8 @@ export interface OrderPayloadInterface extends IQuery {
     sorts: OrderSortInterface
     filter: RecursivePartial<OrderFilterInterface>
     period: {
-        date_start: string
-        date_end: string
+        date_start?: string
+        date_end?: string
     }
 }
 
@@ -153,15 +156,15 @@ export interface TaskSortInterface {
 }
 
 export interface NewTaskBodyInterface {
-    task_name: string,
-    task_description: string,
-    category_id: number,
-    periodicity_id: number,
-    branch_ids: number[],
-    checkpoint_ids?: number[],
-    facility_ids?: number[],
-    executor_ids: number[],
-    priority_id: number,
+    task_name: string
+    task_description: string
+    category_id: number
+    periodicity_id: number
+    branch_ids: number[]
+    checkpoint_ids?: number[]
+    facility_ids?: number[]
+    executor_ids: number[]
+    priority_id: number
     period_start: string
     period_end: string
 }
@@ -219,3 +222,14 @@ export interface PriorityInterface {
 export type PrioritySortInterface = Partial<
     Record<keyof PriorityInterface, SortOptionsType>
 >
+
+// Guest Order
+
+export interface GuestOrderPayloadInterface {
+    guest_name: string
+    guest_email: string
+    guest_phone: string
+    order_name: string
+    order_description: string
+    facility_id: number
+}
