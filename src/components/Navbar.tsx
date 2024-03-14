@@ -35,90 +35,90 @@ export interface MultiLink {
     children: React.ReactNode
 }
 
-const links: (SingleLink | MultiLink | false)[] = [
-    {
-        type: 'single',
-        path: routes.DASHBOARD,
-        title: i18next.t('dashboard'),
-        children: <DashboardIcon />,
-    },
-    getPermissionValue([
-        PermissionEnum.OrderGetMy,
-        PermissionEnum.OrderGet,
-    ]) && {
-        type: 'single',
-        path: routes.TASK_LIST,
-        title: i18next.t('tasks'),
-        children: <TaskListIcon />,
-    },
-    getPermissionValue([PermissionEnum.ReportGet]) && {
-        type: 'single',
-        path: routes.REPORTS,
-        title: i18next.t('reports'),
-        children: <ChartIcon />,
-    },
-    {
-        type: 'single',
-        path: routes.MAP,
-        title: i18next.t('maps'),
-        children: <CompassIcon />,
-    },
-    getPermissionValue([PermissionEnum.UserGet]) && {
-        type: 'single',
-        path: routes.USERS,
-        title: i18next.t('users'),
-        children: <GroupIcon />,
-    },
-    getPermissionValue([
-        PermissionEnum.OrganizationGet,
-        PermissionEnum.OrganizationGetMy,
-    ]) && {
-        type: 'single',
-        path: routes.ORGANIZATIONS,
-        title: i18next.t('organizations'),
-        children: <HomeIcon />,
-    },
-    getPermissionValue([
-        PermissionEnum.CheckpointGet,
-        PermissionEnum.CheckpointGetMy,
-    ]) && {
-        type: 'single',
-        path: routes.CHECKPOINTS,
-        title: i18next.t('checkpoints'),
-        children: <RoadFinishIcon />,
-    },
-    getPermissionValue([PermissionEnum.BranchGet]) && {
-        type: 'single',
-        path: routes.BRANCHES,
-        title: i18next.t('branches'),
-        children: <FoldersGroupIcon />,
-    },
-    getPermissionValue([PermissionEnum.RoleGet]) && {
-        type: 'single',
-        path: routes.ROLES,
-        title: i18next.t('roles'),
-        children: <VectorIcon />,
-    },
-    getPermissionValue([PermissionEnum.PropertyGet]) && {
-        type: 'single',
-        path: routes.MANAGE_PROPERTIES,
-        title: i18next.t('manage.properties'),
-        children: <ParametersIcon />,
-    },
-    {
-        type: 'single',
-        path: routes.SETTINGS,
-        title: i18next.t('administration'),
-        children: <FilterIcon />,
-    },
-]
-
 export interface NavbarProps {
     open: boolean
     setOpen: Dispatch<SetStateAction<boolean>>
 }
 
 export function Navbar({ open, setOpen }: NavbarProps) {
+    const links: (SingleLink | MultiLink | false)[] = [
+        {
+            type: 'single',
+            path: routes.DASHBOARD,
+            title: i18next.t('dashboard'),
+            children: <DashboardIcon />,
+        },
+        getPermissionValue([
+            PermissionEnum.OrderGetMy,
+            PermissionEnum.OrderGet,
+        ]) && {
+            type: 'single',
+            path: routes.TASK_LIST,
+            title: i18next.t('tasks'),
+            children: <TaskListIcon />,
+        },
+        getPermissionValue([PermissionEnum.ReportGet]) && {
+            type: 'single',
+            path: routes.REPORTS,
+            title: i18next.t('reports'),
+            children: <ChartIcon />,
+        },
+        {
+            type: 'single',
+            path: routes.MAP,
+            title: i18next.t('maps'),
+            children: <CompassIcon />,
+        },
+        getPermissionValue([PermissionEnum.UserGet]) && {
+            type: 'single',
+            path: routes.USERS,
+            title: i18next.t('users'),
+            children: <GroupIcon />,
+        },
+        getPermissionValue([
+            PermissionEnum.OrganizationGet,
+            PermissionEnum.OrganizationGetMy,
+        ]) && {
+            type: 'single',
+            path: routes.ORGANIZATIONS,
+            title: i18next.t('organizations'),
+            children: <HomeIcon />,
+        },
+        getPermissionValue([
+            PermissionEnum.CheckpointGet,
+            PermissionEnum.CheckpointGetMy,
+        ]) && {
+            type: 'single',
+            path: routes.CHECKPOINTS,
+            title: i18next.t('checkpoints'),
+            children: <RoadFinishIcon />,
+        },
+        getPermissionValue([PermissionEnum.BranchGet]) && {
+            type: 'single',
+            path: routes.BRANCHES,
+            title: i18next.t('branches'),
+            children: <FoldersGroupIcon />,
+        },
+        getPermissionValue([PermissionEnum.RoleGet]) && {
+            type: 'single',
+            path: routes.ROLES,
+            title: i18next.t('roles'),
+            children: <VectorIcon />,
+        },
+        getPermissionValue([PermissionEnum.PropertyGet]) && {
+            type: 'single',
+            path: routes.MANAGE_PROPERTIES,
+            title: i18next.t('manage.properties'),
+            children: <ParametersIcon />,
+        },
+        {
+            type: 'single',
+            path: routes.SETTINGS,
+            title: i18next.t('administration'),
+            children: <FilterIcon />,
+        },
+    ]
+
     return (
         <nav className="bg-white flex flex-col border-solid h-screen">
             {open ? (
