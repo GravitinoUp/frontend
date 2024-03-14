@@ -63,7 +63,6 @@ export function SignInPage() {
 
     useEffect(() => {
         document.title = t('authorization')
-        console.log(image)
     }, [])
 
     useErrorToast(() => handleSubmit(form.getValues()), error)
