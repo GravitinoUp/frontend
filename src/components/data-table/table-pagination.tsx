@@ -1,8 +1,19 @@
-import { ChevronLeftIcon, ChevronRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons'
+import {
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    DoubleArrowLeftIcon,
+    DoubleArrowRightIcon,
+} from '@radix-ui/react-icons'
 import { Table } from '@tanstack/react-table'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
 
 const ITEMS_PER_PAGE_LIST = [10, 20, 30, 40, 50]
 
@@ -47,21 +58,25 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                 </div>
                 <div className="flex items-center space-x-2">
                     <Button
-                        variant="outline"
-                        className="hidden h-8 w-8 p-0 lg:flex bg-[#E7F3FA] text-primary"
+                        variant="ghost"
+                        className="hidden h-8 w-8 p-0 lg:flex bg-pagination text-primary"
                         onClick={() => table?.setPageIndex(0)}
                         disabled={!table?.getCanPreviousPage()}
                     >
-                        <span className="sr-only">{t('pagination.first.page')}</span>
+                        <span className="sr-only">
+                            {t('pagination.first.page')}
+                        </span>
                         <DoubleArrowLeftIcon className="h-4 w-4" />
                     </Button>
                     <Button
-                        variant="outline"
-                        className="h-8 w-8 p-0 bg-[#E7F3FA] text-primary"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 bg-pagination text-primary"
                         onClick={() => table?.previousPage()}
                         disabled={!table?.getCanPreviousPage()}
                     >
-                        <span className="sr-only">{t('pagination.previous.page')}</span>
+                        <span className="sr-only">
+                            {t('pagination.previous.page')}
+                        </span>
                         <ChevronLeftIcon className="h-4 w-4" />
                     </Button>
                     {totalPagesCount &&
@@ -122,23 +137,27 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                             )
                         })}
                     <Button
-                        variant="outline"
-                        className="h-8 w-8 p-0 bg-[#E7F3FA] text-primary"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 bg-pagination text-primary"
                         onClick={() => table?.nextPage()}
                         disabled={!table?.getCanNextPage()}
                     >
-                        <span className="sr-only">{t('pagination.next.page')}</span>
+                        <span className="sr-only">
+                            {t('pagination.next.page')}
+                        </span>
                         <ChevronRightIcon className="h-4 w-4" />
                     </Button>
                     <Button
-                        variant="outline"
-                        className="hidden h-8 w-8 p-0 lg:flex bg-[#E7F3FA] text-primary"
+                        variant="ghost"
+                        className="hidden h-8 w-8 p-0 lg:flex bg-pagination text-primary"
                         onClick={() =>
                             table?.setPageIndex(table?.getPageCount() - 1)
                         }
                         disabled={!table?.getCanNextPage()}
                     >
-                        <span className="sr-only">{t('pagination.last.page')}</span>
+                        <span className="sr-only">
+                            {t('pagination.last.page')}
+                        </span>
                         <DoubleArrowRightIcon className="h-4 w-4" />
                     </Button>
                 </div>

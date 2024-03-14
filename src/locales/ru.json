@@ -70,6 +70,7 @@
     "title.full": "Полное наименование",
     "description": "Описание",
     "full.name": "ФИО",
+  "job.title": "Должность",
     "phone": "Телефон",
     "address": "Адрес",
     "company": "компания",
@@ -315,5 +316,8 @@
     "search": {
         "last.name": "Искать по фамилии..."
     },
-    "extended.search": "Расширенный поиск"
+    "extended.search": "Расширенный поиск",
+    "settings.personalization.avatar": "Изображение профиля",
+    "settings.personalization.color.scheme": "Цветовая схема",
+    "by.default": "По умолчанию"
 }
