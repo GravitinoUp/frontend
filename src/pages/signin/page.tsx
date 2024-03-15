@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { z } from 'zod'
 import i18next from '../../i18n.ts'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -13,7 +13,6 @@ import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useErrorToast } from '@/hooks/use-error-toast'
 import { useAuthMutation } from '@/redux/api/auth'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
-import { DASHBOARD } from '@/routes.ts'
 
 const formSchema = z.object({
     email: z.string().email(i18next.t('validation.require.email')),
@@ -35,7 +34,6 @@ export function SignInPage() {
     const { t } = useTranslation()
 
     const dispatch = useAppDispatch()
-    const navigate = useNavigate()
 
     const [authUser, { data: authData, isSuccess: isSuccess, error }] =
         useAuthMutation()
@@ -47,7 +45,7 @@ export function SignInPage() {
                 dispatch(setRefreshToken(authData?.refreshToken))
             }
 
-            navigate(DASHBOARD)
+            window.location.reload()
         }
     }, [isSuccess])
 

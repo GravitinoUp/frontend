@@ -30,6 +30,7 @@ export default function AccountMenu() {
         if (isLogoutSuccess) {
             removeCookieValue('accessToken')
             removeCookieValue('refreshToken')
+            localStorage.removeItem('permissions')
             navigate(SIGN_IN)
         }
     }, [isLogoutSuccess])
@@ -41,6 +42,7 @@ export default function AccountMenu() {
             logout({ refresh_token: refreshToken! })
         } else {
             removeCookieValue('accessToken')
+            localStorage.removeItem('permissions')
             navigate(SIGN_IN)
         }
     }
