@@ -16,7 +16,7 @@ jobs:
       - name: Clone frontend repository
         run: git clone https://github.com/GravitinoUp/frontend.git -b ${{ github.ref_name }} gravitino-frontend/
 
-      - name: Clone devops_gravitino repository
+      - name: Clone devops-gravitino repository
         run: git clone https://${{ secrets.TRIGGER }}@github.com/GravitinoUp/devops_gravitino.git -b dev
 
       - name: Copy Dockerfile to frontend directory
