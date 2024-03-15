@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { ADMIN_ROLE_ID } from './constants/constants.ts'
@@ -32,7 +32,6 @@ import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 const MapPage = lazy(() => import('./pages/map'))
 
 function App() {
-    const [loading, setLoading] = useState<boolean | null>(null)
     const dispatch = useAppDispatch()
 
     const navigate = useNavigate()
@@ -48,27 +47,25 @@ function App() {
         useGetPersonalPermissionsQuery()
 
     useEffect(() => {
-        if (loading === null) {
-            const { accessToken, refreshToken } = getJWTtokens()
+        const { accessToken, refreshToken } = getJWTtokens()
 
-            if (refreshToken) {
-                fetchRefreshToken({ refresh_token: `${refreshToken}` })
-                setLoading(true)
-            } else if (!accessToken) {
-                if (
-                    path.pathname !== routes.FEEDBACK_GUEST &&
-                    path.pathname !== routes.FEEDBACK_WORKER
-                ) {
-                    navigate(routes.SIGN_IN)
-                }
-                setLoading(false)
+        if (refreshToken) {
+            fetchRefreshToken({ refresh_token: `${refreshToken}` })
+        } else if (!accessToken) {
+            if (
+                path.pathname !== routes.FEEDBACK_GUEST &&
+                path.pathname !== routes.FEEDBACK_WORKER
+            ) {
+                navigate(routes.SIGN_IN)
             }
         }
     }, [])
 
     useEffect(() => {
-        if (isSuccess && isPermissionsSuccess && isUserSuccess) {
-            dispatch(setAccessToken(newAccessToken))
+        if (isSuccess || (isPermissionsSuccess && isUserSuccess)) {
+            if (isSuccess) {
+                dispatch(setAccessToken(newAccessToken))
+            }
 
             if (isPermissionsSuccess && isUserSuccess) {
                 const formattedPermissions: FormattedPermissionInterface[] =
@@ -99,14 +96,12 @@ function App() {
             ) {
                 navigate(routes.DASHBOARD)
             }
-            setLoading(false)
         }
     }, [isSuccess, isPermissionsSuccess, isUserSuccess])
 
     useEffect(() => {
         if (isError) {
             navigate(routes.SIGN_IN)
-            setLoading(false)
         }
     }, [isError])
 
@@ -117,8 +112,6 @@ function App() {
             navigate(routes.SIGN_IN)
         }
     }, [document.cookie])
-
-    if (loading) return <></>
 
     return (
         <div>
