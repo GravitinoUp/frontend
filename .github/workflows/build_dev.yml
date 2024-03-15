@@ -3,7 +3,7 @@ name: Frontend Build and Deploy
 on:
   push:
     branches:
-      - develop
+      - dev
 
 jobs:
   build:
@@ -13,23 +13,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Clone frontend repository
+        run: git clone https://github.com/GravitinoUp/gravitino-frontend.git -b ${{ github.ref_name }} gravitino-frontend/
+
+      - name: Clone devops-gravitino repository
+        run: git clone https://github.com/GravitinoUp/devops-gravitino.git -b ${{ github.ref_name }}
+
+      - name: Copy Dockerfile to frontend directory
+        run: cp devops-gravitino/docker_images/frontend/Dockerfile gravitino-frontend/
+
+      - name: Build Docker image
+        run: |
+          cd gravitino-frontend/
+          docker build -t gravitino_frontend_${{ github.ref_name }} .
+
+      - name: Docker Login
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u del98 --password-stdin
+
+      - name: Tag Docker image
+        run: docker tag gravitino_frontend_${{ github.ref_name }} del98/gravitino_frontend_${{ github.ref_name }}:${{ github.sha }}
+
+      - name: Push Docker image
+        run: docker push del98/gravitino_frontend_${{ github.ref_name }}:${{ github.sha }}
+
+      - name: Trigger test workflow
+        uses: actions/github-script@v5
         with:
-          node-version: 20
-      
-      - name: Install dependencies
-        run: npm install
-      
-      - name: Build frontend
-        run: npm run build:dev
-      
-      - name: FTP Upload
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: /dev/	
-          log-level: verbose
+          github-token: ${{ secrets.TRIGGER }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'GravitinoUp',
+              repo: 'devops-gravitino',
+              workflow_id: 'frontend_workflow.yml',
+              ref: 'dev',
+              inputs: {
+                imageTag: "${{ github.sha }}"
+              }
+            });
