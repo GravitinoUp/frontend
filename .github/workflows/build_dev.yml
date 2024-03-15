@@ -25,10 +25,10 @@ jobs:
         run: npm run build:prod
 
       - name: Clone frontend repository
-        run: git clone https://github.com/GravitinoUp/gravitino-frontend.git -b ${{ github.ref_name }} gravitino-frontend/
+        run: git clone https://github.com/GravitinoUp/frontend.git -b ${{ github.ref_name }} gravitino-frontend/
 
       - name: Clone devops-gravitino repository
-        run: git clone https://github.com/GravitinoUp/devops-gravitino.git -b ${{ github.ref_name }}
+        run: git clone https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/GravitinoUp/devops_gravitino.git -b ${{ github.ref_name }}
 
       - name: Copy Dockerfile to frontend directory
         run: cp devops-gravitino/docker_images/frontend/Dockerfile gravitino-frontend/
@@ -54,7 +54,7 @@ jobs:
           script: |
             await github.rest.actions.createWorkflowDispatch({
               owner: 'GravitinoUp',
-              repo: 'devops-gravitino',
+              repo: 'devops_gravitino',
               workflow_id: 'frontend_workflow.yml',
               ref: 'main',
               inputs: {
