@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { branchesColumns } from './branches-columns'
 import { branchesFormTab } from './branches-form-tab'
-import ExportForm from '../tasklist/components/export-form.tsx'
-import ImportForm from '../tasklist/components/import-form.tsx'
+import ExportForm from '../../components/form/export-form.tsx'
+import ImportForm from '../../components/form/import-form.tsx'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
@@ -65,7 +65,7 @@ const BranchesPage = () => {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             actionButton={<ExcelButton buttonType="import" />}
-                            addItemForm={<ImportForm type="branches" />}
+                            addItemForm={<ImportForm type="branch" />}
                         />
                     </div>
                 </div>
