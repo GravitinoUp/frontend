@@ -25,7 +25,7 @@ module.exports = {
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
                 primary: {
-                    DEFAULT: '#0784D1',
+                    DEFAULT: 'var(--primary)',
                     foreground: 'hsl(var(--primary-foreground))',
                 },
                 secondary: {
@@ -67,6 +67,10 @@ module.exports = {
                     'completed-yellow': '#FFD240',
                     'completed-red': '#FF6B6B',
                 },
+                ringColor: {
+                    primary: 'var(--primary)',
+                },
+                pagination: 'var(--pagination)',
             },
             borderRadius: {
                 lg: 'var(--radius)',
@@ -82,10 +86,16 @@ module.exports = {
                     from: { height: 'var(--radix-accordion-content-height)' },
                     to: { height: '0' },
                 },
+                'scale-down': {
+                    from: { scale: '1.2' },
+                    to: { scale: '1.0' },
+                },
             },
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',
                 'accordion-up': 'accordion-up 0.2s ease-out',
+                'scale-infinite':
+                    'scale-down 20s cubic-bezier(.1,0,.9,1.01) infinite alternate-reverse forwards',
             },
         },
     },

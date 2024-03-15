@@ -50,4 +50,16 @@ export const FEEDBACK_DEPARTMENTS = {
     customs: i18next.t('feedback.department.customs'),
 }
 
+export const LOGIN_IMAGES = [
+    'src/assets/images/login-image-1.jpg',
+    'src/assets/images/login-image-2.jpg',
+    'src/assets/images/login-image-3.jpg',
+    'src/assets/images/login-image-4.jpg',
+    'src/assets/images/login-image-5.jpg',
+    'src/assets/images/login-image-6.jpg',
+    'src/assets/images/login-image-7.jpg',
+    'src/assets/images/login-image-8.jpg',
+    'src/assets/images/login-image-9.jpg',
+]
+
 export const ADMIN_ROLE_ID = 5

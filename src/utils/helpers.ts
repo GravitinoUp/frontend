@@ -1,6 +1,8 @@
 import { SortingState } from '@tanstack/react-table'
 import { format } from 'date-fns'
+import { jwtDecode } from 'jwt-decode'
 import { FILE_SIZE_UNITS } from '@/constants/constants.ts'
+import { JWT } from '@/types/interface/auth.ts'
 import { FormattedPermissionInterface } from '@/types/interface/roles'
 
 export const getJWTtokens = () => {
@@ -105,3 +107,17 @@ export const getPermissionValue = (permission_sku_list: string[]) => {
  */
 export const formatQueryEndpoint = (permission: string) =>
     getPermissionValue([permission]) ? 'all' : 'my'
+
+export const getUserId = () => {
+    const accessToken = getCookieValue('accessToken')
+    const { user_id }: JWT = accessToken
+        ? jwtDecode(accessToken)
+        : { user_id: -1, email: '' }
+
+    return user_id
+}
+export const capitalizeFirstLetter = (string: string) =>
+    string.charAt(0).toUpperCase() + string.slice(1)
+
+export const getCurrentColorScheme = () =>
+    localStorage.getItem('colorScheme') || 'option-1'

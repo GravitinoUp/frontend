@@ -1,5 +1,5 @@
 {
-    "gravitino.full.name": "ГРАВИТИНО АСУП",
+    "gravitino.full.name": "ГРАВИТИНО АСУР",
     "gravitino": "Гравитино",
     "authorization": "Авторизация",
     "authorization.title": "Войдите в свой аккаунт",
@@ -30,6 +30,7 @@
     "property": "Характеристика",
     "property.add": "Создание характеристики",
     "values": "Значения",
+    "values.extended": "Значения (через запятую или Enter)",
     "action": "Действие",
     "manage.properties": "Управление характеристиками",
     "administration": "Администрирование",
@@ -70,6 +71,7 @@
     "title.full": "Полное наименование",
     "description": "Описание",
     "full.name": "ФИО",
+    "job.title": "Должность",
     "phone": "Телефон",
     "address": "Адрес",
     "company": "компания",
@@ -121,7 +123,7 @@
     "to": "до",
     "tabs": {
         "common": "общее",
-        "roles.and.permissions": "роли и права доступа",
+        "role.and.group": "роль и группа",
         "image": "изображение",
         "task.info": "Детали задачи",
         "task.history": "Журнал",
@@ -315,5 +317,8 @@
     "search": {
         "last.name": "Искать по фамилии..."
     },
-    "extended.search": "Расширенный поиск"
+    "extended.search": "Расширенный поиск",
+    "settings.personalization.avatar": "Изображение профиля",
+    "settings.personalization.color.scheme": "Цветовая схема",
+    "by.default": "По умолчанию"
 }

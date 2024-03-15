@@ -53,7 +53,8 @@ export function MultiSelect({
             e.stopPropagation()
             const input = inputRef.current
             if (input) {
-                if (!showItems && e.key === 'Enter') {
+                if (!showItems && (e.key === 'Enter' || e.key === ',')) {
+                    e.preventDefault()
                     if (input.value.trim() !== '') {
                         setSelected((prev) => {
                             const newSelected = [...prev]
@@ -126,13 +127,13 @@ export function MultiSelect({
             onKeyDown={handleKeyDown}
             className="overflow-visible bg-transparent"
         >
-            <div className="group border border-input rounded-xl px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-[#0784D1]">
+            <div className="group border border-input rounded-xl px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-primary">
                 <div className="flex gap-1 flex-wrap">
                     {selected.map((item) => (
                         <Badge key={item.value} variant="secondary">
                             {item.label}
                             <button
-                                className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus-within:ring-[#0784D1] focus:ring-offset-2"
+                                className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus-within:ring-primary focus:ring-offset-2"
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         handleUnselect(item)
