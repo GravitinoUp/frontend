@@ -45,7 +45,7 @@ jobs:
               owner: 'GravitinoUp',
               repo: 'devops_gravitino',
               workflow_id: 'frontend_workflow.yml',
-              ref: 'main',
+              ref: 'dev',
               inputs: {
                 imageTag: "${{ github.sha }}"
               }
