@@ -30,6 +30,7 @@
     "property": "Характеристика",
     "property.add": "Создание характеристики",
     "values": "Значения",
+    "values.extended": "Значения (через запятую или Enter)",
     "action": "Действие",
     "manage.properties": "Управление характеристиками",
     "administration": "Администрирование",
@@ -122,7 +123,7 @@
     "to": "до",
     "tabs": {
         "common": "общее",
-        "roles.and.permissions": "роли и права доступа",
+        "role.and.group": "роль и группа",
         "image": "изображение",
         "task.info": "Детали задачи",
         "task.history": "Журнал",
