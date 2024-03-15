@@ -1,5 +1,6 @@
 import React, { BaseSyntheticEvent, Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { LoadingSpinner } from '../spinner/spinner'
 import { Button } from '../ui/button'
 import ArchiveImportLight from '@/assets/icons/archive_import_light.svg'
 import DeleteIcon from '@/assets/icons/delete.svg'
@@ -11,12 +12,14 @@ interface FileContainerProps {
     onSubmit: (file: File) => void
     fileType?: string
     uploadIcon?: React.ReactNode
+    isLoading: boolean
 }
 
 const FileContainer = ({
     onSubmit,
     fileType = '*/*',
     uploadIcon = <ArchiveImportLight />,
+    isLoading,
 }: FileContainerProps) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [selectedFile, setSelectedFile] = useState<File>()
@@ -79,7 +82,8 @@ const FileContainer = ({
                 {selectedFile ? (
                     <div className="w-full flex justify-between border rounded-xl p-4">
                         <div className="flex items-center">
-                            {fileType === 'text/csv' && (
+                            {fileType ===
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && (
                                 <div className="w-[31px] h-[40px]">
                                     <ExcelFile />
                                 </div>
@@ -94,10 +98,11 @@ const FileContainer = ({
                         <div className="flex items-center">
                             <Button
                                 type="button"
-                                className="px-6 py-2 mr-4"
+                                className="px-6 py-2 mr-4 w-[100px]"
                                 onClick={() => onSubmit(selectedFile)}
+                                disabled={isLoading}
                             >
-                                {t('import')}
+                                {isLoading ? <LoadingSpinner /> : t('import')}
                             </Button>
                             <div
                                 className="cursor-pointer"
@@ -111,7 +116,7 @@ const FileContainer = ({
                     <div
                         className={cn(
                             'flex flex-col gap-1.5 items-center pointer-events-none',
-                            dragActive && 'invisible',
+                            dragActive && 'invisible'
                         )}
                     >
                         {uploadIcon}
