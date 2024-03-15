@@ -1,4 +1,5 @@
 import { api } from './'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import {
     CheckpointInterface,
     CheckpointPayloadInterface,
@@ -8,6 +9,7 @@ import {
     FetchDataInterface,
     FetchResultInterface,
 } from '@/types/interface/fetch'
+import { formatQueryEndpoint } from '@/utils/helpers'
 
 const checkpointsApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -16,7 +18,9 @@ const checkpointsApi = api.injectEndpoints({
             CheckpointsPayloadInterface
         >({
             query: (body) => ({
-                url: 'checkpoint/all',
+                url: `checkpoint/${formatQueryEndpoint(
+                    PermissionEnum.CheckpointGet
+                )}`,
                 method: 'POST',
                 body,
             }),

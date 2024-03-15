@@ -12,6 +12,7 @@ import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
+import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import {
     CheckpointsPayloadInterface,
@@ -70,6 +71,7 @@ export default function CheckpointsPage() {
                     }
                 />
             }
+            actionButtonPermissions={[PermissionEnum.CheckpointCreate]}
             rightBlock={
                 <div>
                     <div className="h-16 " />
@@ -84,6 +86,9 @@ export default function CheckpointsPage() {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             actionButton={<ExcelButton buttonType="import" />}
+                            actionButtonPermissions={[
+                                PermissionEnum.CheckpointCreate,
+                            ]}
                             addItemForm={<ImportForm type="checkpoints" />}
                         />
                     </div>

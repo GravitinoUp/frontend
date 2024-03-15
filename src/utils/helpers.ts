@@ -91,8 +91,17 @@ export const getPermissionValue = (permission_sku_list: string[]) => {
                 (permission_sku_list.includes(p.permission_sku) && p.rights)
         )
 
-        return permissionValue ? true : false
+        return permissionValue || permission_sku_list.length === 0
+            ? true
+            : false
     } else {
         return false
     }
 }
+
+/**
+ * @param permission - Разрешение на получение всех элементов сущности (Например, order-get)
+ * @returns all или my в зависимости от разрешения
+ */
+export const formatQueryEndpoint = (permission: string) =>
+    getPermissionValue([permission]) ? 'all' : 'my'

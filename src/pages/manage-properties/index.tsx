@@ -10,6 +10,7 @@ import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { useGetPropertiesQuery } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
 
@@ -39,6 +40,7 @@ export default function ManagePropertiesPage() {
                     }
                 />
             }
+            actionButtonPermissions={[PermissionEnum.PropertyCreate]}
             rightBlock={
                 <div>
                     <div className="h-16 " />
@@ -53,6 +55,9 @@ export default function ManagePropertiesPage() {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             actionButton={<ExcelButton buttonType="import" />}
+                            actionButtonPermissions={[
+                                PermissionEnum.PropertyCreate,
+                            ]}
                             addItemForm={<ImportForm type="properties" />}
                         />
                     </div>

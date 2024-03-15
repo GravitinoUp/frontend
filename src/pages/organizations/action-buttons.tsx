@@ -8,10 +8,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useDeleteUserMutation } from '@/redux/api/users.ts'
 import { OrganizationInterface } from '@/types/interface/organizations'
+import { getPermissionValue } from '@/utils/helpers'
 
 export const ActionButtons = ({
     organization,
@@ -39,29 +41,32 @@ export const ActionButtons = ({
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
-        <Fragment>
-            <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        className="h-8 w-8 p-0 text-[#8A9099]"
-                    >
-                        <span className="sr-only">
-                            {t('action.dropdown.menu.open')}
-                        </span>
-                        <MoreVertical className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                        className="text-[#FF6B6B]"
-                        onClick={handleOrganizationDelete}
-                        disabled={isLoading}
-                    >
-                        {t('action.dropdown.delete')}
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </Fragment>
+        getPermissionValue([PermissionEnum.OrganizationDelete]) && (
+            <Fragment>
+                <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 text-[#8A9099]"
+                        >
+                            <span className="sr-only">
+                                {t('action.dropdown.menu.open')}
+                            </span>
+                            <MoreVertical className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                            className="text-[#FF6B6B]"
+                            onClick={handleOrganizationDelete}
+                            disabled={isLoading}
+                        >
+                            {t('action.dropdown.delete')}
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </Fragment>
+        )
     )
 }

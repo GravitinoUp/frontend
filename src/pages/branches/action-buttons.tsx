@@ -11,10 +11,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useDeleteBranchMutation } from '@/redux/api/branch'
 import { BranchInterface } from '@/types/interface/branch'
+import { getPermissionValue } from '@/utils/helpers'
 
 export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
     const [deleteBranch, { error, isSuccess, isLoading }] =
@@ -39,47 +41,56 @@ export const ActionButtons = ({ branch }: { branch: BranchInterface }) => {
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
-        <Fragment>
-            <FormDialog
-                open={formOpen}
-                setOpen={setFormOpen}
-                actionButton={<Fragment />}
-                addItemForm={
-                    <CustomTabs
-                        tabs={branchesFormTab(branch)}
-                        setDialogOpen={setFormOpen}
-                    />
-                }
-            />
-            <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        className="h-8 w-8 p-0 text-[#8A9099]"
-                    >
-                        <span className="sr-only">
-                            {t('action.dropdown.menu.open')}
-                        </span>
-                        <MoreVertical className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                        onClick={() => {
-                            setFormOpen(true)
-                        }}
-                    >
-                        {t('action.dropdown.edit')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        className="text-[#FF6B6B]"
-                        onClick={handleBranchDelete}
-                        disabled={isLoading}
-                    >
-                        {t('action.dropdown.delete')}
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </Fragment>
+        getPermissionValue([
+            PermissionEnum.BranchUpdate,
+            PermissionEnum.BranchDelete,
+        ]) && (
+            <Fragment>
+                <FormDialog
+                    open={formOpen}
+                    setOpen={setFormOpen}
+                    actionButton={<Fragment />}
+                    addItemForm={
+                        <CustomTabs
+                            tabs={branchesFormTab(branch)}
+                            setDialogOpen={setFormOpen}
+                        />
+                    }
+                />
+                <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 text-[#8A9099]"
+                        >
+                            <span className="sr-only">
+                                {t('action.dropdown.menu.open')}
+                            </span>
+                            <MoreVertical className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {getPermissionValue([PermissionEnum.BranchUpdate]) && (
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    setFormOpen(true)
+                                }}
+                            >
+                                {t('action.dropdown.edit')}
+                            </DropdownMenuItem>
+                        )}
+                        {getPermissionValue([PermissionEnum.BranchDelete]) && (
+                            <DropdownMenuItem
+                                className="text-[#FF6B6B]"
+                                onClick={handleBranchDelete}
+                                disabled={isLoading}
+                            >
+                                {t('action.dropdown.delete')}
+                            </DropdownMenuItem>
+                        )}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </Fragment>
+        )
     )
 }

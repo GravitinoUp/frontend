@@ -12,6 +12,7 @@ import DataTable from '@/components/data-table/data-table'
 import ExcelButton from '@/components/excel-button/excel-button'
 import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
+import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { useGetUsersQuery } from '@/redux/api/users'
 import {
     FormattedUsersInterface,
@@ -145,6 +146,7 @@ export default function UsersPage() {
                         }
                     />
                 }
+                actionButtonPermissions={[PermissionEnum.UserCreate]}
                 rightBlock={
                     <div>
                         <div className="h-16 " />
@@ -163,6 +165,9 @@ export default function UsersPage() {
                                 actionButton={
                                     <ExcelButton buttonType="import" />
                                 }
+                                actionButtonPermissions={[
+                                    PermissionEnum.UserCreate,
+                                ]}
                                 addItemForm={<ImportForm type="users" />}
                             />
                         </div>

@@ -8,7 +8,9 @@ import {
     DialogTrigger,
 } from '../ui/dialog'
 import CloseRounded from '@/assets/icons/close_rounded.svg'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { cn } from '@/lib/utils'
+import { getPermissionValue } from '@/utils/helpers'
 
 const dialogVariants = cva('', {
     variants: {
@@ -26,6 +28,7 @@ const dialogVariants = cva('', {
 interface FormDialogProps extends VariantProps<typeof dialogVariants> {
     headerContent?: ReactNode
     actionButton?: ReactNode
+    actionButtonPermissions?: PermissionEnum[]
     addItemForm: ReactNode
     open?: boolean
     setOpen?: Dispatch<SetStateAction<boolean>>
@@ -34,13 +37,16 @@ interface FormDialogProps extends VariantProps<typeof dialogVariants> {
 const FormDialog = ({
     headerContent,
     actionButton = <PlusButton onClick={() => {}} />,
+    actionButtonPermissions = [],
     addItemForm,
     open,
     setOpen,
     size,
 }: FormDialogProps) => (
     <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>{actionButton}</DialogTrigger>
+        <DialogTrigger asChild>
+            {getPermissionValue(actionButtonPermissions) && actionButton}
+        </DialogTrigger>
         <DialogContent
             className={cn(dialogVariants({ size }))}
             onOpenAutoFocus={(e) => e.preventDefault}

@@ -2,10 +2,12 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@/assets/icons/delete_icon.svg'
 import { Button } from '@/components/ui/button'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useDeletePropertyNameMutation } from '@/redux/api/properties'
 import { PropertyInterface } from '@/types/interface/properties'
+import { getPermissionValue } from '@/utils/helpers'
 
 export const ActionButtons = ({
     property,
@@ -34,8 +36,10 @@ export const ActionButtons = ({
     useSuccessToast(deleteSuccessMsg, isSuccess)
 
     return (
-        <Button variant="ghost" onClick={handlePropertyDelete}>
-            <DeleteIcon />
-        </Button>
+        getPermissionValue([PermissionEnum.PropertyDelete]) && (
+            <Button variant="ghost" onClick={handlePropertyDelete}>
+                <DeleteIcon />
+            </Button>
+        )
     )
 }

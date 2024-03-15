@@ -63,7 +63,7 @@ export function Navbar({ open, setOpen }: NavbarProps) {
             title: i18next.t('reports'),
             children: <ChartIcon />,
         },
-        {
+        getPermissionValue([PermissionEnum.CheckpointGet]) && {
             type: 'single',
             path: routes.MAP,
             title: i18next.t('maps'),
