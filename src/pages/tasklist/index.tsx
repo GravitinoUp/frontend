@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddTaskForm from './components/add-task-form.tsx'
-import ExportForm from './components/export-form.tsx'
-import ImportForm from './components/import-form.tsx'
+import ExportForm from '../../components/form/export-form.tsx'
+import ImportForm from '../../components/form/import-form.tsx'
 import TaskListContent from './tasklist-content.tsx'
 import DateRangeFilter from '@/components/calendar-form/date-range-filter.tsx'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
@@ -75,7 +75,7 @@ export default function TaskListPage() {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             actionButton={<ExcelButton buttonType="import" />}
-                            addItemForm={<ImportForm type="orders" />}
+                            addItemForm={<ImportForm type="order" />}
                         />
                     </div>
                 </div>
