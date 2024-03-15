@@ -53,7 +53,8 @@ export function MultiSelect({
             e.stopPropagation()
             const input = inputRef.current
             if (input) {
-                if (!showItems && e.key === 'Enter') {
+                if (!showItems && (e.key === 'Enter' || e.key === ',')) {
+                    e.preventDefault()
                     if (input.value.trim() !== '') {
                         setSelected((prev) => {
                             const newSelected = [...prev]

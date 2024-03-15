@@ -386,7 +386,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     value="role"
                     className="data-[state=active]:text-primary uppercase"
                 >
-                    {t('tabs.roles.and.permissions')}
+                    {t('tabs.role.and.group')}
                 </TabsTrigger>
                 <span className="pb-4">
                     <ArrowRight />
