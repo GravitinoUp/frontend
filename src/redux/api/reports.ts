@@ -31,7 +31,7 @@ const checkpointsApi = api.injectEndpoints({
             CheckpointReportsPayloadInterface
         >({
             query: (body) => ({
-                url: `report/checkpoint/${body.branch_id}`,
+                url: `report/checkpoint?branch_id=${body.branch_id}`,
                 method: 'POST',
                 body,
             }),
@@ -42,7 +42,7 @@ const checkpointsApi = api.injectEndpoints({
             OrganizationReportsPayloadInterface
         >({
             query: (body) => ({
-                url: `report/organization/${body.checkpoint_id}`,
+                url: `report/organization?checkpoint_id=${body.checkpoint_id}`,
                 method: 'POST',
                 body,
             }),
