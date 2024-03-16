@@ -84,7 +84,7 @@ const AddPropertyForm = ({ entity, setDialogOpen }: AddPropertyFormProps) => {
                 name="property_values"
                 render={({ field }) => (
                     <FormItem className="mt-3">
-                        <FormLabel>{t('values')}</FormLabel>
+                        <FormLabel>{t('values.extended')}</FormLabel>
                         <FormControl>
                             <MultiSelect
                                 defaultOptions={field.value.map((value) => ({

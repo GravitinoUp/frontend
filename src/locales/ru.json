@@ -1,5 +1,5 @@
 {
-    "gravitino.full.name": "ГРАВИТИНО АСУП",
+    "gravitino.full.name": "ГРАВИТИНО АСУР",
     "gravitino": "Гравитино",
     "authorization": "Авторизация",
     "authorization.title": "Войдите в свой аккаунт",
@@ -30,6 +30,7 @@
     "property": "Характеристика",
     "property.add": "Создание характеристики",
     "values": "Значения",
+    "values.extended": "Значения (через запятую или Enter)",
     "action": "Действие",
     "manage.properties": "Управление характеристиками",
     "administration": "Администрирование",
@@ -122,7 +123,7 @@
     "to": "до",
     "tabs": {
         "common": "общее",
-        "roles.and.permissions": "роли и права доступа",
+        "role.and.group": "роль и группа",
         "image": "изображение",
         "task.info": "Детали задачи",
         "task.history": "Журнал",
@@ -266,7 +267,8 @@
                     "f": "{{entityType}} успешно изменена",
                     "sm": "{{entityType}} {{entityName}} успешно изменен",
                     "sf": "{{entityType}} {{entityName}} успешно изменена"
-                }
+                },
+                "import": "Данные успешно добавлены"
             }
         }
     },
