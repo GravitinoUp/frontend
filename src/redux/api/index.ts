@@ -3,6 +3,7 @@ import { getJWTtokens } from '@/utils/helpers'
 
 export const api = createApi({
     reducerPath: 'api',
+    refetchOnReconnect: true,
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API,
         prepareHeaders: async (headers) => {

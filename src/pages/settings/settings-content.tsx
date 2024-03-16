@@ -2,12 +2,23 @@ import i18next from '../../i18n.ts'
 import CustomTabs, { TabPage } from '@/components/custom-tabs/custom-tabs'
 import Personalization from '@/pages/settings/personalization-tab/personalization.tsx'
 import { SettingsForm } from '@/pages/settings/settings-tab/settings-form'
+import { UserDataSkeleton } from '@/pages/settings/settings-tab/user-data-skeleton.tsx'
+import { useGetUserByIdQuery } from '@/redux/api/users.ts'
+import { UserInterface } from '@/types/interface/user.ts'
+import { getUserId } from '@/utils/helpers.ts'
 
-const tabsPage: TabPage[] = [
+const userId = getUserId()
+
+const tabsPage = (user?: UserInterface): TabPage[] => [
     {
         value: 'settings',
         head: i18next.t('tabs.settings.common'),
-        content: <SettingsForm />,
+        content:
+            typeof user !== 'undefined' ? (
+                <SettingsForm user={user} />
+            ) : (
+                <UserDataSkeleton />
+            ),
     },
     {
         value: 'decoration',
@@ -17,5 +28,7 @@ const tabsPage: TabPage[] = [
 ]
 
 export default function SettingsContent() {
-    return <CustomTabs tabs={tabsPage} />
+    const { data: user } = useGetUserByIdQuery(userId)
+
+    return <CustomTabs tabs={tabsPage(user)} />
 }

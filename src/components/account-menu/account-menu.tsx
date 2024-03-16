@@ -12,6 +12,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useErrorToast } from '@/hooks/use-error-toast'
 import { useLogoutMutation } from '@/redux/api/auth'
 import { useGetUserByIdQuery } from '@/redux/api/users'
@@ -24,7 +25,7 @@ export default function AccountMenu() {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const { data: user } = useGetUserByIdQuery(userId)
+    const { data: user, isLoading: isUserLoading } = useGetUserByIdQuery(userId)
 
     const [logout, { error, isSuccess: isLogoutSuccess }] = useLogoutMutation()
 
@@ -64,15 +65,16 @@ export default function AccountMenu() {
                                 <User />
                             </Fragment>
                         )}
-
-                        {user?.person && (
-                            <div className="font-pop text-[14px] text-[#3F434A]">
+                        <div className="font-pop text-[14px] text-[#3F434A]">
+                            {isUserLoading ? (
+                                <Skeleton className="w-[120px] h-5 rounded-xl" />
+                            ) : (
                                 <p>
-                                    {user.person.last_name}{' '}
-                                    {user.person.first_name}
+                                    {user?.person.last_name}{' '}
+                                    {user?.person.first_name}
                                 </p>
-                            </div>
-                        )}
+                            )}
+                        </div>
                         <ChevronDown />
                     </div>
                 </DropdownMenuTrigger>
