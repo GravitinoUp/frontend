@@ -1,7 +1,16 @@
 {
-  "trailingComma": "es5",
-  "tabWidth": 4,
-  "semi": false,
-  "singleQuote": true,
-  "prettier.printWidth": 120
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": false,
+    "singleQuote": true,
+    "prettier.printWidth": 120,
+    "overrides": [
+        {
+            "files": "*.json",
+            "options": {
+                "tabWidth": 4,
+                "useTabs": false
+            }
+        }
+    ]
 }

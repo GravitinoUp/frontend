@@ -70,7 +70,7 @@
     "title.full": "Полное наименование",
     "description": "Описание",
     "full.name": "ФИО",
-  "job.title": "Должность",
+    "job_title": "Должность",
     "phone": "Телефон",
     "address": "Адрес",
     "company": "компания",
