@@ -12,7 +12,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useErrorToast } from '@/hooks/use-error-toast'
+import { api } from '@/redux/api'
 import { useLogoutMutation } from '@/redux/api/auth'
 import { useGetMyUserQuery } from '@/redux/api/users'
 import { SETTINGS, SIGN_IN } from '@/routes.ts'
@@ -22,6 +24,7 @@ export default function AccountMenu() {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
+    const dispatch = useAppDispatch()
     const { data: user } = useGetMyUserQuery()
 
     const [logout, { error, isSuccess: isLogoutSuccess }] = useLogoutMutation()
@@ -31,6 +34,8 @@ export default function AccountMenu() {
             removeCookieValue('accessToken')
             removeCookieValue('refreshToken')
             localStorage.removeItem('permissions')
+            dispatch(api.util.resetApiState())
+
             navigate(SIGN_IN)
         }
     }, [isLogoutSuccess])

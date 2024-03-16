@@ -1,9 +1,13 @@
 import { SortingState } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { jwtDecode } from 'jwt-decode'
-import { FILE_SIZE_UNITS } from '@/constants/constants.ts'
+import { ADMIN_ROLE_ID, FILE_SIZE_UNITS } from '@/constants/constants.ts'
 import { JWT } from '@/types/interface/auth.ts'
-import { FormattedPermissionInterface } from '@/types/interface/roles'
+import {
+    FormattedPermissionInterface,
+    RolePermissionInterface,
+} from '@/types/interface/roles'
+import { UserInterface } from '@/types/interface/user'
 
 export const getJWTtokens = () => {
     const accessToken = getCookieValue('accessToken')
@@ -121,3 +125,25 @@ export const capitalizeFirstLetter = (string: string) =>
 
 export const getCurrentColorScheme = () =>
     localStorage.getItem('colorScheme') || 'option-1'
+
+export const setPermissions = (
+    permissions: RolePermissionInterface[],
+    user: UserInterface
+) => {
+    const formattedPermissions: FormattedPermissionInterface[] =
+        permissions.map((value) => ({
+            permission_name: value.permission.permission_name,
+            permission_description: value.permission.permission_description,
+            permission_sku: value.permission.permission_sku,
+            rights: value.rights,
+        }))
+
+    formattedPermissions.unshift({
+        permission_name: 'ADMIN',
+        permission_description: '',
+        permission_sku: 'admin',
+        rights: user.role.role_id === ADMIN_ROLE_ID,
+    })
+
+    localStorage.setItem('permissions', JSON.stringify(formattedPermissions))
+}

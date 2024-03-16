@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Layout } from './components/Layout'
-import { ADMIN_ROLE_ID } from './constants/constants.ts'
 import { useAppDispatch } from './hooks/reduxHooks'
 import BranchesPage from './pages/branches'
 import CheckpointsPage from './pages/checkpoints'
@@ -25,8 +24,11 @@ import { useGetPersonalPermissionsQuery } from './redux/api/permissions.ts'
 import { useGetMyUserQuery } from './redux/api/users.ts'
 import { setAccessToken } from './redux/reducers/authSlice'
 import * as routes from './routes.ts'
-import { FormattedPermissionInterface } from './types/interface/roles.ts'
-import { getCurrentColorScheme, getJWTtokens } from './utils/helpers'
+import {
+    getCurrentColorScheme,
+    getJWTtokens,
+    setPermissions,
+} from './utils/helpers'
 import MapSkeleton from '@/pages/map/map-skeleton.tsx'
 
 const MapPage = lazy(() => import('./pages/map'))
@@ -68,26 +70,7 @@ function App() {
             }
 
             if (isPermissionsSuccess && isUserSuccess) {
-                const formattedPermissions: FormattedPermissionInterface[] =
-                    permissions.map((value) => ({
-                        permission_name: value.permission.permission_name,
-                        permission_description:
-                            value.permission.permission_description,
-                        permission_sku: value.permission.permission_sku,
-                        rights: value.rights,
-                    }))
-
-                formattedPermissions.unshift({
-                    permission_name: 'ADMIN',
-                    permission_description: '',
-                    permission_sku: 'admin',
-                    rights: user.role.role_id === ADMIN_ROLE_ID,
-                })
-
-                localStorage.setItem(
-                    'permissions',
-                    JSON.stringify(formattedPermissions)
-                )
+                setPermissions(permissions, user)
             }
 
             if (

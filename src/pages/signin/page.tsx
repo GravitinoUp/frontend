@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import i18next from '../../i18n.ts'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -13,7 +13,11 @@ import { LOGIN_IMAGES } from '@/constants/constants.ts'
 import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useErrorToast } from '@/hooks/use-error-toast'
 import { useAuthMutation } from '@/redux/api/auth'
+import { useGetPersonalPermissionsQuery } from '@/redux/api/permissions.ts'
+import { useGetMyUserQuery } from '@/redux/api/users.ts'
 import { setAccessToken, setRefreshToken } from '@/redux/reducers/authSlice'
+import { DASHBOARD } from '@/routes.ts'
+import { setPermissions } from '@/utils/helpers.ts'
 
 const formSchema = z.object({
     email: z.string().email(i18next.t('validation.require.email')),
@@ -35,11 +39,23 @@ export function SignInPage() {
 
     const [shown, setShown] = useState(false)
     const { t } = useTranslation()
+    const navigate = useNavigate()
 
     const dispatch = useAppDispatch()
 
     const [authUser, { data: authData, isSuccess: isSuccess, error }] =
         useAuthMutation()
+
+    const {
+        data: user,
+        isSuccess: isUserSuccess,
+        refetch: refetchUser,
+    } = useGetMyUserQuery()
+    const {
+        data: permissions,
+        isSuccess: isPermissionsSuccess,
+        refetch: refetchPermissions,
+    } = useGetPersonalPermissionsQuery()
 
     useEffect(() => {
         setImage(LOGIN_IMAGES[Math.floor(1 + Math.random() * 9)])
@@ -52,9 +68,18 @@ export function SignInPage() {
                 dispatch(setRefreshToken(authData?.refreshToken))
             }
 
-            window.location.reload()
+            refetchUser()
+            refetchPermissions()
         }
     }, [isSuccess])
+
+    useEffect(() => {
+        if (isSuccess && isPermissionsSuccess && isUserSuccess) {
+            setPermissions(permissions, user)
+
+            navigate(DASHBOARD)
+        }
+    }, [isSuccess, isPermissionsSuccess, isUserSuccess])
 
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
         authUser(data)
