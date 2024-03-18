@@ -11,12 +11,12 @@ export const useGetRangeText = (dateRange?: DateRange) => {
         if (!dateRange.to) {
             rangeHeader = (
                 <p className="font-bold text-2xl text-[#3F434A]">
-                    {formatDate(dateRange.from)}
+                    {formatDate(dateRange.from)}–{formatDate(dateRange.from)}
                 </p>
             )
             rangeDescription = (
                 <p className="text-sm text-[#3F434A]">
-                    {formatDate(dateRange.from)}
+                    {formatDate(dateRange.from)}–{formatDate(dateRange.from)}
                 </p>
             )
         } else if (dateRange.to) {

@@ -12,7 +12,7 @@ interface FileContainerProps {
     onSubmit: (file: File) => void
     fileType?: string
     uploadIcon?: React.ReactNode
-    isLoading: boolean
+    isLoading?: boolean
 }
 
 const FileContainer = ({

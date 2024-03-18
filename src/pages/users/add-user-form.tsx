@@ -483,6 +483,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             label={t('user.phone')}
                                             className="mt-3"
                                             maxLength={12}
+                                            autoComplete="phone"
                                             {...field}
                                             isRequired
                                         />
@@ -495,6 +496,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                         <InputField
                                             label="Email"
                                             className="mt-3"
+                                            autoComplete="email"
                                             {...field}
                                             isRequired
                                         />
@@ -508,6 +510,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             label={t('authorization.password')}
                                             type="password"
                                             className="mt-3"
+                                            autoComplete="new-password"
                                             {...field}
                                             isRequired
                                         />
@@ -522,6 +525,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                             label={t('repeat.password')}
                                             type="password"
                                             className="mt-3"
+                                            autoComplete="new-password"
                                             {...field}
                                             isRequired
                                         />

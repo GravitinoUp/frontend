@@ -3,6 +3,7 @@ import {
     Dispatch,
     ReactNode,
     SetStateAction,
+    useEffect,
     useMemo,
     useState,
 } from 'react'
@@ -10,7 +11,7 @@ import { OrderPayloadInterface } from '@/types/interface/orders'
 
 const DEFAULT_ORDERS_PER_PAGE = 10
 
-const defaultQuery = {
+export const defaultQuery = {
     offset: {
         count: DEFAULT_ORDERS_PER_PAGE,
         page: 1,
@@ -30,16 +31,25 @@ interface ContextValuesType {
 
 export const TasksFilterQueryContext = createContext<ContextValuesType>(null!)
 
+const getInitialQuery = (): OrderPayloadInterface => {
+    const savedQuery = localStorage.getItem('personalOrdersQuery')
+    return savedQuery !== null ? JSON.parse(savedQuery) : defaultQuery
+}
+
 export const TaskFilterQueryProvider = ({
     children,
 }: {
     children: ReactNode
 }) => {
-    const savedQuery = localStorage.getItem('personalOrdersQuery')
     const [personalOrdersQuery, setPersonalOrdersQuery] =
-        useState<OrderPayloadInterface>(
-            savedQuery !== null ? JSON.parse(savedQuery!) : defaultQuery
+        useState(getInitialQuery)
+
+    useEffect(() => {
+        localStorage.setItem(
+            'personalOrdersQuery',
+            JSON.stringify(personalOrdersQuery)
         )
+    }, [personalOrdersQuery])
 
     const contextState = useMemo(
         () => ({
