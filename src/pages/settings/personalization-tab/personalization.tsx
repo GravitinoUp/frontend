@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import { User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button.tsx'
-import { Separator } from '@/components/ui/separator.tsx'
 import { getCurrentColorScheme } from '@/utils/helpers.ts'
 
 const colorSchemeVariants = [
@@ -43,37 +41,30 @@ const Personalization = () => {
     }
 
     return (
-        <>
-            <div className="flex justify-between items-center pb-5 pr-3">
-                <p>{t('settings.personalization.avatar')}</p>
-                <User size={64} />
-            </div>
-            <Separator />
-            <div className="flex justify-between items-center py-10 pr-3">
-                <p>{t('settings.personalization.color.scheme')}</p>
-                <div className="flex gap-4 items-center">
+        <div className="flex justify-between items-center px-5">
+            <p>{t('settings.personalization.color.scheme')}</p>
+            <div className="flex gap-4 items-center">
+                <Button
+                    variant="ghost"
+                    onClick={() => handleColorSchemeChange('option-1')}
+                >
+                    {t('by.default')}
+                </Button>
+                {colorSchemeVariants.map(({ name, color }) => (
                     <Button
+                        key={name}
                         variant="ghost"
-                        onClick={() => handleColorSchemeChange('option-1')}
+                        className="w-6 h-6 rounded-full p-0 hover:opacity-70"
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleColorSchemeChange(name)}
                     >
-                        {t('by.default')}
+                        {colorScheme === name && (
+                            <span className="h-2 w-2 bg-white rounded-full" />
+                        )}
                     </Button>
-                    {colorSchemeVariants.map(({ name, color }) => (
-                        <Button
-                            key={name}
-                            variant="ghost"
-                            className="w-6 h-6 rounded-full p-0 hover:opacity-70"
-                            style={{ backgroundColor: color }}
-                            onClick={() => handleColorSchemeChange(name)}
-                        >
-                            {colorScheme === name && (
-                                <span className="h-2 w-2 bg-white rounded-full" />
-                            )}
-                        </Button>
-                    ))}
-                </div>
+                ))}
             </div>
-        </>
+        </div>
     )
 }
 
