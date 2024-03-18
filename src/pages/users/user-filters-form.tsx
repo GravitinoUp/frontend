@@ -4,7 +4,6 @@ import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import FilterFormTitle from '@/components/form/filter-title'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
-import { LoadingSpinner } from '@/components/spinner/spinner'
 import { Button } from '@/components/ui/button'
 import {
     FormControl,
@@ -19,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { cn } from '@/lib/utils'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
 import { useGetRolesQuery } from '@/redux/api/roles'
@@ -124,7 +124,9 @@ const UserFiltersForm = ({ handleSubmit, data }: UserFiltersFormProps) => {
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FilterFormTitle title={t('organization')} />
-                            {organizationsLoading && <LoadingSpinner />}
+                            {organizationsLoading && (
+                                <Skeleton className="h-10 w-[504px] rounded-xl" />
+                            )}
                             {organizationsError && (
                                 <CustomAlert
                                     message={t(
@@ -188,7 +190,9 @@ const UserFiltersForm = ({ handleSubmit, data }: UserFiltersFormProps) => {
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FilterFormTitle title={t('role')} />
-                            {rolesLoading && <LoadingSpinner />}
+                            {rolesLoading && (
+                                <Skeleton className="h-10 w-[504px] rounded-xl" />
+                            )}
                             {rolesError && (
                                 <CustomAlert
                                     message={t('multiselect.error.roles')}

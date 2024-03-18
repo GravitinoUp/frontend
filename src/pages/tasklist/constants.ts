@@ -1,4 +1,4 @@
-import { TasksFilterColumns } from './tasks-columns.tsx'
+import { TasksFilterColumns } from '@/pages/tasklist/components/task-filters-form.tsx'
 
 export const initialColumnVisibility: TasksFilterColumns = {
     key: true,
@@ -15,6 +15,7 @@ export const initialColumnVisibility: TasksFilterColumns = {
     deliveryDate: true,
     ended_at_datetime: true,
     taskType: true,
+    periodicity: true,
 }
 
 export const placeholderQuery = {

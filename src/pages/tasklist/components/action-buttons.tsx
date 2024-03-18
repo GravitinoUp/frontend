@@ -63,7 +63,9 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
                 open={formOpen}
                 setOpen={setFormOpen}
                 actionButton={<Fragment />}
-                addItemForm={<EditTaskForm task={taskInfo} />}
+                addItemForm={
+                    <EditTaskForm task={taskInfo} setDialogOpen={setFormOpen} />
+                }
             />
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>

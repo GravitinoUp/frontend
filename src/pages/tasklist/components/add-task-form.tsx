@@ -64,7 +64,6 @@ import { useGetAllPriorityQuery } from '@/redux/api/priority.ts'
 import {
     NewOrderBodyInterface,
     NewTaskBodyInterface,
-    OrderInterface,
 } from '@/types/interface/orders'
 import { formatDate } from '@/utils/helpers.ts'
 
@@ -144,11 +143,10 @@ const datesSchema = z
 const formSchema = z.intersection(baseSchema, datesSchema)
 
 interface AddTaskFormProps {
-    setDialogOpen?: Dispatch<SetStateAction<boolean>>
-    task?: OrderInterface
+    setDialogOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
+const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
     const form = useForm({
         schema: formSchema,
         defaultValues: {
@@ -326,11 +324,7 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
     useErrorToast(void 0, addOrderError)
 
     return (
-        <Tabs
-            value={activeTab}
-            onValueChange={task && setActiveTab}
-            className="w-full h-full"
-        >
+        <Tabs value={activeTab} className="w-full h-full">
             <TabsList className="gap-2">
                 <TabsTrigger
                     value="task"
@@ -869,11 +863,17 @@ const AddTaskForm = ({ setDialogOpen, task }: AddTaskFormProps) => {
                         >
                             {isOrderAdding || isTaskAdding ? (
                                 <LoadingSpinner />
-                            ) : task ? (
-                                t('button.action.change')
                             ) : (
                                 t('button.action.next')
                             )}
+                        </Button>
+                        <Button
+                            className="rounded-xl w-[100px]"
+                            type="button"
+                            variant="outline"
+                            onClick={() => setDialogOpen(false)}
+                        >
+                            {t('button.action.close')}
                         </Button>
                     </CustomForm>
                     <ScrollBar orientation="vertical" />
