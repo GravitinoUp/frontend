@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Switch } from '@/components/ui/switch'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { useSuccessToast } from '@/hooks/use-success-toast'
 import { useChangeUserStatusMutation } from '@/redux/api/users'
 import { UserInterface } from '@/types/interface/user'
+import { getPermissionValue } from '@/utils/helpers'
 
 export default function UserSwitch({ user }: { user: UserInterface }) {
     const { t } = useTranslation()
@@ -32,7 +34,10 @@ export default function UserSwitch({ user }: { user: UserInterface }) {
 
     return (
         <Switch
-            disabled={isUpdating}
+            disabled={
+                isUpdating ||
+                !getPermissionValue([PermissionEnum.UserStatusUpdate])
+            }
             checked={user.is_active}
             onCheckedChange={updateStatus}
         />

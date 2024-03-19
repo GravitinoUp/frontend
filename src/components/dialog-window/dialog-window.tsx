@@ -8,7 +8,9 @@ import {
     DialogTrigger,
 } from '../ui/dialog'
 import CloseRounded from '@/assets/icons/close_rounded.svg'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { cn } from '@/lib/utils'
+import { getPermissionValue } from '@/utils/helpers'
 
 const dialogVariants = cva('', {
     variants: {
@@ -26,6 +28,7 @@ const dialogVariants = cva('', {
 interface DialogWindowProps extends VariantProps<typeof dialogVariants> {
     header?: ReactNode
     trigger?: ReactNode | null
+    triggerPermissions?: PermissionEnum[]
     content: ReactNode
     open?: boolean
     setOpen?: Dispatch<SetStateAction<boolean>>
@@ -34,13 +37,16 @@ interface DialogWindowProps extends VariantProps<typeof dialogVariants> {
 const DialogWindow = ({
     header,
     trigger = <PlusButton />,
+    triggerPermissions = [],
     content,
     open,
     setOpen,
     size,
 }: DialogWindowProps) => (
     <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>{trigger}</DialogTrigger>
+        <DialogTrigger asChild>
+            {getPermissionValue(triggerPermissions) && trigger}
+        </DialogTrigger>
         <DialogContent
             className={cn(dialogVariants({ size }))}
             onOpenAutoFocus={(e) => e.preventDefault}

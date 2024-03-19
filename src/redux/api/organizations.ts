@@ -1,9 +1,11 @@
 import { api } from './'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { FetchDataInterface } from '@/types/interface/fetch'
 import {
     OrganizationInterface,
     OrganizationsPayloadInterface,
 } from '@/types/interface/organizations'
+import { formatQueryEndpoint } from '@/utils/helpers'
 
 const organizationsApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -12,7 +14,9 @@ const organizationsApi = api.injectEndpoints({
             OrganizationsPayloadInterface
         >({
             query: (body) => ({
-                url: 'organization/all',
+                url: `organization/${formatQueryEndpoint(
+                    PermissionEnum.OrganizationGet
+                )}`,
                 method: 'POST',
                 body,
             }),

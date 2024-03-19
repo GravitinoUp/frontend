@@ -1,6 +1,9 @@
 import { api } from './'
 import { FetchDataInterface } from '@/types/interface/fetch'
-import { PermissionsInterface } from '@/types/interface/roles'
+import {
+    PermissionsInterface,
+    RolePermissionInterface,
+} from '@/types/interface/roles'
 
 const permissionsApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -10,8 +13,15 @@ const permissionsApi = api.injectEndpoints({
                 response: FetchDataInterface<PermissionsInterface[]>
             ) => response.data,
         }),
+        getPersonalPermissions: builder.query<RolePermissionInterface[], void>({
+            query: () => 'roles-permissions/my',
+            transformResponse: (
+                response: FetchDataInterface<RolePermissionInterface[]>
+            ) => response.data,
+        }),
     }),
     overrideExisting: true,
 })
 
-export const { useGetAllPermissionsQuery } = permissionsApi
+export const { useGetAllPermissionsQuery, useGetPersonalPermissionsQuery } =
+    permissionsApi

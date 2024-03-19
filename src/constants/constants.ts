@@ -61,3 +61,5 @@ export const LOGIN_IMAGES = [
     'src/assets/images/login-image-8.jpg',
     'src/assets/images/login-image-9.jpg',
 ]
+
+export const ADMIN_ROLE_ID = 5

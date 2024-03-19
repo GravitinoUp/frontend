@@ -19,5 +19,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 </TaskFilterQueryProvider>
             </BrowserRouter>
         </Provider>
-    </React.StrictMode>,
+    </React.StrictMode>
 )

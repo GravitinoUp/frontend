@@ -7,6 +7,7 @@ import { placeholderQuery } from '../tasklist/constants.ts'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { PageLayout } from '@/components/PageLayout'
+import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { useGetRolesQuery } from '@/redux/api/roles'
 
 const rolesPageTabs = [
@@ -49,6 +50,7 @@ const RolesPage = () => {
                     }
                 />
             }
+            actionButtonPermissions={[PermissionEnum.RoleCreate]}
         >
             <CustomTabs tabs={rolesPageTabs} />
         </PageLayout>

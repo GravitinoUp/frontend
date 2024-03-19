@@ -1,4 +1,5 @@
 import { api } from '.'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import { FetchDataInterface } from '@/types/interface/fetch'
 import {
     BranchReportInterface,
@@ -8,6 +9,7 @@ import {
     OrganizationReportInterface,
     OrganizationReportsPayloadInterface,
 } from '@/types/interface/reports'
+import { formatQueryEndpoint } from '@/utils/helpers'
 
 const checkpointsApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -16,7 +18,9 @@ const checkpointsApi = api.injectEndpoints({
             BranchReportsPayloadInterface
         >({
             query: (body) => ({
-                url: 'report/branch/all',
+                url: `report/branch/${formatQueryEndpoint(
+                    PermissionEnum.ReportBranchCreate
+                )}`,
                 method: 'POST',
                 body,
             }),
@@ -27,7 +31,7 @@ const checkpointsApi = api.injectEndpoints({
             CheckpointReportsPayloadInterface
         >({
             query: (body) => ({
-                url: `report/checkpoint/${body.branch_id}`,
+                url: `report/checkpoint?branch_id=${body.branch_id}`,
                 method: 'POST',
                 body,
             }),
@@ -38,7 +42,7 @@ const checkpointsApi = api.injectEndpoints({
             OrganizationReportsPayloadInterface
         >({
             query: (body) => ({
-                url: `report/organization/${body.checkpoint_id}`,
+                url: `report/organization?checkpoint_id=${body.checkpoint_id}`,
                 method: 'POST',
                 body,
             }),
