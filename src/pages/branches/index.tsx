@@ -8,8 +8,8 @@ import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { BranchesPayloadInterface } from '@/types/interface/branch'
@@ -40,10 +40,10 @@ const BranchesPage = () => {
             onRefreshClick={refetch}
             isLoading={isFetching}
             actionButton={
-                <FormDialog
+                <DialogWindow
                     open={formOpen}
                     setOpen={setFormOpen}
-                    addItemForm={
+                    content={
                         <CustomTabs
                             tabs={branchesFormTab()}
                             setDialogOpen={setFormOpen}
@@ -55,17 +55,17 @@ const BranchesPage = () => {
                 <div>
                     <div className="h-16" />
                     <div className="flex gap-3 mb-3">
-                        <FormDialog
+                        <DialogWindow
                             open={exportFormOpen}
                             setOpen={setExportFormOpen}
-                            actionButton={<ExcelButton buttonType="export" />}
-                            addItemForm={<ExportForm />}
+                            trigger={<ExcelButton buttonType="export" />}
+                            content={<ExportForm />}
                         />
-                        <FormDialog
+                        <DialogWindow
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
-                            actionButton={<ExcelButton buttonType="import" />}
-                            addItemForm={<ImportForm type="branch" />}
+                            trigger={<ExcelButton buttonType="import" />}
+                            content={<ImportForm type="branch" />}
                         />
                     </div>
                 </div>

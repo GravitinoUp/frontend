@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react'
 import { MoreVertical } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import AddUserForm from './add-user-form'
-import FormDialog from '@/components/form-dialog/form-dialog'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -18,11 +18,11 @@ export const ActionButtons = ({ user }: { user: UserInterface }) => {
 
     return (
         <Fragment>
-            <FormDialog
+            <DialogWindow
                 open={formOpen}
                 setOpen={setFormOpen}
-                actionButton={<Fragment />}
-                addItemForm={
+                trigger={null}
+                content={
                     <AddUserForm user={user} setDialogOpen={setFormOpen} />
                 }
             />
