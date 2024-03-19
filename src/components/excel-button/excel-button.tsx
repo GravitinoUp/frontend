@@ -17,17 +17,21 @@ const ExcelButton = React.forwardRef<HTMLButtonElement, ExcelButtonProps>(
         return (
             <Button
                 ref={ref}
-                className="bg-white hover:bg-accent rounded-xl"
+                className="w-full bg-white hover:bg-accent rounded-xl"
                 onClick={onClick}
             >
-                {buttonType === 'export' ? <ArchiveExport /> : <ArchiveImport />}
+                {buttonType === 'export' ? (
+                    <ArchiveExport />
+                ) : (
+                    <ArchiveImport />
+                )}
                 <p className="mx-[8px] text-base font-normal">
                     {buttonType === 'export' ? t('export') : t('import')}
                 </p>
                 <ArrowDown />
             </Button>
         )
-    },
+    }
 )
 
 ExcelButton.displayName = 'ExcelButton'

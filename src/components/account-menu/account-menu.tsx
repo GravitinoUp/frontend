@@ -13,19 +13,20 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
+import { useAppDispatch } from '@/hooks/reduxHooks'
 import { useErrorToast } from '@/hooks/use-error-toast'
+import { api } from '@/redux/api'
 import { useLogoutMutation } from '@/redux/api/auth'
-import { useGetUserByIdQuery } from '@/redux/api/users'
+import { useGetMyUserQuery } from '@/redux/api/users'
 import { SETTINGS, SIGN_IN } from '@/routes.ts'
-import { getJWTtokens, getUserId, removeCookieValue } from '@/utils/helpers'
-
-const userId = getUserId()
+import { getJWTtokens, removeCookieValue } from '@/utils/helpers'
 
 export default function AccountMenu() {
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    const { data: user, isLoading: isUserLoading } = useGetUserByIdQuery(userId)
+    const dispatch = useAppDispatch()
+    const { data: user, isLoading: isUserLoading } = useGetMyUserQuery()
 
     const [logout, { error, isSuccess: isLogoutSuccess }] = useLogoutMutation()
 
@@ -33,6 +34,9 @@ export default function AccountMenu() {
         if (isLogoutSuccess) {
             removeCookieValue('accessToken')
             removeCookieValue('refreshToken')
+            localStorage.removeItem('permissions')
+            dispatch(api.util.resetApiState())
+
             navigate(SIGN_IN)
         }
     }, [isLogoutSuccess])
@@ -44,6 +48,7 @@ export default function AccountMenu() {
             logout({ refresh_token: refreshToken! })
         } else {
             removeCookieValue('accessToken')
+            localStorage.removeItem('permissions')
             navigate(SIGN_IN)
         }
     }

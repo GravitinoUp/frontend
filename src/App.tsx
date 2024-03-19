@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { useAppDispatch } from './hooks/reduxHooks'
@@ -20,15 +20,20 @@ import TaskListPage from './pages/tasklist'
 import TaskPage from './pages/tasklist/task'
 import UsersPage from './pages/users'
 import { useRefreshTokenMutation } from './redux/api/auth'
+import { useGetPersonalPermissionsQuery } from './redux/api/permissions.ts'
+import { useGetMyUserQuery } from './redux/api/users.ts'
 import { setAccessToken } from './redux/reducers/authSlice'
 import * as routes from './routes.ts'
-import { getCurrentColorScheme, getJWTtokens } from './utils/helpers'
+import {
+    getCurrentColorScheme,
+    getJWTtokens,
+    setPermissions,
+} from './utils/helpers'
 import MapSkeleton from '@/pages/map/map-skeleton.tsx'
 
 const MapPage = lazy(() => import('./pages/map'))
 
 function App() {
-    const [loading, setLoading] = useState<boolean | null>(null)
     const dispatch = useAppDispatch()
 
     const navigate = useNavigate()
@@ -39,28 +44,34 @@ function App() {
         { data: newAccessToken, isError: isError, isSuccess: isSuccess },
     ] = useRefreshTokenMutation()
 
-    useEffect(() => {
-        if (loading === null) {
-            const { accessToken, refreshToken } = getJWTtokens()
+    const { data: user, isSuccess: isUserSuccess } = useGetMyUserQuery()
+    const { data: permissions, isSuccess: isPermissionsSuccess } =
+        useGetPersonalPermissionsQuery()
 
-            if (refreshToken) {
-                fetchRefreshToken({ refresh_token: `${refreshToken}` })
-                setLoading(true)
-            } else if (!accessToken) {
-                if (
-                    path.pathname !== routes.FEEDBACK_GUEST &&
-                    path.pathname !== routes.FEEDBACK_WORKER
-                ) {
-                    navigate(routes.SIGN_IN)
-                }
-                setLoading(false)
+    useEffect(() => {
+        const { accessToken, refreshToken } = getJWTtokens()
+
+        if (refreshToken) {
+            fetchRefreshToken({ refresh_token: `${refreshToken}` })
+        } else if (!accessToken) {
+            if (
+                path.pathname !== routes.FEEDBACK_GUEST &&
+                path.pathname !== routes.FEEDBACK_WORKER
+            ) {
+                navigate(routes.SIGN_IN)
             }
         }
     }, [])
 
     useEffect(() => {
-        if (isSuccess) {
-            dispatch(setAccessToken(newAccessToken))
+        if (isSuccess || (isPermissionsSuccess && isUserSuccess)) {
+            if (isSuccess) {
+                dispatch(setAccessToken(newAccessToken))
+            }
+
+            if (isPermissionsSuccess && isUserSuccess) {
+                setPermissions(permissions, user)
+            }
 
             if (
                 path.pathname === routes.MAIN_PAGE ||
@@ -68,14 +79,12 @@ function App() {
             ) {
                 navigate(routes.DASHBOARD)
             }
-            setLoading(false)
         }
-    }, [isSuccess])
+    }, [isSuccess, isPermissionsSuccess, isUserSuccess])
 
     useEffect(() => {
         if (isError) {
             navigate(routes.SIGN_IN)
-            setLoading(false)
         }
     }, [isError])
 

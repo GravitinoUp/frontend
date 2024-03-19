@@ -10,6 +10,7 @@ import { tasksColumns } from './tasks-columns.tsx'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table.tsx'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
+import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { OrderInterface } from '@/types/interface/orders/index.ts'
@@ -96,6 +97,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 open={editFormOpen}
                 setOpen={setEditFormOpen}
                 trigger={null}
+                triggerPermissions={[PermissionEnum.TaskUpdate]}
                 content={
                     <EditTaskForm
                         task={selectedOrder!}
@@ -107,6 +109,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 open={filterFormOpen}
                 setOpen={setFilterFormOpen}
                 trigger={null}
+                triggerPermissions={[PermissionEnum.TaskCreate]}
                 size="lg"
                 header={
                     <h2 className="text-3xl font-semibold text-black">

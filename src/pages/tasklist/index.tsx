@@ -9,6 +9,7 @@ import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
+import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetAllOrderStatusesQuery } from '@/redux/api/order-statuses.ts'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
@@ -58,6 +59,7 @@ export default function TaskListPage() {
                     content={<AddTaskForm setDialogOpen={setFormOpen} />}
                 />
             }
+            actionButtonPermissions={[PermissionEnum.TaskCreate]}
             rightBlock={
                 <div>
                     <DateRangeFilter
@@ -75,6 +77,7 @@ export default function TaskListPage() {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             trigger={<ExcelButton buttonType="import" />}
+                            triggerPermissions={[PermissionEnum.TaskCreate]}
                             content={<ImportForm type="order" />}
                         />
                     </div>
