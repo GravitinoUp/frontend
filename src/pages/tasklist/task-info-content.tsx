@@ -4,7 +4,7 @@ import { placeholderQuery } from './constants.ts'
 import ChangeStatusForm from './task/change-status-form.tsx'
 import DownloadAllIcon from '@/assets/icons/download_all.svg'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
-import FormDialog from '@/components/form-dialog/form-dialog.tsx'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ImageCarouselButton from '@/components/image-carousel/image-carousel-button.tsx'
 import ImageCarousel from '@/components/image-carousel/image-carousel.tsx'
 import OrderStatus from '@/components/order-status/order-status.tsx'
@@ -154,15 +154,15 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                             />
                         }
                     />
-                    <FormDialog
+                    <DialogWindow
                         open={statusFormOpen}
                         setOpen={setStatusFormOpen}
-                        actionButton={
+                        trigger={
                             <Button className="px-8 mt-16">
                                 {t('button.action.change.status')}
                             </Button>
                         }
-                        addItemForm={
+                        content={
                             <ChangeStatusForm
                                 order={order}
                                 setDialogOpen={setStatusFormOpen}

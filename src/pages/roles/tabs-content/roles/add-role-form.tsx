@@ -61,8 +61,14 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
 
     const [searchQuery, setSearchQuery] = useState('')
     const { t } = useTranslation()
-    const filteredPermissions = permissions.filter(({ permission_name }) =>
-        permission_name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredPermissions = useMemo(
+        () =>
+            permissions.filter(({ permission_name }) =>
+                permission_name
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+            ),
+        [searchQuery, permissions]
     )
 
     const handleSubmit = (data: { role_name: string }) => {
@@ -113,7 +119,7 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                         <FormLabel>{t('permissions')}</FormLabel>
                         <ScrollArea className="h-[445px] w-full rounded-md border px-4 py-4">
                             <InputField
-                                className="mb-5"
+                                className="mb-5 mt-1"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder={t('placeholder.search')}

@@ -5,7 +5,7 @@ import {
     managePropertiesPageTab,
 } from './manage-properties-tab'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
-import FormDialog from '@/components/form-dialog/form-dialog'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetPropertiesQuery } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
@@ -23,10 +23,10 @@ export default function ManagePropertiesPage() {
             onRefreshClick={refetch}
             isLoading={isFetching}
             actionButton={
-                <FormDialog
+                <DialogWindow
                     open={formOpen}
                     setOpen={setFormOpen}
-                    addItemForm={
+                    content={
                         <CustomTabs
                             tabs={managePropertiesFormTab(currentTab)}
                             setDialogOpen={setFormOpen}
