@@ -1,4 +1,5 @@
 import { api } from '.'
+import { FetchResultInterface } from '@/types/interface/fetch'
 import { TemplateType } from '@/types/interface/files'
 
 export const filesApi = api.injectEndpoints({
@@ -51,8 +52,41 @@ export const filesApi = api.injectEndpoints({
                 },
             }),
         }),
+        importData: builder.mutation<
+            FetchResultInterface,
+            { entity: TemplateType; formData: FormData }
+        >({
+            query: ({ entity, formData }) => ({
+                url: `${entity}/import`,
+                method: 'POST',
+                body: formData,
+            }),
+            invalidatesTags: (_result, _error, { entity }) => {
+                switch (entity) {
+                    case 'branch':
+                        return ['Branches']
+                    case 'checkpoint':
+                        return ['Checkpoints']
+                    case 'order':
+                        return ['Orders']
+                    case 'organization':
+                        return ['Organizations', 'Users']
+                    case 'role':
+                        return ['Roles']
+                    case 'users':
+                        return ['Users']
+                    case 'property':
+                        return ['Properties']
+                    default:
+                        return []
+                }
+            },
+        }),
     }),
 })
 
-export const { useGetEntityTemplateMutation, useGetFileFromUrlMutation } =
-    filesApi
+export const {
+    useGetEntityTemplateMutation,
+    useGetFileFromUrlMutation,
+    useImportDataMutation,
+} = filesApi

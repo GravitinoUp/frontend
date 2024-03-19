@@ -71,7 +71,7 @@
     "title.full": "Полное наименование",
     "description": "Описание",
     "full.name": "ФИО",
-    "job.title": "Должность",
+    "job_title": "Должность/Подразделение",
     "phone": "Телефон",
     "address": "Адрес",
     "company": "компания",
@@ -111,6 +111,7 @@
     "button.action.save": "Сохранить",
     "button.action.change": "Изменить",
     "button.action.cancel": "Отменить",
+    "button.action.close": "Закрыть",
     "button.action.change.status": "Задать статус",
     "button.action.next": "Далее",
     "button.action.back": "Назад",
@@ -267,7 +268,8 @@
                     "f": "{{entityType}} успешно изменена",
                     "sm": "{{entityType}} {{entityName}} успешно изменен",
                     "sf": "{{entityType}} {{entityName}} успешно изменена"
-                }
+                },
+                "import": "Данные успешно добавлены"
             }
         }
     },

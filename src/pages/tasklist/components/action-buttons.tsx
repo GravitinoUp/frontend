@@ -2,7 +2,7 @@ import { Fragment, useCallback, useContext, useMemo, useState } from 'react'
 import { MoreVertical } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { EditTaskForm } from './edit-task-form'
-import FormDialog from '@/components/form-dialog/form-dialog'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -65,11 +65,16 @@ export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {
             PermissionEnum.TaskDelete,
         ]) && (
             <Fragment>
-                <FormDialog
+                <DialogWindow
                     open={formOpen}
                     setOpen={setFormOpen}
-                    actionButton={<Fragment />}
-                    addItemForm={<EditTaskForm task={taskInfo} />}
+                    trigger={null}
+                    content={
+                        <EditTaskForm
+                            task={taskInfo}
+                            setDialogOpen={setFormOpen}
+                        />
+                    }
                 />
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>

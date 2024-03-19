@@ -1,5 +1,5 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
-import { VariantProps, cva } from 'class-variance-authority'
+import { cva, VariantProps } from 'class-variance-authority'
 import PlusButton from '../plus-button/plus-button'
 import {
     Dialog,
@@ -8,9 +8,7 @@ import {
     DialogTrigger,
 } from '../ui/dialog'
 import CloseRounded from '@/assets/icons/close_rounded.svg'
-import { PermissionEnum } from '@/constants/permissions.enum'
 import { cn } from '@/lib/utils'
-import { getPermissionValue } from '@/utils/helpers'
 
 const dialogVariants = cva('', {
     variants: {
@@ -25,39 +23,35 @@ const dialogVariants = cva('', {
     },
 })
 
-interface FormDialogProps extends VariantProps<typeof dialogVariants> {
-    headerContent?: ReactNode
-    actionButton?: ReactNode
-    actionButtonPermissions?: PermissionEnum[]
-    addItemForm: ReactNode
+interface DialogWindowProps extends VariantProps<typeof dialogVariants> {
+    header?: ReactNode
+    trigger?: ReactNode | null
+    content: ReactNode
     open?: boolean
     setOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-const FormDialog = ({
-    headerContent,
-    actionButton = <PlusButton onClick={() => {}} />,
-    actionButtonPermissions = [],
-    addItemForm,
+const DialogWindow = ({
+    header,
+    trigger = <PlusButton />,
+    content,
     open,
     setOpen,
     size,
-}: FormDialogProps) => (
+}: DialogWindowProps) => (
     <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-            {getPermissionValue(actionButtonPermissions) && actionButton}
-        </DialogTrigger>
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
         <DialogContent
             className={cn(dialogVariants({ size }))}
             onOpenAutoFocus={(e) => e.preventDefault}
             closeIcon={<CloseRounded />}
         >
-            <DialogHeader>{headerContent}</DialogHeader>
-            {addItemForm}
+            <DialogHeader>{header}</DialogHeader>
+            {content}
         </DialogContent>
     </Dialog>
 )
 
-FormDialog.displayName = 'FormDialog'
+DialogWindow.displayName = 'DialogWindow'
 
-export default FormDialog
+export default DialogWindow

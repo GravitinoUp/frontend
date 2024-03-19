@@ -3,7 +3,7 @@ import { MoreVertical } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { roleFormTab } from './role-form-tab'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
-import FormDialog from '@/components/form-dialog/form-dialog'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -46,11 +46,11 @@ export const ActionsDropdown = ({ role }: { role: RoleInterface }) => {
             PermissionEnum.RoleDelete,
         ]) && (
             <Fragment>
-                <FormDialog
+                <DialogWindow
                     open={formOpen}
                     setOpen={setFormOpen}
-                    actionButton={<Fragment />}
-                    addItemForm={
+                    trigger={null}
+                    content={
                         <CustomTabs
                             tabs={roleFormTab(role)}
                             setDialogOpen={setFormOpen}

@@ -63,7 +63,7 @@ const FilesUploadForm = lazy(
 )
 
 interface EditTaskFormProps {
-    setDialogOpen?: Dispatch<SetStateAction<boolean>>
+    setDialogOpen: Dispatch<SetStateAction<boolean>>
     task: OrderInterface
 }
 
@@ -599,23 +599,29 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                 t('button.action.change')
                             )}
                         </Button>
+                        <Button
+                            className="rounded-xl w-[100px]"
+                            type="button"
+                            variant="outline"
+                            onClick={() => setDialogOpen(false)}
+                        >
+                            {t('button.action.close')}
+                        </Button>
                     </CustomForm>
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
             </TabsContent>
             <TabsContent value="files" className="h-[668px] mt-0">
-                {updateOrderSuccess && (
-                    <Suspense
-                        fallback={
-                            <LoadingSpinner className="w-16 h-16 text-primary" />
-                        }
-                    >
-                        <FilesUploadForm
-                            orderIDs={[task.order_id]}
-                            setDialogOpen={setDialogOpen}
-                        />
-                    </Suspense>
-                )}
+                <Suspense
+                    fallback={
+                        <LoadingSpinner className="w-16 h-16 text-primary" />
+                    }
+                >
+                    <FilesUploadForm
+                        orderIDs={[task.order_id]}
+                        setDialogOpen={setDialogOpen}
+                    />
+                </Suspense>
             </TabsContent>
         </Tabs>
     )

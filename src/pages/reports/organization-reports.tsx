@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
 import { reportsColumns } from './reports-columns'
-import ExportForm from '../tasklist/components/export-form'
+import ExportForm from '../../components/form/export-form'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { useGetOrganizationReportsQuery } from '@/redux/api/reports'
@@ -80,11 +80,11 @@ export default function OrganizationReportsPage() {
                             </p>
                             <ArrowDown />
                         </Button>
-                        <FormDialog
+                        <DialogWindow
                             open={exportFormOpen}
                             setOpen={setExportFormOpen}
-                            actionButton={<ExcelButton buttonType="export" />}
-                            addItemForm={<ExportForm />}
+                            trigger={<ExcelButton buttonType="export" />}
+                            content={<ExportForm />}
                         />
                     </div>
                 </div>

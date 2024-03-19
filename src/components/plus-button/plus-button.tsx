@@ -10,7 +10,7 @@ const PlusButton = React.forwardRef<
         variant="outline"
         size="icon"
         className="bg-primary rounded-3xl flex items-center justify-center p-[7px] size-8"
-        onClick={onClick}
+        onClick={typeof onClick !== 'undefined' ? onClick : void 0}
         ref={ref}
         {...props}
     >

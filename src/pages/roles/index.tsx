@@ -5,7 +5,7 @@ import RolesTab from './tabs-content/roles/roles-tab'
 import i18next from '../../i18n.ts'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
-import FormDialog from '@/components/form-dialog/form-dialog'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { PageLayout } from '@/components/PageLayout'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { useGetRolesQuery } from '@/redux/api/roles'
@@ -39,10 +39,10 @@ const RolesPage = () => {
             onRefreshClick={refetch}
             isLoading={isFetching}
             actionButton={
-                <FormDialog
+                <DialogWindow
                     open={formOpen}
                     setOpen={setFormOpen}
-                    addItemForm={
+                    content={
                         <CustomTabs
                             tabs={roleFormTab()}
                             setDialogOpen={setFormOpen}

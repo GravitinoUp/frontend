@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import AddUserForm from './add-user-form'
 import UserFiltersForm from './user-filters-form.tsx'
 import { usersColumns } from './users-columns'
-import ExportForm from '../tasklist/components/export-form.tsx'
-import ImportForm from '../tasklist/components/import-form.tsx'
+import ExportForm from '../../components/form/export-form.tsx'
+import ImportForm from '../../components/form/import-form.tsx'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { useGetUsersQuery } from '@/redux/api/users'
@@ -68,17 +68,17 @@ export default function UsersPage() {
 
     return (
         <Fragment>
-            <FormDialog
+            <DialogWindow
                 open={filterFormOpen}
                 setOpen={setFilterFormOpen}
-                actionButton={<Fragment />}
+                trigger={null}
                 size="lg"
-                headerContent={
+                header={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('extended.search')}
                     </h2>
                 }
-                addItemForm={
+                content={
                     <UserFiltersForm
                         handleSubmit={(data) => {
                             setUsersQuery({
@@ -138,12 +138,10 @@ export default function UsersPage() {
                 onRefreshClick={refetch}
                 isLoading={isFetching}
                 actionButton={
-                    <FormDialog
+                    <DialogWindow
                         open={formOpen}
                         setOpen={setFormOpen}
-                        addItemForm={
-                            <AddUserForm setDialogOpen={setFormOpen} />
-                        }
+                        content={<AddUserForm setDialogOpen={setFormOpen} />}
                     />
                 }
                 actionButtonPermissions={[PermissionEnum.UserCreate]}
@@ -151,24 +149,20 @@ export default function UsersPage() {
                     <div>
                         <div className="h-16 " />
                         <div className="flex gap-3 mb-3">
-                            <FormDialog
+                            <DialogWindow
                                 open={exportFormOpen}
                                 setOpen={setExportFormOpen}
-                                actionButton={
-                                    <ExcelButton buttonType="export" />
-                                }
-                                addItemForm={<ExportForm />}
+                                trigger={<ExcelButton buttonType="export" />}
+                                content={<ExportForm />}
                             />
-                            <FormDialog
+                            <DialogWindow
                                 open={importFormOpen}
                                 setOpen={setImportFormOpen}
-                                actionButton={
-                                    <ExcelButton buttonType="import" />
-                                }
+                                trigger={<ExcelButton buttonType="import" />}
                                 actionButtonPermissions={[
                                     PermissionEnum.UserCreate,
                                 ]}
-                                addItemForm={<ImportForm type="users" />}
+                                content={<ImportForm type="users" />}
                             />
                         </div>
                     </div>

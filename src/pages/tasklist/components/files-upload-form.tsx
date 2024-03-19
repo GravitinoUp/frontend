@@ -22,7 +22,7 @@ import { useUploadFileMutation } from '@/redux/api/orders.ts'
 
 interface FilesUploadFormProps {
     orderIDs?: number[]
-    setDialogOpen?: Dispatch<SetStateAction<boolean>>
+    setDialogOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProps) => {
@@ -130,6 +130,14 @@ const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProps) => {
                     ) : (
                         t('button.action.files.upload')
                     )}
+                </Button>
+                <Button
+                    className="rounded-xl w-[100px]"
+                    type="button"
+                    variant="outline"
+                    onClick={() => setDialogOpen(false)}
+                >
+                    {t('button.action.close')}
                 </Button>
             </div>
         </form>

@@ -1,81 +1,63 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import * as z from 'zod'
 import CustomForm from '@/components/form/form.tsx'
 import { InputField } from '@/components/input-field/input-field.tsx'
-import { Button } from '@/components/ui/button'
 import { FormField } from '@/components/ui/form'
-import { useGetUserByIdQuery } from '@/redux/api/users.ts'
-import { capitalizeFirstLetter, getUserId } from '@/utils/helpers.ts'
+import { UserInterface } from '@/types/interface/user.ts'
+import { capitalizeFirstLetter } from '@/utils/helpers.ts'
 
-const formSchema = z.object({
-    FIO: z.string(),
-    job_title: z.string(),
-    company: z.string(),
-})
+export function SettingsForm({ user }: { user: UserInterface }) {
+    const lastLabel = user.group === null ? 'company' : 'job_title'
 
-const userId = getUserId()
-
-export function SettingsForm() {
-    const { data: user } = useGetUserByIdQuery(userId)
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm({
         defaultValues: {
-            FIO:
-                typeof user !== 'undefined' &&
-                `${user.person.first_name} ${user.person.last_name} ${user.person.patronymic}`,
-            job_title: '',
-            company: '',
+            FIO: `${user.person.last_name} ${user.person.first_name} ${user.person.patronymic}`,
+            phone: user.person.phone || '',
+            [lastLabel]:
+                user.group === null
+                    ? user.organization?.full_name
+                    : user.group?.group_name,
         },
     })
     const { t } = useTranslation()
 
-    const handleSubmit = () => {
-        console.log('submit')
-    }
-
     return (
-        <CustomForm form={form} onSubmit={handleSubmit}>
+        <CustomForm form={form} onSubmit={() => {}}>
             <FormField
                 control={form.control}
                 name="FIO"
                 render={({ field }) => (
-                    <InputField label={t('full.name')} {...field} disabled />
+                    <InputField label={t('full.name')} {...field} readOnly />
                 )}
             />
-            <FormField
-                control={form.control}
-                name="job_title"
-                render={({ field }) => (
-                    <InputField
-                        label={t('job.title')}
-                        className="mt-3"
-                        {...field}
-                        disabled
-                    />
-                )}
-            />
-            <FormField
-                control={form.control}
-                name="company"
-                render={({ field }) => (
-                    <InputField
-                        label={capitalizeFirstLetter(t('company'))}
-                        className="mt-3"
-                        {...field}
-                        disabled
-                    />
-                )}
-            />
-            <Button
-                className="rounded-xl h-9 w-32 bg-primary font-bold mt-8"
-                variant="default"
-                onClick={() => {}}
-            >
-                {t('button.action.change')}
-            </Button>
+            {form.watch('phone') && (
+                <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                        <InputField
+                            label={t('phone')}
+                            className="mt-3"
+                            {...field}
+                            readOnly
+                        />
+                    )}
+                />
+            )}
+            {form.watch(lastLabel) && (
+                <FormField
+                    control={form.control}
+                    name={lastLabel}
+                    render={({ field }) => (
+                        <InputField
+                            label={capitalizeFirstLetter(t(lastLabel))}
+                            className="mt-3"
+                            {...field}
+                            readOnly
+                        />
+                    )}
+                />
+            )}
         </CustomForm>
     )
 }

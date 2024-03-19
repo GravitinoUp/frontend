@@ -2,38 +2,42 @@ import { Fragment, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { EditTaskForm } from './components/edit-task-form.tsx'
-import TaskFiltersForm from './components/task-filters-form.tsx'
+import TaskFiltersForm, {
+    TasksFilterColumns,
+} from './components/task-filters-form.tsx'
 import { initialColumnVisibility } from './constants.ts'
-import { tasksColumns, TasksFilterColumns } from './tasks-columns.tsx'
+import { tasksColumns } from './tasks-columns.tsx'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table.tsx'
-import FormDialog from '@/components/form-dialog/form-dialog.tsx'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { OrderInterface } from '@/types/interface/orders/index.ts'
 import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
+const columnsFilters = localStorage.getItem('filterColumns')
+
 function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     const navigate = useNavigate()
     const { t } = useTranslation()
-
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
-        localStorage.getItem('filterColumns') !== null
-            ? JSON.parse(localStorage.getItem('filterColumns')!)
+        columnsFilters !== null
+            ? JSON.parse(columnsFilters)
             : initialColumnVisibility
     )
 
     const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
         TasksFilterQueryContext
     )
+
     const {
         data = { count: 0, data: [] },
         error,
         isFetching,
     } = useGetPersonalOrdersQuery(personalOrdersQuery)
 
-    const [formOpen, setFormOpen] = useState(false)
+    const [filterFormOpen, setFilterFormOpen] = useState(false)
     const [editFormOpen, setEditFormOpen] = useState(false)
 
     const [selectedOrder, setSelectedOrder] = useState<
@@ -60,18 +64,12 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                   )
                 : t('user.guest'),
         taskType: row.task.task_id,
+        periodicity: row.task.periodicity?.periodicity_name || '',
         ended_at_datetime: formatDate(row.ended_at_datetime) || '',
         deliveryDate: `${formatDate(row.planned_datetime)}-${formatDate(
             row.task_end_datetime
         )}`,
     }))
-
-    useEffect(() => {
-        localStorage.setItem(
-            'personalOrdersQuery',
-            JSON.stringify(personalOrdersQuery)
-        )
-    }, [personalOrdersQuery])
 
     useEffect(() => {
         localStorage.setItem('filterColumns', JSON.stringify(filterColumns))
@@ -81,9 +79,10 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
         setPersonalOrdersQuery({
             ...personalOrdersQuery,
             filter: {
+                ...personalOrdersQuery.filter,
                 order_status: orderStatus
                     ? [{ order_status_name: orderStatus }]
-                    : undefined,
+                    : personalOrdersQuery.filter.order_status,
             },
         })
     }, [])
@@ -94,74 +93,32 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
 
     return (
         <Fragment>
-            <FormDialog
+            <DialogWindow
                 open={editFormOpen}
                 setOpen={setEditFormOpen}
-                actionButton={<Fragment />}
+                trigger={null}
                 actionButtonPermissions={[PermissionEnum.TaskUpdate]}
-                addItemForm={
+                content={
                     <EditTaskForm
                         task={selectedOrder!}
                         setDialogOpen={setEditFormOpen}
                     />
                 }
             />
-            <FormDialog
-                open={formOpen}
-                setOpen={setFormOpen}
-                actionButton={<Fragment />}
+            <DialogWindow
+                open={filterFormOpen}
+                setOpen={setFilterFormOpen}
+                trigger={null}
                 actionButtonPermissions={[PermissionEnum.TaskCreate]}
                 size="lg"
-                headerContent={
+                header={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('choose.filters')}
                     </h2>
                 }
-                addItemForm={
+                content={
                     <TaskFiltersForm
-                        handleSubmit={(data) => {
-                            setPersonalOrdersQuery({
-                                ...personalOrdersQuery,
-                                filter: {
-                                    ...personalOrdersQuery.filter,
-                                    facility: {
-                                        checkpoint: {
-                                            checkpoint_id:
-                                                data.checkpoint_id !== 0
-                                                    ? data.checkpoint_id
-                                                    : undefined,
-                                            branch: {
-                                                branch_id:
-                                                    data.branch_id !== 0
-                                                        ? data.branch_id
-                                                        : undefined,
-                                            },
-                                        },
-                                    },
-                                    executor: {
-                                        organization_id:
-                                            data.organization_id !== 0
-                                                ? data.organization_id
-                                                : undefined,
-                                    },
-                                    priority: {
-                                        priority_id:
-                                            data.priority_id !== 0
-                                                ? data.priority_id
-                                                : undefined,
-                                    },
-                                    order_status: data.order_status.map(
-                                        (value) => ({
-                                            order_status_name: value,
-                                        })
-                                    ),
-                                },
-                            })
-                            setFilterColumns(data.columns)
-
-                            setFormOpen(false)
-                        }}
-                        data={{
+                        filtersData={{
                             branch_id:
                                 personalOrdersQuery.filter.facility?.checkpoint
                                     ?.branch?.branch_id,
@@ -182,6 +139,8 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                                 : [],
                             columns: filterColumns,
                         }}
+                        setFormOpen={setFilterFormOpen}
+                        setFilterColumns={setFilterColumns}
                     />
                 }
             />
@@ -300,7 +259,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                         setEditFormOpen(true)
                     }
                 }}
-                searchSuffixIconClick={() => setFormOpen(true)}
+                searchSuffixIconClick={() => setFilterFormOpen(true)}
                 paginationInfo={{
                     itemCount: data.count,
                     pageSize: personalOrdersQuery.offset.count,

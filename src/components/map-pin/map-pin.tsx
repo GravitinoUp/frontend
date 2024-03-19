@@ -1,6 +1,5 @@
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import CustomTabs from '../custom-tabs/custom-tabs'
-import FormDialog from '../form-dialog/form-dialog'
 import MapCheckpointPopover from '../map-checkpoint-popover/map-checkpoint-popover'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import CarIcon from '@/assets/icons/car_icon.svg'
@@ -12,7 +11,11 @@ import PlaneIcon from '@/assets/icons/plane_icon.svg'
 import RiverIcon from '@/assets/icons/river_icon.svg'
 import ShipIcon from '@/assets/icons/ship_icon.svg'
 import TrainIcon from '@/assets/icons/train_icon.svg'
-import { CHECKPOINT_COMPLETED_STATUSES, CHECKPOINT_TYPES } from '@/constants/constants'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
+import {
+    CHECKPOINT_COMPLETED_STATUSES,
+    CHECKPOINT_TYPES,
+} from '@/constants/constants'
 import { checkpointsFormTab } from '@/pages/checkpoints/checkpoint-form-tab'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
 
@@ -33,11 +36,11 @@ export default function MapPin({
                 drop-shadow-md
             "
         >
-            <FormDialog
+            <DialogWindow
                 open={formOpen}
                 setOpen={setFormOpen}
-                actionButton={<Fragment />}
-                addItemForm={
+                trigger={null}
+                content={
                     <CustomTabs
                         tabs={checkpointsFormTab(checkpoint)}
                         setDialogOpen={setFormOpen}
@@ -58,14 +61,22 @@ export default function MapPin({
                         `}
                     >
                         <div className="w-[34px] h-[34px] flex justify-center items-center fill-white">
-                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.CAR && <CarIcon />}
-                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.TRAIN && <TrainIcon />}
-                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.SHIP && <ShipIcon />}
-                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.PLANE && <PlaneIcon />}
-                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.RIVER && <RiverIcon />}
-                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.MIXED && <MixedIcon />}
-                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.PEOPLE && <PeopleIcon />}
-                            {checkpoint.checkpoint_type.checkpoint_type_id == CHECKPOINT_TYPES.LAKE && <LakeIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id ==
+                                CHECKPOINT_TYPES.CAR && <CarIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id ==
+                                CHECKPOINT_TYPES.TRAIN && <TrainIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id ==
+                                CHECKPOINT_TYPES.SHIP && <ShipIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id ==
+                                CHECKPOINT_TYPES.PLANE && <PlaneIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id ==
+                                CHECKPOINT_TYPES.RIVER && <RiverIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id ==
+                                CHECKPOINT_TYPES.MIXED && <MixedIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id ==
+                                CHECKPOINT_TYPES.PEOPLE && <PeopleIcon />}
+                            {checkpoint.checkpoint_type.checkpoint_type_id ==
+                                CHECKPOINT_TYPES.LAKE && <LakeIcon />}
                         </div>
                     </div>
 
@@ -80,6 +91,6 @@ export default function MapPin({
                     />
                 </PopoverContent>
             </Popover>
-        </div >
+        </div>
     )
 }
