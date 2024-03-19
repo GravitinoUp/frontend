@@ -10,8 +10,8 @@ import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { useGetCheckpointReportsQuery } from '@/redux/api/reports'
@@ -67,17 +67,17 @@ export default function CheckpointReportsPage() {
 
     return (
         <Fragment>
-            <FormDialog
+            <DialogWindow
                 open={filterFormOpen}
                 setOpen={setFilterFormOpen}
-                actionButton={<Fragment />}
+                trigger={null}
                 size="md"
-                headerContent={
+                header={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('choose.filters')}
                     </h2>
                 }
-                addItemForm={
+                content={
                     <ReportFiltersForm
                         handleSubmit={(data) => {
                             setCheckpointReportsQuery({
@@ -123,13 +123,11 @@ export default function CheckpointReportsPage() {
                                 </p>
                                 <ArrowDown />
                             </Button>
-                            <FormDialog
+                            <DialogWindow
                                 open={exportFormOpen}
                                 setOpen={setExportFormOpen}
-                                actionButton={
-                                    <ExcelButton buttonType="export" />
-                                }
-                                addItemForm={<ExportForm />}
+                                trigger={<ExcelButton buttonType="export" />}
+                                content={<ExportForm />}
                             />
                         </div>
                     </div>

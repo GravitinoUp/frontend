@@ -14,7 +14,7 @@ import DashboardCardButton from '@/components/dashboard-card/dashboard-card-butt
 import DashboardCardHeader from '@/components/dashboard-card/dashboard-card-header'
 import DashboardTabsButton from '@/components/dashboard-card/dashboard-tabs-button'
 import DataTable from '@/components/data-table/data-table'
-import FormDialog from '@/components/form-dialog/form-dialog'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import YandexMap from '@/components/map/yandex-map'
 import RoundedButton from '@/components/rounded-button/rounded-button'
 import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
@@ -94,16 +94,16 @@ export function DashboardPage() {
                             {t('map.title')}
                         </h2>
                         <div className="flex flex-row gap-4">
-                            <FormDialog
+                            <DialogWindow
                                 open={formOpen}
                                 setOpen={setFormOpen}
-                                actionButton={
+                                trigger={
                                     <RoundedButton
                                         icon={<FilterIcon />}
                                         onClick={() => {}}
                                     />
                                 }
-                                addItemForm={
+                                content={
                                     <MapFiltersForm
                                         handleSubmit={(data) => {
                                             setCheckpointQuery({

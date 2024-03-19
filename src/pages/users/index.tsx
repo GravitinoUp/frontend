@@ -9,8 +9,8 @@ import ImportForm from '../../components/form/import-form.tsx'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { useGetUsersQuery } from '@/redux/api/users'
 import {
@@ -67,17 +67,17 @@ export default function UsersPage() {
 
     return (
         <Fragment>
-            <FormDialog
+            <DialogWindow
                 open={filterFormOpen}
                 setOpen={setFilterFormOpen}
-                actionButton={<Fragment />}
+                trigger={null}
                 size="lg"
-                headerContent={
+                header={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('extended.search')}
                     </h2>
                 }
-                addItemForm={
+                content={
                     <UserFiltersForm
                         handleSubmit={(data) => {
                             setUsersQuery({
@@ -137,33 +137,27 @@ export default function UsersPage() {
                 onRefreshClick={refetch}
                 isLoading={isFetching}
                 actionButton={
-                    <FormDialog
+                    <DialogWindow
                         open={formOpen}
                         setOpen={setFormOpen}
-                        addItemForm={
-                            <AddUserForm setDialogOpen={setFormOpen} />
-                        }
+                        content={<AddUserForm setDialogOpen={setFormOpen} />}
                     />
                 }
                 rightBlock={
                     <div>
                         <div className="h-16 " />
                         <div className="flex gap-3 mb-3">
-                            <FormDialog
+                            <DialogWindow
                                 open={exportFormOpen}
                                 setOpen={setExportFormOpen}
-                                actionButton={
-                                    <ExcelButton buttonType="export" />
-                                }
-                                addItemForm={<ExportForm />}
+                                trigger={<ExcelButton buttonType="export" />}
+                                content={<ExportForm />}
                             />
-                            <FormDialog
+                            <DialogWindow
                                 open={importFormOpen}
                                 setOpen={setImportFormOpen}
-                                actionButton={
-                                    <ExcelButton buttonType="import" />
-                                }
-                                addItemForm={<ImportForm type="users" />}
+                                trigger={<ExcelButton buttonType="import" />}
+                                content={<ImportForm type="users" />}
                             />
                         </div>
                     </div>

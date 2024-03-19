@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useMemo, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { EditTaskForm } from './components/edit-task-form.tsx'
@@ -9,7 +9,7 @@ import { initialColumnVisibility } from './constants.ts'
 import { tasksColumns } from './tasks-columns.tsx'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table.tsx'
-import FormDialog from '@/components/form-dialog/form-dialog.tsx'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { OrderInterface } from '@/types/interface/orders/index.ts'
@@ -86,56 +86,56 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
         })
     }, [])
 
-    const filtersData = useMemo(
-        () => ({
-            branch_id:
-                personalOrdersQuery.filter.facility?.checkpoint?.branch
-                    ?.branch_id,
-            checkpoint_id:
-                personalOrdersQuery.filter.facility?.checkpoint?.checkpoint_id,
-            organization_id:
-                personalOrdersQuery.filter.executor?.organization_id,
-            priority_id: personalOrdersQuery.filter.priority?.priority_id,
-            order_status: personalOrdersQuery.filter.order_status
-                ? personalOrdersQuery.filter.order_status!.map(
-                      (value) => `${value?.order_status_name}`
-                  )
-                : [],
-            columns: filterColumns,
-        }),
-        [personalOrdersQuery, filterColumns]
-    )
-
     if (error) {
         return <ErrorCustomAlert error={error} />
     }
 
     return (
         <Fragment>
-            <FormDialog
+            <DialogWindow
                 open={editFormOpen}
                 setOpen={setEditFormOpen}
-                actionButton={<Fragment />}
-                addItemForm={
+                trigger={null}
+                content={
                     <EditTaskForm
                         task={selectedOrder!}
                         setDialogOpen={setEditFormOpen}
                     />
                 }
             />
-            <FormDialog
+            <DialogWindow
                 open={filterFormOpen}
                 setOpen={setFilterFormOpen}
-                actionButton={<Fragment />}
+                trigger={null}
                 size="lg"
-                headerContent={
+                header={
                     <h2 className="text-3xl font-semibold text-black">
                         {t('choose.filters')}
                     </h2>
                 }
-                addItemForm={
+                content={
                     <TaskFiltersForm
-                        filtersData={filtersData}
+                        filtersData={{
+                            branch_id:
+                                personalOrdersQuery.filter.facility?.checkpoint
+                                    ?.branch?.branch_id,
+                            checkpoint_id:
+                                personalOrdersQuery.filter.facility?.checkpoint
+                                    ?.checkpoint_id,
+                            organization_id:
+                                personalOrdersQuery.filter.executor
+                                    ?.organization_id,
+                            priority_id:
+                                personalOrdersQuery.filter.priority
+                                    ?.priority_id,
+                            order_status: personalOrdersQuery.filter
+                                .order_status
+                                ? personalOrdersQuery.filter.order_status!.map(
+                                      (value) => `${value?.order_status_name}`
+                                  )
+                                : [],
+                            columns: filterColumns,
+                        }}
                         setFormOpen={setFilterFormOpen}
                         setFilterColumns={setFilterColumns}
                     />

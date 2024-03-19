@@ -6,8 +6,8 @@ import ExportForm from '../../components/form/export-form.tsx'
 import ImportForm from '../../components/form/import-form.tsx'
 import DateRangeFilter from '@/components/calendar-form/date-range-filter.tsx'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
+import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import FormDialog from '@/components/form-dialog/form-dialog'
 import { PageLayout } from '@/components/PageLayout'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetAllOrderStatusesQuery } from '@/redux/api/order-statuses.ts'
@@ -52,10 +52,10 @@ export default function TaskListPage() {
             onRefreshClick={refetch}
             isLoading={isFetching}
             actionButton={
-                <FormDialog
+                <DialogWindow
                     open={formOpen}
                     setOpen={setFormOpen}
-                    addItemForm={<AddTaskForm setDialogOpen={setFormOpen} />}
+                    content={<AddTaskForm setDialogOpen={setFormOpen} />}
                 />
             }
             rightBlock={
@@ -65,17 +65,17 @@ export default function TaskListPage() {
                         setFilterQuery={setPersonalOrdersQuery}
                     />
                     <div className="flex gap-3">
-                        <FormDialog
+                        <DialogWindow
                             open={exportFormOpen}
                             setOpen={setExportFormOpen}
-                            actionButton={<ExcelButton buttonType="export" />}
-                            addItemForm={<ExportForm />}
+                            trigger={<ExcelButton buttonType="export" />}
+                            content={<ExportForm />}
                         />
-                        <FormDialog
+                        <DialogWindow
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
-                            actionButton={<ExcelButton buttonType="import" />}
-                            addItemForm={<ImportForm type="order" />}
+                            trigger={<ExcelButton buttonType="import" />}
+                            content={<ImportForm type="order" />}
                         />
                     </div>
                 </div>
