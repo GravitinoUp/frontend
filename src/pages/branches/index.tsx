@@ -11,6 +11,7 @@ import DataTable from '@/components/data-table/data-table'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
+import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { BranchesPayloadInterface } from '@/types/interface/branch'
 import { getColumnSorts } from '@/utils/helpers'
@@ -51,6 +52,7 @@ const BranchesPage = () => {
                     }
                 />
             }
+            actionButtonPermissions={[PermissionEnum.BranchCreate]}
             rightBlock={
                 <div>
                     <div className="h-16" />
@@ -65,6 +67,7 @@ const BranchesPage = () => {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             trigger={<ExcelButton buttonType="import" />}
+                            triggerPermissions={[PermissionEnum.BranchCreate]}
                             content={<ImportForm type="branch" />}
                         />
                     </div>

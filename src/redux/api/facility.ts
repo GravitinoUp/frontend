@@ -1,15 +1,19 @@
 import { api } from '.'
+import { PermissionEnum } from '@/constants/permissions.enum'
 import {
     FacilityInterface,
     FacilityPayloadInterface,
 } from '@/types/interface/facility'
 import { FetchDataInterface } from '@/types/interface/fetch'
+import { formatQueryEndpoint } from '@/utils/helpers'
 
 const facilityApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getFacilities: builder.query<FacilityInterface[], unknown>({
             query: (body) => ({
-                url: 'facility/all',
+                url: `facility/${formatQueryEndpoint(
+                    PermissionEnum.FacilityGet
+                )}`,
                 method: 'POST',
                 body,
             }),
@@ -57,5 +61,8 @@ const facilityApi = api.injectEndpoints({
     overrideExisting: true,
 })
 
-export const { useGetFacilitiesQuery, useGetFacilitiesByCheckpointQuery, useGetFacilitiesByBranchQuery } =
-    facilityApi
+export const {
+    useGetFacilitiesQuery,
+    useGetFacilitiesByCheckpointQuery,
+    useGetFacilitiesByBranchQuery,
+} = facilityApi

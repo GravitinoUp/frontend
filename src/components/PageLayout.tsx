@@ -3,11 +3,14 @@ import { ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import RefreshButton from './refresh-button/refresh-button'
 import { Button } from './ui/button'
+import { PermissionEnum } from '@/constants/permissions.enum'
+import { getPermissionValue } from '@/utils/helpers'
 
 interface PageLayoutProps {
     title?: string
     backButtonEnabled?: boolean
     actionButton?: React.ReactNode
+    actionButtonPermissions?: PermissionEnum[]
     rightBlock?: React.ReactNode
     onRefreshClick?: () => void
     isLoading?: boolean
@@ -18,6 +21,7 @@ export const PageLayout = ({
     title,
     backButtonEnabled = false,
     actionButton,
+    actionButtonPermissions = [],
     rightBlock,
     onRefreshClick,
     isLoading,
@@ -39,7 +43,8 @@ export const PageLayout = ({
                         </Button>
                     )}
                     <p>{title}</p>
-                    {actionButton}
+                    {getPermissionValue(actionButtonPermissions) &&
+                        actionButton}
                     {typeof onRefreshClick !== 'undefined' && (
                         <RefreshButton
                             onClick={onRefreshClick}
