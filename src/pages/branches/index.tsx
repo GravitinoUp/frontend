@@ -67,9 +67,7 @@ const BranchesPage = () => {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             trigger={<ExcelButton buttonType="import" />}
-                            actionButtonPermissions={[
-                                PermissionEnum.BranchCreate,
-                            ]}
+                            triggerPermissions={[PermissionEnum.BranchCreate]}
                             content={<ImportForm type="branch" />}
                         />
                     </div>

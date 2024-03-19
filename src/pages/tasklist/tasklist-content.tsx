@@ -97,7 +97,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 open={editFormOpen}
                 setOpen={setEditFormOpen}
                 trigger={null}
-                actionButtonPermissions={[PermissionEnum.TaskUpdate]}
+                triggerPermissions={[PermissionEnum.TaskUpdate]}
                 content={
                     <EditTaskForm
                         task={selectedOrder!}
@@ -109,7 +109,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 open={filterFormOpen}
                 setOpen={setFilterFormOpen}
                 trigger={null}
-                actionButtonPermissions={[PermissionEnum.TaskCreate]}
+                triggerPermissions={[PermissionEnum.TaskCreate]}
                 size="lg"
                 header={
                     <h2 className="text-3xl font-semibold text-black">

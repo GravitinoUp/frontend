@@ -86,7 +86,7 @@ export default function CheckpointsPage() {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             trigger={<ExcelButton buttonType="import" />}
-                            actionButtonPermissions={[
+                            triggerPermissions={[
                                 PermissionEnum.CheckpointCreate,
                             ]}
                             content={<ImportForm type="checkpoint" />}

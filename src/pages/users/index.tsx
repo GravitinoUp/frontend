@@ -159,9 +159,7 @@ export default function UsersPage() {
                                 open={importFormOpen}
                                 setOpen={setImportFormOpen}
                                 trigger={<ExcelButton buttonType="import" />}
-                                actionButtonPermissions={[
-                                    PermissionEnum.UserCreate,
-                                ]}
+                                triggerPermissions={[PermissionEnum.UserCreate]}
                                 content={<ImportForm type="users" />}
                             />
                         </div>

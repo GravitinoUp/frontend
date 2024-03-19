@@ -77,9 +77,7 @@ export default function TaskListPage() {
                             open={importFormOpen}
                             setOpen={setImportFormOpen}
                             trigger={<ExcelButton buttonType="import" />}
-                            actionButtonPermissions={[
-                                PermissionEnum.TaskCreate,
-                            ]}
+                            triggerPermissions={[PermissionEnum.TaskCreate]}
                             content={<ImportForm type="order" />}
                         />
                     </div>
