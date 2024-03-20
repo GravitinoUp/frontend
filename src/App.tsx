@@ -15,7 +15,6 @@ import OrganizationReportsPage from './pages/reports/organization-reports'
 import SavedReportsPage from './pages/reports/saved-reports'
 import RolesPage from './pages/roles'
 import SettingsPage from './pages/settings'
-import { SignInPage } from './pages/signin/page'
 import TaskListPage from './pages/tasklist'
 import TaskPage from './pages/tasklist/task'
 import UsersPage from './pages/users'
@@ -24,12 +23,14 @@ import { useGetPersonalPermissionsQuery } from './redux/api/permissions.ts'
 import { useGetMyUserQuery } from './redux/api/users.ts'
 import { setAccessToken } from './redux/reducers/authSlice'
 import * as routes from './routes.ts'
+import { UPDATE_PASSWORD } from './routes.ts'
 import {
     getCurrentColorScheme,
     getJWTtokens,
     setPermissions,
 } from './utils/helpers'
 import MapSkeleton from '@/pages/map/map-skeleton.tsx'
+import { SignInPage, UpdatePasswordPage } from '@/pages/signin'
 
 const MapPage = lazy(() => import('./pages/map'))
 
@@ -41,7 +42,11 @@ function App() {
 
     const [
         fetchRefreshToken,
-        { data: newAccessToken, isError: isError, isSuccess: isSuccess },
+        {
+            data: newAccessToken,
+            isError: refreshTokenError,
+            isSuccess: refreshTokenSuccess,
+        },
     ] = useRefreshTokenMutation()
 
     const { data: user, isSuccess: isUserSuccess } = useGetMyUserQuery()
@@ -64,8 +69,8 @@ function App() {
     }, [])
 
     useEffect(() => {
-        if (isSuccess || (isPermissionsSuccess && isUserSuccess)) {
-            if (isSuccess) {
+        if (refreshTokenSuccess || (isPermissionsSuccess && isUserSuccess)) {
+            if (refreshTokenSuccess) {
                 dispatch(setAccessToken(newAccessToken))
             }
 
@@ -80,13 +85,13 @@ function App() {
                 navigate(routes.DASHBOARD)
             }
         }
-    }, [isSuccess, isPermissionsSuccess, isUserSuccess])
+    }, [refreshTokenSuccess, isPermissionsSuccess, isUserSuccess])
 
     useEffect(() => {
-        if (isError) {
+        if (refreshTokenError) {
             navigate(routes.SIGN_IN)
         }
-    }, [isError])
+    }, [refreshTokenError])
 
     useEffect(() => {
         const { accessToken, refreshToken } = getJWTtokens()
@@ -102,6 +107,12 @@ function App() {
             .querySelector('html')
             ?.setAttribute('data-color-scheme', colorScheme)
     }, [])
+
+    useEffect(() => {
+        if (user?.is_default_password) {
+            navigate(UPDATE_PASSWORD)
+        }
+    }, [user])
 
     return (
         <div>
@@ -167,6 +178,10 @@ function App() {
                         />
                     </Route>
                     <Route path={routes.SIGN_IN} element={<SignInPage />} />
+                    <Route
+                        path={routes.UPDATE_PASSWORD}
+                        element={<UpdatePasswordPage />}
+                    />
                     <Route
                         path={routes.FEEDBACK_GUEST}
                         element={<FeedbackPage type="guest" />}

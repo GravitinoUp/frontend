@@ -89,6 +89,21 @@ const usersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Users'],
         }),
+        resetUserPassword: builder.mutation<FetchResultInterface, string>({
+            query: (userId) => ({
+                url: `users/reset-password?user_id=${userId}`,
+                method: 'PATCH',
+            }),
+        }),
+        updateUserPassword: builder.mutation<FetchResultInterface, string>({
+            query: (password) => ({
+                url: 'users/update-password',
+                method: 'PATCH',
+                body: {
+                    password,
+                },
+            }),
+        }),
     }),
     overrideExisting: true,
 })
@@ -103,4 +118,6 @@ export const {
     useUpdateOrganizationUserMutation,
     useChangeUserStatusMutation,
     useDeleteUserMutation,
+    useResetUserPasswordMutation,
+    useUpdateUserPasswordMutation,
 } = usersApi

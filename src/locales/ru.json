@@ -7,6 +7,7 @@
     "authorization.password": "Пароль",
     "authorization.password.forgot": "Забыли пароль?",
     "repeat.password": "Повторите пароль",
+    "update.password.description": "Для входа требуется установить постоянный пароль",
     "dashboard": "Дашборд",
     "tasks": "Задачи",
     "tasks.list": "Список задач",
@@ -26,7 +27,7 @@
     "facilities": "Объекты обслуживания",
     "roles": "Роли",
     "role": "Роль",
-    "group": "Группа",
+    "group": "Подразделение",
     "property": "Характеристика",
     "property.add": "Создание характеристики",
     "values": "Значения",
@@ -63,6 +64,7 @@
     "action.dropdown.menu.open": "Открыть меню",
     "action.dropdown.edit": "Редактировать",
     "action.dropdown.delete": "Удалить",
+    "action.dropdown.password.reset": "Сбросить пароль",
     "action.dropdown.download": "Скачать",
     "action.dropdown.download.data": "Выгрузить данные",
     "number": "номер №.",
@@ -118,13 +120,14 @@
     "button.action.files.upload": "Прикрепить",
     "button.action.send": "Отправить",
     "button.action.upload": "Загрузить",
+    "button.action.password.update": "Установить пароль",
     "today.title": "Сегодня",
     "yesterday.title": "Вчера",
     "from": "от",
     "to": "до",
     "tabs": {
         "common": "общее",
-        "role.and.group": "роль и группа",
+        "role.and.permissions": "роль и права доступа",
         "image": "изображение",
         "task.info": "Детали задачи",
         "task.history": "Журнал",
@@ -149,7 +152,7 @@
             "permissions": "Список прав не загрузился. Попробуйте позднее.",
             "status": "Список статусов не загрузился. Попробуйте позднее.",
             "roles": "Список ролей не загрузился. Попробуйте позднее.",
-            "groups": "Список групп не загрузился. Попробуйте позднее.",
+            "groups": "Список подразделений не загрузился. Попробуйте позднее.",
             "neighboring.states": "Список приграничных государств не загрузился. Попробуйте позднее.",
             "checkpoint.type": "Список типов пунктов пропуска не загрузился. Попробуйте позднее.",
             "working.hours": "Список часов работы не загрузился. Попробуйте позднее.",
@@ -158,7 +161,9 @@
         "placeholder": {
             "branch": "Выберите филиал",
             "checkpoint": "Выберите пункт пропуска",
+            "checkpoint.disabled": "Сначала нужно выбрать филиал",
             "facility": "Выберите объект обслуживания",
+            "facility.disabled": "Сначала нужно выбрать пункт пропуска",
             "executor": "Выберите исполнителя",
             "priority": "Установите приоритет",
             "periodicity": "Установите периодичность",
@@ -168,7 +173,7 @@
             "organization.type": "Выберите тип организации",
             "values": "Добавьте значения",
             "role": "Выберите роль",
-            "group": "Выберите группу",
+            "group": "Выберите подразделение",
             "status": "Выберите статус",
             "neighboring.states": "Приграничное государство",
             "checkpoint.type": "Тип пункта пропуска",
@@ -177,6 +182,7 @@
         }
     },
     "validation": {
+        "invalid.characters": "Недопустимые символы",
         "require": {
             "title": "Необходимо добавить название",
             "short.name": "Необходимо добавить короткое название",
@@ -269,7 +275,9 @@
                     "sm": "{{entityType}} {{entityName}} успешно изменен",
                     "sf": "{{entityType}} {{entityName}} успешно изменена"
                 },
-                "import": "Данные успешно добавлены"
+                "import": "Данные успешно добавлены",
+                "password.reset": "Пароль успешно сброшен",
+                "password.update": "Пароль успешно обновлен"
             }
         }
     },

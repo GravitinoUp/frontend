@@ -128,10 +128,12 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                                         : t('not.finished')
                                 }
                             />
-                            <TaskInfoField
-                                title={t('task.type')}
-                                content={order.task.category.category_name}
-                            />
+                            {order.task.category?.category_name && (
+                                <TaskInfoField
+                                    title={t('task.type')}
+                                    content={order.task.category.category_name}
+                                />
+                            )}
                         </div>
                     </div>
                     <ImageCarousel
