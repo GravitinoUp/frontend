@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Clone frontend repository
-        run: git clone https://github.com/GravitinoUp/frontend.git -b ${{ github.ref_name }} gravitino-frontend/
+        run: git clone https://${{ secrets.TRIGGER }}@github.com/GravitinoUp/frontend.git -b ${{ github.ref_name }} gravitino-frontend/
 
       - name: Clone devops_gravitino repository
         run: git clone https://${{ secrets.TRIGGER }}@github.com/GravitinoUp/devops_gravitino.git -b dev
