@@ -3,11 +3,8 @@ import CustomTabs, { TabPage } from '@/components/custom-tabs/custom-tabs'
 import Personalization from '@/pages/settings/personalization-tab/personalization.tsx'
 import { SettingsForm } from '@/pages/settings/settings-tab/settings-form'
 import { UserDataSkeleton } from '@/pages/settings/settings-tab/user-data-skeleton.tsx'
-import { useGetUserByIdQuery } from '@/redux/api/users.ts'
+import { useGetMyUserQuery } from '@/redux/api/users.ts'
 import { UserInterface } from '@/types/interface/user.ts'
-import { getUserId } from '@/utils/helpers.ts'
-
-const userId = getUserId()
 
 const tabsPage = (user?: UserInterface): TabPage[] => [
     {
@@ -28,7 +25,7 @@ const tabsPage = (user?: UserInterface): TabPage[] => [
 ]
 
 export default function SettingsContent() {
-    const { data: user } = useGetUserByIdQuery(userId)
+    const { data: user } = useGetMyUserQuery()
 
     return <CustomTabs tabs={tabsPage(user)} />
 }

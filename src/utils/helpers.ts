@@ -1,8 +1,6 @@
 import { SortingState } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { jwtDecode } from 'jwt-decode'
 import { ADMIN_ROLE_ID, FILE_SIZE_UNITS } from '@/constants/constants.ts'
-import { JWT } from '@/types/interface/auth.ts'
 import {
     FormattedPermissionInterface,
     RolePermissionInterface,
@@ -97,9 +95,7 @@ export const getPermissionValue = (permission_sku_list: string[]) => {
                 (permission_sku_list.includes(p.permission_sku) && p.rights)
         )
 
-        return permissionValue || permission_sku_list.length === 0
-            ? true
-            : false
+        return !!(permissionValue || permission_sku_list.length === 0)
     } else {
         return false
     }
@@ -112,14 +108,6 @@ export const getPermissionValue = (permission_sku_list: string[]) => {
 export const formatQueryEndpoint = (permission: string) =>
     getPermissionValue([permission]) ? 'all' : 'my'
 
-export const getUserId = () => {
-    const accessToken = getCookieValue('accessToken')
-    const { user_id }: JWT = accessToken
-        ? jwtDecode(accessToken)
-        : { user_id: -1, email: '' }
-
-    return user_id
-}
 export const capitalizeFirstLetter = (string: string) =>
     string.charAt(0).toUpperCase() + string.slice(1)
 

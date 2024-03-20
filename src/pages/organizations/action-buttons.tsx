@@ -55,7 +55,6 @@ export const ActionButtons = ({
                             <MoreVertical className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
-
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem
                             className="text-[#FF6B6B]"
