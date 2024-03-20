@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment } from 'react'
 import { User } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
@@ -18,7 +18,7 @@ import { useErrorToast } from '@/hooks/use-error-toast'
 import { api } from '@/redux/api'
 import { useLogoutMutation } from '@/redux/api/auth'
 import { useGetMyUserQuery } from '@/redux/api/users'
-import { SETTINGS, SIGN_IN } from '@/routes.ts'
+import { SETTINGS } from '@/routes.ts'
 import { getJWTtokens, removeCookieValue } from '@/utils/helpers'
 
 export default function AccountMenu() {
@@ -28,29 +28,19 @@ export default function AccountMenu() {
     const dispatch = useAppDispatch()
     const { data: user, isLoading: isUserLoading } = useGetMyUserQuery()
 
-    const [logout, { error, isSuccess: isLogoutSuccess }] = useLogoutMutation()
-
-    useEffect(() => {
-        if (isLogoutSuccess) {
-            removeCookieValue('accessToken')
-            removeCookieValue('refreshToken')
-            localStorage.removeItem('permissions')
-            dispatch(api.util.resetApiState())
-
-            navigate(SIGN_IN)
-        }
-    }, [isLogoutSuccess])
+    const [logout, { error }] = useLogoutMutation()
 
     const handleLogout = () => {
         const refreshToken = getJWTtokens().refreshToken
 
         if (refreshToken) {
             logout({ refresh_token: refreshToken! })
-        } else {
-            removeCookieValue('accessToken')
-            localStorage.removeItem('permissions')
-            navigate(SIGN_IN)
+            removeCookieValue('refreshToken')
         }
+
+        removeCookieValue('accessToken')
+        localStorage.removeItem('permissions')
+        dispatch(api.util.resetApiState())
     }
 
     useErrorToast(handleLogout, error)
@@ -84,24 +74,24 @@ export default function AccountMenu() {
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                    className="justify-center items-center rounded-xl mt-1"
+                    className="flex flex-col rounded-xl mt-1 gap-1 py-2"
                     align="end"
                 >
-                    <DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                         <Button
                             onClick={() => navigate(SETTINGS)}
                             variant="ghost"
-                            className=" h-5 w-20 justify-start p-0"
+                            className="w-full h-5 justify-start p-3 hover:cursor-pointer"
                             size="sm"
                         >
                             {t('settings')}
                         </Button>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                         <Button
                             onClick={handleLogout}
                             variant="ghost"
-                            className="text-destructive h-5 w-20 justify-start p-0 hover:text-destructive"
+                            className="w-full text-destructive h-5 justify-start p-3 hover:text-destructive hover:cursor-pointer"
                             size="sm"
                         >
                             {t('exit')}

@@ -6,6 +6,7 @@ import { z } from 'zod'
 import i18next from '../../i18n.ts'
 import CustomForm, { useForm } from '@/components/form/form'
 import { InputField } from '@/components/input-field/input-field'
+import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormField } from '@/components/ui/form'
@@ -35,16 +36,16 @@ export function SignInPage() {
         },
     })
 
-    const [image, setImage] = useState('')
-
-    const [shown, setShown] = useState(false)
+    const [bgImage, setBgImage] = useState('')
+    const [passwordShown, setPasswordShown] = useState(false)
     const { t } = useTranslation()
     const navigate = useNavigate()
-
     const dispatch = useAppDispatch()
 
-    const [authUser, { data: authData, isSuccess: isSuccess, error }] =
-        useAuthMutation()
+    const [
+        signIn,
+        { data: authData, isLoading, isSuccess: isAuthSuccess, error },
+    ] = useAuthMutation()
 
     const {
         data: user,
@@ -58,11 +59,11 @@ export function SignInPage() {
     } = useGetPersonalPermissionsQuery()
 
     useEffect(() => {
-        setImage(LOGIN_IMAGES[Math.floor(1 + Math.random() * 9)])
+        setBgImage(LOGIN_IMAGES[Math.floor(1 + Math.random() * 9)])
     }, [])
 
     useEffect(() => {
-        if (isSuccess) {
+        if (isAuthSuccess) {
             dispatch(setAccessToken(authData?.accessToken))
             if (form.getValues().remember_me) {
                 dispatch(setRefreshToken(authData?.refreshToken))
@@ -71,23 +72,23 @@ export function SignInPage() {
             refetchUser()
             refetchPermissions()
         }
-    }, [isSuccess])
+    }, [isAuthSuccess])
 
     useEffect(() => {
-        if (isSuccess && isPermissionsSuccess && isUserSuccess) {
+        if (isAuthSuccess && isPermissionsSuccess && isUserSuccess) {
             setPermissions(permissions, user)
 
             navigate(DASHBOARD)
         }
-    }, [isSuccess, isPermissionsSuccess, isUserSuccess])
-
-    const handleSubmit = (data: z.infer<typeof formSchema>) => {
-        authUser(data)
-    }
+    }, [isAuthSuccess, isPermissionsSuccess, isUserSuccess])
 
     useEffect(() => {
         document.title = t('authorization')
     }, [])
+
+    const handleSubmit = (data: z.infer<typeof formSchema>) => {
+        signIn(data)
+    }
 
     useErrorToast(() => handleSubmit(form.getValues()), error)
 
@@ -95,7 +96,7 @@ export function SignInPage() {
         <Fragment>
             <div className="absolute h-screen w-screen overflow-hidden">
                 <img
-                    src={image}
+                    src={bgImage}
                     draggable={false}
                     className="object-cover h-screen w-screen select-none animate-scale-infinite"
                 />
@@ -111,7 +112,7 @@ export function SignInPage() {
                             <p className="text-primary uppercase items-center font-pop font-bold text-[28px] flex justify-center">
                                 {t('gravitino.full.name')}
                             </p>
-                            <p className="text-[#3F434A] font-pop text-[28px] flex items-center  justify-center  ">
+                            <p className="text-[#3F434A] font-pop text-[28px] flex items-center justify-center">
                                 {t('authorization.title')}
                             </p>
                         </div>
@@ -133,16 +134,22 @@ export function SignInPage() {
                                 <div className="relative justify-center">
                                     <InputField
                                         label={t('authorization.password')}
-                                        type={shown ? 'text' : 'password'}
-                                        className="mt-3"
+                                        type={
+                                            passwordShown ? 'text' : 'password'
+                                        }
+                                        className="mt-3 relative"
                                         suffixIcon={
                                             <Button
                                                 type="button"
-                                                variant={'ghost'}
-                                                className="px-4 rounded-l-none rounded-r-xl"
-                                                onClick={() => setShown(!shown)}
+                                                variant="ghost"
+                                                className="px-4 rounded-l-none rounded-r-xl absolute right-0"
+                                                onClick={() =>
+                                                    setPasswordShown(
+                                                        !passwordShown
+                                                    )
+                                                }
                                             >
-                                                {shown ? (
+                                                {passwordShown ? (
                                                     <Eye
                                                         size={20}
                                                         strokeWidth={2.4}
@@ -191,7 +198,11 @@ export function SignInPage() {
                                 className="rounded-xl h-[40px] w-[400px] bg-primary mt-6"
                                 variant="default"
                             >
-                                {t('button.action.enter')}
+                                {isLoading ? (
+                                    <LoadingSpinner />
+                                ) : (
+                                    t('button.action.enter')
+                                )}
                             </Button>
                         </div>
                     </div>
