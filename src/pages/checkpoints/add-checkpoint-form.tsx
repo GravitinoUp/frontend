@@ -187,7 +187,7 @@ const AddCheckpointForm = ({
                     control={form.control}
                     name="checkpoint_name"
                     render={({ field }) => (
-                        <InputField label={t('title')} {...field} />
+                        <InputField label={t('title')} isRequired {...field} />
                     )}
                 />
                 <FormField
@@ -197,6 +197,7 @@ const AddCheckpointForm = ({
                         <InputField
                             className="mt-3"
                             label={t('address')}
+                            isRequired
                             {...field}
                         />
                     )}
@@ -208,6 +209,7 @@ const AddCheckpointForm = ({
                         <InputField
                             className="mt-3"
                             label={t('district')}
+                            isRequired
                             {...field}
                         />
                     )}
@@ -218,7 +220,9 @@ const AddCheckpointForm = ({
                         name="neighboring_state_id"
                         render={({ field }) => (
                             <FormItem className="w-full mr-5 mt-3">
-                                <FormLabel>{t('neighboring.state')}</FormLabel>
+                                <FormLabel className="label-required">
+                                    {t('neighboring.state')}
+                                </FormLabel>
                                 {neighboringStatesLoading && (
                                     <Skeleton className="h-10 w-[251px] rounded-xl" />
                                 )}
@@ -273,7 +277,9 @@ const AddCheckpointForm = ({
                         name="branch_id"
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
-                                <FormLabel>{t('branch')}</FormLabel>
+                                <FormLabel className="label-required">
+                                    {t('branch')}
+                                </FormLabel>
                                 {branchesLoading && (
                                     <Skeleton className="h-10 w-[251px] rounded-xl" />
                                 )}
@@ -323,6 +329,7 @@ const AddCheckpointForm = ({
                             <InputField
                                 className="w-full mr-5 mt-3"
                                 label={t('region')}
+                                isRequired
                                 {...field}
                             />
                         )}
@@ -333,7 +340,9 @@ const AddCheckpointForm = ({
                         name="checkpoint_type_id"
                         render={({ field }) => (
                             <FormItem className="w-full mt-3">
-                                <FormLabel>{t('type')}</FormLabel>
+                                <FormLabel className="label-required">
+                                    {t('type')}
+                                </FormLabel>
                                 {checkpointTypesLoading && (
                                     <Skeleton className="h-10 w-[251px] rounded-xl" />
                                 )}

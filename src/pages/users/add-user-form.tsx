@@ -1125,128 +1125,136 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
             </TabsContent>
-            <TabsContent value="permissions" className="w-full h-[690px]">
-                <CustomForm
-                    form={permissionsForm}
-                    onSubmit={handlePermissionsSubmit}
-                >
-                    <FormField
-                        control={permissionsForm.control}
-                        name="permissions"
-                        render={() => (
-                            <FormItem className="mt-4">
-                                <FormLabel>{t('permissions')}</FormLabel>
-                                <ScrollArea className="h-[445px] w-full rounded-md border px-4 py-4">
-                                    <InputField
-                                        className="mb-5 mt-1"
-                                        value={permissionsSearch}
-                                        onChange={(e) =>
-                                            setPermissionsSearch(e.target.value)
-                                        }
-                                        placeholder={t('placeholder.search')}
-                                        disabled={
-                                            permissionsLoading ||
-                                            permissionsError
-                                        }
-                                    />
-                                    {permissionsError && (
-                                        <CustomAlert
-                                            message={t(
-                                                'multiselect.error.permissions'
+            {tabUserTypeValue === 'user' && (
+                <TabsContent value="permissions" className="w-full h-[690px]">
+                    <CustomForm
+                        form={permissionsForm}
+                        onSubmit={handlePermissionsSubmit}
+                    >
+                        <FormField
+                            control={permissionsForm.control}
+                            name="permissions"
+                            render={() => (
+                                <FormItem className="mt-4">
+                                    <FormLabel>{t('permissions')}</FormLabel>
+                                    <ScrollArea className="h-[445px] w-full rounded-md border px-4 py-4">
+                                        <InputField
+                                            className="mb-5 mt-1"
+                                            value={permissionsSearch}
+                                            onChange={(e) =>
+                                                setPermissionsSearch(
+                                                    e.target.value
+                                                )
+                                            }
+                                            placeholder={t(
+                                                'placeholder.search'
                                             )}
+                                            disabled={
+                                                permissionsLoading ||
+                                                permissionsError
+                                            }
                                         />
-                                    )}
-                                    {permissionsLoading && (
-                                        <div className="flex flex-col gap-1">
-                                            <Skeleton className="h-5 w-[228px] rounded-xl" />
-                                            <Skeleton className="h-5 w-[228px] rounded-xl" />
-                                            <Skeleton className="h-5 w-[228px] rounded-xl" />
-                                        </div>
-                                    )}
-                                    {permissionsSuccess &&
-                                        permissions.length > 0 &&
-                                        filteredPermissions.map(
-                                            ({
-                                                permission_id: id,
-                                                permission_name: label,
-                                            }) => (
-                                                <FormField
-                                                    key={id}
-                                                    control={
-                                                        permissionsForm.control
-                                                    }
-                                                    name="permissions"
-                                                    render={({ field }) => (
-                                                        <FormItem
-                                                            key={id}
-                                                            className="flex flex-row items-start space-x-3 space-y-0"
-                                                        >
-                                                            <FormControl>
-                                                                <Checkbox
-                                                                    checked={field.value?.includes(
-                                                                        id
-                                                                    )}
-                                                                    disabled={
-                                                                        permissionsLoading
-                                                                    }
-                                                                    onCheckedChange={(
-                                                                        checked
-                                                                    ) => {
-                                                                        const permissions =
-                                                                            checked
-                                                                                ? [
-                                                                                      ...field.value,
-                                                                                      id,
-                                                                                  ]
-                                                                                : field.value.filter(
-                                                                                      (
-                                                                                          value
-                                                                                      ) =>
-                                                                                          value !==
-                                                                                          id
-                                                                                  )
-                                                                        permissionsForm.setValue(
-                                                                            'permissions',
-                                                                            permissions
-                                                                        )
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                            <FormLabel className="text-sm font-normal">
-                                                                {label}
-                                                            </FormLabel>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            )
+                                        {permissionsError && (
+                                            <CustomAlert
+                                                message={t(
+                                                    'multiselect.error.permissions'
+                                                )}
+                                            />
                                         )}
-                                </ScrollArea>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <div className="absolute bottom-8">
-                        <Button
-                            className="w-[150px] mt-10 mr-4"
-                            type="submit"
-                            disabled={permissionsSetLoading || permissionsError}
-                        >
-                            {permissionsSetLoading ? (
-                                <LoadingSpinner />
-                            ) : (
-                                t('button.action.permissions.set')
+                                        {permissionsLoading && (
+                                            <div className="flex flex-col gap-1">
+                                                <Skeleton className="h-5 w-[228px] rounded-xl" />
+                                                <Skeleton className="h-5 w-[228px] rounded-xl" />
+                                                <Skeleton className="h-5 w-[228px] rounded-xl" />
+                                            </div>
+                                        )}
+                                        {permissionsSuccess &&
+                                            permissions.length > 0 &&
+                                            filteredPermissions.map(
+                                                ({
+                                                    permission_id: id,
+                                                    permission_name: label,
+                                                }) => (
+                                                    <FormField
+                                                        key={id}
+                                                        control={
+                                                            permissionsForm.control
+                                                        }
+                                                        name="permissions"
+                                                        render={({ field }) => (
+                                                            <FormItem
+                                                                key={id}
+                                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                                            >
+                                                                <FormControl>
+                                                                    <Checkbox
+                                                                        checked={field.value?.includes(
+                                                                            id
+                                                                        )}
+                                                                        disabled={
+                                                                            permissionsLoading
+                                                                        }
+                                                                        onCheckedChange={(
+                                                                            checked
+                                                                        ) => {
+                                                                            const permissions =
+                                                                                checked
+                                                                                    ? [
+                                                                                          ...field.value,
+                                                                                          id,
+                                                                                      ]
+                                                                                    : field.value.filter(
+                                                                                          (
+                                                                                              value
+                                                                                          ) =>
+                                                                                              value !==
+                                                                                              id
+                                                                                      )
+                                                                            permissionsForm.setValue(
+                                                                                'permissions',
+                                                                                permissions
+                                                                            )
+                                                                        }}
+                                                                    />
+                                                                </FormControl>
+                                                                <FormLabel className="text-sm font-normal">
+                                                                    {label}
+                                                                </FormLabel>
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                )
+                                            )}
+                                    </ScrollArea>
+                                    <FormMessage />
+                                </FormItem>
                             )}
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="w-[150px] mt-10 mr-4"
-                            onClick={() => setDialogOpen(false)}
-                        >
-                            Отменить
-                        </Button>
-                    </div>
-                </CustomForm>
-            </TabsContent>
+                        />
+                        <div className="absolute bottom-8">
+                            <Button
+                                className="w-[150px] mt-10 mr-4"
+                                type="submit"
+                                disabled={
+                                    permissionsSetLoading || permissionsError
+                                }
+                            >
+                                {permissionsSetLoading ? (
+                                    <LoadingSpinner />
+                                ) : (
+                                    t('button.action.permissions.set')
+                                )}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="w-[150px] mt-10 mr-4"
+                                onClick={() => setDialogOpen(false)}
+                            >
+                                Отменить
+                            </Button>
+                        </div>
+                    </CustomForm>
+                </TabsContent>
+            )}
         </Tabs>
     )
 }

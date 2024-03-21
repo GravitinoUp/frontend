@@ -455,6 +455,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                 <InputField
                                     label={t('task.title')}
                                     className="mt-3"
+                                    isRequired
                                     {...field}
                                     disabled={isOrderAdding || isTaskAdding}
                                 />
@@ -465,7 +466,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="taskDescription"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>
+                                    <FormLabel className="label-required">
                                         {t('task.description')}
                                     </FormLabel>
                                     <FormControl>
@@ -483,7 +484,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="branchesList"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('branch')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('branch')}
+                                    </FormLabel>
                                     {branchesLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
@@ -522,7 +525,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="facilities"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('facilities')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('facilities')}
+                                    </FormLabel>
                                     {facilitiesLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
@@ -611,7 +616,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="organizations"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('executor')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('executor')}
+                                    </FormLabel>
                                     {organizationsLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
@@ -652,7 +659,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="priority"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('priority')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('priority')}
+                                    </FormLabel>
                                     {prioritiesLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
@@ -711,7 +720,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                     name="category"
                                     render={({ field }) => (
                                         <FormItem className="mt-5">
-                                            <FormLabel>
+                                            <FormLabel className="label-required">
                                                 {t('category')}
                                             </FormLabel>
                                             {categoriesLoading && (
@@ -769,7 +778,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                 />
                             </>
                         )}
-                        <p className="mt-5 text-[#8A9099] text-sm font-medium">
+                        <p className="mt-5 text-[#8A9099] text-sm font-medium label-required">
                             {t('delivery.planned.date')}
                         </p>
                         <div className="flex mt-4 gap-9">
