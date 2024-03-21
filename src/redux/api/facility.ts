@@ -27,7 +27,7 @@ const facilityApi = api.injectEndpoints({
         >({
             query: ({ body, checkpointIDS }) => {
                 const queryParams = checkpointIDS
-                    .map((id) => `checkpoint_ids=${id}`)
+                    .map((id) => `checkpoint_ids[]=${id}`)
                     .join('&')
                 return {
                     url: `facility/all-by-checkpoint?${queryParams}`,
@@ -45,7 +45,7 @@ const facilityApi = api.injectEndpoints({
         >({
             query: ({ body, branchIDS }) => {
                 const queryParams = branchIDS
-                    .map((id) => `branch_ids=${id}`)
+                    .map((id) => `branch_ids[]=${id}`)
                     .join('&')
                 return {
                     url: `facility/all-by-branch?${queryParams}`,

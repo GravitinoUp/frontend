@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import i18next from '../../i18n.ts'
 import CustomForm, { useForm } from '@/components/form/form'
@@ -187,11 +187,6 @@ export function SignInPage() {
                                         )}
                                     />
                                 </div>
-                                <Link to="/123">
-                                    <p className="text-primary font-pop font-[400] text-[15px] flex items-end  justify-end hover:underline">
-                                        {t('authorization.password.forgot')}
-                                    </p>
-                                </Link>
                             </div>
                             <Button
                                 type="submit"

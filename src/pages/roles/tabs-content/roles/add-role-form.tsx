@@ -106,6 +106,7 @@ const AddRoleForm = ({ role, setDialogOpen }: AddRoleFormProps) => {
                 render={({ field }) => (
                     <InputField
                         label={t('title')}
+                        isRequired
                         {...field}
                         disabled={isAdding || isUpdating}
                     />

@@ -1,5 +1,4 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ActionButtons } from './action-buttons'
 import i18next from '../../i18n.ts'
 import { Checkbox } from '@/components/ui/checkbox'
 import { OrganizationInterface } from '@/types/interface/organizations'
@@ -50,9 +49,5 @@ export const organizationsColumns: ColumnDef<OrganizationInterface>[] = [
     {
         accessorKey: 'organization_type.organization_type_name',
         header: i18next.t('type'),
-    },
-    {
-        id: 'actions',
-        cell: ({ row }) => <ActionButtons organization={row.original} />,
     },
 ]

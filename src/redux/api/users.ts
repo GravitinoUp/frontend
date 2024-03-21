@@ -38,7 +38,7 @@ const usersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Users'],
         }),
-        createOrganizationUser: builder.mutation<
+        createOrganization: builder.mutation<
             FetchResultInterface<UserInterface>,
             OrganizationUserPayloadInterface
         >({
@@ -47,7 +47,7 @@ const usersApi = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Users', 'Organizations'],
+            invalidatesTags: ['Organizations'],
         }),
         updateUser: builder.mutation<
             UserInterface,
@@ -60,7 +60,7 @@ const usersApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Users'],
         }),
-        updateOrganizationUser: builder.mutation<
+        updateOrganization: builder.mutation<
             FetchResultInterface<UserInterface>,
             OrganizationUserPayloadInterface
         >({
@@ -69,7 +69,7 @@ const usersApi = api.injectEndpoints({
                 method: 'PATCH',
                 body,
             }),
-            invalidatesTags: ['Users', 'Organizations'],
+            invalidatesTags: ['Organizations'],
         }),
         deleteUser: builder.mutation<FetchResultInterface, number>({
             query: (id) => ({
@@ -113,9 +113,9 @@ export const {
     useGetMyUserQuery,
     useGetUserByIdQuery,
     useCreateUserMutation,
-    useCreateOrganizationUserMutation,
+    useCreateOrganizationMutation,
     useUpdateUserMutation,
-    useUpdateOrganizationUserMutation,
+    useUpdateOrganizationMutation,
     useChangeUserStatusMutation,
     useDeleteUserMutation,
     useResetUserPasswordMutation,

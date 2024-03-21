@@ -5,7 +5,6 @@
     "authorization.title": "Войдите в свой аккаунт",
     "authorization.remember": "Запомнить меня",
     "authorization.password": "Пароль",
-    "authorization.password.forgot": "Забыли пароль?",
     "repeat.password": "Повторите пароль",
     "update.password.description": "Для входа требуется установить постоянный пароль",
     "dashboard": "Дашборд",
@@ -121,13 +120,14 @@
     "button.action.send": "Отправить",
     "button.action.upload": "Загрузить",
     "button.action.password.update": "Установить пароль",
+    "button.action.permissions.set": "Установить права",
     "today.title": "Сегодня",
     "yesterday.title": "Вчера",
     "from": "от",
     "to": "до",
     "tabs": {
         "common": "общее",
-        "role.and.permissions": "роль и права доступа",
+        "permissions": "права доступа",
         "image": "изображение",
         "task.info": "Детали задачи",
         "task.history": "Журнал",
@@ -277,7 +277,8 @@
                 },
                 "import": "Данные успешно добавлены",
                 "password.reset": "Пароль успешно сброшен",
-                "password.update": "Пароль успешно обновлен"
+                "password.update": "Пароль успешно обновлен",
+                "permissions.set": "Права успешно установлены"
             }
         }
     },
