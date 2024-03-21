@@ -32,7 +32,7 @@ const checkpointsApi = api.injectEndpoints({
         >({
             query: ({ body, branchIDS }) => {
                 const queryParams = branchIDS
-                    .map((id) => `branch_ids=${id}`)
+                    .map((id) => `branch_ids[]=${id}`)
                     .join('&')
                 return {
                     url: `checkpoint/all-by-branch?${queryParams}`,

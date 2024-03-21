@@ -112,3 +112,8 @@ html {
     width: 0px;
     height: 0px;
 }
+
+.label-required::after {
+    content: ' *';
+    color: red;
+}

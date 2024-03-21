@@ -170,24 +170,32 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
     } = useGetBranchesQuery(placeholderQuery, {
         selectFromResult: (result) => ({ ...result, data: result.data?.data }),
     })
-    const mappedBranches: Option[] = branches?.map((branch) => ({
-        label: branch.branch_name,
-        value: branch.branch_id,
-    }))
+    const mappedBranches: Option[] = useMemo(
+        () =>
+            branches.map((branch) => ({
+                label: branch.branch_name,
+                value: branch.branch_id,
+            })),
+        [branches]
+    )
     const selectedBranches = form.watch('branchesList')
 
     const {
         data: checkpoints = [],
-        isLoading: checkpointsLoading,
+        isFetching: checkpointsLoading,
         isError: checkpointsError,
     } = useGetCheckpointsByBranchQuery(
         { body: placeholderQuery, branchIDS: selectedBranches },
         { skip: selectedBranches.length === 0 }
     )
-    const mappedCheckpoints: Option[] = checkpoints?.map((checkpoint) => ({
-        label: checkpoint.checkpoint_name,
-        value: checkpoint.checkpoint_id,
-    }))
+    const mappedCheckpoints: Option[] = useMemo(
+        () =>
+            checkpoints.map((checkpoint) => ({
+                label: checkpoint.checkpoint_name,
+                value: checkpoint.checkpoint_id,
+            })),
+        [checkpoints]
+    )
 
     const {
         data: facilities = [],
@@ -195,10 +203,14 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
         isError: facilitiesError,
         isSuccess: facilitiesSuccess,
     } = useGetFacilitiesQuery(placeholderQuery)
-    const mappedFacilities: Option[] = facilities?.map((facility) => ({
-        label: facility.facility_name,
-        value: facility.facility_id,
-    }))
+    const mappedFacilities: Option[] = useMemo(
+        () =>
+            facilities.map((facility) => ({
+                label: facility.facility_name,
+                value: facility.facility_id,
+            })),
+        [facilities]
+    )
 
     const {
         data: organizations = [],
@@ -208,11 +220,13 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
     } = useGetAllOrganizationsQuery(placeholderQuery, {
         selectFromResult: (result) => ({ ...result, data: result.data?.data }),
     })
-    const mappedOrganizations: Option[] = organizations?.map(
-        (organization) => ({
-            label: organization.short_name,
-            value: organization.organization_id,
-        })
+    const mappedOrganizations: Option[] = useMemo(
+        () =>
+            organizations.map((organization) => ({
+                label: organization.short_name,
+                value: organization.organization_id,
+            })),
+        [organizations]
     )
 
     const {
@@ -441,6 +455,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                 <InputField
                                     label={t('task.title')}
                                     className="mt-3"
+                                    isRequired
                                     {...field}
                                     disabled={isOrderAdding || isTaskAdding}
                                 />
@@ -451,7 +466,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="taskDescription"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>
+                                    <FormLabel className="label-required">
                                         {t('task.description')}
                                     </FormLabel>
                                     <FormControl>
@@ -469,7 +484,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="branchesList"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('branch')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('branch')}
+                                    </FormLabel>
                                     {branchesLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
@@ -508,7 +525,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="facilities"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('facilities')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('facilities')}
+                                    </FormLabel>
                                     {facilitiesLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
@@ -575,9 +594,16 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                                         selectedBranches.length ===
                                                         0
                                                     }
-                                                    placeholder={t(
-                                                        'multiselect.placeholder.checkpoint'
-                                                    )}
+                                                    placeholder={
+                                                        selectedBranches.length >
+                                                        0
+                                                            ? t(
+                                                                  'multiselect.placeholder.checkpoint'
+                                                              )
+                                                            : t(
+                                                                  'multiselect.placeholder.checkpoint.disabled'
+                                                              )
+                                                    }
                                                 />
                                             </FormControl>
                                         )}
@@ -590,7 +616,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="organizations"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('executor')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('executor')}
+                                    </FormLabel>
                                     {organizationsLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
@@ -631,7 +659,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="priority"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('priority')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('priority')}
+                                    </FormLabel>
                                     {prioritiesLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
@@ -689,8 +719,8 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                     control={form.control}
                                     name="category"
                                     render={({ field }) => (
-                                        <FormItem className="mt-3">
-                                            <FormLabel>
+                                        <FormItem className="mt-5">
+                                            <FormLabel className="label-required">
                                                 {t('category')}
                                             </FormLabel>
                                             {categoriesLoading && (
@@ -748,7 +778,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                 />
                             </>
                         )}
-                        <p className="mt-3 text-[#8A9099] text-sm font-medium">
+                        <p className="mt-5 text-[#8A9099] text-sm font-medium label-required">
                             {t('delivery.planned.date')}
                         </p>
                         <div className="flex mt-4 gap-9">

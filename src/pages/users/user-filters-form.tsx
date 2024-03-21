@@ -125,7 +125,7 @@ const UserFiltersForm = ({ handleSubmit, data }: UserFiltersFormProps) => {
                         <FormItem className="w-full">
                             <FilterFormTitle title={t('organization')} />
                             {organizationsLoading && (
-                                <Skeleton className="h-10 w-[504px] rounded-xl" />
+                                <Skeleton className="h-10 w-[470px] rounded-xl" />
                             )}
                             {organizationsError && (
                                 <CustomAlert
@@ -191,7 +191,7 @@ const UserFiltersForm = ({ handleSubmit, data }: UserFiltersFormProps) => {
                         <FormItem className="w-full">
                             <FilterFormTitle title={t('role')} />
                             {rolesLoading && (
-                                <Skeleton className="h-10 w-[504px] rounded-xl" />
+                                <Skeleton className="h-10 w-[470px] rounded-xl" />
                             )}
                             {rolesError && (
                                 <CustomAlert

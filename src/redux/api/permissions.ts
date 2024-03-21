@@ -1,8 +1,12 @@
 import { api } from './'
-import { FetchDataInterface } from '@/types/interface/fetch'
+import {
+    FetchDataInterface,
+    FetchResultInterface,
+} from '@/types/interface/fetch'
 import {
     PermissionsInterface,
     RolePermissionInterface,
+    UserPermissionsPayload,
 } from '@/types/interface/roles'
 
 const permissionsApi = api.injectEndpoints({
@@ -19,9 +23,22 @@ const permissionsApi = api.injectEndpoints({
                 response: FetchDataInterface<RolePermissionInterface[]>
             ) => response.data,
         }),
+        setRolePermissions: builder.mutation<
+            FetchResultInterface<RolePermissionInterface>,
+            UserPermissionsPayload
+        >({
+            query: (body) => ({
+                url: 'roles-permissions/bulk-create',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
     overrideExisting: true,
 })
 
-export const { useGetAllPermissionsQuery, useGetPersonalPermissionsQuery } =
-    permissionsApi
+export const {
+    useGetAllPermissionsQuery,
+    useGetPersonalPermissionsQuery,
+    useSetRolePermissionsMutation,
+} = permissionsApi

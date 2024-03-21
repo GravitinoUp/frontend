@@ -28,9 +28,8 @@ export const InputField = forwardRef<HTMLInputElement, InputProps>(
         return (
             <FormItem className={cn(className)}>
                 {label && (
-                    <FormLabel>
+                    <FormLabel className={isRequired ? 'label-required' : ''}>
                         {label}
-                        {isRequired && <span className="text-red-600"> *</span>}
                     </FormLabel>
                 )}
                 <FormControl>

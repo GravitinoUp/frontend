@@ -88,7 +88,7 @@ const AddBranchForm = ({ branch, setDialogOpen }: AddBranchFormProps) => {
                 control={form.control}
                 name="branch_name"
                 render={({ field }) => (
-                    <InputField label={t('title')} {...field} />
+                    <InputField label={t('title')} isRequired {...field} />
                 )}
             />
             <FormField
@@ -98,6 +98,7 @@ const AddBranchForm = ({ branch, setDialogOpen }: AddBranchFormProps) => {
                     <InputField
                         className="mt-3"
                         label={t('address')}
+                        isRequired
                         {...field}
                     />
                 )}

@@ -38,7 +38,7 @@ export const formatInitials = (
 
     return str
         .split(/\s+/)
-        .map((w, i) => (i ? w.substring(0, 1).toUpperCase() + '.' : w))
+        .map((w, i) => (i && w ? w.substring(0, 1).toUpperCase() + '.' : w))
         .join(' ')
 }
 

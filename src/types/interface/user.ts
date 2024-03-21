@@ -31,29 +31,28 @@ export interface UserPayloadInterface {
     first_name: string
     patronymic: string
     phone: string
-    role_id: string
-    group_id?: string | null
+    role_id: number
+    group_id?: number | null
     email: string
     password?: string
 }
 
 export interface OrganizationUserPayloadInterface {
     user_id?: number
-    organization_type_id: string
+    organization_type_id: number
     full_name: string
     short_name: string
     phone: string
-    role_id: string
-    group_id?: string | null
+    facility_ids: number[]
     email: string
     password?: string
 }
 
 // USER
-
 export interface UserInterface {
     user_id: number
     is_active: boolean
+    is_default_password?: boolean
     email: string
     role: RoleInterface
     organization: OrganizationInterface
