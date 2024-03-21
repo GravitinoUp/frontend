@@ -43,6 +43,7 @@ const RolesTab = () => {
             paginationInfo={{
                 itemCount: roles.count,
                 pageSize: rolesQuery.offset.count,
+                pageIndex: rolesQuery.offset.page - 1,
             }}
             isLoading={isFetching}
         />

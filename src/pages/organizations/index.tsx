@@ -72,6 +72,7 @@ const OrganizationsPage = () => {
                     paginationInfo={{
                         itemCount: organizations.count,
                         pageSize: organizationsQuery.offset.count,
+                        pageIndex: organizationsQuery.offset.page - 1,
                     }}
                     isLoading={isFetching}
                 />
