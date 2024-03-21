@@ -42,3 +42,10 @@ export interface FormattedPermissionInterface {
     permission_sku: string
     rights: boolean
 }
+
+export interface UserPermissionsPayload {
+    role_id?: number | null
+    user_id?: number | null
+    permission_ids: number[]
+    rights: boolean
+}
