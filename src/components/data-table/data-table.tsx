@@ -141,7 +141,6 @@ function DataTable<TData, TValue>({
     }, [table.getState().sorting])
 
     useEffect(() => {
-        console.log(paginationInfo.pageIndex)
         if (paginationInfo.pageIndex === 0) {
             table.setPageIndex(paginationInfo.pageIndex)
         }
