@@ -128,6 +128,10 @@ const TaskFiltersForm = ({
     const handleSubmit = (data: z.infer<typeof filterSchema>) => {
         setPersonalOrdersQuery({
             ...personalOrdersQuery,
+            offset: {
+                ...personalOrdersQuery.offset,
+                page: 1,
+            },
             filter: {
                 ...personalOrdersQuery.filter,
                 facility: {
@@ -154,9 +158,12 @@ const TaskFiltersForm = ({
                     priority_id:
                         data.priority_id !== 0 ? data.priority_id : undefined,
                 },
-                order_status: data.order_status.map((value) => ({
-                    order_status_name: value,
-                })),
+                order_status:
+                    data.order_status.length > 0
+                        ? data.order_status.map((value) => ({
+                              order_status_name: value,
+                          }))
+                        : undefined,
             },
         })
         setFilterColumns(data.columns)
@@ -172,7 +179,10 @@ const TaskFiltersForm = ({
             order_status: [],
             columns: initialColumnVisibility,
         })
-        setPersonalOrdersQuery(defaultQuery)
+        setPersonalOrdersQuery({
+            ...defaultQuery,
+            period: personalOrdersQuery.period,
+        })
         setFilterColumns(initialColumnVisibility)
     }
 

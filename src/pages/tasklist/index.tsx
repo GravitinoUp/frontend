@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddTaskForm from './components/add-task-form.tsx'
+import { placeholderQuery } from './constants.ts'
 import TaskListContent from './tasklist-content.tsx'
 import ExportForm from '../../components/form/export-form.tsx'
 import ImportForm from '../../components/form/import-form.tsx'
@@ -11,7 +12,7 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
-import { useGetAllOrderStatusesQuery } from '@/redux/api/order-statuses.ts'
+import { useGetOrderStatusesQuery } from '@/redux/api/order-statuses.ts'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders'
 
 export default function TaskListPage() {
@@ -21,13 +22,16 @@ export default function TaskListPage() {
     const [exportFormOpen, setExportFormOpen] = useState(false)
     const [importFormOpen, setImportFormOpen] = useState(false)
 
-    const { data: orderStatuses = [] } = useGetAllOrderStatusesQuery()
-
     const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
         TasksFilterQueryContext
     )
     const { refetch, isFetching } =
         useGetPersonalOrdersQuery(personalOrdersQuery)
+
+    const { data: orderStatuses = [] } = useGetOrderStatusesQuery({
+        ...placeholderQuery,
+        period: personalOrdersQuery.period,
+    })
 
     const tasksPageTabs = orderStatuses.map((value) => ({
         value: `${value.order_status_id}`,

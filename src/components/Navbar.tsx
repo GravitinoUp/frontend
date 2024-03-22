@@ -13,10 +13,10 @@ import GroupIcon from '@/assets/icons/Group_add.svg'
 import HomeIcon from '@/assets/icons/Home.svg'
 import ParametersIcon from '@/assets/icons/Parameters.svg'
 import RoadFinishIcon from '@/assets/icons/Road_finish.svg'
-import Logo from '@/assets/icons/rosgranstroy_logo.svg'
-import LogoMain from '@/assets/icons/rosgranstroy_logo_main.svg'
 import TaskListIcon from '@/assets/icons/Status_list.svg'
 import VectorIcon from '@/assets/icons/Vector.svg'
+// import LogoMain from '@/assets/images/rosgranstroy-logo-main.png'
+// import Logo from '@/assets/images/rosgranstroy-logo.png'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { cn } from '@/lib/utils'
 import { getPermissionValue } from '@/utils/helpers.ts'
@@ -127,11 +127,21 @@ export function Navbar({ open, setOpen }: NavbarProps) {
                         'h-[64px] w-[270px] py-2 flex justify-center'
                     )}
                 >
-                    <LogoMain />
+                    <img
+                        src="src/assets/images/rosgranstroy-logo-main.png"
+                        className="object-contain select-none"
+                        draggable={false}
+                        onContextMenu={(e) => e.preventDefault()}
+                    />
                 </div>
             ) : (
                 <div className="h-[64px] w-[75px] p-2 flex justify-center">
-                    <Logo />
+                    <img
+                        src="src/assets/images/rosgranstroy-logo.png"
+                        className="object-contain select-none"
+                        draggable={false}
+                        onContextMenu={(e) => e.preventDefault()}
+                    />
                 </div>
             )}
             <ul>
