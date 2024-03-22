@@ -45,10 +45,10 @@ export function DashboardPage() {
             filter: {},
             sorts: {},
             period: {
-                period_start: new Date(
+                date_start: new Date(
                     new Date(Date.now()).setHours(0, 0, 0, 0)
                 ).toISOString(),
-                period_end: new Date(
+                date_end: new Date(
                     new Date(Date.now()).setHours(23, 59, 59, 999)
                 ).toISOString(),
             },
@@ -190,7 +190,7 @@ export function DashboardPage() {
                                                 setBranchReportsQuery({
                                                     ...branchReportsQuery,
                                                     period: {
-                                                        period_start: addDays(
+                                                        date_start: addDays(
                                                             new Date(
                                                                 Date.now()
                                                             ).setHours(
@@ -203,7 +203,7 @@ export function DashboardPage() {
                                                                 ? -1
                                                                 : 0
                                                         ).toISOString(),
-                                                        period_end: addDays(
+                                                        date_end: addDays(
                                                             new Date(
                                                                 Date.now()
                                                             ).setHours(
@@ -277,10 +277,56 @@ export function DashboardPage() {
                                             hasBackground
                                             getTableInfo={(
                                                 pageSize,
-                                                pageIndex
+                                                pageIndex,
+                                                sorting,
+                                                filter
                                             ) => {
+                                                const sorts = sorting.reduce(
+                                                    (acc, value) => {
+                                                        const currentSortOrder =
+                                                            value.desc
+                                                                ? 'DESC'
+                                                                : 'ASC'
+
+                                                        switch (value.id) {
+                                                            case 'id':
+                                                                return {
+                                                                    ...acc,
+                                                                    branch: {
+                                                                        branch_id:
+                                                                            currentSortOrder,
+                                                                    },
+                                                                }
+                                                            case 'name':
+                                                                return {
+                                                                    ...acc,
+                                                                    branch: {
+                                                                        branch_name:
+                                                                            currentSortOrder,
+                                                                    },
+                                                                }
+                                                            default:
+                                                                return {
+                                                                    ...acc,
+                                                                    report: {
+                                                                        [`${value.id}`]:
+                                                                            currentSortOrder,
+                                                                    },
+                                                                }
+                                                        }
+                                                    },
+                                                    {}
+                                                )
+
                                                 setBranchReportsQuery({
                                                     ...branchReportsQuery,
+                                                    sorts,
+                                                    filter: {
+                                                        ...branchReportsQuery.filter,
+                                                        branch: {
+                                                            branch_name: filter,
+                                                        },
+                                                    },
                                                     offset: {
                                                         count: pageSize,
                                                         page: pageIndex + 1,
@@ -292,6 +338,9 @@ export function DashboardPage() {
                                                 pageSize:
                                                     branchReportsQuery.offset
                                                         .count,
+                                                pageIndex:
+                                                    branchReportsQuery.offset
+                                                        .page,
                                             }}
                                             isLoading={isReportsFetching}
                                         />

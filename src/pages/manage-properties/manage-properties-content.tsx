@@ -46,6 +46,7 @@ function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
             paginationInfo={{
                 itemCount: properties.count,
                 pageSize: propertiesQuery.offset.count,
+                pageIndex: propertiesQuery.offset.page - 1,
             }}
             isLoading={isLoading}
         />

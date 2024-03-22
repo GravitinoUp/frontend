@@ -163,6 +163,7 @@ export default function CheckpointsPage() {
                     paginationInfo={{
                         itemCount: checkpoints.count,
                         pageSize: checkpointsQuery.offset.count,
+                        pageIndex: checkpointsQuery.offset.page - 1,
                     }}
                     isLoading={isFetching}
                 />

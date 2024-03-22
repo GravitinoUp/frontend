@@ -45,7 +45,7 @@ interface DataTableProps<TData, TValue> {
         sorting: SortingState,
         filter: string
     ) => void
-    paginationInfo: { itemCount: number; pageSize: number }
+    paginationInfo: { itemCount: number; pageSize: number; pageIndex: number }
     isLoading?: boolean
 }
 
@@ -126,9 +126,25 @@ function DataTable<TData, TValue>({
     }, [
         table.getState().pagination.pageSize,
         table.getState().pagination.pageIndex,
-        table.getState().sorting,
         globalFilter,
     ])
+
+    useEffect(() => {
+        getTableInfo(
+            table.getState().pagination.pageSize,
+            0,
+            table.getState().sorting,
+            globalFilter
+        )
+
+        table.setPageIndex(0)
+    }, [table.getState().sorting])
+
+    useEffect(() => {
+        if (paginationInfo.pageIndex === 0) {
+            table.setPageIndex(paginationInfo.pageIndex)
+        }
+    }, [paginationInfo.pageIndex])
 
     return (
         <div

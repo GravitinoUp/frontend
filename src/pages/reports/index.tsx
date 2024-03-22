@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
 import { reportsColumns } from './reports-columns'
 import ExportForm from '../../components/form/export-form'
+import { placeholderQuery } from '../tasklist/constants'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
+import DateRangeFilter from '@/components/calendar-form/date-range-filter'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
@@ -24,18 +26,7 @@ export default function ReportsPage() {
     const [exportFormOpen, setExportFormOpen] = useState(false)
 
     const [branchReportsQuery, setBranchReportsQuery] =
-        useState<BranchReportsPayloadInterface>({
-            offset: {
-                count: 50,
-                page: 1,
-            },
-            filter: {},
-            sorts: {},
-            period: {
-                period_start: '2024-01-01',
-                period_end: '2025-01-26',
-            },
-        })
+        useState<BranchReportsPayloadInterface>(placeholderQuery)
 
     const {
         data = { count: 0, data: [] },
@@ -66,8 +57,10 @@ export default function ReportsPage() {
                 isLoading={isFetching}
                 rightBlock={
                     <div>
-                        {/* TODO: добавить контекст для фильтров */}
-                        {/* <DateRangeFilter /> */}
+                        <DateRangeFilter
+                            filterQuery={branchReportsQuery}
+                            setFilterQuery={setBranchReportsQuery}
+                        />
                         <div className="flex gap-3">
                             <Button
                                 className="bg-white hover:bg-accent rounded-xl"
@@ -145,6 +138,7 @@ export default function ReportsPage() {
                     paginationInfo={{
                         itemCount: data.count,
                         pageSize: branchReportsQuery.offset.count,
+                        pageIndex: branchReportsQuery.offset.page - 1,
                     }}
                     isLoading={isFetching}
                 />

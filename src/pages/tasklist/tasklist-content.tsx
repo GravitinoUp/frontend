@@ -263,6 +263,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 paginationInfo={{
                     itemCount: data.count,
                     pageSize: personalOrdersQuery.offset.count,
+                    pageIndex: personalOrdersQuery.offset.page - 1,
                 }}
                 isLoading={isFetching}
             />

@@ -228,7 +228,10 @@ export default function UsersPage() {
                             sorts,
                             filter: {
                                 ...usersQuery.filter,
-                                person: { last_name: filter },
+                                person:
+                                    filter.trim() !== ''
+                                        ? { last_name: filter.trim() }
+                                        : undefined,
                             },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
@@ -238,6 +241,7 @@ export default function UsersPage() {
                     paginationInfo={{
                         itemCount: users.count,
                         pageSize: usersQuery.offset.count,
+                        pageIndex: usersQuery.offset.page - 1,
                     }}
                     isLoading={isFetching}
                 />

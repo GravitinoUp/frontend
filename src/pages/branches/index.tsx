@@ -97,6 +97,7 @@ const BranchesPage = () => {
                     paginationInfo={{
                         itemCount: branches.count,
                         pageSize: branchesQuery.offset.count,
+                        pageIndex: branchesQuery.offset.page - 1,
                     }}
                     isLoading={isFetching}
                 />
