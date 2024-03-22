@@ -275,18 +275,6 @@ export function DashboardPage() {
                                             data={formattedReports}
                                             columns={dashboardReportsColumns}
                                             hasBackground
-                                            // getTableInfo={(
-                                            //     pageSize,
-                                            //     pageIndex
-                                            // ) => {
-                                            //     setBranchReportsQuery({
-                                            //         ...branchReportsQuery,
-                                            //         offset: {
-                                            //             count: pageSize,
-                                            //             page: pageIndex + 1,
-                                            //         },
-                                            //     })
-                                            // }}
                                             getTableInfo={(
                                                 pageSize,
                                                 pageIndex,
