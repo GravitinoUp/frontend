@@ -350,6 +350,9 @@ export function DashboardPage() {
                                                 pageSize:
                                                     branchReportsQuery.offset
                                                         .count,
+                                                pageIndex:
+                                                    branchReportsQuery.offset
+                                                        .page,
                                             }}
                                             isLoading={isReportsFetching}
                                         />
