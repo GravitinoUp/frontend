@@ -4,9 +4,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
 import { reportsColumns } from './reports-columns'
 import ExportForm from '../../components/form/export-form'
+import { placeholderQuery } from '../tasklist/constants'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
+import DateRangeFilter from '@/components/calendar-form/date-range-filter'
 import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
@@ -28,16 +30,7 @@ export default function OrganizationReportsPage() {
     const [organizationReportsQuery, setOrganizationReportsQuery] =
         useState<OrganizationReportsPayloadInterface>({
             checkpoint_id: checkpoint.checkpoint_id,
-            offset: {
-                count: 50,
-                page: 1,
-            },
-            filter: {},
-            sorts: {},
-            period: {
-                period_start: '2024-01-01',
-                period_end: '2025-01-26',
-            },
+            ...placeholderQuery,
         })
 
     const {
@@ -67,8 +60,10 @@ export default function OrganizationReportsPage() {
             onRefreshClick={refetch}
             rightBlock={
                 <div>
-                    {/* TODO: добавить контекст для фильтров */}
-                    {/* <DateRangeFilter /> */}
+                    <DateRangeFilter
+                        filterQuery={organizationReportsQuery}
+                        setFilterQuery={setOrganizationReportsQuery}
+                    />
                     <div className="flex gap-3">
                         <Button
                             className="bg-white hover:bg-accent rounded-xl"
@@ -137,6 +132,7 @@ export default function OrganizationReportsPage() {
                 paginationInfo={{
                     itemCount: data.count,
                     pageSize: organizationReportsQuery.offset.count,
+                    pageIndex: organizationReportsQuery.offset.page - 1,
                 }}
                 isLoading={isLoading}
             />

@@ -35,6 +35,15 @@ export interface OrderPayloadInterface extends IQuery {
     }
 }
 
+export interface OrderStatusPayloadInterface extends IQuery {
+    sorts: OrderStatusSortInterface
+    filter: RecursivePartial<OrderStatusInterface>
+    period: {
+        date_start?: string
+        date_end?: string
+    }
+}
+
 // ORDER
 export interface OrderInterface {
     order_id: number

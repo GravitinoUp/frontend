@@ -10,8 +10,8 @@ export interface BranchReportsPayloadInterface extends IQuery {
     filter: RecursivePartial<BranchReportInterface>
     sorts: BranchSortInterface
     period: {
-        period_start: string
-        period_end: string
+        date_start: string
+        date_end: string
     }
 }
 
@@ -30,8 +30,8 @@ export interface CheckpointReportsPayloadInterface extends IQuery {
     filter: RecursivePartial<CheckpointReportInterface>
     sorts: CheckpointSortInterface
     period: {
-        period_start: string
-        period_end: string
+        date_start: string
+        date_end: string
     }
 }
 
@@ -50,8 +50,8 @@ export interface OrganizationReportsPayloadInterface extends IQuery {
     filter: RecursivePartial<OrganizationReportInterface>
     sorts: OrganizationSortInterface
     period: {
-        period_start: string
-        period_end: string
+        date_start: string
+        date_end: string
     }
 }
 
