@@ -41,7 +41,7 @@ export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
         accessorKey: 'order_name',
     },
     {
-        header: i18next.t('facility'),
+        header: i18next.t('facility.type'),
         accessorKey: 'facility_name',
     },
     {

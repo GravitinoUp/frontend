@@ -44,12 +44,13 @@ import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import i18next from '@/i18n.ts'
 import { cn } from '@/lib/utils.ts'
 import { placeholderQuery } from '@/pages/tasklist/constants.ts'
-import { useGetFacilitiesQuery } from '@/redux/api/facility.ts'
+import { useGetFacilityTypesQuery } from '@/redux/api/facility.ts'
 import {
+    useGetPersonalOrdersQuery,
     useUpdateOrderExecutorMutation,
     useUpdateOrderMutation,
 } from '@/redux/api/orders.ts'
-import { useGetAllOrganizationsQuery } from '@/redux/api/organizations.ts'
+import { useGetOrganizationsByCheckpointQuery } from '@/redux/api/organizations.ts'
 import { useGetAllPriorityQuery } from '@/redux/api/priority.ts'
 import {
     OrderExecutorUpdateInterface,
@@ -74,7 +75,7 @@ const baseFieldsSchema = z.object({
     taskDescription: z
         .string()
         .min(1, { message: i18next.t('validation.require.description') }),
-    facility: z.string().optional(),
+    facility_type: z.string().optional(),
     executor: z
         .string()
         .min(1, { message: i18next.t('validation.require.task.executor') }),
@@ -98,26 +99,25 @@ const datesSchema = z
 const formSchema = z.intersection(baseFieldsSchema, datesSchema)
 
 export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
+    console.log(task)
     const { t } = useTranslation()
     const form = useForm({
         schema: formSchema,
         defaultValues: {
             taskName: task.order_name || '',
             taskDescription: task.order_description || '',
-            facility: String(task.facility.facility_id),
+            facility_type: String(task.facility.facility_type.facility_type_id),
             executor:
                 task.executor.organization_id !== null
                     ? String(task.executor.organization_id)
                     : undefined,
             priority: String(task.priority.priority_id),
-            startDate:
-                task.planned_datetime && task.planned_datetime !== null
-                    ? parseISO(task.planned_datetime)
-                    : undefined,
-            endDate:
-                task.task_end_datetime && task.task_end_datetime !== null
-                    ? parseISO(task.task_end_datetime)
-                    : undefined,
+            startDate: task.planned_datetime
+                ? parseISO(task.planned_datetime)
+                : undefined,
+            endDate: task.task_end_datetime
+                ? parseISO(task.task_end_datetime)
+                : undefined,
         },
     })
     const taskType = useMemo(
@@ -144,19 +144,21 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
     ] = useUpdateOrderExecutorMutation()
 
     const {
-        data: facilities = [],
-        isLoading: facilitiesLoading,
-        isError: facilitiesError,
-        isSuccess: facilitiesSuccess,
-    } = useGetFacilitiesQuery(placeholderQuery)
+        data: facilityTypes = [],
+        isLoading: facilityTypesLoading,
+        isError: facilityTypesError,
+        isSuccess: facilityTypesSuccess,
+    } = useGetFacilityTypesQuery()
 
     const {
         data: organizations = [],
         isLoading: organizationsLoading,
         isError: organizationsError,
         isSuccess: organizationsSuccess,
-    } = useGetAllOrganizationsQuery(placeholderQuery, {
-        selectFromResult: (result) => ({ ...result, data: result.data?.data }),
+    } = useGetOrganizationsByCheckpointQuery({
+        body: placeholderQuery,
+        checkpointIDs: [task.facility.checkpoint.checkpoint_id],
+        facilityTypeIDs: [task.facility.facility_type.facility_type_id],
     })
 
     const {
@@ -166,6 +168,23 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
         isSuccess: prioritiesSuccess,
     } = useGetAllPriorityQuery()
 
+    const { data: connectedOrders = [] } = useGetPersonalOrdersQuery(
+        {
+            filter: { order_name: task.order_name },
+            sorts: {},
+        },
+        {
+            selectFromResult: (result) => ({
+                ...result,
+                data: result.data?.data,
+            }),
+        }
+    )
+    const orderIDs = useMemo(
+        () => connectedOrders.map((order) => order.order_id),
+        [connectedOrders]
+    )
+
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
         if (task.order_status.order_status_id !== 9) {
             const updatedOrderData: OrderUpdateInterface = {
@@ -173,7 +192,7 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                 task_id: task.task.task_id,
                 order_name: data.taskName,
                 order_description: data.taskDescription,
-                facility_id: Number(data.facility),
+                facility_id: Number(data.facility_type),
                 executor_id: Number(data.executor),
                 planned_datetime: data.startDate.toISOString(),
                 task_end_datetime: data.endDate.toISOString(),
@@ -282,22 +301,24 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                         {task.order_status.order_status_id !== 9 ? (
                             <FormField
                                 control={form.control}
-                                name="facility"
+                                name="facility_type"
                                 render={({ field }) => (
                                     <FormItem className="mt-3">
-                                        <FormLabel>{t('facility')}</FormLabel>
-                                        {facilitiesLoading && (
+                                        <FormLabel>
+                                            {t('facility.type')}
+                                        </FormLabel>
+                                        {facilityTypesLoading && (
                                             <Skeleton className="h-10 w-[522px] rounded-xl" />
                                         )}
-                                        {facilitiesError && (
+                                        {facilityTypesError && (
                                             <CustomAlert
                                                 message={t(
-                                                    'multiselect.error.facility'
+                                                    'multiselect.error.facility.types'
                                                 )}
                                             />
                                         )}
-                                        {facilitiesSuccess &&
-                                            facilities?.length > 0 && (
+                                        {facilityTypesSuccess &&
+                                            facilityTypes?.length > 0 && (
                                                 <Select
                                                     onValueChange={
                                                         field.onChange
@@ -310,24 +331,24 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={t(
-                                                                    'multiselect.placeholder.facility'
+                                                                    'multiselect.placeholder.facility.type'
                                                                 )}
                                                             />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {facilities.map(
+                                                        {facilityTypes.map(
                                                             (facility) => (
                                                                 <SelectItem
                                                                     key={
-                                                                        facility.facility_id
+                                                                        facility.facility_type_id
                                                                     }
                                                                     value={String(
-                                                                        facility.facility_id
+                                                                        facility.facility_type_id
                                                                     )}
                                                                 >
                                                                     {
-                                                                        facility.facility_name
+                                                                        facility.facility_type_name
                                                                     }
                                                                 </SelectItem>
                                                             )
@@ -618,7 +639,7 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                     }
                 >
                     <FilesUploadForm
-                        orderIDs={[task.order_id]}
+                        orderIDs={orderIDs}
                         setDialogOpen={setDialogOpen}
                     />
                 </Suspense>

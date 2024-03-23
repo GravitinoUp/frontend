@@ -56,9 +56,9 @@ import { cn } from '@/lib/utils.ts'
 import { useGetBranchesQuery } from '@/redux/api/branch.ts'
 import { useGetCategoriesQuery } from '@/redux/api/categories.ts'
 import { useGetCheckpointsByBranchQuery } from '@/redux/api/checkpoints.ts'
-import { useGetFacilitiesQuery } from '@/redux/api/facility.ts'
+import { useGetFacilityTypesQuery } from '@/redux/api/facility.ts'
 import { useAddOrderMutation, useAddTaskMutation } from '@/redux/api/orders.ts'
-import { useGetAllOrganizationsQuery } from '@/redux/api/organizations.ts'
+import { useGetOrganizationsByCheckpointQuery } from '@/redux/api/organizations.ts'
 import { useGetAllPeriodicityQuery } from '@/redux/api/periodicity.ts'
 import { useGetAllPriorityQuery } from '@/redux/api/priority.ts'
 import {
@@ -79,7 +79,7 @@ const baseSchema = z
         taskDescription: z
             .string()
             .min(5, { message: i18next.t('validation.require.description') }),
-        facilities: z
+        facility_types: z
             .array(z.number())
             .refine((value) => value.some((item) => item), {
                 message: i18next.t('validation.require.select'),
@@ -152,7 +152,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
         defaultValues: {
             taskName: '',
             taskDescription: '',
-            facilities: [],
+            facility_types: [],
             branchesList: [],
             checkpointsList: [],
             priority: '',
@@ -196,30 +196,41 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
             })),
         [checkpoints]
     )
+    const selectedCheckpoints = form.watch('checkpointsList')
 
     const {
-        data: facilities = [],
-        isLoading: facilitiesLoading,
-        isError: facilitiesError,
-        isSuccess: facilitiesSuccess,
-    } = useGetFacilitiesQuery(placeholderQuery)
-    const mappedFacilities: Option[] = useMemo(
+        data: facilityTypes = [],
+        isLoading: facilityTypesLoading,
+        isError: facilityTypesError,
+        isSuccess: facilityTypesSuccess,
+    } = useGetFacilityTypesQuery()
+    const mappedFacilityTypes: Option[] = useMemo(
         () =>
-            facilities.map((facility) => ({
-                label: facility.facility_name,
-                value: facility.facility_id,
+            facilityTypes.map((facility) => ({
+                label: facility.facility_type_name,
+                value: facility.facility_type_id,
             })),
-        [facilities]
+        [facilityTypes]
     )
+    const selectedFacilityTypes = form.watch('facility_types')
 
     const {
         data: organizations = [],
         isLoading: organizationsLoading,
         isError: organizationsError,
-        isSuccess: organizationsSuccess,
-    } = useGetAllOrganizationsQuery(placeholderQuery, {
-        selectFromResult: (result) => ({ ...result, data: result.data?.data }),
-    })
+    } = useGetOrganizationsByCheckpointQuery(
+        {
+            body: placeholderQuery,
+            checkpointIDs: selectedCheckpoints,
+            facilityTypeIDs: selectedFacilityTypes,
+        },
+        {
+            skip:
+                selectedCheckpoints.length === 0 ||
+                selectedFacilityTypes.length === 0,
+        }
+    )
+
     const mappedOrganizations: Option[] = useMemo(
         () =>
             organizations.map((organization) => ({
@@ -287,7 +298,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                 order_description: data.taskDescription,
                 branch_ids: data.branchesList,
                 checkpoint_ids: data.checkpointsList,
-                facility_ids: data.facilities,
+                facility_type_ids: data.facility_types,
                 executor_ids: data.organizations,
                 planned_datetime: data.startDate.toISOString(),
                 task_end_datetime: data.endDate.toISOString(),
@@ -306,7 +317,7 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                 periodicity_id: Number(data.periodicity),
                 branch_ids: data.branchesList,
                 checkpoint_ids: data.checkpointsList,
-                facility_ids: data.facilities,
+                facility_type_ids: data.facility_types,
                 executor_ids: data.organizations,
                 priority_id: Number(data.priority),
                 period_start: data.startDate.toISOString(),
@@ -522,24 +533,24 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                         />
                         <FormField
                             control={form.control}
-                            name="facilities"
+                            name="facility_types"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
                                     <FormLabel className="label-required">
-                                        {t('facilities')}
+                                        {t('facility.type')}
                                     </FormLabel>
-                                    {facilitiesLoading && (
+                                    {facilityTypesLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}
-                                    {facilitiesError && (
+                                    {facilityTypesError && (
                                         <CustomAlert
                                             message={t(
-                                                'multiselect.error.facility'
+                                                'multiselect.error.facility.types'
                                             )}
                                         />
                                     )}
-                                    {facilitiesSuccess &&
-                                        facilities.length > 0 && (
+                                    {facilityTypesSuccess &&
+                                        facilityTypes.length > 0 && (
                                             <FormControl>
                                                 <MultiSelect
                                                     onChange={(values) => {
@@ -550,7 +561,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                                             )
                                                         )
                                                     }}
-                                                    options={mappedFacilities}
+                                                    options={
+                                                        mappedFacilityTypes
+                                                    }
                                                     placeholder={t(
                                                         'multiselect.placeholder.facility'
                                                     )}
@@ -629,8 +642,8 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                             )}
                                         />
                                     )}
-                                    {organizationsSuccess &&
-                                        organizations?.length > 0 && (
+                                    {!organizationsLoading &&
+                                        !organizationsError && (
                                             <FormControl>
                                                 <MultiSelect
                                                     onChange={(values) => {
@@ -644,9 +657,24 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                                                     options={
                                                         mappedOrganizations
                                                     }
-                                                    placeholder={t(
-                                                        'multiselect.placeholder.executor'
-                                                    )}
+                                                    disabled={
+                                                        selectedCheckpoints.length ===
+                                                            0 ||
+                                                        selectedFacilityTypes.length ===
+                                                            0
+                                                    }
+                                                    placeholder={
+                                                        selectedCheckpoints.length >
+                                                            0 &&
+                                                        selectedFacilityTypes.length >
+                                                            0
+                                                            ? t(
+                                                                  'multiselect.placeholder.executor'
+                                                              )
+                                                            : t(
+                                                                  'multiselect.placeholder.organizations.disabled'
+                                                              )
+                                                    }
                                                 />
                                             </FormControl>
                                         )}

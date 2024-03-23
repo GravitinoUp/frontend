@@ -22,8 +22,33 @@ const organizationsApi = api.injectEndpoints({
             }),
             providesTags: ['Organizations'],
         }),
+        getOrganizationsByCheckpoint: builder.query<
+            OrganizationInterface[],
+            {
+                body: OrganizationsPayloadInterface
+                checkpointIDs: number[]
+                facilityTypeIDs: number[]
+            }
+        >({
+            query: ({ body, checkpointIDs, facilityTypeIDs }) => {
+                const queryParams = checkpointIDs
+                    .map((id) => `checkpoint_ids[]=${id}`)
+                    .join('&')
+                const additionalQueryParams = facilityTypeIDs
+                    .map((id) => `facility_type_ids[]=${id}`)
+                    .join('&')
+                return {
+                    url: `organization/all-by-checkpoint?${queryParams}&${additionalQueryParams}`,
+                    method: 'POST',
+                    body,
+                }
+            },
+        }),
     }),
     overrideExisting: true,
 })
 
-export const { useGetAllOrganizationsQuery } = organizationsApi
+export const {
+    useGetAllOrganizationsQuery,
+    useGetOrganizationsByCheckpointQuery,
+} = organizationsApi
