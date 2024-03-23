@@ -5,6 +5,11 @@ import CircularBar from '@/components/circular-bar/circular-bar.tsx'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormattedReportInterface } from '@/types/interface/report.ts'
 
+export const reportsColumnsVisibility = {
+    neighboring_state: false,
+    facility_type: false,
+}
+
 export const reportsColumns: ColumnDef<FormattedReportInterface>[] = [
     {
         id: 'select',
@@ -58,13 +63,20 @@ export const reportsColumns: ColumnDef<FormattedReportInterface>[] = [
         accessorKey: 'checked_percent',
         cell: ({ row }) => {
             const { checked_percent } = row.original
-
             return <CircularBar value={checked_percent} />
         },
     },
     {
         header: i18next.t('checked.task.count'),
         accessorKey: 'checked_count',
+    },
+    {
+        header: i18next.t('neighboring.state'),
+        accessorKey: 'neighboring_state',
+    },
+    {
+        header: i18next.t('facility'),
+        accessorKey: 'facility_type',
     },
     {
         id: 'actions',

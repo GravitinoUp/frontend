@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
 import ReportFiltersForm from './report-filters-form'
-import { reportsColumns } from './reports-columns'
+import { reportsColumns, reportsColumnsVisibility } from './reports-columns'
 import ExportForm from '../../components/form/export-form'
 import { placeholderQuery } from '../tasklist/constants'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
@@ -52,6 +52,8 @@ export default function CheckpointReportsPage() {
         completed_count: row.completed_count,
         checked_percent: row.checked_percent,
         checked_count: row.checked_count,
+        neighboring_state:
+            row.checkpoint.neighboring_state.neighboring_state_name,
     }))
 
     if (isError) {
@@ -132,6 +134,10 @@ export default function CheckpointReportsPage() {
                 <DataTable
                     data={formattedReports}
                     columns={reportsColumns}
+                    columnVisibility={{
+                        ...reportsColumnsVisibility,
+                        neighboring_state: true,
+                    }}
                     hasBackground
                     searchSuffixIconClick={() => setFilterFormOpen(true)}
                     getTableInfo={(pageSize, pageIndex, sorting, filter) => {

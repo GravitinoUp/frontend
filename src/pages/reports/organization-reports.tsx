@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
-import { reportsColumns } from './reports-columns'
+import { reportsColumns, reportsColumnsVisibility } from './reports-columns'
 import ExportForm from '../../components/form/export-form'
 import { placeholderQuery } from '../tasklist/constants'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
@@ -48,6 +48,9 @@ export default function OrganizationReportsPage() {
         completed_count: row.completed_count,
         checked_percent: row.checked_percent,
         checked_count: row.checked_count,
+        facility_type: row.organization.facilities
+            ?.map((facility) => facility.facility_type.facility_type_name)
+            .join(', '),
     }))
 
     if (isError) {
@@ -89,6 +92,10 @@ export default function OrganizationReportsPage() {
             <DataTable
                 data={formattedReports}
                 columns={reportsColumns}
+                columnVisibility={{
+                    ...reportsColumnsVisibility,
+                    facility_type: true,
+                }}
                 hasBackground
                 getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                     const sorts = sorting.reduce((acc, value) => {

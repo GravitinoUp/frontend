@@ -6,6 +6,8 @@ export interface FormattedReportInterface {
     completed_count: number
     checked_percent: number
     checked_count: number
+    neighboring_state?: string
+    facility_type?: string
 }
 
 export interface FormattedSavedReportInterface {
