@@ -1,4 +1,5 @@
 import { IQuery, SortOptionsType } from './fetch'
+import { FacilityInterface } from '@/types/interface/facility.ts'
 
 export interface OrganizationsPayloadInterface extends IQuery {
     sorts: OrganizationSortInterface
@@ -30,6 +31,7 @@ export interface OrganizationInterface {
     createdAt?: Date | null
     updatedAt?: Date | null
     property_values?: number[] | null
+    facilities?: FacilityInterface[]
 }
 
 export interface OrganizationSortInterface {

@@ -10,7 +10,7 @@ export default function SavedReportsPage() {
     const formattedReports = [
         {
             key: 1,
-            name: 'Название',
+            name: t('title'),
             creationDate: '01.01.2024',
             size: formatFileSize(2048),
         },

@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
-import { reportsColumns } from './reports-columns'
+import { reportsColumns, reportsColumnsVisibility } from './reports-columns'
 import ExportForm from '../../components/form/export-form'
 import { placeholderQuery } from '../tasklist/constants'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
@@ -86,6 +86,7 @@ export default function ReportsPage() {
                 <DataTable
                     data={formattedReports}
                     columns={reportsColumns}
+                    columnVisibility={reportsColumnsVisibility}
                     hasBackground
                     getTableInfo={(pageSize, pageIndex, sorting, filter) => {
                         const sorts = sorting.reduce((acc, value) => {

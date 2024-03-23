@@ -10,6 +10,7 @@ export interface FacilityInterface {
     facility_name: string
     organization: OrganizationInterface
     checkpoint: CheckpointInterface
+    facility_type: FacilityType
     createdAt: Date
     updatedAt: Date
 }
@@ -24,4 +25,9 @@ export interface FacilitySortInterface {
 export interface FacilityPayloadInterface extends IQuery {
     sorts: FacilitySortInterface
     filter: Partial<FacilityInterface>
+}
+
+export interface FacilityType {
+    facility_type_id: number
+    facility_type_name: string
 }
