@@ -7,7 +7,7 @@ import {
     useMemo,
     useState,
 } from 'react'
-import { ReportsPayloadInterface } from '@/types/interface/reports'
+import { PayloadInterface } from '@/types/interface/fetch'
 
 const DEFAULT_REPORTS_PER_PAGE = 10
 
@@ -25,8 +25,8 @@ const defaultQuery = {
 }
 
 interface ContextValuesType {
-    reportsQuery: ReportsPayloadInterface<any, any>
-    setReportsQuery: Dispatch<SetStateAction<ReportsPayloadInterface<any, any>>>
+    reportsQuery: PayloadInterface<any, any>
+    setReportsQuery: Dispatch<SetStateAction<PayloadInterface<any, any>>>
 }
 
 export const ReportsFilterQueryContext = createContext<ContextValuesType>(null!)

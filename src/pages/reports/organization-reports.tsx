@@ -15,7 +15,11 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { ReportsFilterQueryContext } from '@/context/tasks/reports-filter-query'
-import { useGetOrganizationReportsQuery } from '@/redux/api/reports'
+import { useErrorToast } from '@/hooks/use-error-toast'
+import {
+    useExportOrganizationReportsMutation,
+    useGetOrganizationReportsQuery,
+} from '@/redux/api/reports'
 import { REPORTS_SAVED } from '@/routes.ts'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
 
@@ -55,6 +59,20 @@ export default function OrganizationReportsPage() {
             .join(', '),
     }))
 
+    const [
+        exportOrganizationReports,
+        { isLoading: exportLoading, error: exportError },
+    ] = useExportOrganizationReportsMutation()
+
+    const handleExport = () => {
+        exportOrganizationReports({
+            ...organizationReportsQuery,
+            checkpoint_id: checkpoint.checkpoint_id,
+        })
+    }
+
+    useErrorToast(handleExport, exportError)
+
     if (isError) {
         return <CustomAlert />
     }
@@ -84,7 +102,12 @@ export default function OrganizationReportsPage() {
                             open={exportFormOpen}
                             setOpen={setExportFormOpen}
                             trigger={<ExcelButton buttonType="export" />}
-                            content={<ExportForm />}
+                            content={
+                                <ExportForm
+                                    onClick={handleExport}
+                                    isLoading={exportLoading}
+                                />
+                            }
                         />
                     </div>
                 </div>

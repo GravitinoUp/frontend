@@ -16,7 +16,11 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { ReportsFilterQueryContext } from '@/context/tasks/reports-filter-query'
-import { useGetCheckpointReportsQuery } from '@/redux/api/reports'
+import { useErrorToast } from '@/hooks/use-error-toast'
+import {
+    useExportCheckpointReportsMutation,
+    useGetCheckpointReportsQuery,
+} from '@/redux/api/reports'
 import { REPORTS_SAVED } from '@/routes.ts'
 import { BranchInterface } from '@/types/interface/branch'
 
@@ -56,6 +60,27 @@ export default function CheckpointReportsPage() {
         neighboring_state:
             row.checkpoint.neighboring_state.neighboring_state_name,
     }))
+
+    const [
+        exportBranchReports,
+        { isLoading: exportLoading, error: exportError },
+    ] = useExportCheckpointReportsMutation()
+
+    const handleExport = () => {
+        exportBranchReports({
+            ...checkpointReportsQuery,
+            branch_id: branch.branch_id,
+            // filter: {
+            //     ...checkpointReportsQuery.filter,
+            //     checkpoint: {
+            //         ...checkpointReportsQuery.filter.checkpoint,
+            //         branch: { branch_id: branch.branch_id },
+            //     },
+            // },
+        })
+    }
+
+    useErrorToast(handleExport, exportError)
 
     if (isError) {
         return <CustomAlert />
@@ -125,7 +150,12 @@ export default function CheckpointReportsPage() {
                                 open={exportFormOpen}
                                 setOpen={setExportFormOpen}
                                 trigger={<ExcelButton buttonType="export" />}
-                                content={<ExportForm />}
+                                content={
+                                    <ExportForm
+                                        onClick={handleExport}
+                                        isLoading={exportLoading}
+                                    />
+                                }
                             />
                         </div>
                     </div>

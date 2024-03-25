@@ -10,7 +10,11 @@ import {
     OrganizationReportsPayloadInterface,
     SavedReportInterface,
 } from '@/types/interface/reports'
-import { formatQueryEndpoint } from '@/utils/helpers'
+import {
+    downloadFile,
+    formatQueryEndpoint,
+    getPermissionValue,
+} from '@/utils/helpers'
 
 const checkpointsApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -92,6 +96,50 @@ const checkpointsApi = api.injectEndpoints({
             }),
             invalidatesTags: ['SavedReports'],
         }),
+        exportBranchReports: builder.mutation<
+            void,
+            BranchReportsPayloadInterface
+        >({
+            query: (body) => ({
+                url: `report/branch/export${
+                    !getPermissionValue([PermissionEnum.ReportBranchCreate]) &&
+                    '-my'
+                }`,
+                method: 'POST',
+                body,
+                responseHandler: downloadFile,
+            }),
+        }),
+        exportCheckpointReports: builder.mutation<
+            void,
+            CheckpointReportsPayloadInterface
+        >({
+            query: (body) => ({
+                url: `report/checkpoint/export${
+                    !getPermissionValue([
+                        PermissionEnum.ReportCheckpointCreate,
+                    ]) && '-my'
+                }`,
+                method: 'POST',
+                body,
+                responseHandler: downloadFile,
+            }),
+        }),
+        exportOrganizationReports: builder.mutation<
+            void,
+            OrganizationReportsPayloadInterface
+        >({
+            query: (body) => ({
+                url: `report/organization/export${
+                    !getPermissionValue([
+                        PermissionEnum.ReportOrganizationCreate,
+                    ]) && '-my'
+                }`,
+                method: 'POST',
+                body,
+                responseHandler: downloadFile,
+            }),
+        }),
     }),
     overrideExisting: true,
 })
@@ -104,4 +152,7 @@ export const {
     useSaveBranchReportsMutation,
     useSaveCheckpointReportsMutation,
     useSaveOrganizationReportsMutation,
+    useExportBranchReportsMutation,
+    useExportCheckpointReportsMutation,
+    useExportOrganizationReportsMutation,
 } = checkpointsApi

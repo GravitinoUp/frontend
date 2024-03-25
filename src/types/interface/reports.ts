@@ -4,15 +4,6 @@ import { IQuery, SortOptionsType } from './fetch'
 import { OrganizationInterface } from './organizations'
 import { RecursivePartial } from '@/utils/recursive-partial'
 
-export interface ReportsPayloadInterface<Type, SortType> extends IQuery {
-    filter: RecursivePartial<Type>
-    sorts: SortType
-    period: {
-        date_start: string
-        date_end: string
-    }
-}
-
 // Branch
 
 export interface BranchReportsPayloadInterface extends IQuery {
