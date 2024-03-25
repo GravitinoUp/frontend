@@ -19,9 +19,13 @@ const ITEMS_PER_PAGE_LIST = [10, 20, 30, 40, 50]
 
 interface TablePaginationProps<TData> {
     table?: Table<TData>
+    pagination: { itemCount: number; pageSize: number; pageIndex: number }
 }
 
-export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
+export function TablePagination<TData>({
+    table,
+    pagination,
+}: TablePaginationProps<TData>) {
     const { t } = useTranslation()
     const totalPagesCount =
         typeof table?.getPageCount() !== 'undefined' &&
@@ -32,17 +36,13 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
             <div className="w-full flex items-center justify-between space-x-6 lg:space-x-8">
                 <div className="flex items-center space-x-2">
                     <Select
-                        value={`${table?.getState().pagination.pageSize}`}
+                        value={`${pagination.pageSize}`}
                         onValueChange={(value) => {
                             table?.setPageSize(Number(value))
                         }}
                     >
                         <SelectTrigger className="h-8 w-[70px]">
-                            <SelectValue
-                                placeholder={
-                                    table?.getState().pagination.pageSize
-                                }
-                            />
+                            <SelectValue placeholder={pagination.pageSize} />
                         </SelectTrigger>
                         <SelectContent side="top">
                             {ITEMS_PER_PAGE_LIST.map((pageSize) => (
@@ -81,8 +81,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
                     </Button>
                     {totalPagesCount &&
                         totalPagesCount.map((page) => {
-                            const currentPage =
-                                table.getState().pagination.pageIndex
+                            const currentPage = pagination.pageIndex
                             const isCurrentPage = currentPage === page
 
                             const isVisible =

@@ -1,6 +1,10 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useContext, useEffect } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Layout } from './components/Layout'
+import {
+    defaultQuery,
+    TasksFilterQueryContext,
+} from './context/tasks/tasks-filter-query.tsx'
 import { useAppDispatch } from './hooks/reduxHooks'
 import BranchesPage from './pages/branches'
 import CheckpointsPage from './pages/checkpoints'
@@ -40,6 +44,10 @@ function App() {
     const navigate = useNavigate()
     const path = useLocation()
 
+    const { personalOrdersQuery, setPersonalOrdersQuery } = useContext(
+        TasksFilterQueryContext
+    )
+
     const [
         fetchRefreshToken,
         {
@@ -66,6 +74,11 @@ function App() {
                 navigate(routes.SIGN_IN)
             }
         }
+
+        setPersonalOrdersQuery({
+            ...personalOrdersQuery,
+            offset: defaultQuery.offset,
+        })
     }, [])
 
     useEffect(() => {

@@ -228,10 +228,9 @@ export default function UsersPage() {
                             sorts,
                             filter: {
                                 ...usersQuery.filter,
-                                person:
-                                    filter.trim() !== ''
-                                        ? { last_name: filter.trim() }
-                                        : undefined,
+                                person: filter
+                                    ? { last_name: filter }
+                                    : undefined,
                             },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })

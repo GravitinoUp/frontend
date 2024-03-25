@@ -43,7 +43,7 @@ interface DataTableProps<TData, TValue> {
         pageSize: number,
         pageIndex: number,
         sorting: SortingState,
-        filter: string
+        filter?: string
     ) => void
     paginationInfo: { itemCount: number; pageSize: number; pageIndex: number }
     isLoading?: boolean
@@ -121,7 +121,7 @@ function DataTable<TData, TValue>({
             table.getState().pagination.pageSize,
             table.getState().pagination.pageIndex,
             table.getState().sorting,
-            globalFilter
+            globalFilter !== '' ? globalFilter.trim() : undefined
         )
     }, [
         table.getState().pagination.pageSize,
@@ -134,17 +134,9 @@ function DataTable<TData, TValue>({
             table.getState().pagination.pageSize,
             0,
             table.getState().sorting,
-            globalFilter
+            globalFilter !== '' ? globalFilter.trim() : undefined
         )
-
-        table.setPageIndex(0)
     }, [table.getState().sorting])
-
-    useEffect(() => {
-        if (paginationInfo.pageIndex === 0) {
-            table.setPageIndex(paginationInfo.pageIndex)
-        }
-    }, [paginationInfo.pageIndex])
 
     return (
         <div
@@ -257,7 +249,7 @@ function DataTable<TData, TValue>({
                 <ScrollBar orientation="horizontal" />
             </ScrollArea>
             {table.getRowModel().rows?.length > 0 && (
-                <TablePagination table={table} />
+                <TablePagination table={table} pagination={paginationInfo} />
             )}
         </div>
     )
