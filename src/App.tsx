@@ -109,7 +109,12 @@ function App() {
     useEffect(() => {
         const { accessToken, refreshToken } = getJWTtokens()
 
-        if (!accessToken && !refreshToken) {
+        if (
+            !accessToken &&
+            !refreshToken &&
+            path.pathname !== routes.FEEDBACK_GUEST &&
+            path.pathname !== routes.FEEDBACK_WORKER
+        ) {
             navigate(routes.SIGN_IN)
         }
     }, [document.cookie])
