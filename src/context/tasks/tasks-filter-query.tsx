@@ -7,22 +7,8 @@ import {
     useMemo,
     useState,
 } from 'react'
+import { defaultQuery } from '@/constants/constants.ts'
 import { OrderPayloadInterface } from '@/types/interface/orders'
-
-const DEFAULT_ORDERS_PER_PAGE = 10
-
-export const defaultQuery = {
-    offset: {
-        count: DEFAULT_ORDERS_PER_PAGE,
-        page: 1,
-    },
-    filter: {},
-    sorts: {},
-    period: {
-        date_start: new Date().toISOString(),
-        date_end: new Date().toISOString(),
-    },
-}
 
 interface ContextValuesType {
     personalOrdersQuery: OrderPayloadInterface

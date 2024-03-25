@@ -42,7 +42,11 @@ export const formatInitials = (
         .join(' ')
 }
 
-export const formatFileSize = (sizeInBytes: number) => {
+export const formatFileSize = (sizeInBytes?: number) => {
+    if (!sizeInBytes) {
+        return ''
+    }
+
     let i = 0
     let formattedSize = sizeInBytes
 

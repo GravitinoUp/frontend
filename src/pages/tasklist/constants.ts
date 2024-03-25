@@ -25,8 +25,4 @@ export const placeholderQuery = {
     },
     filter: {},
     sorts: {},
-    period: {
-        date_start: '2024-01-01',
-        date_end: '2025-01-26',
-    },
 }

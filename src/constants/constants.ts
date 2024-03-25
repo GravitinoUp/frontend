@@ -63,3 +63,18 @@ export const LOGIN_IMAGES = [
 ]
 
 export const ADMIN_ROLE_ID = 5
+
+export const DEFAULT_ORDERS_PER_PAGE = 10
+
+export const defaultQuery = {
+    offset: {
+        count: DEFAULT_ORDERS_PER_PAGE,
+        page: 1,
+    },
+    filter: {},
+    sorts: {},
+    period: {
+        date_start: new Date().toISOString(),
+        date_end: new Date().toISOString(),
+    },
+}

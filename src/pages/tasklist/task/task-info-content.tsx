@@ -1,9 +1,9 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { placeholderQuery } from './constants.ts'
-import ChangeStatusForm from './task/change-status-form.tsx'
+import ChangeStatusForm from './change-status-form.tsx'
+import { placeholderQuery } from '../constants.ts'
 import DownloadAllIcon from '@/assets/icons/download_all.svg'
-import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
+import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert.tsx'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ImageCarouselButton from '@/components/image-carousel/image-carousel-button.tsx'
 import ImageCarousel from '@/components/image-carousel/image-carousel.tsx'
@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
 import { useDownload } from '@/hooks/use-download.ts'
+import FilesUploadForm from '@/pages/tasklist/components/files-upload-form.tsx'
 import { TaskInfoSkeleton } from '@/pages/tasklist/task/task-info-skeleton.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
@@ -55,6 +56,7 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
     const { t } = useTranslation()
     const { handleZip } = useDownload()
     const [statusFormOpen, setStatusFormOpen] = useState(false)
+    const [imagesFormOpen, setImagesFormOpen] = useState(false)
 
     const {
         data: orders = { count: 0, data: [] },
@@ -156,21 +158,40 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                             />
                         }
                     />
-                    <DialogWindow
-                        open={statusFormOpen}
-                        setOpen={setStatusFormOpen}
-                        trigger={
-                            <Button className="px-8 mt-16">
-                                {t('button.action.change.status')}
-                            </Button>
-                        }
-                        content={
-                            <ChangeStatusForm
-                                order={order}
-                                setDialogOpen={setStatusFormOpen}
-                            />
-                        }
-                    />
+                    <div className="flex gap-4 mt-16">
+                        <DialogWindow
+                            open={statusFormOpen}
+                            setOpen={setStatusFormOpen}
+                            trigger={
+                                <Button className="px-8">
+                                    {t('button.action.change.status')}
+                                </Button>
+                            }
+                            content={
+                                <ChangeStatusForm
+                                    order={order}
+                                    setDialogOpen={setStatusFormOpen}
+                                />
+                            }
+                        />
+                        <DialogWindow
+                            open={imagesFormOpen}
+                            setOpen={setImagesFormOpen}
+                            trigger={
+                                <Button className="px-8" variant="outline">
+                                    {t('feedback.attach.images')}
+                                </Button>
+                            }
+                            content={
+                                <div className="h-[668px]">
+                                    <FilesUploadForm
+                                        orderIDs={[order_id]}
+                                        setDialogOpen={setImagesFormOpen}
+                                    />
+                                </div>
+                            }
+                        />
+                    </div>
                 </Fragment>
             )}
         </Fragment>
