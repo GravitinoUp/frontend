@@ -3,6 +3,7 @@ import { PermissionEnum } from '@/constants/permissions.enum'
 import {
     FacilityInterface,
     FacilityPayloadInterface,
+    FacilityType,
 } from '@/types/interface/facility'
 import { FetchDataInterface } from '@/types/interface/fetch'
 import { formatQueryEndpoint } from '@/utils/helpers'
@@ -39,16 +40,21 @@ const facilityApi = api.injectEndpoints({
                 response: FetchDataInterface<FacilityInterface[]>
             ) => response.data,
         }),
-        getFacilitiesByBranch: builder.query<
+        getFacilityTypes: builder.query<FacilityType[], void>({
+            query: () => 'facility-type/all',
+            transformResponse: (response: FetchDataInterface<FacilityType[]>) =>
+                response.data,
+        }),
+        getFacilitiesByType: builder.query<
             FacilityInterface[],
-            { body: FacilityPayloadInterface; branchIDS: number[] }
+            { body: FacilityPayloadInterface; facilityTypeIDs: number[] }
         >({
-            query: ({ body, branchIDS }) => {
-                const queryParams = branchIDS
-                    .map((id) => `branch_ids[]=${id}`)
+            query: ({ body, facilityTypeIDs }) => {
+                const queryParams = facilityTypeIDs
+                    .map((id) => `type_ids[]=${id}`)
                     .join('&')
                 return {
-                    url: `facility/all-by-branch?${queryParams}`,
+                    url: `facility/all-by-type?${queryParams}`,
                     method: 'POST',
                     body,
                 }
@@ -64,5 +70,6 @@ const facilityApi = api.injectEndpoints({
 export const {
     useGetFacilitiesQuery,
     useGetFacilitiesByCheckpointQuery,
-    useGetFacilitiesByBranchQuery,
+    useGetFacilityTypesQuery,
+    useGetFacilitiesByTypeQuery,
 } = facilityApi

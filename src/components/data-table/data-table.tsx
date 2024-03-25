@@ -218,7 +218,8 @@ function DataTable<TData, TValue>({
                                         ).getAttribute('data-column-id')
                                         if (
                                             typeof onRowClick !== 'undefined' &&
-                                            clickedColumnId !== null
+                                            clickedColumnId !== null &&
+                                            !isLoading
                                         ) {
                                             onRowClick(row.original)
                                         }

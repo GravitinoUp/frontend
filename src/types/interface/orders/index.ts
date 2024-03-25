@@ -29,7 +29,7 @@ export interface FormattedTaskInterface {
 export interface OrderPayloadInterface extends IQuery {
     sorts: OrderSortInterface
     filter: RecursivePartial<OrderFilterInterface>
-    period: {
+    period?: {
         date_start?: string
         date_end?: string
     }
@@ -117,6 +117,7 @@ export interface NewOrderBodyInterface {
     branch_ids: number[]
     checkpoint_ids?: number[]
     facility_ids?: number[]
+    facility_type_ids?: number[]
     executor_ids: number[]
     planned_datetime: string
     task_end_datetime: string
@@ -179,6 +180,7 @@ export interface NewTaskBodyInterface {
     branch_ids: number[]
     checkpoint_ids?: number[]
     facility_ids?: number[]
+    facility_type_ids?: number[]
     executor_ids: number[]
     priority_id: number
     period_start: string

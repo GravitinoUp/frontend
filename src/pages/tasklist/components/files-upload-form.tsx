@@ -19,6 +19,7 @@ import { useToast } from '@/components/ui/use-toast.ts'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import { useUploadFileMutation } from '@/redux/api/orders.ts'
+import { formatFileSize } from '@/utils/helpers.ts'
 
 interface FilesUploadFormProps {
     orderIDs?: number[]
@@ -103,9 +104,14 @@ const FilesUploadForm = ({ orderIDs, setDialogOpen }: FilesUploadFormProps) => {
                                             className="h-[72px] w-[72px] rounded-xl"
                                             alt=""
                                         />
-                                        <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">
-                                            {file?.name}
-                                        </p>
+                                        <div>
+                                            <p className="text-xs max-w-[400px] overflow-ellipsis overflow-hidden">
+                                                {file?.name}
+                                            </p>
+                                            <p className="text-xs text-body-light mt-1">
+                                                {formatFileSize(file?.size)}
+                                            </p>
+                                        </div>
                                     </div>
                                     <Button
                                         variant="ghost"

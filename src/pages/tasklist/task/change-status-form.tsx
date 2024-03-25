@@ -21,6 +21,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast'
 import { useGetAllOrderStatusesQuery } from '@/redux/api/order-statuses'
 import { useUpdateStatusMutation } from '@/redux/api/orders'
@@ -82,7 +83,9 @@ const ChangeStatusForm = ({ order, setDialogOpen }: ChangeStatusFormProps) => {
                 render={({ field }) => (
                     <FormItem className="w-full mt-3">
                         <FormLabel>{t('select.status')}</FormLabel>
-                        {orderStatusesLoading && <LoadingSpinner />}
+                        {orderStatusesLoading && (
+                            <Skeleton className="w-[535px] h-10 rounded-xl" />
+                        )}
                         {orderStatusesError && (
                             <CustomAlert
                                 message={t('multiselect.error.status')}

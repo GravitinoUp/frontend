@@ -5,6 +5,7 @@ import { X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command'
+import { ScrollArea } from '@/components/ui/scroll-area.tsx'
 
 export type Option = Record<'value' | 'label', string | number>
 
@@ -167,44 +168,54 @@ export function MultiSelect({
             <div className="relative mt-2">
                 {open ? (
                     <div className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-                        <CommandGroup className="h-full overflow-auto">
-                            {options.length > 0 && (
-                                <CommandItem
-                                    onMouseDown={(e) => {
-                                        e.preventDefault()
-                                        e.stopPropagation()
-                                    }}
-                                    onSelect={() => {
-                                        if (allSelected) {
-                                            handleUnselectAll()
-                                        } else {
-                                            handleSelectAll()
-                                        }
-                                        setInputValue('')
-                                    }}
-                                    className={'cursor-pointer'}
-                                >
-                                    {allSelected
-                                        ? t('multiselect.unselect.all')
-                                        : t('multiselect.select.all')}
-                                </CommandItem>
-                            )}
-                            {selectables.map((item) => (
-                                <CommandItem
-                                    key={item.value}
-                                    onMouseDown={(e) => {
-                                        e.preventDefault()
-                                        e.stopPropagation()
-                                    }}
-                                    onSelect={() => {
-                                        setInputValue('')
-                                        setSelected((prev) => [...prev, item])
-                                    }}
-                                    className={'cursor-pointer'}
-                                >
-                                    {item.label}
-                                </CommandItem>
-                            ))}
+                        <CommandGroup>
+                            <ScrollArea
+                                className={
+                                    selectables.length > 6 ? 'h-[200px]' : ''
+                                }
+                                type="hover"
+                            >
+                                {options.length > 0 && (
+                                    <CommandItem
+                                        onMouseDown={(e) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                        }}
+                                        onSelect={() => {
+                                            if (allSelected) {
+                                                handleUnselectAll()
+                                            } else {
+                                                handleSelectAll()
+                                            }
+                                            setInputValue('')
+                                        }}
+                                        className="cursor-pointer"
+                                    >
+                                        {allSelected
+                                            ? t('multiselect.unselect.all')
+                                            : t('multiselect.select.all')}
+                                    </CommandItem>
+                                )}
+                                {selectables.map((item) => (
+                                    <CommandItem
+                                        key={item.value}
+                                        onMouseDown={(e) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                        }}
+                                        onSelect={() => {
+                                            setInputValue('')
+                                            setSelected((prev) => [
+                                                ...prev,
+                                                item,
+                                            ])
+                                        }}
+                                        className="cursor-pointer"
+                                    >
+                                        {item.label}
+                                    </CommandItem>
+                                ))}
+                            </ScrollArea>
                         </CommandGroup>
                     </div>
                 ) : null}
