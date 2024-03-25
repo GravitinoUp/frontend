@@ -1,6 +1,7 @@
-import { Fragment } from 'react'
+import { Fragment, useContext, useMemo } from 'react'
 import { MoreVertical } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -8,9 +9,61 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { ReportsFilterQueryContext } from '@/context/tasks/reports-filter-query'
+import { useErrorToast } from '@/hooks/use-error-toast'
+import { useSuccessToast } from '@/hooks/use-success-toast'
+import {
+    useSaveCheckpointReportsMutation,
+    useSaveOrganizationReportsMutation,
+} from '@/redux/api/reports'
+import { REPORTS, REPORTS_CHECKPOINTS } from '@/routes'
+import { FormattedReportInterface } from '@/types/interface/report'
 
-export const ActionButtons = () => {
+interface ActionButtonsProps {
+    rowData: FormattedReportInterface
+}
+
+export const ActionButtons = ({ rowData }: ActionButtonsProps) => {
     const { t } = useTranslation()
+    const location = useLocation()
+
+    const { reportsQuery } = useContext(ReportsFilterQueryContext)
+
+    const [
+        saveBranchReport,
+        {
+            isLoading: isBranchLoading,
+            isSuccess: isBranchSuccess,
+            error: branchError,
+        },
+    ] = useSaveCheckpointReportsMutation()
+    const [
+        saveCheckpointReport,
+        {
+            isLoading: isCheckpointLoading,
+            isSuccess: isCheckpointSuccess,
+            error: checkpointError,
+        },
+    ] = useSaveOrganizationReportsMutation()
+
+    const handleSaveReport = () => {
+        if (location.pathname === REPORTS) {
+            saveBranchReport({ ...reportsQuery, branch_id: rowData.id })
+        } else if (location.pathname === REPORTS_CHECKPOINTS) {
+            saveCheckpointReport({ ...reportsQuery, checkpoint_id: rowData.id })
+        }
+    }
+
+    const successMsg = useMemo(
+        () =>
+            t('toast.success.description.save.m', {
+                entityType: t('report'),
+            }),
+        []
+    )
+
+    useSuccessToast(successMsg, isBranchSuccess || isCheckpointSuccess)
+    useErrorToast(handleSaveReport, branchError || checkpointError)
 
     return (
         <Fragment>
@@ -27,7 +80,10 @@ export const ActionButtons = () => {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => console.log('Download')}>
+                    <DropdownMenuItem
+                        onClick={handleSaveReport}
+                        disabled={isBranchLoading || isCheckpointLoading}
+                    >
                         {t('action.dropdown.download.data')}
                     </DropdownMenuItem>
                 </DropdownMenuContent>

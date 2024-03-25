@@ -11,6 +11,7 @@
     "tasks": "Задачи",
     "tasks.list": "Список задач",
     "order": "Задача",
+    "report": "Отчет",
     "reports": "Отчеты",
     "saved.reports": "Сохраненные отчеты",
     "maps": "Карты",
@@ -274,6 +275,10 @@
                     "f": "{{entityType}} успешно изменена",
                     "sm": "{{entityType}} {{entityName}} успешно изменен",
                     "sf": "{{entityType}} {{entityName}} успешно изменена"
+                },
+                "save": {
+                    "m": "{{entityType}} успешно сохранен",
+                    "f": "{{entityType}} успешно сохранена"
                 },
                 "import": "Данные успешно добавлены",
                 "password.reset": "Пароль успешно сброшен",

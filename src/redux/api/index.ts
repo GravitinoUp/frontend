@@ -59,6 +59,7 @@ export const api = createApi({
         'OrderJournal',
         'Reports',
         'OrderStatuses',
+        'SavedReports',
     ],
     endpoints: () => ({}),
 })
