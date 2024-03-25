@@ -579,7 +579,9 @@ const AddTaskForm = ({ setDialogOpen }: AddTaskFormProps) => {
                             name="checkpointsList"
                             render={({ field }) => (
                                 <FormItem className="mt-3">
-                                    <FormLabel>{t('checkpoint')}</FormLabel>
+                                    <FormLabel className="label-required">
+                                        {t('checkpoint')}
+                                    </FormLabel>
                                     {checkpointsLoading && (
                                         <Skeleton className="h-10 w-[522px] rounded-xl" />
                                     )}

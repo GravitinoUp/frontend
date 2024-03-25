@@ -112,6 +112,7 @@ const ordersApi = api.injectEndpoints({
                     body: formData,
                 }
             },
+            invalidatesTags: ['Orders'],
         }),
         createGuestOrder: builder.mutation<
             { order_id: number },

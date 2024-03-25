@@ -331,7 +331,8 @@
     },
     "date.picker.range.description": "Укажите диапозон дат",
     "search": {
-        "last.name": "Искать по фамилии..."
+        "last.name": "Искать по фамилии...",
+        "order.name": "Искать по названию объявления..."
     },
     "extended.search": "Расширенный поиск",
     "settings.personalization.avatar": "Изображение профиля",

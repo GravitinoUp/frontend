@@ -1,5 +1,5 @@
 export interface IQuery {
-    offset?: IOffset
+    offset: IOffset
 }
 
 export interface IOffset {

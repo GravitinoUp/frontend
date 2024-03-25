@@ -46,7 +46,6 @@ import { cn } from '@/lib/utils.ts'
 import { placeholderQuery } from '@/pages/tasklist/constants.ts'
 import { useGetFacilityTypesQuery } from '@/redux/api/facility.ts'
 import {
-    useGetPersonalOrdersQuery,
     useUpdateOrderExecutorMutation,
     useUpdateOrderMutation,
 } from '@/redux/api/orders.ts'
@@ -99,7 +98,6 @@ const datesSchema = z
 const formSchema = z.intersection(baseFieldsSchema, datesSchema)
 
 export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
-    console.log(task)
     const { t } = useTranslation()
     const form = useForm({
         schema: formSchema,
@@ -167,23 +165,6 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
         isError: prioritiesError,
         isSuccess: prioritiesSuccess,
     } = useGetAllPriorityQuery()
-
-    const { data: connectedOrders = [] } = useGetPersonalOrdersQuery(
-        {
-            filter: { order_name: task.order_name },
-            sorts: {},
-        },
-        {
-            selectFromResult: (result) => ({
-                ...result,
-                data: result.data?.data,
-            }),
-        }
-    )
-    const orderIDs = useMemo(
-        () => connectedOrders.map((order) => order.order_id),
-        [connectedOrders]
-    )
 
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
         if (task.order_status.order_status_id !== 9) {
@@ -639,7 +620,7 @@ export const EditTaskForm = ({ task, setDialogOpen }: EditTaskFormProps) => {
                     }
                 >
                     <FilesUploadForm
-                        orderIDs={orderIDs}
+                        orderIDs={[task.order_id]}
                         setDialogOpen={setDialogOpen}
                     />
                 </Suspense>

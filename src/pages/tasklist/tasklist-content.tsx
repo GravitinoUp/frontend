@@ -249,11 +249,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                         (e) => e.order_id === rowData.order_id
                     )
                     if (orderData?.order_status.order_status_id !== 9) {
-                        navigate(`task`, {
-                            state: {
-                                order: orderData,
-                            },
-                        })
+                        navigate(`/tasklist/${orderData?.order_id}`)
                     } else {
                         setSelectedOrder(orderData)
                         setEditFormOpen(true)
@@ -262,10 +258,11 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 searchSuffixIconClick={() => setFilterFormOpen(true)}
                 paginationInfo={{
                     itemCount: data.count,
-                    pageSize: personalOrdersQuery.offset.count,
-                    pageIndex: personalOrdersQuery.offset.page - 1,
+                    pageSize: personalOrdersQuery?.offset?.count,
+                    pageIndex: personalOrdersQuery?.offset?.page - 1,
                 }}
                 isLoading={isFetching}
+                searchPlaceholder={t('search.order.name')}
             />
         </Fragment>
     )
