@@ -15,11 +15,7 @@ import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { ReportsFilterQueryContext } from '@/context/tasks/reports-filter-query'
-import { useErrorToast } from '@/hooks/use-error-toast'
-import {
-    useExportBranchReportsMutation,
-    useGetBranchReportsQuery,
-} from '@/redux/api/reports'
+import { useGetBranchReportsQuery } from '@/redux/api/reports'
 import { REPORTS_SAVED } from '@/routes.ts'
 
 export default function ReportsPage() {
@@ -49,17 +45,6 @@ export default function ReportsPage() {
         checked_percent: row.checked_percent,
         checked_count: row.checked_count,
     }))
-
-    const [
-        exportBranchReports,
-        { isLoading: exportLoading, error: exportError },
-    ] = useExportBranchReportsMutation()
-
-    const handleExport = () => {
-        exportBranchReports(branchReportsQuery)
-    }
-
-    useErrorToast(handleExport, exportError)
 
     if (isError) {
         return <CustomAlert />
@@ -92,12 +77,7 @@ export default function ReportsPage() {
                                 open={exportFormOpen}
                                 setOpen={setExportFormOpen}
                                 trigger={<ExcelButton buttonType="export" />}
-                                content={
-                                    <ExportForm
-                                        onClick={handleExport}
-                                        isLoading={exportLoading}
-                                    />
-                                }
+                                content={<ExportForm />}
                             />
                         </div>
                     </div>

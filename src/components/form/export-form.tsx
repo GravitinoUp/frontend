@@ -1,14 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { LoadingSpinner } from '../spinner/spinner'
 import ExcelFile from '@/assets/icons/excel_file.svg'
 import { Button } from '@/components/ui/button'
 
-interface ExportFormProps {
-    onClick?: () => void
-    isLoading?: boolean
-}
-
-const ExportForm = ({ onClick, isLoading = false }: ExportFormProps) => {
+const ExportForm = () => {
     const { t } = useTranslation()
 
     return (
@@ -23,10 +17,9 @@ const ExportForm = ({ onClick, isLoading = false }: ExportFormProps) => {
             <div className="flex flex-col items-center self-stretch mx-16 mt-16 justify-center bg-muted border-input border-[1.5px] rounded-xl select-none h-[140px] pt-16">
                 <Button
                     className="text-sm w-[140px] py-4 rounded-xl"
-                    onClick={onClick}
-                    disabled={isLoading}
+                    onClick={() => {}}
                 >
-                    {isLoading ? <LoadingSpinner /> : t('export')}
+                    {t('export')}
                 </Button>
             </div>
         </div>
