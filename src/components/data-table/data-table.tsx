@@ -126,7 +126,6 @@ function DataTable<TData, TValue>({
     }, [
         table.getState().pagination.pageSize,
         table.getState().pagination.pageIndex,
-        globalFilter,
     ])
 
     useEffect(() => {
@@ -136,7 +135,7 @@ function DataTable<TData, TValue>({
             table.getState().sorting,
             globalFilter !== '' ? globalFilter.trim() : undefined
         )
-    }, [table.getState().sorting])
+    }, [table.getState().sorting, globalFilter])
 
     return (
         <div
@@ -210,7 +209,8 @@ function DataTable<TData, TValue>({
                                         ).getAttribute('data-column-id')
                                         if (
                                             typeof onRowClick !== 'undefined' &&
-                                            clickedColumnId !== null
+                                            clickedColumnId !== null &&
+                                            !isLoading
                                         ) {
                                             onRowClick(row.original)
                                         }

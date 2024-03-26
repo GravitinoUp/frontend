@@ -18,7 +18,7 @@ import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
 const columnsFilters = localStorage.getItem('filterColumns')
 
-function TaskListContent({ orderStatus }: { orderStatus?: string }) {
+function TaskListContent({ orderStatus }: { orderStatus?: number }) {
     const navigate = useNavigate()
     const { t } = useTranslation()
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
@@ -81,8 +81,8 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
             filter: {
                 ...personalOrdersQuery.filter,
                 order_status: orderStatus
-                    ? [{ order_status_name: orderStatus }]
-                    : [],
+                    ? [{ order_status_id: orderStatus }]
+                    : undefined,
             },
         })
     }, [])
@@ -134,7 +134,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                             order_status: personalOrdersQuery.filter
                                 .order_status
                                 ? personalOrdersQuery.filter.order_status!.map(
-                                      (value) => `${value?.order_status_name}`
+                                      (value) => `${value?.order_status_id}`
                                   )
                                 : [],
                             columns: filterColumns,

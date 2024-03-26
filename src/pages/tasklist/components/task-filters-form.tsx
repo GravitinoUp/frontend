@@ -136,20 +136,25 @@ const TaskFiltersForm = ({
             },
             filter: {
                 ...personalOrdersQuery.filter,
-                facility: {
-                    checkpoint: {
-                        checkpoint_id:
-                            data.checkpoint_id && data.checkpoint_id !== 0
-                                ? data.checkpoint_id
-                                : undefined,
-                        branch:
-                            data.branch_id && data.branch_id !== 0
-                                ? {
-                                      branch_id: data.branch_id,
-                                  }
-                                : undefined,
-                    },
-                },
+                facility:
+                    (data.checkpoint_id && data.checkpoint_id !== 0) ||
+                    (data.branch_id && data.branch_id !== 0)
+                        ? {
+                              checkpoint: {
+                                  checkpoint_id:
+                                      data.checkpoint_id &&
+                                      data.checkpoint_id !== 0
+                                          ? data.checkpoint_id
+                                          : undefined,
+                                  branch:
+                                      data.branch_id && data.branch_id !== 0
+                                          ? {
+                                                branch_id: data.branch_id,
+                                            }
+                                          : undefined,
+                              },
+                          }
+                        : undefined,
                 executor:
                     data.organization_id && data.organization_id !== 0
                         ? {
@@ -165,7 +170,7 @@ const TaskFiltersForm = ({
                 order_status:
                     data.order_status.length > 0
                         ? data.order_status.map((value) => ({
-                              order_status_name: value,
+                              order_status_id: Number(value),
                           }))
                         : undefined,
             },
@@ -442,40 +447,48 @@ const TaskFiltersForm = ({
                             {t('status')}
                         </h3>
                         <div className="flex flex-wrap gap-7">
-                            {Object.values(TASK_STATUSES).map((status) => (
-                                <Button
-                                    key={status}
-                                    type="button"
-                                    className={cn(
-                                        field.value.find(
-                                            (value) => value === status
-                                        )
-                                            ? 'bg-[#3F434A] text-background'
-                                            : 'bg-background text-[#3F434A]',
-                                        'py-3 px-16 rounded-xl border-2 border-[#3F434A] hover:bg-[#3F434A] hover:text-background'
-                                    )}
-                                    onClick={() => {
-                                        if (
-                                            !field.value.find(
-                                                (value) => value === status
+                            {Object.values(TASK_STATUSES).map(
+                                (status, index) => (
+                                    <Button
+                                        key={status}
+                                        type="button"
+                                        className={cn(
+                                            field.value.find(
+                                                (value) =>
+                                                    value === String(index + 1)
                                             )
-                                        ) {
-                                            field.onChange([
-                                                ...field.value,
-                                                status,
-                                            ])
-                                        } else {
-                                            field.onChange(
-                                                field.value.filter(
-                                                    (value) => value !== status
+                                                ? 'bg-[#3F434A] text-background'
+                                                : 'bg-background text-[#3F434A]',
+                                            'py-3 px-16 rounded-xl border-2 border-[#3F434A] hover:bg-[#3F434A] hover:text-background'
+                                        )}
+                                        onClick={() => {
+                                            if (
+                                                !field.value.find(
+                                                    (value) =>
+                                                        value ===
+                                                        String(index + 1)
                                                 )
-                                            )
-                                        }
-                                    }}
-                                >
-                                    {status[0].toUpperCase() + status.slice(1)}
-                                </Button>
-                            ))}
+                                            ) {
+                                                field.onChange([
+                                                    ...field.value,
+                                                    String(index + 1),
+                                                ])
+                                            } else {
+                                                field.onChange(
+                                                    field.value.filter(
+                                                        (value) =>
+                                                            value !==
+                                                            String(index + 1)
+                                                    )
+                                                )
+                                            }
+                                        }}
+                                    >
+                                        {status[0].toUpperCase() +
+                                            status.slice(1)}
+                                    </Button>
+                                )
+                            )}
                             <FormMessage />
                         </div>
                     </Fragment>
