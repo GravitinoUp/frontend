@@ -126,6 +126,8 @@ const TaskFiltersForm = ({
     const { t } = useTranslation()
 
     const handleSubmit = (data: z.infer<typeof filterSchema>) => {
+        console.log(data)
+
         setPersonalOrdersQuery({
             ...personalOrdersQuery,
             offset: {
@@ -137,27 +139,29 @@ const TaskFiltersForm = ({
                 facility: {
                     checkpoint: {
                         checkpoint_id:
-                            data.checkpoint_id !== 0
+                            data.checkpoint_id && data.checkpoint_id !== 0
                                 ? data.checkpoint_id
                                 : undefined,
-                        branch: {
-                            branch_id:
-                                data.branch_id !== 0
-                                    ? data.branch_id
-                                    : undefined,
-                        },
+                        branch:
+                            data.branch_id && data.branch_id !== 0
+                                ? {
+                                      branch_id: data.branch_id,
+                                  }
+                                : undefined,
                     },
                 },
-                executor: {
-                    organization_id:
-                        data.organization_id !== 0
-                            ? data.organization_id
-                            : undefined,
-                },
-                priority: {
-                    priority_id:
-                        data.priority_id !== 0 ? data.priority_id : undefined,
-                },
+                executor:
+                    data.organization_id && data.organization_id !== 0
+                        ? {
+                              organization_id: data.organization_id,
+                          }
+                        : undefined,
+                priority:
+                    data.priority_id && data.priority_id !== 0
+                        ? {
+                              priority_id: data.priority_id,
+                          }
+                        : undefined,
                 order_status:
                     data.order_status.length > 0
                         ? data.order_status.map((value) => ({

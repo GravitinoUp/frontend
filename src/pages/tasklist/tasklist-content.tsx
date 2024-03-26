@@ -82,7 +82,7 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                 ...personalOrdersQuery.filter,
                 order_status: orderStatus
                     ? [{ order_status_name: orderStatus }]
-                    : personalOrdersQuery.filter.order_status,
+                    : [],
             },
         })
     }, [])

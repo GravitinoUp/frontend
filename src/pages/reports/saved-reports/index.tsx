@@ -12,7 +12,7 @@ export default function SavedReportsPage() {
     const { t } = useTranslation()
 
     const [savedReportsQuery, setSavedReportsQuery] =
-        useState<any>(placeholderQuery)
+        useState<any>(placeholderQuery) // TODO filters for saved reports
 
     const {
         data: reports = [],
@@ -24,7 +24,7 @@ export default function SavedReportsPage() {
         key: value.report_id,
         name: value.file_alt,
         creationDate: formatDate(value.createdAt),
-        size: 'TODO',
+        creator: 'TODO',
     }))
 
     if (error) {

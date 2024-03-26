@@ -14,7 +14,7 @@ export interface FormattedSavedReportInterface {
     key: number
     name: string
     creationDate: string
-    size: string
+    creator: string
 }
 
 export interface ReportFilterInterface {

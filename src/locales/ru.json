@@ -87,6 +87,7 @@
     "status": "Статус",
     "select.status": "Выберите статус задачи",
     "executor": "Исполнитель",
+    "creator": "Создатель",
     "priority": "Приоритет",
     "periodicity": "Периодичность",
     "category": "Категория",
