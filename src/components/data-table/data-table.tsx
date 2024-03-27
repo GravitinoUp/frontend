@@ -29,7 +29,7 @@ import {
     TableRow,
 } from '@/components/ui/table'
 
-const SKELETON_ITEMS_COUNT = 5
+const SKELETON_ITEMS_COUNT = 10
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -102,6 +102,12 @@ function DataTable<TData, TValue>({
             columnFilters,
             columnVisibility,
             rowSelection,
+        },
+        initialState: {
+            pagination: {
+                pageIndex: paginationInfo.pageIndex,
+                pageSize: paginationInfo.pageSize,
+            },
         },
         manualPagination: true,
         manualSorting: true,

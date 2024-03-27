@@ -21,12 +21,10 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
-import { TASK_STATUSES } from '@/constants/constants'
 import {
     defaultQuery,
     TasksFilterQueryContext,
 } from '@/context/tasks/tasks-filter-query.tsx'
-import { cn } from '@/lib/utils'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
@@ -57,7 +55,6 @@ const filterSchema = z.object({
     checkpoint_id: z.number().optional(),
     organization_id: z.number().optional(),
     priority_id: z.number().optional(),
-    order_status: z.array(z.string()),
     columns: tasksColumnsSchema,
 })
 
@@ -167,12 +164,6 @@ const TaskFiltersForm = ({
                               priority_id: data.priority_id,
                           }
                         : undefined,
-                order_status:
-                    data.order_status.length > 0
-                        ? data.order_status.map((value) => ({
-                              order_status_id: Number(value),
-                          }))
-                        : undefined,
             },
         })
         setFilterColumns(data.columns)
@@ -185,11 +176,13 @@ const TaskFiltersForm = ({
             checkpoint_id: 0,
             organization_id: 0,
             priority_id: 0,
-            order_status: [],
             columns: initialColumnVisibility,
         })
         setPersonalOrdersQuery({
             ...defaultQuery,
+            filter: {
+                order_status: personalOrdersQuery.filter.order_status,
+            },
             period: personalOrdersQuery.period,
         })
         setFilterColumns(initialColumnVisibility)
@@ -438,62 +431,6 @@ const TaskFiltersForm = ({
                     )}
                 />
             </div>
-            <FormField
-                control={form.control}
-                name="order_status"
-                render={({ field }) => (
-                    <Fragment>
-                        <h3 className="mt-6 mb-3 font-medium text-xl text-[#3F434A]">
-                            {t('status')}
-                        </h3>
-                        <div className="flex flex-wrap gap-7">
-                            {Object.values(TASK_STATUSES).map(
-                                (status, index) => (
-                                    <Button
-                                        key={status}
-                                        type="button"
-                                        className={cn(
-                                            field.value.find(
-                                                (value) =>
-                                                    value === String(index + 1)
-                                            )
-                                                ? 'bg-[#3F434A] text-background'
-                                                : 'bg-background text-[#3F434A]',
-                                            'py-3 px-16 rounded-xl border-2 border-[#3F434A] hover:bg-[#3F434A] hover:text-background'
-                                        )}
-                                        onClick={() => {
-                                            if (
-                                                !field.value.find(
-                                                    (value) =>
-                                                        value ===
-                                                        String(index + 1)
-                                                )
-                                            ) {
-                                                field.onChange([
-                                                    ...field.value,
-                                                    String(index + 1),
-                                                ])
-                                            } else {
-                                                field.onChange(
-                                                    field.value.filter(
-                                                        (value) =>
-                                                            value !==
-                                                            String(index + 1)
-                                                    )
-                                                )
-                                            }
-                                        }}
-                                    >
-                                        {status[0].toUpperCase() +
-                                            status.slice(1)}
-                                    </Button>
-                                )
-                            )}
-                            <FormMessage />
-                        </div>
-                    </Fragment>
-                )}
-            />
             <FormField
                 control={form.control}
                 name="columns"

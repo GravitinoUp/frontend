@@ -28,8 +28,9 @@ export function TablePagination<TData>({
 }: TablePaginationProps<TData>) {
     const { t } = useTranslation()
     const totalPagesCount =
-        typeof table?.getPageCount() !== 'undefined' &&
-        Array.from({ length: table?.getPageCount() }, (_, i) => i)
+        typeof table?.getPageCount() !== 'undefined'
+            ? Array.from({ length: table?.getPageCount() }, (_, i) => i)
+            : [0]
 
     return (
         <div className="w-full flex items-center justify-between px-2 mt-6">
@@ -61,7 +62,7 @@ export function TablePagination<TData>({
                         variant="ghost"
                         className="hidden h-8 w-8 p-0 lg:flex bg-pagination text-primary"
                         onClick={() => table?.setPageIndex(0)}
-                        disabled={!table?.getCanPreviousPage()}
+                        disabled={pagination.pageIndex === 0}
                     >
                         <span className="sr-only">
                             {t('pagination.first.page')}
@@ -71,8 +72,10 @@ export function TablePagination<TData>({
                     <Button
                         variant="ghost"
                         className="h-8 w-8 p-0 bg-pagination text-primary"
-                        onClick={() => table?.previousPage()}
-                        disabled={!table?.getCanPreviousPage()}
+                        onClick={() =>
+                            table?.setPageIndex(pagination.pageIndex - 1)
+                        }
+                        disabled={pagination.pageIndex === 0}
                     >
                         <span className="sr-only">
                             {t('pagination.previous.page')}
@@ -138,8 +141,12 @@ export function TablePagination<TData>({
                     <Button
                         variant="ghost"
                         className="h-8 w-8 p-0 bg-pagination text-primary"
-                        onClick={() => table?.nextPage()}
-                        disabled={!table?.getCanNextPage()}
+                        onClick={() =>
+                            table?.setPageIndex(pagination.pageIndex + 1)
+                        }
+                        disabled={
+                            pagination.pageIndex === totalPagesCount.length - 1
+                        }
                     >
                         <span className="sr-only">
                             {t('pagination.next.page')}
@@ -150,7 +157,7 @@ export function TablePagination<TData>({
                         variant="ghost"
                         className="hidden h-8 w-8 p-0 lg:flex bg-pagination text-primary"
                         onClick={() =>
-                            table?.setPageIndex(table?.getPageCount() - 1)
+                            table?.setPageIndex(totalPagesCount.length - 1)
                         }
                         disabled={!table?.getCanNextPage()}
                     >

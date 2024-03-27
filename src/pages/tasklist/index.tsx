@@ -100,20 +100,19 @@ export default function TaskListPage() {
                 //                     ? [{ order_status_id: Number(page) }]
                 //                     : undefined,
                 //         },
-                //         offset: { ...personalOrdersQuery.offset, page: 12 },
                 //     })
                 // }}
-                // initialTab={
-                //     tasksPageTabs[
-                //         personalOrdersQuery.filter.order_status &&
-                //         personalOrdersQuery.filter.order_status.length === 1 &&
-                //         personalOrdersQuery.filter.order_status[0]
-                //             ?.order_status_id
-                //             ? personalOrdersQuery.filter.order_status[0]
-                //                   ?.order_status_id
-                //             : 0
-                //     ]
-                // }
+                initialTab={
+                    tasksPageTabs[
+                        personalOrdersQuery.filter.order_status &&
+                        personalOrdersQuery.filter.order_status.length === 1 &&
+                        personalOrdersQuery.filter.order_status[0]
+                            ?.order_status_id
+                            ? personalOrdersQuery.filter.order_status[0]
+                                  ?.order_status_id
+                            : 0
+                    ]
+                }
             />
         </PageLayout>
     )
