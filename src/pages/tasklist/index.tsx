@@ -10,6 +10,7 @@ import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
+import { defaultQuery } from '@/constants/constants.ts'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useGetOrderStatusesQuery } from '@/redux/api/order-statuses.ts'
@@ -30,7 +31,9 @@ export default function TaskListPage() {
 
     const { data: orderStatuses = [] } = useGetOrderStatusesQuery({
         ...placeholderQuery,
-        period: personalOrdersQuery.period,
+        period: personalOrdersQuery.period
+            ? personalOrdersQuery.period
+            : defaultQuery.period,
     })
 
     const tasksPageTabs = orderStatuses.map((value) => ({
@@ -90,18 +93,6 @@ export default function TaskListPage() {
         >
             <CustomTabs
                 tabs={tasksPageTabs}
-                // getCurrentPage={(page) => {
-                //     setPersonalOrdersQuery({
-                //         ...personalOrdersQuery,
-                //         filter: {
-                //             ...personalOrdersQuery.filter,
-                //             order_status:
-                //                 page !== 'allTasks'
-                //                     ? [{ order_status_id: Number(page) }]
-                //                     : undefined,
-                //         },
-                //     })
-                // }}
                 initialTab={
                     tasksPageTabs[
                         personalOrdersQuery.filter.order_status &&
