@@ -418,7 +418,8 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
 
     useSuccessToast(
         createSuccessMsg,
-        userCreateSuccess || organizationCreateSuccess
+        userCreateSuccess || organizationCreateSuccess,
+        userCreateSuccess ? setDialogOpen : void 0
     )
     useSuccessToast(
         updateSuccessMsg,

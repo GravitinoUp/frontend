@@ -76,8 +76,14 @@ export const TaskInfoSkeleton = () => (
                 ))}
             </div>
         </div>
-        <Button className="px-8 mt-16" disabled>
-            {i18next.t('button.action.change.status')}
-        </Button>
+        <Skeleton className="mt-10 w-[400px] h-[115px] rounded-xl" />
+        <div className="flex gap-4 mt-16">
+            <Button className="px-8" disabled>
+                {i18next.t('button.action.change.status')}
+            </Button>
+            <Button className="px-8" variant="outline" disabled>
+                {i18next.t('feedback.attach.images')}
+            </Button>
+        </div>
     </>
 )

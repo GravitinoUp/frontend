@@ -21,10 +21,9 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
-import {
-    defaultQuery,
-    TasksFilterQueryContext,
-} from '@/context/tasks/tasks-filter-query.tsx'
+import { defaultQuery, TASK_STATUSES } from '@/constants/constants'
+import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
+import { cn } from '@/lib/utils'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
