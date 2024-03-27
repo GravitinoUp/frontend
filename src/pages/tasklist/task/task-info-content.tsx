@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ChangeStatusForm from './change-status-form.tsx'
 import { placeholderQuery } from '../constants.ts'
@@ -11,9 +11,12 @@ import OrderStatus from '@/components/order-status/order-status.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
+import { defaultQuery } from '@/constants/constants.ts'
+import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
 import { useDownload } from '@/hooks/use-download.ts'
 import FilesUploadForm from '@/pages/tasklist/components/files-upload-form.tsx'
 import { TaskInfoSkeleton } from '@/pages/tasklist/task/task-info-skeleton.tsx'
+import { useGetOrderStatusesQuery } from '@/redux/api/order-statuses.ts'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
 
@@ -57,6 +60,14 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
     const { handleZip } = useDownload()
     const [statusFormOpen, setStatusFormOpen] = useState(false)
     const [imagesFormOpen, setImagesFormOpen] = useState(false)
+
+    const { personalOrdersQuery } = useContext(TasksFilterQueryContext)
+    useGetOrderStatusesQuery({
+        ...placeholderQuery,
+        period: personalOrdersQuery.period
+            ? personalOrdersQuery.period
+            : defaultQuery.period,
+    })
 
     const {
         data: orders = { count: 0, data: [] },
