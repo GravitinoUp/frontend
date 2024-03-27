@@ -13,9 +13,13 @@ export default function SavedReportsPage() {
 
     const [savedReportsQuery, setSavedReportsQuery] = useState(placeholderQuery) // TODO filters for saved reports
 
-    const { data: reports = [], error, isFetching } = useGetSavedReportsQuery()
+    const {
+        data: reports = { count: 0, data: [] },
+        error,
+        isFetching,
+    } = useGetSavedReportsQuery()
 
-    const formattedReports = reports.map((value) => ({
+    const formattedReports = reports.data.map((value) => ({
         key: value.report_id,
         name: value.file_alt,
         creationDate: formatDate(value.createdAt),
@@ -46,7 +50,7 @@ export default function SavedReportsPage() {
                     })
                 }}
                 paginationInfo={{
-                    itemCount: 100,
+                    itemCount: reports.count,
                     pageSize: savedReportsQuery.offset.count,
                     pageIndex: savedReportsQuery.offset.page - 1,
                 }}

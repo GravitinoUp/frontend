@@ -53,7 +53,10 @@ const checkpointsApi = api.injectEndpoints({
             }),
             providesTags: ['Reports'],
         }),
-        getSavedReports: builder.query<SavedReportInterface[], void>({
+        getSavedReports: builder.query<
+            FetchDataInterface<SavedReportInterface[]>,
+            void
+        >({
             query: (body) => ({
                 url: `report/all`,
                 method: 'POST',
