@@ -1,10 +1,9 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
 import { reportsColumns, reportsColumnsVisibility } from './reports-columns'
 import ExportForm from '../../components/form/export-form'
-import { placeholderQuery } from '../tasklist/constants'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
@@ -15,9 +14,9 @@ import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
+import { ReportsFilterQueryContext } from '@/context/tasks/reports-filter-query'
 import { useGetBranchReportsQuery } from '@/redux/api/reports'
 import { REPORTS_SAVED } from '@/routes.ts'
-import { BranchReportsPayloadInterface } from '@/types/interface/reports'
 
 export default function ReportsPage() {
     const { t } = useTranslation()
@@ -25,8 +24,10 @@ export default function ReportsPage() {
 
     const [exportFormOpen, setExportFormOpen] = useState(false)
 
-    const [branchReportsQuery, setBranchReportsQuery] =
-        useState<BranchReportsPayloadInterface>(placeholderQuery)
+    const {
+        reportsQuery: branchReportsQuery,
+        setReportsQuery: setBranchReportsQuery,
+    } = useContext(ReportsFilterQueryContext)
 
     const {
         data = { count: 0, data: [] },
@@ -122,7 +123,9 @@ export default function ReportsPage() {
                             sorts,
                             filter: {
                                 ...branchReportsQuery.filter,
-                                branch: { branch_name: filter },
+                                branch: filter
+                                    ? { branch_name: filter }
+                                    : undefined,
                             },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })

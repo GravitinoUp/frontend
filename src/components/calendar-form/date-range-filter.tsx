@@ -21,7 +21,7 @@ interface DateRangeFilterProps<T> {
 }
 
 const DateRangeFilter = <
-    T extends { period: { date_start?: string; date_end?: string } },
+    T extends { period?: { date_start?: string; date_end?: string } }
 >({
     filterQuery,
     setFilterQuery,
@@ -29,12 +29,14 @@ const DateRangeFilter = <
     const { t } = useTranslation()
     const [collapsed, setCollapsed] = useState(false)
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
-        from: filterQuery.period.date_start
-            ? parseISO(filterQuery.period.date_start)
-            : void 0,
-        to: filterQuery.period.date_end
-            ? parseISO(filterQuery.period.date_end)
-            : void 0,
+        from:
+            filterQuery.period && filterQuery.period.date_start
+                ? parseISO(filterQuery.period.date_start)
+                : void 0,
+        to:
+            filterQuery.period && filterQuery.period.date_end
+                ? parseISO(filterQuery.period.date_end)
+                : void 0,
     })
     const { rangeHeader, rangeDescription } = useGetRangeText(dateRange)
 

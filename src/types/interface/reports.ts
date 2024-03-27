@@ -74,3 +74,11 @@ export interface ReportInterface {
     checked_count: number
     checked_percent: number
 }
+
+export interface SavedReportInterface {
+    report_id: number
+    file_sku: string
+    file_alt: string
+    report_json: string
+    createdAt: string
+}

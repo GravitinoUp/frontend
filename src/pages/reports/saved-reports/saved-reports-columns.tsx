@@ -20,8 +20,8 @@ export const savedReportsColumns: ColumnDef<FormattedSavedReportInterface>[] = [
         accessorKey: 'creationDate',
     },
     {
-        header: i18next.t('size'),
-        accessorKey: 'size',
+        header: i18next.t('creator'),
+        accessorKey: 'creator',
     },
     {
         id: 'actions',

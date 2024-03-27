@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar'
 import getQualityColor from './get-quality-color'
-import { cn } from '@/lib/utils'
 import 'react-circular-progressbar/dist/styles.css'
 
 interface CircularBarProps {
@@ -25,10 +24,8 @@ const CircularBar = ({ value }: CircularBarProps) => {
                 value={percent}
             >
                 <p
-                    className={cn(
-                        'text-[14px]',
-                        `text-[${getQualityColor(percent, false)}]`
-                    )}
+                    className="text-[14px]"
+                    style={{ color: getQualityColor(percent, false) }}
                 >
                     {percent}
                 </p>

@@ -9,6 +9,7 @@ export const TASK_STATUSES = {
     CANCELED: i18next.t('task.status.canceled').toLowerCase(),
     DEADLINE_CLOSED: i18next.t('task.status.deadline').toLowerCase(),
     NEED_WORK: i18next.t('task.status.need-work').toLowerCase(),
+    NOT_ASSIGNED: i18next.t('task.status.not-assigned').toLowerCase(),
 }
 
 export const FILE_SIZE_UNITS = {

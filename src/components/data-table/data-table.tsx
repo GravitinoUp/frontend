@@ -29,7 +29,7 @@ import {
     TableRow,
 } from '@/components/ui/table'
 
-const SKELETON_ITEMS_COUNT = 5
+const SKELETON_ITEMS_COUNT = 10
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -43,7 +43,7 @@ interface DataTableProps<TData, TValue> {
         pageSize: number,
         pageIndex: number,
         sorting: SortingState,
-        filter: string
+        filter?: string
     ) => void
     paginationInfo: { itemCount: number; pageSize: number; pageIndex: number }
     isLoading?: boolean
@@ -103,6 +103,12 @@ function DataTable<TData, TValue>({
             columnVisibility,
             rowSelection,
         },
+        initialState: {
+            pagination: {
+                pageIndex: paginationInfo.pageIndex,
+                pageSize: paginationInfo.pageSize,
+            },
+        },
         manualPagination: true,
         manualSorting: true,
         manualFiltering: true,
@@ -121,12 +127,11 @@ function DataTable<TData, TValue>({
             table.getState().pagination.pageSize,
             table.getState().pagination.pageIndex,
             table.getState().sorting,
-            globalFilter
+            globalFilter !== '' ? globalFilter.trim() : undefined
         )
     }, [
         table.getState().pagination.pageSize,
         table.getState().pagination.pageIndex,
-        globalFilter,
     ])
 
     useEffect(() => {
@@ -134,17 +139,9 @@ function DataTable<TData, TValue>({
             table.getState().pagination.pageSize,
             0,
             table.getState().sorting,
-            globalFilter
+            globalFilter !== '' ? globalFilter.trim() : undefined
         )
-
-        table.setPageIndex(0)
-    }, [table.getState().sorting])
-
-    useEffect(() => {
-        if (paginationInfo.pageIndex === 0) {
-            table.setPageIndex(paginationInfo.pageIndex)
-        }
-    }, [paginationInfo.pageIndex])
+    }, [table.getState().sorting, globalFilter])
 
     return (
         <div
@@ -258,7 +255,7 @@ function DataTable<TData, TValue>({
                 <ScrollBar orientation="horizontal" />
             </ScrollArea>
             {table.getRowModel().rows?.length > 0 && (
-                <TablePagination table={table} />
+                <TablePagination table={table} pagination={paginationInfo} />
             )}
         </div>
     )

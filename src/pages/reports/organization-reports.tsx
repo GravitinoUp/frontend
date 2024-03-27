@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
 import { reportsColumns, reportsColumnsVisibility } from './reports-columns'
 import ExportForm from '../../components/form/export-form'
-import { placeholderQuery } from '../tasklist/constants'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
@@ -15,10 +14,10 @@ import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
+import { ReportsFilterQueryContext } from '@/context/tasks/reports-filter-query'
 import { useGetOrganizationReportsQuery } from '@/redux/api/reports'
 import { REPORTS_SAVED } from '@/routes.ts'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
-import { OrganizationReportsPayloadInterface } from '@/types/interface/reports'
 
 export default function OrganizationReportsPage() {
     const { t } = useTranslation()
@@ -27,18 +26,21 @@ export default function OrganizationReportsPage() {
     const checkpoint: CheckpointInterface = state.checkpoint
 
     const [exportFormOpen, setExportFormOpen] = useState(false)
-    const [organizationReportsQuery, setOrganizationReportsQuery] =
-        useState<OrganizationReportsPayloadInterface>({
-            checkpoint_id: checkpoint.checkpoint_id,
-            ...placeholderQuery,
-        })
+
+    const {
+        reportsQuery: organizationReportsQuery,
+        setReportsQuery: setOrganizationReportsQuery,
+    } = useContext(ReportsFilterQueryContext)
 
     const {
         data = { count: 0, data: [] },
         isError,
-        isLoading,
+        isFetching,
         refetch,
-    } = useGetOrganizationReportsQuery(organizationReportsQuery)
+    } = useGetOrganizationReportsQuery({
+        ...organizationReportsQuery,
+        checkpoint_id: checkpoint.checkpoint_id,
+    })
 
     const formattedReports = data.data.map((row) => ({
         key: row.organization.organization_id,
@@ -131,7 +133,9 @@ export default function OrganizationReportsPage() {
                         sorts,
                         filter: {
                             ...organizationReportsQuery.filter,
-                            organization: { full_name: filter },
+                            organization: filter
+                                ? { full_name: filter }
+                                : undefined,
                         },
                         offset: { count: pageSize, page: pageIndex + 1 },
                     })
@@ -141,7 +145,7 @@ export default function OrganizationReportsPage() {
                     pageSize: organizationReportsQuery.offset.count,
                     pageIndex: organizationReportsQuery.offset.page - 1,
                 }}
-                isLoading={isLoading}
+                isLoading={isFetching}
             />
         </PageLayout>
     )

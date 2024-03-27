@@ -77,6 +77,7 @@ export enum PermissionEnum {
     ReportBranchCreateMy = 'report-branch-create-my',
     ReportBranchesCreate = 'report-branches-create',
     ReportCheckpointCreate = 'report-checkpoint-create',
+    ReportCheckpointCreateMy = 'report-checkpoint-create-my',
     ReportOrganizationCreate = 'report-organization-create',
     ReportOrganizationCreateMy = 'report-organization-create-my',
     ReportGet = 'report-get',

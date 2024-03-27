@@ -11,6 +11,7 @@
     "tasks": "Задачи",
     "tasks.list": "Список задач",
     "order": "Задача",
+    "report": "Отчет",
     "reports": "Отчеты",
     "saved.reports": "Сохраненные отчеты",
     "maps": "Карты",
@@ -87,6 +88,7 @@
     "status": "Статус",
     "select.status": "Выберите статус задачи",
     "executor": "Исполнитель",
+    "creator": "Создатель",
     "priority": "Приоритет",
     "periodicity": "Периодичность",
     "category": "Категория",
@@ -233,7 +235,8 @@
             "appointed": "Назначена",
             "deadline": "Закрыта с нарушением дедлайна",
             "need-work": "Необходима доработка",
-            "verification": "На проверке"
+            "verification": "На проверке",
+            "not-assigned": "Не назначена"
         },
         "title": "Название задачи",
         "creator": "Cоздатель задачи",
@@ -279,6 +282,10 @@
                     "f": "{{entityType}} успешно изменена",
                     "sm": "{{entityType}} {{entityName}} успешно изменен",
                     "sf": "{{entityType}} {{entityName}} успешно изменена"
+                },
+                "save": {
+                    "m": "{{entityType}} успешно сохранен",
+                    "f": "{{entityType}} успешно сохранена"
                 },
                 "import": "Данные успешно добавлены",
                 "password.reset": "Пароль успешно сброшен",

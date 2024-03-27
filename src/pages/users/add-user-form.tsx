@@ -1250,7 +1250,7 @@ const AddUserForm = ({ setDialogOpen, user }: AddUserFormProps) => {
                                 className="w-[150px] mt-10 mr-4"
                                 onClick={() => setDialogOpen(false)}
                             >
-                                Отменить
+                                {t('button.action.cancel')}
                             </Button>
                         </div>
                     </CustomForm>
