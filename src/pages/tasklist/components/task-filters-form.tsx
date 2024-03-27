@@ -121,8 +121,6 @@ const TaskFiltersForm = ({
     const { t } = useTranslation()
 
     const handleSubmit = (data: z.infer<typeof filterSchema>) => {
-        console.log(data)
-
         setPersonalOrdersQuery({
             ...personalOrdersQuery,
             offset: {

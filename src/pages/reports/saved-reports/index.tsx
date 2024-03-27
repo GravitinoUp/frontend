@@ -11,14 +11,9 @@ import { formatDate, getColumnSorts } from '@/utils/helpers'
 export default function SavedReportsPage() {
     const { t } = useTranslation()
 
-    const [savedReportsQuery, setSavedReportsQuery] =
-        useState<any>(placeholderQuery) // TODO filters for saved reports
+    const [savedReportsQuery, setSavedReportsQuery] = useState(placeholderQuery) // TODO filters for saved reports
 
-    const {
-        data: reports = [],
-        error,
-        isFetching,
-    } = useGetSavedReportsQuery(savedReportsQuery)
+    const { data: reports = [], error, isFetching } = useGetSavedReportsQuery()
 
     const formattedReports = reports.map((value) => ({
         key: value.report_id,
