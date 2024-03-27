@@ -52,6 +52,7 @@ function OrderJournalContent({ order_id }: OrderJournalContentProps) {
             paginationInfo={{
                 itemCount: orderJournal.count,
                 pageSize: orderJournalQuery.offset.count,
+                pageIndex: orderJournalQuery.offset.page,
             }}
             isLoading={isLoading}
         />

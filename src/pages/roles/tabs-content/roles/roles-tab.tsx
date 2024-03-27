@@ -10,7 +10,6 @@ import { getColumnSorts } from '@/utils/helpers'
 const RolesTab = () => {
     const [rolesQuery, setRolesQuery] = useState<RolesPayloadInterface>({
         ...placeholderQuery,
-        sorts: { role_id: 'ASC' },
     })
 
     const {

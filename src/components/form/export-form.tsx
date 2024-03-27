@@ -15,8 +15,10 @@ const ExportForm = () => {
                 </div>
             </div>
             <div className="flex flex-col items-center self-stretch mx-16 mt-16 justify-center bg-muted border-input border-[1.5px] rounded-xl select-none h-[140px] pt-16">
-                <Button className="text-sm px-12 py-4" onClick={() => {
-                }}>
+                <Button
+                    className="text-sm w-[140px] py-4 rounded-xl"
+                    onClick={() => {}}
+                >
                     {t('export')}
                 </Button>
             </div>

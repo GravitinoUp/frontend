@@ -21,9 +21,8 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
-import { defaultQuery, TASK_STATUSES } from '@/constants/constants'
+import { defaultQuery } from '@/constants/constants'
 import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
-import { cn } from '@/lib/utils'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
@@ -54,7 +53,6 @@ const filterSchema = z.object({
     checkpoint_id: z.number().optional(),
     organization_id: z.number().optional(),
     priority_id: z.number().optional(),
-    order_status: z.array(z.string()),
     columns: tasksColumnsSchema,
 })
 
@@ -131,35 +129,36 @@ const TaskFiltersForm = ({
             },
             filter: {
                 ...personalOrdersQuery.filter,
-                facility: {
-                    checkpoint: {
-                        checkpoint_id:
-                            data.checkpoint_id !== 0
-                                ? data.checkpoint_id
-                                : undefined,
-                        branch: {
-                            branch_id:
-                                data.branch_id !== 0
-                                    ? data.branch_id
-                                    : undefined,
-                        },
-                    },
-                },
-                executor: {
-                    organization_id:
-                        data.organization_id !== 0
-                            ? data.organization_id
-                            : undefined,
-                },
-                priority: {
-                    priority_id:
-                        data.priority_id !== 0 ? data.priority_id : undefined,
-                },
-                order_status:
-                    data.order_status.length > 0
-                        ? data.order_status.map((value) => ({
-                              order_status_name: value,
-                          }))
+                facility:
+                    (data.checkpoint_id && data.checkpoint_id !== 0) ||
+                    (data.branch_id && data.branch_id !== 0)
+                        ? {
+                              checkpoint: {
+                                  checkpoint_id:
+                                      data.checkpoint_id &&
+                                      data.checkpoint_id !== 0
+                                          ? data.checkpoint_id
+                                          : undefined,
+                                  branch:
+                                      data.branch_id && data.branch_id !== 0
+                                          ? {
+                                                branch_id: data.branch_id,
+                                            }
+                                          : undefined,
+                              },
+                          }
+                        : undefined,
+                executor:
+                    data.organization_id && data.organization_id !== 0
+                        ? {
+                              organization_id: data.organization_id,
+                          }
+                        : undefined,
+                priority:
+                    data.priority_id && data.priority_id !== 0
+                        ? {
+                              priority_id: data.priority_id,
+                          }
                         : undefined,
             },
         })
@@ -173,11 +172,13 @@ const TaskFiltersForm = ({
             checkpoint_id: 0,
             organization_id: 0,
             priority_id: 0,
-            order_status: [],
             columns: initialColumnVisibility,
         })
         setPersonalOrdersQuery({
             ...defaultQuery,
+            filter: {
+                order_status: personalOrdersQuery.filter.order_status,
+            },
             period: personalOrdersQuery.period,
         })
         setFilterColumns(initialColumnVisibility)
@@ -426,54 +427,6 @@ const TaskFiltersForm = ({
                     )}
                 />
             </div>
-            <FormField
-                control={form.control}
-                name="order_status"
-                render={({ field }) => (
-                    <Fragment>
-                        <h3 className="mt-6 mb-3 font-medium text-xl text-[#3F434A]">
-                            {t('status')}
-                        </h3>
-                        <div className="flex flex-wrap gap-7">
-                            {Object.values(TASK_STATUSES).map((status) => (
-                                <Button
-                                    key={status}
-                                    type="button"
-                                    className={cn(
-                                        field.value.find(
-                                            (value) => value === status
-                                        )
-                                            ? 'bg-[#3F434A] text-background'
-                                            : 'bg-background text-[#3F434A]',
-                                        'py-3 px-16 rounded-xl border-2 border-[#3F434A] hover:bg-[#3F434A] hover:text-background'
-                                    )}
-                                    onClick={() => {
-                                        if (
-                                            !field.value.find(
-                                                (value) => value === status
-                                            )
-                                        ) {
-                                            field.onChange([
-                                                ...field.value,
-                                                status,
-                                            ])
-                                        } else {
-                                            field.onChange(
-                                                field.value.filter(
-                                                    (value) => value !== status
-                                                )
-                                            )
-                                        }
-                                    }}
-                                >
-                                    {status[0].toUpperCase() + status.slice(1)}
-                                </Button>
-                            ))}
-                            <FormMessage />
-                        </div>
-                    </Fragment>
-                )}
-            />
             <FormField
                 control={form.control}
                 name="columns"

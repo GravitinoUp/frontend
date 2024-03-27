@@ -1,11 +1,10 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { reportItems } from './constants'
 import ReportFiltersForm from './report-filters-form'
 import { reportsColumns, reportsColumnsVisibility } from './reports-columns'
 import ExportForm from '../../components/form/export-form'
-import { placeholderQuery } from '../tasklist/constants'
 import ArrowDown from '@/assets/icons/arrow_down.svg'
 import SavedIcon from '@/assets/icons/saved.svg'
 import Breadcrumbs from '@/components/breadcrumbs/breadcrumbs'
@@ -16,10 +15,10 @@ import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
 import { PageLayout } from '@/components/PageLayout'
 import { Button } from '@/components/ui/button'
+import { ReportsFilterQueryContext } from '@/context/tasks/reports-filter-query'
 import { useGetCheckpointReportsQuery } from '@/redux/api/reports'
 import { REPORTS_SAVED } from '@/routes.ts'
 import { BranchInterface } from '@/types/interface/branch'
-import { CheckpointReportsPayloadInterface } from '@/types/interface/reports'
 
 export default function CheckpointReportsPage() {
     const { t } = useTranslation()
@@ -31,18 +30,20 @@ export default function CheckpointReportsPage() {
     const [exportFormOpen, setExportFormOpen] = useState(false)
     const [filterFormOpen, setFilterFormOpen] = useState(false)
 
-    const [checkpointReportsQuery, setCheckpointReportsQuery] =
-        useState<CheckpointReportsPayloadInterface>({
-            branch_id: branch.branch_id,
-            ...placeholderQuery,
-        })
+    const {
+        reportsQuery: checkpointReportsQuery,
+        setReportsQuery: setCheckpointReportsQuery,
+    } = useContext(ReportsFilterQueryContext)
 
     const {
         data = { count: 0, data: [] },
         isError,
-        isLoading,
+        isFetching,
         refetch,
-    } = useGetCheckpointReportsQuery(checkpointReportsQuery)
+    } = useGetCheckpointReportsQuery({
+        ...checkpointReportsQuery,
+        branch_id: branch.branch_id,
+    })
 
     const formattedReports = data.data.map((row) => ({
         key: row.checkpoint.checkpoint_id,
@@ -174,7 +175,9 @@ export default function CheckpointReportsPage() {
                             sorts,
                             filter: {
                                 ...checkpointReportsQuery.filter,
-                                checkpoint: { checkpoint_name: filter },
+                                checkpoint: filter
+                                    ? { checkpoint_name: filter }
+                                    : undefined,
                             },
                             offset: { count: pageSize, page: pageIndex + 1 },
                         })
@@ -196,7 +199,7 @@ export default function CheckpointReportsPage() {
                         pageSize: checkpointReportsQuery.offset.count,
                         pageIndex: checkpointReportsQuery.offset.page - 1,
                     }}
-                    isLoading={isLoading}
+                    isLoading={isFetching}
                 />
             </PageLayout>
         </Fragment>

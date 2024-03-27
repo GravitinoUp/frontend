@@ -18,7 +18,7 @@ import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
 const columnsFilters = localStorage.getItem('filterColumns')
 
-function TaskListContent({ orderStatus }: { orderStatus?: string }) {
+function TaskListContent({ orderStatus }: { orderStatus?: number }) {
     const navigate = useNavigate()
     const { t } = useTranslation()
     const [filterColumns, setFilterColumns] = useState<TasksFilterColumns>(
@@ -76,15 +76,22 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
     }, [filterColumns])
 
     useEffect(() => {
-        setPersonalOrdersQuery({
-            ...personalOrdersQuery,
-            filter: {
-                ...personalOrdersQuery.filter,
-                order_status: orderStatus
-                    ? [{ order_status_name: orderStatus }]
-                    : personalOrdersQuery.filter.order_status,
-            },
-        })
+        if (
+            (personalOrdersQuery.filter.order_status &&
+                personalOrdersQuery.filter.order_status[0]?.order_status_id ===
+                    orderStatus) ||
+            (!personalOrdersQuery.filter.order_status && !orderStatus)
+        ) {
+            setPersonalOrdersQuery({
+                ...personalOrdersQuery,
+                filter: {
+                    ...personalOrdersQuery.filter,
+                    order_status: orderStatus
+                        ? [{ order_status_id: orderStatus }]
+                        : undefined,
+                },
+            })
+        }
     }, [])
 
     if (error) {
@@ -131,12 +138,6 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                             priority_id:
                                 personalOrdersQuery.filter.priority
                                     ?.priority_id,
-                            order_status: personalOrdersQuery.filter
-                                .order_status
-                                ? personalOrdersQuery.filter.order_status!.map(
-                                      (value) => `${value?.order_status_name}`
-                                  )
-                                : [],
                             columns: filterColumns,
                         }}
                         setFormOpen={setFilterFormOpen}
@@ -239,6 +240,9 @@ function TaskListContent({ orderStatus }: { orderStatus?: string }) {
                         sorts,
                         filter: {
                             ...personalOrdersQuery.filter,
+                            order_status: orderStatus
+                                ? [{ order_status_id: orderStatus }]
+                                : undefined,
                             order_name: filter,
                         },
                         offset: { count: pageSize, page: pageIndex + 1 },
