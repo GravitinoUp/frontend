@@ -11,7 +11,7 @@ import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import { PageLayout } from '@/components/PageLayout'
+import { PageLayout } from '@/components/layout/page-layout.tsx'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { useGetUsersQuery } from '@/redux/api/users'
 import {

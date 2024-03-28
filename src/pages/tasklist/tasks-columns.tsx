@@ -1,37 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table'
 import i18next from '../../i18n.ts'
 import OrderStatus from '@/components/order-status/order-status.tsx'
-import { Checkbox } from '@/components/ui/checkbox'
 import { ActionButtons } from '@/pages/tasklist/components/action-buttons.tsx'
-import { FormattedTaskInterface } from '@/types/interface/orders'
+import { FormattedTaskInterface } from '@/types/interface/orders.ts'
 
 export const tasksColumns: ColumnDef<FormattedTaskInterface>[] = [
-    {
-        id: 'select',
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && 'indeterminate')
-                }
-                onCheckedChange={(value) =>
-                    table.toggleAllPageRowsSelected(!!value)
-                }
-                aria-label="Select all"
-                className="bg-[#F8F8F8] border-[#E8E9EB]"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-                className="bg-[#F8F8F8] border-[#E8E9EB]"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
     {
         header: i18next.t('number'),
         accessorKey: 'order_id',

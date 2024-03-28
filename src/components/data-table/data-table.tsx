@@ -28,6 +28,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
+import { cn } from '@/lib/utils.ts'
 
 const SKELETON_ITEMS_COUNT = 10
 
@@ -77,7 +78,7 @@ function DataTable<TData, TValue>({
                       ...column,
                       cell: ({ cell }: { cell: Cell<unknown, unknown> }) => {
                           const isActions = cell.column.id === 'actions'
-                          const isId = cell.column.id === 'id'
+                          const isId = cell.column.id.includes('id')
                           const isSelect = cell.column.id === 'select'
                           if (isActions || isId) {
                               return <Skeleton className="h-6 w-6" />
@@ -145,11 +146,10 @@ function DataTable<TData, TValue>({
 
     return (
         <div
-            className={`${
-                hasBackground
-                    ? 'bg-white rounded-2xl mt-4 p-6 flex flex-wrap gap-4 items-center justify-start w-full'
-                    : ''
-            }`}
+            className={cn(
+                hasBackground &&
+                    'bg-white rounded-2xl mt-4 p-6 flex flex-wrap gap-4 items-center justify-start w-full'
+            )}
         >
             <DebouncedInput
                 value={globalFilter ?? ''}
@@ -179,12 +179,13 @@ function DataTable<TData, TValue>({
                                                 header.id !== 'actions' && (
                                                     <Button
                                                         variant="ghost"
-                                                        className={`py-0 px-1 ${
+                                                        className={cn(
+                                                            'py-0 px-1',
                                                             header.column.getIsSorted() ===
-                                                            'asc'
+                                                                'asc'
                                                                 ? 'rotate-180'
                                                                 : 'rotate-0'
-                                                        }`}
+                                                        )}
                                                         onClick={() =>
                                                             header.column.toggleSorting(
                                                                 header.column.getIsSorted() ===
@@ -225,11 +226,13 @@ function DataTable<TData, TValue>({
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell
                                             key={cell.id}
-                                            className={`text-[15px] ${getCellTextColor(
-                                                cell.column.id
-                                            )} ${getCellAlignment(
-                                                cell.column.id
-                                            )}`}
+                                            className={cn(
+                                                'text-[15px]',
+                                                getCellTextColor(
+                                                    cell.column.id
+                                                ),
+                                                getCellAlignment(cell.column.id)
+                                            )}
                                             data-column-id={cell.column.id}
                                         >
                                             {flexRender(

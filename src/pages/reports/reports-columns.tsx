@@ -2,7 +2,6 @@ import { ColumnDef } from '@tanstack/react-table'
 import { ActionButtons } from './action-buttons.tsx'
 import i18next from '../../i18n.ts'
 import CircularBar from '@/components/circular-bar/circular-bar.tsx'
-import { Checkbox } from '@/components/ui/checkbox'
 import { FormattedReportInterface } from '@/types/interface/report.ts'
 
 export const reportsColumnsVisibility = {
@@ -11,32 +10,6 @@ export const reportsColumnsVisibility = {
 }
 
 export const reportsColumns: ColumnDef<FormattedReportInterface>[] = [
-    {
-        id: 'select',
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && 'indeterminate')
-                }
-                onCheckedChange={(value) =>
-                    table.toggleAllPageRowsSelected(!!value)
-                }
-                aria-label="Select all"
-                className="bg-[#F8F8F8] border-[#E8E9EB]"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-                className="bg-[#F8F8F8] border-[#E8E9EB]"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
     {
         header: i18next.t('number'),
         accessorKey: 'id',

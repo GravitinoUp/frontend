@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { Button } from '../ui/button'
+import { cn } from '@/lib/utils.ts'
 
 interface RefreshButtonProps {
     isLoading?: boolean
@@ -28,7 +29,7 @@ const RefreshButton = ({ onClick, isLoading }: RefreshButtonProps) => {
             className="bg-white border-solid border-[2px] rounded-3xl flex items-center justify-center p-[7px] size-8"
             onClick={handleClick}
         >
-            <div className={`${isSpinning && isLoading ? 'animate-spin' : ''}`}>
+            <div className={cn(isSpinning && isLoading && 'animate-spin')}>
                 <RefreshCw color="black" size={17} />
             </div>
         </Button>

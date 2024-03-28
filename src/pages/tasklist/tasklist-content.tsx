@@ -11,9 +11,9 @@ import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table.tsx'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
-import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
+import { TasksFilterQueryContext } from '@/context/tasks-filter-query.tsx'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
-import { OrderInterface } from '@/types/interface/orders/index.ts'
+import { OrderInterface } from '@/types/interface/orders.ts'
 import { formatDate, formatInitials } from '@/utils/helpers.ts'
 
 const columnsFilters = localStorage.getItem('filterColumns')

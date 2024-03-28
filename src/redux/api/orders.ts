@@ -13,7 +13,7 @@ import {
     OrderPayloadInterface,
     OrderUpdateInterface,
     UpdateStatusPayloadInterface,
-} from '@/types/interface/orders'
+} from '@/types/interface/orders.ts'
 import { formatQueryEndpoint } from '@/utils/helpers'
 
 const ordersApi = api.injectEndpoints({

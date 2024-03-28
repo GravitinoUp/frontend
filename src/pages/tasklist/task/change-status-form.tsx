@@ -25,7 +25,7 @@ import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast'
 import { useGetAllOrderStatusesQuery } from '@/redux/api/order-statuses'
 import { useUpdateStatusMutation } from '@/redux/api/orders'
-import { OrderInterface } from '@/types/interface/orders'
+import { OrderInterface } from '@/types/interface/orders.ts'
 
 const statusSchema = z.object({
     order_status_id: z.string(),

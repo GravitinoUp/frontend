@@ -6,7 +6,7 @@ import {
 } from './manage-properties-tab'
 import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
-import { PageLayout } from '@/components/PageLayout'
+import { PageLayout } from '@/components/layout/page-layout.tsx'
 import { useGetPropertiesQuery } from '@/redux/api/properties'
 import { EntityType } from '@/types/interface/fetch'
 

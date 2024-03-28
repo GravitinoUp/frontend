@@ -1,4 +1,4 @@
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, lazy, Suspense, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ChangeStatusForm from './change-status-form.tsx'
 import { placeholderQuery } from '../constants.ts'
@@ -10,15 +10,19 @@ import ImageCarousel from '@/components/image-carousel/image-carousel.tsx'
 import OrderStatus from '@/components/order-status/order-status.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
 import { defaultQuery } from '@/constants/constants.ts'
-import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
+import { TasksFilterQueryContext } from '@/context/tasks-filter-query.tsx'
 import { useDownload } from '@/hooks/use-download.ts'
-import FilesUploadForm from '@/pages/tasklist/components/files-upload-form.tsx'
 import { TaskInfoSkeleton } from '@/pages/tasklist/task/task-info-skeleton.tsx'
 import { useGetOrderStatusesQuery } from '@/redux/api/order-statuses.ts'
 import { useGetPersonalOrdersQuery } from '@/redux/api/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
+
+const FilesUploadForm = lazy(
+    () => import('@/pages/tasklist/components/files-upload-form.tsx')
+)
 
 interface TaskInfoFieldProps {
     title?: string | null
@@ -195,10 +199,16 @@ const TaskInfoContent = ({ order_id }: TaskInfoContentProps) => {
                             }
                             content={
                                 <div className="h-[668px]">
-                                    <FilesUploadForm
-                                        orderIDs={[order_id]}
-                                        setDialogOpen={setImagesFormOpen}
-                                    />
+                                    <Suspense
+                                        fallback={
+                                            <Skeleton className="w-[535px] h-[120px] rounded-xl mt-8" />
+                                        }
+                                    >
+                                        <FilesUploadForm
+                                            orderIDs={[order_id]}
+                                            setDialogOpen={setImagesFormOpen}
+                                        />
+                                    </Suspense>
                                 </div>
                             }
                         />

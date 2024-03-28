@@ -82,7 +82,7 @@ const MapFiltersForm = ({
                                         )
                                             ? 'bg-[#3F434A]'
                                             : 'bg-muted',
-                                        'p-2 rounded-full hover:bg-[#3F434A] group'
+                                        'p-2 rounded-full hover:bg-[#3F434A] group cursor-pointer'
                                     )}
                                     onClick={() => {
                                         if (
@@ -108,20 +108,16 @@ const MapFiltersForm = ({
                                     }}
                                 >
                                     <div
-                                        className={`
-                                            w-6 h-6
-                                            flex items-center justify-center
-                                            ${
-                                                field.value.find(
-                                                    (value) =>
-                                                        value.checkpoint_type_id ===
-                                                        type
-                                                )
-                                                    ? 'fill-muted'
-                                                    : 'fill-[#3F434A]'
-                                            }
-                                                group-hover:fill-muted
-                                        `}
+                                        className={cn(
+                                            field.value.find(
+                                                (value) =>
+                                                    value.checkpoint_type_id ===
+                                                    type
+                                            )
+                                                ? 'fill-muted'
+                                                : 'fill-[#3F434A]',
+                                            'w-6 h-6 flex items-center justify-center group-hover:fill-muted'
+                                        )}
                                     >
                                         {type == CHECKPOINT_TYPES.CAR && (
                                             <CarIcon />

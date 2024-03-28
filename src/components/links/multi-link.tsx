@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import SidebarLink from './nav-link.tsx'
-import { SingleLink } from '../Navbar'
+import { SingleLink } from '../layout/navbar.tsx'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 

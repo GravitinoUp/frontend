@@ -41,11 +41,12 @@ function SidebarLink({
                     <div>
                         {open && (
                             <div
-                                className={`ml-3 font-pop text-[16px] text-[#3F434A] whitespace-pre-line text-start ${
+                                className={cn(
                                     isOnCurrentPath
                                         ? 'font-[600]'
-                                        : 'font-[400]'
-                                }`}
+                                        : 'font-[400]',
+                                    'ml-3 font-pop text-[16px] text-[#3F434A] whitespace-pre-line text-start'
+                                )}
                             >
                                 {title}
                             </div>
