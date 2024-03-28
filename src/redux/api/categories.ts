@@ -1,6 +1,9 @@
 import { api } from './'
 import { FetchDataInterface } from '@/types/interface/fetch'
-import { CategoryInterface, CategoryPayloadInterface } from '@/types/interface/orders'
+import {
+    CategoryInterface,
+    CategoryPayloadInterface,
+} from '@/types/interface/orders.ts'
 
 const categoriesApi = api.injectEndpoints({
     endpoints: (builder) => ({

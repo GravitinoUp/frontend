@@ -16,6 +16,7 @@ import {
     CHECKPOINT_COMPLETED_STATUSES,
     CHECKPOINT_TYPES,
 } from '@/constants/constants'
+import { cn } from '@/lib/utils.ts'
 import { checkpointsFormTab } from '@/pages/checkpoints/checkpoint-form-tab'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
 
@@ -50,15 +51,16 @@ export default function MapPin({
             <Popover>
                 <PopoverTrigger>
                     <div
-                        className={`
-                            absolute
-                            ${completedPercent >= CHECKPOINT_COMPLETED_STATUSES.MAX ? 'bg-map-closed' : completedPercent >= CHECKPOINT_COMPLETED_STATUSES.MEDIUM ? 'bg-map-completed-yellow' : 'bg-map-completed-red'}
-                            rounded-full
-                            flex justify-center items-center
-                            top-0
-                            mx-[4px]
-                            mt-[4px]
-                        `}
+                        className={cn(
+                            completedPercent >=
+                                CHECKPOINT_COMPLETED_STATUSES.MAX
+                                ? 'bg-map-closed'
+                                : completedPercent >=
+                                    CHECKPOINT_COMPLETED_STATUSES.MEDIUM
+                                  ? 'bg-map-completed-yellow'
+                                  : 'bg-map-completed-red',
+                            'absolute rounded-full flex justify-center items-center top-0 mx-1 mt-1'
+                        )}
                     >
                         <div className="w-[34px] h-[34px] flex justify-center items-center fill-white">
                             {checkpoint.checkpoint_type.checkpoint_type_id ==

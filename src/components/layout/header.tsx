@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-import AccountMenu from './account-menu/account-menu'
-import { NavbarProps } from './Navbar'
+import { NavbarProps } from './navbar.tsx'
+import AccountMenu from '../account-menu/account-menu.tsx'
 
 export function Header({ open, setOpen }: NavbarProps) {
     return (

@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { PermissionEnum } from '@/constants/permissions.enum'
-import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query'
+import { TasksFilterQueryContext } from '@/context/tasks-filter-query.tsx'
 import { useErrorToast } from '@/hooks/use-error-toast.tsx'
 import { useSuccessToast } from '@/hooks/use-success-toast.tsx'
 import {
@@ -21,7 +21,7 @@ import {
 import {
     FormattedTaskInterface,
     OrderInterface,
-} from '@/types/interface/orders'
+} from '@/types/interface/orders.ts'
 import { getPermissionValue } from '@/utils/helpers'
 
 export const ActionButtons = ({ task }: { task: FormattedTaskInterface }) => {

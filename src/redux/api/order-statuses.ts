@@ -4,7 +4,7 @@ import { FetchDataInterface } from '@/types/interface/fetch'
 import {
     OrderStatusInterface,
     OrderStatusPayloadInterface,
-} from '@/types/interface/orders'
+} from '@/types/interface/orders.ts'
 import { formatQueryEndpoint } from '@/utils/helpers.ts'
 
 const orderStatusesApi = api.injectEndpoints({

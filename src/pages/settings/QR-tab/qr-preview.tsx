@@ -1,8 +1,8 @@
 import { BlobProvider } from '@react-pdf/renderer'
-import { clsx } from 'clsx'
 import { useTranslation } from 'react-i18next'
 import QRPreviewIcon from '@/assets/icons/QR-preview.svg'
 import { Button } from '@/components/ui/button.tsx'
+import { cn } from '@/lib/utils.ts'
 import { QRpage } from '@/pages/QR-pdf/QR-pdf.tsx'
 import { CheckpointInterface } from '@/types/interface/checkpoint.ts'
 
@@ -27,7 +27,7 @@ export const QRPreview = ({ checkpoint, QRsrc }: QRPreviewProps) => {
             >
                 {({ url, loading }) => (
                     <Button
-                        className={clsx(
+                        className={cn(
                             'rounded-2xl mt-11 w-[260px]',
                             loading &&
                                 'pointer-events-none disabled:cursor-not-allowed opacity-50'
@@ -35,7 +35,7 @@ export const QRPreview = ({ checkpoint, QRsrc }: QRPreviewProps) => {
                         asChild
                     >
                         <a
-                            className={clsx(
+                            className={cn(
                                 loading &&
                                     'pointer-events-none disabled:cursor-not-allowed opacity-50'
                             )}

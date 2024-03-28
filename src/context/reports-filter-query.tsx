@@ -8,7 +8,7 @@ import {
     useMemo,
     useState,
 } from 'react'
-import { PayloadInterface } from '@/types/interface/fetch'
+import { PayloadInterface } from '@/types/interface/fetch.ts'
 
 const DEFAULT_REPORTS_PER_PAGE = 10
 

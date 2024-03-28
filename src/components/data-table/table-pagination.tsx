@@ -14,6 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { cn } from '@/lib/utils.ts'
 
 const ITEMS_PER_PAGE_LIST = [10, 20, 30, 40, 50]
 
@@ -37,7 +38,7 @@ export function TablePagination<TData>({
             <div className="w-full flex items-center justify-between space-x-6 lg:space-x-8">
                 <div className="flex items-center space-x-2">
                     <Select
-                        value={`${pagination.pageSize}`}
+                        value={String(pagination.pageSize)}
                         onValueChange={(value) => {
                             table?.setPageSize(Number(value))
                         }}
@@ -117,11 +118,10 @@ export function TablePagination<TData>({
                                 <Button
                                     key={page}
                                     variant="ghost"
-                                    className={`h-8 w-8 p-0 font-normal ${
-                                        isCurrentPage
-                                            ? 'bg-primary text-white'
-                                            : ''
-                                    }`}
+                                    className={cn(
+                                        'h-8 w-8 p-0 font-normal',
+                                        isCurrentPage && 'bg-primary text-white'
+                                    )}
                                     onClick={() => table?.setPageIndex(page)}
                                 >
                                     {page + 1}

@@ -25,6 +25,7 @@ export default function MapPage() {
         data: checkpoints = { count: 0, data: [] },
         isError,
         isLoading,
+        isSuccess,
     } = useGetCheckpointsQuery(checkpointsQuery)
 
     return (
@@ -88,13 +89,14 @@ export default function MapPage() {
                 </div>
             </div>
             {isLoading && (
-                <div className="absolute left-1/2 top-1/2">
+                <div className="flex justify-center items-center h-screen mx-auto">
                     <LoadingSpinner className="w-16 h-16 text-primary" />
                 </div>
             )}
             {isError && <CustomAlert />}
-
-            <YandexMap checkpoints={checkpoints} enableRounded={false} />
+            {isSuccess && (
+                <YandexMap checkpoints={checkpoints} enableRounded={false} />
+            )}
         </div>
     )
 }

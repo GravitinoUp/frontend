@@ -8,7 +8,7 @@ import {
     useState,
 } from 'react'
 import { defaultQuery } from '@/constants/constants.ts'
-import { OrderPayloadInterface } from '@/types/interface/orders'
+import { OrderPayloadInterface } from '@/types/interface/orders.ts'
 
 interface ContextValuesType {
     personalOrdersQuery: OrderPayloadInterface

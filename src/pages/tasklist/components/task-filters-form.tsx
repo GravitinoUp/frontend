@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { defaultQuery } from '@/constants/constants'
-import { TasksFilterQueryContext } from '@/context/tasks/tasks-filter-query.tsx'
+import { TasksFilterQueryContext } from '@/context/tasks-filter-query.tsx'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { useGetCheckpointsQuery } from '@/redux/api/checkpoints'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'

@@ -4,7 +4,7 @@ import { organizationsColumns } from './organizations-columns'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
-import { PageLayout } from '@/components/PageLayout'
+import { PageLayout } from '@/components/layout/page-layout.tsx'
 import { useGetAllOrganizationsQuery } from '@/redux/api/organizations'
 import { OrganizationsPayloadInterface } from '@/types/interface/organizations'
 
@@ -75,6 +75,7 @@ const OrganizationsPage = () => {
                         pageIndex: organizationsQuery.offset.page - 1,
                     }}
                     isLoading={isFetching}
+                    searchPlaceholder={t('search.organization.name')}
                 />
             )}
         </PageLayout>

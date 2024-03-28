@@ -2,6 +2,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import i18next from '../../i18n.ts'
 import CircularBar from '@/components/circular-bar/circular-bar.tsx'
 import { QUALITY_STATUSES } from '@/constants/constants.ts'
+import { cn } from '@/lib/utils.ts'
 import { FormattedReportInterface } from '@/types/interface/report.ts'
 
 export const dashboardReportsColumns: ColumnDef<FormattedReportInterface>[] = [
@@ -12,18 +13,14 @@ export const dashboardReportsColumns: ColumnDef<FormattedReportInterface>[] = [
 
             return (
                 <div
-                    className={`
-                w-[3px]
-                rounded-full
-                h-12
-                ${
-                    completed_percent >= QUALITY_STATUSES.HIGH
-                        ? 'bg-[#49C96D]'
-                        : completed_percent >= QUALITY_STATUSES.MEDIUM
-                        ? 'bg-[#FFD240]'
-                        : 'bg-[#FF6B6B]'
-                }
-            `}
+                    className={cn(
+                        completed_percent >= QUALITY_STATUSES.HIGH
+                            ? 'bg-[#49C96D]'
+                            : completed_percent >= QUALITY_STATUSES.MEDIUM
+                              ? 'bg-[#FFD240]'
+                              : 'bg-[#FF6B6B]',
+                        'w-[3px] rounded-full h-12'
+                    )}
                 />
             )
         },

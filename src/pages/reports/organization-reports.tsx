@@ -12,9 +12,9 @@ import { CustomAlert } from '@/components/custom-alert/custom-alert'
 import DataTable from '@/components/data-table/data-table'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import { PageLayout } from '@/components/PageLayout'
+import { PageLayout } from '@/components/layout/page-layout.tsx'
 import { Button } from '@/components/ui/button'
-import { ReportsFilterQueryContext } from '@/context/tasks/reports-filter-query'
+import { ReportsFilterQueryContext } from '@/context/reports-filter-query.tsx'
 import { useGetOrganizationReportsQuery } from '@/redux/api/reports'
 import { REPORTS_SAVED } from '@/routes.ts'
 import { CheckpointInterface } from '@/types/interface/checkpoint'
@@ -146,6 +146,7 @@ export default function OrganizationReportsPage() {
                     pageIndex: organizationReportsQuery.offset.page - 1,
                 }}
                 isLoading={isFetching}
+                searchPlaceholder={t('search.organization.name')}
             />
         </PageLayout>
     )

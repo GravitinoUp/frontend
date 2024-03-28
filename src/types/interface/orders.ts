@@ -1,13 +1,13 @@
-import { FacilityInterface, FacilitySortInterface } from '../facility'
-import { IQuery, SortOptionsType } from '../fetch'
-import { GroupInterface, GroupSortInterface } from '../group'
+import { FacilityInterface, FacilitySortInterface } from './facility.ts'
+import { IQuery, SortOptionsType } from './fetch.ts'
+import { GroupInterface, GroupSortInterface } from './group.ts'
 import {
     OrganizationInterface,
     OrganizationSortInterface,
-} from '../organizations'
-import { RoleInterface, RoleSortInterface } from '../roles'
-import { UserInterface } from '../user'
-import { RecursivePartial } from '@/utils/recursive-partial'
+} from './organizations.ts'
+import { RoleInterface, RoleSortInterface } from './roles.ts'
+import { UserInterface } from './user.ts'
+import { RecursivePartial } from '@/utils/recursive-partial.ts'
 
 export interface FormattedTaskInterface {
     key: number

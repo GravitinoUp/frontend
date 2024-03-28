@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import ArrowRight from '@/assets/icons/arrow_right.svg'
+import { cn } from '@/lib/utils.ts'
 
 interface BreadcrumbsProps {
     items: { to: string; label: string }[]
@@ -26,11 +27,12 @@ const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                                 onClick={(event) =>
                                     value.to === '' && event.preventDefault()
                                 }
-                                className={`text-lg ${
+                                className={cn(
+                                    'text-lg',
                                     location.pathname === value.to
                                         ? 'font-bold'
                                         : 'text-body-light'
-                                }`}
+                                )}
                             >
                                 {value.label}
                             </Link>

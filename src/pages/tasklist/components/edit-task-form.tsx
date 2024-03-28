@@ -55,7 +55,7 @@ import {
     OrderExecutorUpdateInterface,
     OrderInterface,
     OrderUpdateInterface,
-} from '@/types/interface/orders'
+} from '@/types/interface/orders.ts'
 import { formatDate } from '@/utils/helpers.ts'
 
 const FilesUploadForm = lazy(
@@ -90,7 +90,7 @@ const datesSchema = z
             required_error: i18next.t('validation.require.end.date'),
         }),
     })
-    .refine((data) => data.endDate > data.startDate, {
+    .refine((data) => data.endDate >= data.startDate, {
         message: i18next.t('validation.require.dates.mismatch'),
         path: ['endDate'],
     })

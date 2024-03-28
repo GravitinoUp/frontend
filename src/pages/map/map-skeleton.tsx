@@ -1,4 +1,4 @@
-import { Layout } from '@/components/Layout.tsx'
+import { Layout } from '@/components/layout/layout.tsx'
 import { LoadingSpinner } from '@/components/spinner/spinner.tsx'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
 

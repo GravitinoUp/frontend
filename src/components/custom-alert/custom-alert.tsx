@@ -35,9 +35,10 @@ export function CustomAlert({
         >
             <div className="flex items-center gap-6 ">
                 <AlertCircle
-                    className={`h-6 w-6 self-start ${
-                        isTypeSelect ? 'text-destructive' : ''
-                    }`}
+                    className={cn(
+                        'h-6 w-6 self-start',
+                        isTypeSelect && 'text-destructive'
+                    )}
                 />
                 <div
                     className={

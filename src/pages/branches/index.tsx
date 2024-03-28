@@ -10,7 +10,7 @@ import CustomTabs from '@/components/custom-tabs/custom-tabs'
 import DataTable from '@/components/data-table/data-table'
 import DialogWindow from '@/components/dialog-window/dialog-window.tsx'
 import ExcelButton from '@/components/excel-button/excel-button'
-import { PageLayout } from '@/components/PageLayout'
+import { PageLayout } from '@/components/layout/page-layout.tsx'
 import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { useGetBranchesQuery } from '@/redux/api/branch'
 import { BranchesPayloadInterface } from '@/types/interface/branch'
@@ -100,6 +100,7 @@ const BranchesPage = () => {
                         pageIndex: branchesQuery.offset.page - 1,
                     }}
                     isLoading={isFetching}
+                    searchPlaceholder={t('search.branch.name')}
                 />
             )}
         </PageLayout>

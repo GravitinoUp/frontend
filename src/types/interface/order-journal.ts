@@ -1,5 +1,5 @@
 import { IQuery, SortOptionsType } from './fetch'
-import { OrderStatusInterface, OrderStatusSortInterface } from './orders'
+import { OrderStatusInterface, OrderStatusSortInterface } from './orders.ts'
 import { UserInterface, UserSortInterface } from './user'
 
 export interface FormattedOrderJournalInterface {

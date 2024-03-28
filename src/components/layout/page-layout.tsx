@@ -1,10 +1,10 @@
 import React from 'react'
 import { ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import RefreshButton from './refresh-button/refresh-button'
-import { Button } from './ui/button'
-import { PermissionEnum } from '@/constants/permissions.enum'
-import { getPermissionValue } from '@/utils/helpers'
+import RefreshButton from '../refresh-button/refresh-button.tsx'
+import { Button } from '../ui/button.tsx'
+import { PermissionEnum } from '@/constants/permissions.enum.ts'
+import { getPermissionValue } from '@/utils/helpers.ts'
 
 interface PageLayoutProps {
     title?: string

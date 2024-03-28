@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { managePropertiesColumns } from './manage-properties-columns'
 import { placeholderQuery } from '../tasklist/constants.ts'
 import { ErrorCustomAlert } from '@/components/custom-alert/custom-alert'
@@ -13,6 +14,7 @@ interface ManagePropertiesContentProps {
 }
 
 function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
+    const { t } = useTranslation()
     const [propertiesQuery, setPropertiesQuery] =
         useState<PropertyPayloadInterface>(placeholderQuery)
 
@@ -49,6 +51,7 @@ function ManagePropertiesContent({ entity }: ManagePropertiesContentProps) {
                 pageIndex: propertiesQuery.offset.page - 1,
             }}
             isLoading={isLoading}
+            searchPlaceholder={t('search.property.value.name')}
         />
     )
 }

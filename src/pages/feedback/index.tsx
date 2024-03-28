@@ -38,7 +38,7 @@ import {
     useCreateGuestOrderMutation,
     useUploadFileMutation,
 } from '@/redux/api/orders'
-import { GuestOrderPayloadInterface } from '@/types/interface/orders'
+import { GuestOrderPayloadInterface } from '@/types/interface/orders.ts'
 
 const formSchema = z.object({
     guest_name: z.string().min(1, i18next.t('validation.require.full.name')),
@@ -333,13 +333,6 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                         )}
                     </Button>
                     <div className="flex flex-col items-center">
-                        <p className="mt-6 text-sm text-body-light max-w-[300px] text-center">
-                            {t('feedback.agree')}
-                            <a href="#" className="text-primary">
-                                {' '}
-                                {t('feedback.agree.terms')}
-                            </a>
-                        </p>
                         <Watermark />
                     </div>
                 </div>

@@ -1,8 +1,8 @@
 import { ReactNode, useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Header } from './Header'
-import { Navbar } from './Navbar'
-import useEscape from '../hooks/use-escape.ts'
+import { Header } from './header.tsx'
+import { Navbar } from './navbar.tsx'
+import useEscape from '../../hooks/use-escape.ts'
 
 export function Layout({ children }: { children?: ReactNode }) {
     const [open, setOpen] = useState(false)
