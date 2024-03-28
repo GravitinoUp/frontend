@@ -136,6 +136,7 @@
         "task.history": "Журнал",
         "settings.common": "Общие настройки",
         "settings.customization": "Оформление",
+        "settings.QR": "Сгенерировать QR-код",
         "access.map": "Карта доступов",
         "permissions.list": "Список прав",
         "role.creation": "Создание роли"
@@ -190,6 +191,7 @@
     },
     "validation": {
         "invalid.characters": "Недопустимые символы",
+        "files.number.exceeded": "Вы прикрепили более 10 изображений",
         "require": {
             "title": "Необходимо добавить название",
             "short.name": "Необходимо добавить короткое название",
@@ -290,7 +292,8 @@
                 "import": "Данные успешно добавлены",
                 "password.reset": "Пароль успешно сброшен",
                 "password.update": "Пароль успешно обновлен",
-                "permissions.set": "Права успешно установлены"
+                "permissions.set": "Права успешно установлены",
+                "feedback": "Обращение успешно отправлено"
             }
         }
     },
@@ -344,5 +347,8 @@
     "extended.search": "Расширенный поиск",
     "settings.personalization.avatar": "Изображение профиля",
     "settings.personalization.color.scheme": "Цветовая схема",
-    "by.default": "По умолчанию"
+    "by.default": "По умолчанию",
+    "PDF.QR.title": "QR-код для пункта пропуска \"{{checkpointName}}\"",
+    "PDF.QR.loading": "Формируем ссылку...",
+    "QR.generate.error": "Произошла ошибка при формировании QR-кода. Попробуйте повторить позднее."
 }

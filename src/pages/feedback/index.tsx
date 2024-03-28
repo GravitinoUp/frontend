@@ -1,4 +1,11 @@
-import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react'
+import {
+    ChangeEvent,
+    Fragment,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react'
 import i18next from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -47,6 +54,11 @@ const formSchema = z.object({
 export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
     const { t } = useTranslation()
     const location = useLocation()
+    const checkpointId = useMemo(
+        () => new URLSearchParams(location.search).get('checkpoint'),
+        []
+    )
+    const isGuest = type === 'guest'
 
     const [selectedFiles, setSelectedFiles] = useState<FileData[]>([])
     const [uploadFiles, { isLoading, error, isSuccess }] =
@@ -75,34 +87,16 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
     ] = useCreateGuestOrderMutation()
 
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
-        const facilityId = location.search
-            .split('?')
-            .find((row) => row.startsWith(`facility=`))
-            ?.split('=')[1]
-
-        if (type === 'guest') {
-            const guestData: GuestOrderPayloadInterface = {
-                guest_name: data.guest_name,
-                guest_email: data.guest_email,
-                guest_phone: `${data.guest_phone}`,
-                order_name: data.subject,
-                order_description: `${data.description}`,
-                facility_id: Number(facilityId),
-            }
-
-            submitGuestForm(guestData)
-        } else {
-            const guestData: GuestOrderPayloadInterface = {
-                guest_name: data.guest_name,
-                guest_email: data.guest_email,
-                guest_phone: `${data.guest_phone}`,
-                order_name: data.department,
-                order_description: `${data.description}`,
-                facility_id: Number(facilityId),
-            }
-
-            submitGuestForm(guestData)
+        const guestData: GuestOrderPayloadInterface = {
+            guest_name: data.guest_name,
+            guest_email: data.guest_email,
+            guest_phone: data.guest_phone || '',
+            order_name: isGuest ? data.subject : data.department,
+            order_description: data.description || '',
+            checkpoint_id: Number(checkpointId),
         }
+
+        submitGuestForm(guestData)
     }
 
     const inputRef = useRef<HTMLInputElement>(null)
@@ -144,8 +138,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
         }
     }, [isGuestSubmitSuccess])
 
-    useSuccessToast('SUCCESS', isSuccess)
-
+    useSuccessToast(t('toast.success.description.feedback'), isSuccess)
     useErrorToast(() => handleSubmit(form.getValues()), guestSubmitError)
     useErrorToast(undefined, error)
 
@@ -203,7 +196,7 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                             />
                         )}
                     />
-                    {type === 'guest' && (
+                    {isGuest && (
                         <FormField
                             control={form.control}
                             name="subject"
@@ -318,11 +311,20 @@ export function FeedbackPage({ type }: { type: 'guest' | 'worker' }) {
                                 </Fragment>
                             }
                         />
+                        {selectedFiles.length > 9 && (
+                            <p className="text-sm font-medium text-destructive">
+                                {t('validation.files.number.exceeded')}
+                            </p>
+                        )}
                     </FormItem>
                     <Button
                         className="w-full mt-10 rounded-xl"
                         type="submit"
-                        disabled={isGuestSubmitLoading || isLoading}
+                        disabled={
+                            isGuestSubmitLoading ||
+                            isLoading ||
+                            selectedFiles.length > 9
+                        }
                     >
                         {isGuestSubmitLoading || isLoading ? (
                             <LoadingSpinner />

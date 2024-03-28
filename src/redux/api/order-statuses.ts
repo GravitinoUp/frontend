@@ -1,9 +1,11 @@
 import { api } from '.'
+import { PermissionEnum } from '@/constants/permissions.enum.ts'
 import { FetchDataInterface } from '@/types/interface/fetch'
 import {
     OrderStatusInterface,
     OrderStatusPayloadInterface,
 } from '@/types/interface/orders'
+import { formatQueryEndpoint } from '@/utils/helpers.ts'
 
 const orderStatusesApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -19,7 +21,9 @@ const orderStatusesApi = api.injectEndpoints({
             OrderStatusPayloadInterface
         >({
             query: (body) => ({
-                url: 'order-status/all',
+                url: `order-status/${formatQueryEndpoint(
+                    PermissionEnum.OrderStatusGet
+                )}`,
                 method: 'POST',
                 body,
             }),

@@ -249,5 +249,5 @@ export interface GuestOrderPayloadInterface {
     guest_phone: string
     order_name: string
     order_description: string
-    facility_id: number
+    checkpoint_id: number
 }
