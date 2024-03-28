@@ -192,6 +192,7 @@ export function SignInPage() {
                                 type="submit"
                                 className="rounded-xl h-[40px] w-[400px] bg-primary mt-6"
                                 variant="default"
+                                disabled={isLoading}
                             >
                                 {isLoading ? (
                                     <LoadingSpinner />
